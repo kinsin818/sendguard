@@ -67,14 +67,51 @@ def base_two():
 ARMS = []
 
 
-def arm(name, expect, ports, note=""):
-    ARMS.append((name, expect, ports, note))
+def arm(name, expect, ports, note="", expect_contains=""):
+    ARMS.append((name, expect, ports, note, expect_contains))
 
 
-def run_gate(results_dir):
+def write_manifest(dir_, ports, extra_required=(), forbid_required=()):
+    """A fixture's question set, written the way the contract writes the real one.
+
+    The gate now reports INCOMPLETE when the required list is not covered, so an arm that wants to prove
+    the gate can say YES has to supply the list its own cells answer -- otherwise the arm would be
+    measuring coverage, not comparison. `extra_required` adds ids no cell carries (the missing-cell arm),
+    `forbid_required` removes ids so a spelling fold is tested against a list the port did not satisfy.
+    """
+    sys.path.insert(0, HERE)
+    import equality
+    cells, prim = [], {}
+    seen = set()
+    for port, lst in ports.items():
+        prim[port] = "primary"
+        for c in lst:
+            k = equality.key_of(c)
+            if k in seen:
+                continue
+            seen.add(k)
+            cells.append({"case_group": k[0], "case_id": k[1],
+                          "sub_identity": dict(k[2]), "api_entry_per_port": {port: "primary"}})
+    for gid in extra_required:
+        g, cid = gid.split("/", 1)
+        cells.append({"case_group": g, "case_id": cid, "sub_identity": {}})
+    for gid in forbid_required:
+        g, cid = gid.split("/", 1)
+        cells = [c for c in cells if not (c["case_group"] == g and c["case_id"] == cid)]
+    p = os.path.join(dir_, "cells-required.json")
+    io.open(p, "w", encoding="utf-8", newline="\n").write(
+        json.dumps({"required_cells": cells, "primary_entry_per_port": prim},
+                   ensure_ascii=False, sort_keys=True, indent=1) + "\n")
+    return p
+
+
+def run_gate(results_dir, manifest=None):
+    env = dict(os.environ)
+    if manifest:
+        env["SG_REQUIRED_CELLS"] = manifest
     r = subprocess.run([sys.executable, GATE, "--results-dir", results_dir],
                        capture_output=True, text=True, encoding="utf-8", errors="replace",
-                       cwd=REPO, shell=False)
+                       cwd=REPO, shell=False, env=env)
     return r.returncode, (r.stdout or "") + (r.stderr or "")
 
 
@@ -97,8 +134,15 @@ def main(argv):
     arm("red-one-byte", 1, p, "single-byte difference in bytes_on_disk must turn the run red")
 
     # 3. a different verdict on the same cell must be caught
-    p = base_two(); p["beta"][1]["create_result"] = "ok"
-    arm("red-verdict-flip", 1, p, "ok vs err_at_syscall on the same cell must be red")
+    p = base_two(); p["alpha"][1]["os_legality_verdict"] = "legal"
+    arm("red-verdict-flip", 1, p, "legal vs illegal for the same name must be red")
+
+    # 3b. a different *probe answer* must NOT be red: six languages asking one OS differently is the
+    # matrix, not a failure, and a gate that calls it a failure buries the divergences worth shipping.
+    p = base_two(); p["beta"][1]["create_result"] = "err_at_syscall"
+    p["beta"][1]["error_stage"] = "syscall"
+    arm("probe-difference-is-data", 0, p,
+        "create_result alone must be published as spread, not judged as a broken claim")
 
     # 4. missing cell => refuse to compare, never compare the intersection
     p = base_two(); p["beta"] = p["beta"][:1]
@@ -129,20 +173,42 @@ def main(argv):
     p = base_two(); p["beta"][0]["control_pass"] = False
     arm("deny-failed-control", 3, p, "a port that fails its own control is not evidence")
 
+    # 10. spelling drift is folded, but never guessed at. Measured in the rev5 run: one port wrote the
+    # blind sample as BLIND-1, another T-BLIND-1, the list says B1; one wrote T09a where the list says
+    # T09-m1. A gate that cannot see through that reports work that was done as work that is missing.
+    p = {"alpha": [cell("T09-m1", case_group="trap", member_index=1),
+                   cell("B1", case_group="blind")],
+         "beta": [cell("T09a", case_group="trap", member_index=1),
+                  cell("T-BLIND-1", case_group="blind")]}
+    arm("alias-folds-spelling-drift", 0, p,
+        "T09a / T-BLIND-1 are the same questions as T09-m1 / B1 -- fold them and say yes",
+        expect_contains="OUTCOME=PASS")
+
+    # 11. ...and a bare family id is NOT a member: the record does not say which sample it measured, so
+    # folding it would be the gate inventing data to make a number look better.
+    p = {"alpha": [cell("T09", case_group="trap")], "beta": [cell("T09", case_group="trap")]}
+    arm("alias-refuses-to-guess-member", 3, p,
+        "bare T09 must not be folded into T09-m1", expect_contains="trap/T09-m1")
+
     passed = failed = 0
     total = len(ARMS)
-    for name, expect, ports, note in ARMS:
+    for name, expect, ports, note, want in ARMS:
         adir = os.path.join(root, name)
         os.makedirs(adir, exist_ok=True)
         rd = write_results(adir, ports)
-        rc, out = run_gate(rd)
-        ok = (rc == expect)
-        passed += ok
-        failed += (not ok)
-        print("  %-28s expect_rc=%d got_rc=%-3d %s   %s" % (name, expect, rc, "OK" if ok else "FAIL", note))
-        if not ok:
+        man = write_manifest(adir, ports,
+                             extra_required=(["trap/T09-m1"] if want == "trap/T09-m1" else []))
+        rc, out = run_gate(rd, man)
+        hit = (rc == expect) and (not want or want in out)
+        passed += hit
+        failed += (not hit)
+        print("  %-28s expect_rc=%d got_rc=%-3d %s   %s"
+              % (name, expect, rc, "OK" if hit else "FAIL", note))
+        if not hit:
             for line in out.strip().splitlines()[-6:]:
                 print("        | " + line[:150])
+            if want and want not in out:
+                print("        | expected to find %r in the gate's own output" % want)
     # the lock table must describe the committed bytes AND the checkout; if these ever differ,
     # a digest quoted anywhere in this repo has become unverifiable by a stranger
     locks = {}

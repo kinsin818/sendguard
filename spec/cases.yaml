@@ -36,6 +36,35 @@ control_cells:
   - T-CTRL-PARSE
   - T-CTRL-CANON
 
+# rev6: the five control cells carried names but no pinned bytes, and six ports invented
+# six samples. Measured in the rev5 run: T-CTRL-CANON alone arrived as canon-csharp.txt,
+# canon-go-arm.txt, canon-python.txt and report-2026.txt, and two different payloads were
+# hashed under the same cell id. A control cell that asks a different question per port
+# cannot calibrate anything, so the bytes are pinned here. Names stay hex: a literal escape
+# means six different things in six languages.
+control_samples:
+  - id: T-CTRL-ASCII
+    sample_hex: "7265706f72742d323032362e747874"   # a legal ASCII name; every port must create it
+    payload_hex: "53454e4447554152442d43414e4f4e2d5041594c4f41442d32303236"   # 'SENDGUARD-CANON-PAYLOAD-2026', 28 bytes, sha256 c9fe45b2...
+    expectation: null
+  - id: T-CTRL-ILLEGAL-CHAR
+    sample_hex: "613c622e747874"   # illegal on Windows through the plain path form
+    payload_hex: "53454e4447554152442d43414e4f4e2d5041594c4f41442d32303236"   # 'SENDGUARD-CANON-PAYLOAD-2026', 28 bytes, sha256 c9fe45b2...
+    expectation: null
+  - id: T-CTRL-PARSE
+    sample_hex: "6e756c00627974652e747874"   # an embedded U+0000; a language may refuse before the OS
+    payload_hex: "53454e4447554152442d43414e4f4e2d5041594c4f41442d32303236"   # 'SENDGUARD-CANON-PAYLOAD-2026', 28 bytes, sha256 c9fe45b2...
+    expectation: null
+  - id: T-CTRL-NAMETOOLONG
+    sample_hex: "61616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161"   # a 256-code-unit single component: must fail after reaching the FS
+    payload_hex: "53454e4447554152442d43414e4f4e2d5041594c4f41442d32303236"   # 'SENDGUARD-CANON-PAYLOAD-2026', 28 bytes, sha256 c9fe45b2...
+    expectation: null
+  - id: T-CTRL-CANON
+    sample_hex: "63616e6f6e2d636865636b2e747874"   # the canonical-payload cell; the payload is pinned below
+    payload_hex: "53454e4447554152442d43414e4f4e2d5041594c4f41442d32303236"   # 'SENDGUARD-CANON-PAYLOAD-2026', 28 bytes, sha256 c9fe45b2...
+    expectation: null
+    # (payload pinned once for all five: the same 28 bytes every port must hand to the write)
+
 # 20 frozen traps. sample = UTF-8 hex of the synthetic name.
 cases:
   - id: T01

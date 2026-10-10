@@ -1,0 +1,160 @@
+{
+  "count": 31,
+  "entries": [
+    {
+      "case_id": "T01",
+      "run_dir": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\sendguard-run\\node\\T01\\a37ccb31945991e7198c518b808985a2",
+      "name_hex": "434f4e2e747874"
+    },
+    {
+      "case_id": "T02",
+      "run_dir": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\sendguard-run\\node\\T02\\f457af166372bdf593956b0c1534f4d1",
+      "name_hex": "4e554c2e7461722e677a"
+    },
+    {
+      "case_id": "T03",
+      "run_dir": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\sendguard-run\\node\\T03\\eee2863cf8d3ed859060b32cb25264aa",
+      "name_hex": "613c622e747874"
+    },
+    {
+      "case_id": "T04",
+      "run_dir": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\sendguard-run\\node\\T04\\8c5772583c5a22968b658b3e40d49411",
+      "name_hex": "747261696c2e"
+    },
+    {
+      "case_id": "T05",
+      "run_dir": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\sendguard-run\\node\\T05\\b11c4376f6b4383c96658be4c3ef65a4",
+      "name_hex": "747261696c737020"
+    },
+    {
+      "case_id": "T06",
+      "run_dir": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\sendguard-run\\node\\T06\\3d24ae6c6c0cad6455bbedd0edc24091",
+      "name_hex": "656d6f6a692df09f98802e747874"
+    },
+    {
+      "case_id": "T07",
+      "run_dir": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\sendguard-run\\node\\T07\\31444aa603f2f9d9f6673b5abf64a2c6",
+      "name_hex": "63616665cc812e747874"
+    },
+    {
+      "case_id": "T08",
+      "run_dir": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\sendguard-run\\node\\T08\\d30da36517ec2657945ac92df8cd8080",
+      "name_hex": "636166c3a92e747874"
+    },
+    {
+      "case_id": "T09a",
+      "run_dir": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\sendguard-run\\node\\T09a\\d0182423deef6191ccb70294814fdb00",
+      "name_hex": "726573756d652d65cc812e747874"
+    },
+    {
+      "case_id": "T09b",
+      "run_dir": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\sendguard-run\\node\\T09b\\ad714bf9f0f61b60b450ea608321313b",
+      "name_hex": "726573756d652dc3a92e747874"
+    },
+    {
+      "case_id": "T10",
+      "run_dir": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\sendguard-run\\node\\T10\\04bc5094b9a5a8cd0c72e209fbc43e18",
+      "name_hex": "434f4e"
+    },
+    {
+      "case_id": "T11",
+      "run_dir": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\sendguard-run\\node\\T11\\091891baa10bcb2cf089099cfeee14ad",
+      "name_hex": "434f4d312e6c6f67"
+    },
+    {
+      "case_id": "T12",
+      "run_dir": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\sendguard-run\\node\\T12\\c4f7c085e0be184d41ae1a5d8cd7e32c",
+      "name_hex": "626964692de280ae2e747874"
+    },
+    {
+      "case_id": "T13",
+      "run_dir": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\sendguard-run\\node\\T13\\dde5913a34f568a1f6835aa898d92019",
+      "name_hex": "7a65726f77696474682de2808b2e747874"
+    },
+    {
+      "case_id": "T14a",
+      "run_dir": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\sendguard-run\\node\\T14a\\29191c5c454b72220d1e87af7bb6e806",
+      "name_hex": "50524e"
+    },
+    {
+      "case_id": "T14b",
+      "run_dir": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\sendguard-run\\node\\T14b\\ebd1f8b05d5829246b7e1d4d421df5cf",
+      "name_hex": "4155582e6c6f67"
+    },
+    {
+      "case_id": "T14c",
+      "run_dir": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\sendguard-run\\node\\T14c\\9cdd35af3dfa0366a41e036d5ee73d31",
+      "name_hex": "4c505439"
+    },
+    {
+      "case_id": "T15",
+      "run_dir": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\sendguard-run\\node\\T15\\b1e61e81f2e3f16bcc50c654151f6ab1",
+      "name_hex": "6374726c2d012e747874"
+    },
+    {
+      "case_id": "T16",
+      "run_dir": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\sendguard-run\\node\\T16\\8a80f3926acd393aa457672496c3f2a8",
+      "name_hex": "7a69702d726f756e64747269702e7a6970"
+    },
+    {
+      "case_id": "T19a",
+      "run_dir": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\sendguard-run\\node\\T19a\\473af1a4cc1c280d06e296c2dde85f6c",
+      "name_hex": "efbca1efbca2efbca32e747874"
+    },
+    {
+      "case_id": "T19b",
+      "run_dir": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\sendguard-run\\node\\T19b\\63133c73bd0929b08eddc8488728f136",
+      "name_hex": "e384b1e384b4e384b72e747874"
+    },
+    {
+      "case_id": "T20",
+      "run_dir": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\sendguard-run\\node\\T20\\826c8e05c942a10645783ff67ea8851d",
+      "name_hex": "2d2d666f7263652e747874"
+    },
+    {
+      "case_id": "T-CTRL-NAMETOOLONG",
+      "run_dir": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\sendguard-run\\node\\T-CTRL-NAMETOOLONG\\b6fef1a46852fd289fc59f8d86e615c7",
+      "name_hex": "61616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161"
+    },
+    {
+      "case_id": "T-CTRL-ASCII",
+      "run_dir": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\sendguard-run\\node\\T-CTRL-ASCII\\e34dd4e1907299b09bd08053d6f48df7",
+      "name_hex": "7265706f72742d323032362e747874"
+    },
+    {
+      "case_id": "T-CTRL-ILLEGAL-CHAR",
+      "run_dir": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\sendguard-run\\node\\T-CTRL-ILLEGAL-CHAR\\6bd89e2ec2f14688be1dfc9a3c6ad689",
+      "name_hex": "613c622e747874"
+    },
+    {
+      "case_id": "T-CTRL-PARSE",
+      "run_dir": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\sendguard-run\\node\\T-CTRL-PARSE\\c13acc3244277075125d9e8d470e7d63",
+      "name_hex": "6e756c00627974652e747874"
+    },
+    {
+      "case_id": "B1",
+      "run_dir": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\sendguard-run\\node\\B1\\ecb11256a109308e65653e1afee143a5",
+      "name_hex": "696e766f6963655f46494e414c5f323032362e786c7378"
+    },
+    {
+      "case_id": "B2",
+      "run_dir": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\sendguard-run\\node\\B2\\d8f4811ac3967452857414eb3d9975fe",
+      "name_hex": "70686f746f5f325f2e6a7067"
+    },
+    {
+      "case_id": "B3",
+      "run_dir": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\sendguard-run\\node\\B3\\776f9745674844be2a1ed35368e05cee",
+      "name_hex": "436f70795f6f665f7265706f72742e646f6378"
+    },
+    {
+      "case_id": "B4",
+      "run_dir": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\sendguard-run\\node\\B4\\c8907d48dbf39e3b405e0586e6aae01f",
+      "name_hex": "646174615f76325f315f2e637376"
+    },
+    {
+      "case_id": "B5",
+      "run_dir": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\sendguard-run\\node\\B5\\7ea462c46363ac8ee71343c6549c1bc5",
+      "name_hex": "7765656b656e642d7265706f72742e747874"
+    }
+  ]
+}

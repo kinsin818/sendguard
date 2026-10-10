@@ -1,0 +1,63 @@
+{
+ "format_version": 1,
+ "case_id": "T04",
+ "case_group": "trap",
+ "language": "go",
+ "os": "windows",
+ "os_version": "",
+ "arch": "amd64",
+ "locale": "en-US",
+ "api_entry": "os.OpenFile",
+ "attempt": 1,
+ "name_source": "747261696c2e",
+ "name_encoding": "utf8_bytes",
+ "path_form": "plain",
+ "longpath_mechanism": "none",
+ "create_result": "ok",
+ "error_stage": "null",
+ "error_code": "",
+ "error_message": "",
+ "bytes_written": 1,
+ "bytes_on_disk": null,
+ "read_result": "eof",
+ "enum_to_stat_agrees": false,
+ "enum_api_entry": "os.ReadDir",
+ "os_legality_verdict": "unknown",
+ "mechanism_class": "component_length_limit",
+ "worker_id": "W-GO/qianwen",
+ "harness_version": "runner-v1",
+ "sha256_self": "e076d3a7d199d4bd0c580548bd28d6a4602631bfcd948b985829e96c2758a0bb",
+ "started_at": "2026-10-10T15:00:36.5341694Z",
+ "elapsed_ms": 35,
+ "env": {
+  "LongPathsEnabled": 0,
+  "dot3name": null,
+  "max_component": null,
+  "toolchain": "go1.23.5",
+  "unicode_version": "unavailable-no-api"
+ },
+ "notes": [
+  "PHANTOM-OK: create ok, dir_view lacks requested bytes"
+ ],
+ "members": [
+  {
+   "Hex": "747261696c2e",
+   "DirFound": false,
+   "DirSize": null,
+   "PathOK": true,
+   "PathSize": 1,
+   "PathErr": "",
+   "Read": "",
+   "ReadN": null,
+   "ReadErr": "",
+   "Diverg": true,
+   "Drift": false,
+   "SameHits": 0
+  }
+ ],
+ "root_len_units": 55,
+ "comp_units": 0,
+ "spec_defect": false,
+ "control_pass": true,
+ "instrument_red": false
+}

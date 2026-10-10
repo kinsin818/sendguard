@@ -1,0 +1,182 @@
+{
+ "cells_planned": 137,
+ "cells_written": 49,
+ "cleanup_attempted": false,
+ "control_detail": [
+  {
+   "cell": "T-CTRL-NAMETOOLONG",
+   "pass": true,
+   "expected": {
+    "create_result": "err_at_syscall",
+    "error_stage": "syscall"
+   },
+   "got": {
+    "bytes_on_disk": "null",
+    "bytes_written": "null",
+    "create_result": "err_at_syscall",
+    "error_stage": "syscall",
+    "read_leg_executed": "false",
+    "read_result": "eof",
+    "roundtrip_ok": "null",
+    "sha256_self": "c9fe45b2fee8ea846f0cf4f2cacc2a891e7b082e7719923502d12a9813e21994",
+    "sha256_truth": "",
+    "winerror": "123"
+   },
+   "mismatch": [],
+   "note": ""
+  },
+  {
+   "cell": "T-CTRL-ASCII",
+   "pass": true,
+   "expected": {
+    "bytes_on_disk": "28",
+    "bytes_written": "28",
+    "create_result": "ok",
+    "read_result": "ok",
+    "roundtrip_ok": "true"
+   },
+   "got": {
+    "bytes_on_disk": "28",
+    "bytes_written": "28",
+    "create_result": "ok",
+    "error_stage": "null",
+    "read_leg_executed": "true",
+    "read_result": "ok",
+    "roundtrip_ok": "true",
+    "sha256_self": "c9fe45b2fee8ea846f0cf4f2cacc2a891e7b082e7719923502d12a9813e21994",
+    "sha256_truth": "c9fe45b2fee8ea846f0cf4f2cacc2a891e7b082e7719923502d12a9813e21994",
+    "winerror": "null"
+   },
+   "mismatch": [],
+   "note": "sha256_self is this port's own hash of the payload; sha256_truth is the independent python read-back arm's hash"
+  },
+  {
+   "cell": "T-CTRL-ILLEGAL-CHAR",
+   "pass": true,
+   "expected": {
+    "create_result": "err_at_syscall",
+    "error_stage": "syscall"
+   },
+   "got": {
+    "bytes_on_disk": "null",
+    "bytes_written": "null",
+    "create_result": "err_at_syscall",
+    "error_stage": "syscall",
+    "read_leg_executed": "false",
+    "read_result": "eof",
+    "roundtrip_ok": "null",
+    "sha256_self": "c9fe45b2fee8ea846f0cf4f2cacc2a891e7b082e7719923502d12a9813e21994",
+    "sha256_truth": "",
+    "winerror": "123"
+   },
+   "mismatch": [],
+   "note": ""
+  },
+  {
+   "cell": "T-CTRL-PARSE",
+   "pass": true,
+   "expected": {
+    "create_result": "err_at_parse",
+    "error_stage": "parse"
+   },
+   "got": {
+    "bytes_on_disk": "null",
+    "bytes_written": "null",
+    "create_result": "err_at_parse",
+    "error_stage": "parse",
+    "read_leg_executed": "false",
+    "read_result": "eof",
+    "roundtrip_ok": "null",
+    "sha256_self": "c9fe45b2fee8ea846f0cf4f2cacc2a891e7b082e7719923502d12a9813e21994",
+    "sha256_truth": "",
+    "winerror": "536870951"
+   },
+   "mismatch": [],
+   "note": ""
+  },
+  {
+   "cell": "T-CTRL-CANON",
+   "pass": true,
+   "expected": {
+    "create_result": "ok",
+    "sha256_truth_equals_self": "true"
+   },
+   "got": {
+    "bytes_on_disk": "28",
+    "bytes_written": "28",
+    "create_result": "ok",
+    "error_stage": "null",
+    "read_leg_executed": "true",
+    "read_result": "ok",
+    "roundtrip_ok": "true",
+    "sha256_self": "c9fe45b2fee8ea846f0cf4f2cacc2a891e7b082e7719923502d12a9813e21994",
+    "sha256_truth": "c9fe45b2fee8ea846f0cf4f2cacc2a891e7b082e7719923502d12a9813e21994",
+    "winerror": "null"
+   },
+   "mismatch": [],
+   "note": "sha256_self is this port's own hash of the payload; sha256_truth is the independent python read-back arm's hash"
+  }
+ ],
+ "controls_pass": true,
+ "env": {
+  "os": "windows",
+  "os_version": "registry:CurrentBuild    REG_SZ    19041",
+  "arch": "amd64",
+  "locale": "console_code_page=936 (the label around it is cp936 text; non-ASCII bytes are dropped, never guessed)",
+  "go_exe_resolved": "C:\\Program Files\\Go\\bin\\go.exe",
+  "go_version": "go version go1.23.5 windows/amd64",
+  "runner_exe": "D:\\sendguard-work\\seat-qoder\\impl\\go\\rederive\\bin\\sg.exe",
+  "runner_manifest_scan": {
+   "bytes_scanned": 4624896,
+   "hit_count": 1,
+   "method": "byte scan of the runner exe, NOT a PE manifest parse",
+   "token": "longPathAware",
+   "why": "LongPathsEnabled=0 on this host, but whether the 259-unit ceiling bites depends on the manifest of the binary that asks, so the runner's own face is recorded instead of assumed"
+  },
+  "runner_exe_sha256_before": "52e0eb46a0d9309660904ac2964d892e100efa812d787e1cb24ea3874054e8d1",
+  "runner_exe_sha256_after": "52e0eb46a0d9309660904ac2964d892e100efa812d787e1cb24ea3874054e8d1",
+  "longpaths_registry": {
+   "command": [
+    "reg",
+    "query",
+    "HKLM\\SYSTEM\\CurrentControlSet\\Control\\FileSystem",
+    "/v",
+    "LongPathsEnabled"
+   ],
+   "elapsed_ms": 5,
+   "key": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\FileSystem\\LongPathsEnabled",
+   "raw_line": "LongPathsEnabled    REG_DWORD    0x0",
+   "rc": 0,
+   "status": "present",
+   "value": 0,
+   "value_type": "REG_DWORD"
+  },
+  "volume_d": {
+   "filesystem_name": "NTFS",
+   "last_error": 0,
+   "max_component": 255,
+   "method": "kernel32.GetVolumeInformationW via syscall.LoadDLL",
+   "r1": 1,
+   "root": "D:\\",
+   "status": "ok",
+   "volume_flags": 65472255,
+   "volume_name": "",
+   "volume_serial": 3900905234
+  },
+  "spec_sha256": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261",
+  "spec_sha256_worktree_face": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261",
+  "freeze_revision": "",
+  "run_started_at": "2026-10-10T22:15:37.826976Z",
+  "python_readback_arm_exe": "C:\\Python314\\python.exe",
+  "sandbox_root": "D:\\sendguard-run"
+ },
+ "exe_face_stable": true,
+ "run_finished_at": "2026-10-10T22:15:47.2836446Z",
+ "run_started_at": "2026-10-10T22:15:37.826976Z",
+ "sandbox_dirs_retained": 49,
+ "sandbox_root": "D:\\sendguard-run",
+ "sg_exe_sha256_after": "52e0eb46a0d9309660904ac2964d892e100efa812d787e1cb24ea3874054e8d1",
+ "sg_exe_sha256_before": "52e0eb46a0d9309660904ac2964d892e100efa812d787e1cb24ea3874054e8d1",
+ "timeout_enforced_ms": 5000,
+ "wall_ms": 9708
+}

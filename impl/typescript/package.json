@@ -1,0 +1,13 @@
+{
+  "name": "sendguard-typescript-port",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "SENDGUARD TypeScript port (Node runtime), zero third-party dependencies",
+  "engines": {
+    "node": ">=23.6.0"
+  },
+  "scripts": {
+    "run": "node src/runner.ts"
+  }
+}

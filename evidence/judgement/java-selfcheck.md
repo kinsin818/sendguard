@@ -1,0 +1,246 @@
+# SENDGUARD S02 - java port self-check record (rev6)
+
+Supersedes the rev4 text at this path (kept as `impl/java/tools/prev-rev4-record.txt`). The whole
+matrix was re-emitted under rev6 in one run, so no cell on disk carries a superseded input or a
+superseded field set.
+
+- seat: `seat-qoder` (java port window)
+- contract read: `docs/NOTICE-rev6.md`, `spec/cases.yaml` (`control_samples`), `spec/cell-identity.md`
+  section 9, `spec/cells-required.json`, `spec/schema.json`, `spec/validate.py`, `spec/canonical.md`,
+  `spec/gate.md` at HEAD `f15b399`
+- run: 2026-10-11T05:37:27 host-local (UTC+08:00), harness `sg-java-S02-r4-rev6`
+- report: `cells_required=44 cells_matched=48 cells_produced=74 cells_valid=74 blocked=0 extra=26
+  controls_pass=true` - 44 is the manifest's `required_cells`; the 4 java rows of
+  `tapi_cells_per_language` make 48 identities, all present.
+- not INSTRUMENT-RED: 5/5 control expectations pass against the sealed baseline, and this window's
+  validator passes its own red/green arms (35 arms, 0 problems).
+
+## 1. Action 1 - the five control cells re-run against the pinned bytes
+
+`spec/cases.yaml` now pins `control_samples`: each control's `sample_hex` plus one 28-byte payload
+shared by all five. That pin closed a real hole, and this port contributed to it.
+
+| cell | name this port used before rev6 | pinned sample_hex | now |
+|---|---|---|---|
+| T-CTRL-ASCII | `report-2026.txt` | `7265706f72742d323032362e747874` | unchanged, agreed with the pin |
+| T-CTRL-ILLEGAL-CHAR | `a<b.txt` | `613c622e747874` | unchanged, agreed with the pin |
+| T-CTRL-PARSE | `sg-parse<U+0000>.txt` - invented here | `6e756c00627974652e747874` | replaced by the pin |
+| T-CTRL-NAMETOOLONG | 256 units of this port's PAD alphabet - invented here | 256 `a` units | replaced by the pin |
+| T-CTRL-CANON | `ctrl-canon.bin` - invented here | `63616e6f6e2d636865636b2e747874` | replaced by the pin |
+
+Two of the five already matched; **three did not** - this port had invented the sample bytes for
+`T-CTRL-PARSE`, `T-CTRL-NAMETOOLONG` and `T-CTRL-CANON`, so that cell asked a different question per
+port. Reported as this window's own error, not as a contract gap.
+
+Payload: the port now writes the pinned 28 bytes
+`53454e4447554152442d43414e4f4e2d5041594c4f41442d32303236` = `SENDGUARD-CANON-PAYLOAD-2026`,
+sha256 `c9fe45b2fee8ea846f0cf4f2cacc2a891e7b082e7719923502d12a9813e21994` - the same digest
+`evidence/S00-ctrl-baseline.md` publishes for T-CTRL-ASCII. The driver asserts that equality at
+import, so payload drift stops the run instead of shipping a cell with a different digest. The rev4
+record's DEFECT-6 ("the baseline gives a hash but not the bytes it hashed") is closed by this pin,
+and the agreement is now checked by an arm rather than by prose.
+
+Control results against the sealed expectation sentences (the baseline table is a node observation,
+reported, never used as a mandate):
+
+| cell | expectation quoted | java measured | verdict |
+|---|---|---|---|
+| T-CTRL-NAMETOOLONG | fail on all 3 OS after reaching FS (err_at_syscall, not parse) | err_at_syscall / fs | PASS |
+| T-CTRL-ASCII | ok on all languages/OS | ok, 28 written, 28 on disk, read ok, roundtrip true | PASS |
+| T-CTRL-ILLEGAL-CHAR | Windows illegal / POSIX creatable, paired with os_legality_verdict | refused, `os_legality_verdict=illegal` | PASS |
+| T-CTRL-PARSE | all 6 langs MUST be err-at-parse | err_at_parse / parse | PASS |
+| T-CTRL-CANON | identical canonical bytes, else INSTRUMENT-RED | two instruments' digests identical, and equal to the pinned payload digest | PASS |
+
+## 2. Action 2 - blind cells
+
+`blind/B1`..`blind/B5` emitted from `evidence/S00/blind-map.json`, each carrying `blind_id` equal to
+the id number (checked by an arm). All five created, wrote 28 bytes, read back 28, verdict `legal`:
+B1 `invoice_FINAL_2026.xlsx`, B2 `photo_2_.jpg`, B3 `Copy_of_report.docx`, B4 `data_v2_1_.csv`,
+B5 `weekend-report.txt`. The pre-rev6 spelling `blind/BLIND-1..5` stays on disk, marked
+`extra: true` with an `extra_reason`, because nothing in this port deletes and the manifest's note
+says extras are kept, marked and excluded from the digest. Both spellings carry the same `blind_id`,
+which is what section 9.2's fold needs to know which cell is which.
+
+## 3. Action 3 - the length rungs, both path forms
+
+12 required cells: `len/T17` and `len/T18` at `base_len` in {78, 120, 200} x `path_form` in {plain,
+extended}, each declaring `sub_identity = {"base_len": .., "path_form": ..}` and carrying
+`len_triple` plus the bisection bracket. Every rung cell runs six name-length points: the linear
+model's `259 - base_len - 1` at -1/0/+1, and 254/255/256 at the component wall.
+
+| base_len | linear model's last ok name length | measured last ok total | first refused total | last ok component |
+|---|---|---|---|---|
+| 78 | 180 (total 259) | 334 | 335 | 255 |
+| 120 | 138 (total 259) | 376 | 377 | 255 |
+| 200 | 58 (total 259) | 456 | 457 | 255 |
+
+The three columns after the model apply to both forms: in the six extended cells the `Files.write` column is empty by measurement (`run_status` ok, every point `err_at_parse`), so their `measured_plain_wall` is null and the numbers above are the OS-leg column (`points[].extended`, `measured_extended_wall`); in the six plain cells both columns agree.
+
+Both forms give the same wall, because the extended form is answered twice over: the pinned entry
+`Files.write` **refuses the extended string at parse** (`err_at_parse`, `InvalidPathException:
+Illegal character [?] in path at index 2`) so it yields no bracket of its own, while the same cell's
+OS leg - `java.io` handing that string to `CreateFileW` - reaches the wall at the identical place.
+Each extended cell therefore says `create_result=err_at_parse`, `longpath_mechanism=prefix_rewrite`
+(the requested form *is* the prefix) and publishes the bracket through `points[].extended` /
+`measured_extended_wall`; the plain cells carry `longpath_mechanism=unknown` for the reason in
+section 5.
+
+Nothing needed `run_status: blocked` - all 12 rungs were reachable, so no cell is absent and none is
+blocked. The blocked path is armed and tested: an arm asserts a blocked cell must carry the command,
+its exit code and one attempted fix, and that `run_status` agrees with `blocked`. It fired twice
+during bring-up - once on an embedded U+0000 before the probe learned to classify a parse refusal,
+once when a leaked loop variable sent `--path-form extended` to a tier cell and the probe crashed on
+a null handle. Both were fixed in the instrument, not worked around in the data.
+
+## 4. Inventory
+
+| group | required manifest | matched here | extra (kept, marked, excluded) |
+|---|---|---|---|
+| trap | 22 | 22 | 3 (whole-case T09/T14/T19) |
+| ctrl | 5 | 5 | 0 |
+| blind | 5 | 5 | 5 (pre-rev6 `BLIND-n` spelling) |
+| len | 12 | 12 | 14 (8 FROZEN tier cells + 6 rev5 rung ids without `path_form`) |
+| tapi (separate list) | 4 | 4 | 4 (pre-rev3 `T-API-n` ids) |
+| | **44 (+4)** | **48** | **26** |
+
+74 cell files, 0 absent, 0 blocked, 0 non-cell files in `results/java.windows.x64/`. 191 child
+processes, 5 s external limit, 0 timeouts, no `hang`, per-cell wall time 122-433 ms, 180
+`entry_spread` records.
+
+Distributions: `create_result` ok 41 / err_at_syscall 22 / err_at_parse 11; `read_result` ok 35 /
+not_applicable 37 / eof 2; `os_legality_verdict` legal 47 / illegal 27; `attribution_layer` L1 58 /
+L3 11 / L2 5; `path_form` plain 68 / extended 6; `verdict_via` win32 in all 74.
+
+## 5. What the matrix says
+
+- **A successful write that stores nothing.** `NUL.tar.gz` (T02), `COM1.log` (T11), `AUX.log`
+  (T14-m2): `create_result=ok`, `bytes_written=28`, nothing at that name in the fresh directory,
+  `phantom=true`, `bytes_on_disk=null`, and the observation honestly `not_applicable` with a
+  `read_skipped_reason`. A sender-side checker cannot see this from the return value.
+- **Doors that answer ok to nothing.** `Files.createFile` returns success for `CON.txt` and `CON`
+  where `Files.write`, `Files.newOutputStream`, `Files.move`, `File.createNewFile`,
+  `FileOutputStream.write` and `File.renameTo` refuse at the filesystem - five cells `L2`, because
+  switching the entry removes it.
+- **java refuses whole classes of name before the OS** (`a<b.txt`, U+0001, U+0000, trailing space),
+  every pinned entry agreeing: those 11 cells are `L3`. A trailing **dot** is not refused - it
+  reaches the OS and comes back renamed: `trail.` lands as `trail`, `name_mutated=true`, 28 bytes on
+  a name nobody asked for.
+- **NFC and NFD coexist** (T09-m1/m2): two separate entries, `norm_variant_hits=2` on the second
+  member while `same_name_hits=1`. T07/T08/T09-m1/T09-m2 are required for every port, so they run on
+  Windows and carry `spec_applicable_on_windows: false` (cases.yaml marks them `[macos, ubuntu]`).
+- **The wall is the 255-unit component, in both path forms and at every rung** - never
+  `259 - base_len - 1`, whose own point passes at all three bases. Under rev4/rev6 gate.md 5 the
+  regime is keyed by `longpath_mechanism`: the plain cells report `unresolved` (mechanism unknown),
+  the extended cells report the prefix-rewrite model with a 255 ceiling. Only the length group
+  carries that field; a trap cell that never varied a length makes no regime claim.
+- **Why the plain mechanism stays `unknown`, measured three ways.** Leg 1: a dot-suffixed directory
+  is still reached by a 305-unit plain path (`name-parsing-still-applies-at-long-length`), so the
+  string did not go out as an extended form. Leg 2: a real directory named `COM1` (created through
+  `java.io` with the prefix, listed only) is traversed normally at both 31 and 266 units, so a
+  device name in a middle component cannot test the prefix at all. Leg 3, the decisive one: the same
+  **final** name `CON.txt` is refused at total 28 and at total 430, landing nothing either time
+  (`not-rewritten`). Yet a plain path of 456 units still created a file, while `LongPathsEnabled`
+  reads 0 through two independent instruments and the S00 raw-byte scan found no `longPathAware`
+  token in any of the three java binaries. None of `manifest` / `prefix_rewrite` / `none` fits, and
+  picking one would be the exact error rev6 exists to stop.
+- **T-API publishes java disagreeing with itself**: `Files.createFile` answers `ok` for `CON.txt`
+  where the other three pinned entries answer `err_at_syscall`, and on the ASCII name it writes 0
+  bytes and reads back `eof`. Under rev6 that spread is the matrix, not a failure either way.
+- **Zip bit-11 round-trips inside the JDK** (T16): a 170-byte archive whose entry name
+  `636166c3a92de298832e747874` reopened byte-identical.
+
+## 6. Validator state (my own script, stdlib only)
+
+- Denominator derived from `spec/cells-required.json` **read from the committed blob face**; the
+  manifest's own citation of `spec/cases.yaml` is re-verified against `git cat-file blob
+  HEAD:spec/cases.yaml` before anything runs. Blob and checkout agree this round
+  (`required_cells_sha256 = 3742747dd412e8a9d799e6c7f215f561f4c14774466759de515335b76ee90ff6, identical on the committed blob face and on this checkout`).
+- **Pinned-input arm**: a control cell whose `name_source` is not the pinned `sample_hex`, or whose
+  payload digest is not the pinned one, is VOID with `UNPINNED_INPUT` - tested both directions (the
+  red arm must be caught, and the pinned value must pass).
+- **Two-ruler agreement**: every closed set is compared across `canonical.md`, `schema.json` and
+  `validate.py`, and the run refuses to judge cells until the three agree. They do, on 12 fields.
+- **Lock faces**: all 8 rows of `spec/FROZEN.md` re-hashed against the committed blob - 8 checked,
+  0 mismatches.
+- Word extraction takes a table's first column only, so `read_skipped_reason` (a field rev4 mentions
+  in prose) is not mistaken for a verdict; and unlike `ci/equality.py`'s extractor it reads
+  `attribution_layer`'s mixed case, so that field is actually checked rather than silently skipped.
+- rev4's `not_applicable` pairings are enforced both ways; `run_status` must agree with `blocked`;
+  `verdict_via=none` may not sit beside a claimed verdict; a filename with two sub slots must agree
+  with the cell's `sub_identity`; an unmarked extra, and a required cell marking itself extra, are
+  both VOID. 35 arms, 0 problems.
+
+## 7. Reported to the contract owner (nothing here patched by this window)
+
+1. `spec/schema.json`'s `required` array still lists 17 fields while rev3/rev6 declare
+   `verdict_via` required. This port follows the stricter reading - all 74 cells carry it.
+2. The 4 java rows of `tapi_cells_per_language` still carry `sub_identity: {}` and differ only by
+   `api_entry`, which section 9.2's fold does not consume. The cells are emitted exactly as the
+   manifest spells them; if the digest leg must address them separately, that dimension has to be
+   declared in the manifest, not invented by a port.
+3. `ci/export_aggregate.py` is still cited by `spec/cell-identity.md` 3 and still does not exist, so
+   no aggregate was generated or hand-written.
+4. Java exposes no numeric Win32 error (`NoSuchMethodException: FileSystemException.getWinError()`),
+   so `winerror` is null with that probe text and the OS's localized message is kept verbatim;
+   `java.io.File` failures are bare booleans with no error at all. The console here is cp936 and the
+   JVM self-reports `file.encoding=GBK`, so every cell file is written as ASCII bytes with `\uXXXX`
+   escapes and the validator rejects any non-ASCII byte in a cell face.
+5. `spec/cases.yaml` marks T07/T08/T09 `[macos, ubuntu]` while the required list names them for every
+   port. One sentence would make "run them and record applicability as a field" the rule instead of
+   this port's inference.
+6. Directory-view hygiene, disclosed rather than hidden: the OS-legality leg creates, so an entry can
+   be present that the pinned entry never produced. 24 cells set
+   `dir_view_contains_probe_created_files` with `dir_view_note`, and the probe now also flags
+   `hit_came_from_earlier_leg` where a name exists but that member's own create was refused - the
+   same combination that crashed the instrument before it was guarded.
+
+## 8. Unchanged rules, and how each was met
+
+Primary entry `Files.write` on every non-`T-API` cell (enforced by an arm); the `java.io.File`
+variants inside the same cell file as `entry_spread`, so `results/` holds only cells. One child
+process per cell x entry (191), external 5 s timeout owned by the driver, `hang` never needed.
+Reserved device names: created and listed only - never opened, never read, never stat'd
+(`stat_status: "skipped-reserved-name (list only; no open)"`); the pinned create-and-write entries do
+hand the 28 payload bytes to a device, which is what the pinned entry *is*, disclosed instead of
+dodged by substituting another entry. No deletion logic anywhere (M19): every cell carries
+`cleanup_failed=true`, and the honest side effect is 3711 retained fresh scratch directories plus
+their child result documents under `D:\s\` (accumulated across this session's runs) and 629
+directories left at `D:\j*` by runs made before that root was fixed. Fresh uuid directory per run,
+verified empty before use and recounted after; `base_len` is the directory path length with no
+trailing separator and `base_len_actual` is re-read inside the JVM (78/120/200 confirmed). Zero
+third-party dependencies: one `.java` compiled by `javac`; driver and validator on the Python
+standard library. Writes limited to `impl/java/`, `results/java.windows.x64/` and this file; nothing
+under `spec/`, `ci/`, `harness/`, `docs/` was modified, and the one `ci/__pycache__` byproduct of
+calling the gate's own function was removed; `D:\sendguard` was never opened; no commit, no push, no
+tag. No other port's `impl/` or `results/` was read in this round, and no tool that enumerates them
+was run.
+
+## 9. Disclosure against audit check 1 (`spec/gate.md` 7)
+
+Before any measurement this window ran one recursive text search over `spec/` for the frozen length
+grid, and three lines of `spec/expectations.sealed.md` (the T17/T18 rows) appeared in that output.
+The file was never opened and those lines were never used as a criterion - the rung result in section
+3 contradicts the quoted `<= 259` expectation, which is the evidence that it was not fitted.
+
+## 10. Reproduce
+
+```
+"C:\Program Files\Eclipse Adoptium\jdk-17.0.17.10-hotspot\bin\javac.exe" -nowarn ^
+    -d impl\java\build impl\java\src\CellProbe.java
+python impl\java\tools\run_cells.py            # rc0: 48 identities, 26 extras, 0 blocked, 0 absent
+python impl\java\tools\selfcheck.py --selftest # 35 arms, 0 problems
+python impl\java\tools\selfcheck.py            # rc0, controls_pass=true
+```
+
+Toolchain re-proved every run: three `java` binaries on PATH (jdk-17.0.17 first, jdk-21.0.6, then
+the Oracle `javapath` shim reporting 1.8.0_31); `JAVA_HOME` points at jdk-21 and is **not** used;
+compile and run both pin `...jdk-17.0.17.10-hotspot\bin`, and every cell carries
+`jvm_self_report.java_home` / `java_version` so the answer names the JVM that produced it. Raw
+captures beside the scripts: `run-facts.json`, `run-output.txt`, `selfcheck-output.txt`,
+`selftest-output.txt`.
+
+Close: 44 manifest cells plus this port's 4 T-API rows, all present, none blocked, 26 extras kept
+and marked. Worth buying: the write that reports success and stores nothing (three names), the door
+that says ok where three say no, the wall sitting at 255 units per component in both path forms and
+at every rung, and the fact that no `longpath_mechanism` word in the contract describes what this
+machine does to a long plain path from java.nio.

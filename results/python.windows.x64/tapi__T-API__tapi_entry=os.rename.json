@@ -1,0 +1,177 @@
+{
+ "format_version": 1,
+ "case_id": "T-API",
+ "case_group": "tapi",
+ "language": "python",
+ "os": "windows",
+ "os_version": "Windows-10-10.0.19041-SP0",
+ "arch": "AMD64",
+ "locale": "('Chinese (Simplified)_China', '936') code_page=cp936 utf8_mode=0",
+ "interpreter_resolved": "C:\\Python314\\python.exe",
+ "api_entry": "os.rename",
+ "attempt": 1,
+ "sub_identity": {
+  "tapi_entry": "os.rename"
+ },
+ "sub_identity_order": [
+  "tapi_entry"
+ ],
+ "name_source": "434f4e2e747874",
+ "name_source_kind": "spec/cases.yaml T01 sample hex (the sample T-API runs; the frozen spec does not pin which sample T-API uses)",
+ "path_form": "plain",
+ "longpath_mechanism": "none",
+ "name_encoding": "hex_raw_bytes",
+ "mechanism_class": "reserved_device_name",
+ "harness_version": "sg-python-s02-rederive-1",
+ "worker_id": "seat-qoder-python-port",
+ "spec_sha256": "a7f9a57df1b4d39a19421a54d175e87793100ce3393e363622ca59816e19148b",
+ "spec_face": "git cat-file blob HEAD:spec/cases.yaml rc=0 bytes=8075",
+ "env": {
+  "LongPathsEnabled": 0,
+  "LongPathsEnabled_source": "winreg HKLM ...\\FileSystem\\LongPathsEnabled",
+  "max_component": {
+   "C:\\": 255,
+   "D:\\": 255
+  },
+  "dot3name": {
+   "C:": "enabled",
+   "D:": "disabled"
+  },
+  "unicode_version": "16.0.0",
+  "toolchain": "C:\\Python314\\python.exe 3.14.7",
+  "utf8_mode": 0,
+  "longpath_manifest_on_interpreter": true,
+  "longpath_manifest_source": "evidence/S00/env-facts-windows-local.json manifest_scan: C:\\Python314\\python.exe found=true"
+ },
+ "deps_direct": 0,
+ "deps_total": 0,
+ "deps_basis": "imports are stdlib only (argparse ctypes hashlib json os pathlib stat sys time uuid zipfile shutil); third-party count = 0",
+ "scratch_root": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\sendguard-run",
+ "scratch_dir": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\sendguard-run\\c232fded",
+ "scratch_verified_empty": true,
+ "cleanup_attempted": false,
+ "probe_timeout_s": 5.0,
+ "child_spawn_form": "subprocess.run(argv list, shell=False, timeout=5.0); one child per probe",
+ "cleanup_note": "M19: no deletion logic exists in this port; run dirs accumulate outside the repo",
+ "instrument_red": false,
+ "instrument_conflict": false,
+ "entries_run": [
+  "os.rename"
+ ],
+ "primary_entry": "open_wb",
+ "error_stage_rule": "non-OSError raised before the syscall -> parse; OSError carrying errno/winerror -> syscall (fs/tool unused, see selfcheck)",
+ "leg_dir": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\sendguard-run\\c232fded\\L0",
+ "leg_pre_existing_entries": 0,
+ "entry_spread": {},
+ "entries_agree_with_primary": true,
+ "entries_disagreeing": [],
+ "entries_without_record": [],
+ "child_rc": 0,
+ "child_timed_out": false,
+ "child_reruns": 0,
+ "phases_reached": [
+  "start",
+  "created",
+  "dir_view",
+  "path_view",
+  "read",
+  "done"
+ ],
+ "requested_triple": {
+  "code_points": 7,
+  "utf16_code_units": 7,
+  "utf8_bytes": 7
+ },
+ "landed_triple": null,
+ "len_triple": {
+  "requested": {
+   "code_points": 7,
+   "utf16_code_units": 7,
+   "utf8_bytes": 7
+  },
+  "landed": null
+ },
+ "bytes_written": null,
+ "bytes_on_disk": null,
+ "name_landed_as": null,
+ "landed_linkage": "none",
+ "new_entries_hex": [
+  "73677372632d3538373338382e62696e"
+ ],
+ "residual_src_new_entries": 1,
+ "pre_existing_entries": 0,
+ "same_name_hits": 0,
+ "dir_view_count": 1,
+ "dir_view": [
+  {
+   "is_dir": false,
+   "name_hex": "73677372632d3538373338382e62696e",
+   "size": 28
+  }
+ ],
+ "residual_src_entries": 1,
+ "path_view": {
+  "attributes": null,
+  "exists": null,
+  "face": "extended",
+  "is_dir": null,
+  "note": "plain face not queried: the parser resolves this name into the device namespace (red line)",
+  "winerror": 2
+ },
+ "os_legality_verdict": "legal",
+ "os_legality_detail": {
+  "attributes": null,
+  "outcome": "name-accepted-no-entry-present",
+  "probe": "GetFileAttributesW(\\\\?\\\\<dir>\\\\<name>)",
+  "winerror": 2
+ },
+ "win32_fullpath": {
+  "ok": false,
+  "skipped": "reserved_device_name_plain_face"
+ },
+ "delivered_nothing": null,
+ "create_result": "err_at_syscall",
+ "error_stage": "syscall",
+ "error_type": "FileExistsError",
+ "error_errno": 17,
+ "error_winerror": 183,
+ "error_strerror": "\u5f53\u6587\u4ef6\u5df2\u5b58\u5728\u65f6\uff0c\u65e0\u6cd5\u521b\u5efa\u8be5\u6587\u4ef6\u3002",
+ "error_message": "FileExistsError -- path and name redacted, never materialised",
+ "error_code": "FileExistsError:errno=17:winerror=183",
+ "cell_blocked": true,
+ "blocked_leg": "read",
+ "blocked_reason": "red_line_no_content_open_for_reserved_device_name",
+ "read_blocked_reason": "red_line_no_content_open_for_reserved_device_name",
+ "enum_to_stat_agrees": true,
+ "phantom": false,
+ "artifact_dir_listing_count": null,
+ "attribution_layer": "L1",
+ "attribution_layer_basis": "OS-level name policy; same for every entry of this language (entry_spread agrees); varies_across_OS pending",
+ "control_pass": true,
+ "elapsed_ms": 112,
+ "started_at": "2026-10-11T02:56:27+0800",
+ "spec_provenance": {
+  "category": null,
+  "applicable": "windows",
+  "case_locale": "en-US",
+  "spec_source": "spec/cases.yaml T01 sample, pinned python entry list"
+ },
+ "length_unit": "code_points",
+ "length_unit_basis": "len(python str) == code points; utf16/utf8 counts are published in len_triple, never used as the reported length",
+ "tapi_entry": "os.rename",
+ "sub_identity_fields_top_level": [
+  "tapi_entry"
+ ],
+ "verdict_via": "win32",
+ "verdict_via_detail": "kernel32.GetFileAttributesW via ctypes, extended prefix, parser bypassed",
+ "rev3_migrated": true,
+ "rev3_migration_notes": [],
+ "extra": true,
+ "superseded_by": "tapi__T-API__api_entry=os.rename.json",
+ "superseded_reason": "rev3 spells this identity as tapi/T-API (member position lives in case_id, T-API entry in api_entry); the measurement is unchanged and the older file is kept because this port contains no deletion logic (M19)",
+ "read_result": "not_applicable",
+ "read_skipped_reason": "red_line_no_content_open_for_reserved_device_name",
+ "run_status": "measured",
+ "migrated_under_spec_sha256": "b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1",
+ "migrated_under_spec_face": "git cat-file blob HEAD:spec/cases.yaml rc=0 bytes=10611"
+}

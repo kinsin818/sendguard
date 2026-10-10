@@ -1,0 +1,170 @@
+rulers agree: canonical.md == schema.json == validate.py on attribution_layer, case_group, create_result, error_stage, language, length_unit, longpath_mechanism, name_encoding, os, os_legality_verdict, path_form, read_result
+FROZEN.md lock faces checked against the committed blob: 8, mismatches=0
+closed sets from canonical.md: attribution_layer=4, case_group=5, create_result=4, error_stage=5, longpath_mechanism=4, mechanism_class=12, os_legality_verdict=3, path_form=2, read_result=5
+spec_sha256(committed blob face of spec/cases.yaml)=8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261
+required list (blob face): base_len_ladder=78+120+200, java_tapi_cells=4, required_cells=44, required_list_faces=blob ed8a8a29c0eea999 / worktree ed8a8a29c0eea999 (equal), required_list_sha256=ed8a8a29c0eea99925659f6d0f2f63b94469654e1f793ab027b6e55a4a1a8cb8
+member-split required ids: trap__T09-m1.json, trap__T09-m2.json, trap__T14-m1.json, trap__T14-m2.json, trap__T14-m3.json, trap__T19-m1.json, trap__T19-m2.json
+cells_required=48 cells_produced=74 cells_extra_present=26
+VOID    blind__B1.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    blind__B2.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    blind__B3.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    blind__B4.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    blind__B5.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    blind__BLIND-1.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    blind__BLIND-2.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    blind__BLIND-3.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    blind__BLIND-4.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    blind__BLIND-5.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    ctrl__T-CTRL-ASCII.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    ctrl__T-CTRL-CANON.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    ctrl__T-CTRL-ILLEGAL-CHAR.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    ctrl__T-CTRL-NAMETOOLONG.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    ctrl__T-CTRL-PARSE.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    len__T17__G1.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    len__T17__G2.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    len__T17__G3.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    len__T17__G4.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    len__T17__base_len-120.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    len__T17__base_len-120__extended.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    len__T17__base_len-120__plain.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    len__T17__base_len-200.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    len__T17__base_len-200__extended.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    len__T17__base_len-200__plain.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    len__T17__base_len-78.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    len__T17__base_len-78__extended.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    len__T17__base_len-78__plain.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    len__T18__G1.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    len__T18__G2.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    len__T18__G3.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    len__T18__G4.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    len__T18__base_len-120.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    len__T18__base_len-120__extended.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    len__T18__base_len-120__plain.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    len__T18__base_len-200.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    len__T18__base_len-200__extended.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    len__T18__base_len-200__plain.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    len__T18__base_len-78.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    len__T18__base_len-78__extended.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    len__T18__base_len-78__plain.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    tapi__T-API-1.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    tapi__T-API-2.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    tapi__T-API-3.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    tapi__T-API-4.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    tapi__T-API__Files.createFile.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    tapi__T-API__Files.move.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    tapi__T-API__Files.newOutputStream.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    tapi__T-API__Files.write.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    trap__T01.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    trap__T02.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    trap__T03.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    trap__T04.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    trap__T05.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    trap__T06.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    trap__T07.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    trap__T08.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    trap__T09-m1.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    trap__T09-m2.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    trap__T09.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    trap__T10.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    trap__T11.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    trap__T12.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    trap__T13.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    trap__T14-m1.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    trap__T14-m2.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    trap__T14-m3.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    trap__T14.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    trap__T15.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    trap__T16.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    trap__T19-m1.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    trap__T19-m2.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    trap__T19.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+VOID    trap__T20.json
+        - spec_sha256='b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1' != committed blob face '8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261'
+cells_valid=0 cells_blocked=0 cells_void=74 cells_extra_marked=26
+== control cells (source: evidence/S00-ctrl-baseline.md)
+   T-CTRL-NAMETOOLONG     PASS expectation(baseline): fail on all 3 OS after reaching FS (err_at_syscall, not parse) | observed: create_result='err_at_syscall' error_stage='fs'
+   T-CTRL-NAMETOOLONG          node-table layer (reported, not a mandate): cell says error_stage='fs', S00 table said 'syscall'
+   T-CTRL-ASCII           PASS expectation(baseline): ok on all languages/OS | observed: create_result='ok'
+   T-CTRL-ASCII                node-table layer (reported, not a mandate): this port agrees with the S00 table
+   T-CTRL-ILLEGAL-CHAR    PASS expectation(baseline): Windows illegal (winerror=123) / POSIX creatable, paired with os_legality_verdict | observed: create_result='err_at_parse' os_legality_verdict='illegal'
+   T-CTRL-ILLEGAL-CHAR         node-table layer (reported, not a mandate): cell says create_result='err_at_parse', S00 table said 'err_at_syscall'; cell says error_stage='parse', S00 table said 'syscall'
+   T-CTRL-PARSE           PASS expectation(baseline): may reject before syscall, but all 6 langs MUST be err-at-parse | observed: create_result='err_at_parse' error_stage='parse'
+   T-CTRL-PARSE                node-table layer (reported, not a mandate): cell says error_code=None, S00 table said 'ERR_INVALID_ARG_VALUE'
+   T-CTRL-CANON           PASS expectation(baseline): identical canonical bytes; else INSTRUMENT-RED | observed: control_pass=True instruments_agree=True
+   T-CTRL-CANON                node-table layer (reported, not a mandate): this port agrees with the S00 table
+EXTRA_CELLS (marked, kept, excluded from the digest) blind__BLIND-1.json,blind__BLIND-2.json,blind__BLIND-3.json,blind__BLIND-4.json,blind__BLIND-5.json,len__T17__G1.json,len__T17__G2.json,len__T17__G3.json,len__T17__G4.json,len__T17__base_len-120.json,len__T17__base_len-200.json,len__T17__base_len-78.json,len__T18__G1.json,len__T18__G2.json,len__T18__G3.json,len__T18__G4.json,len__T18__base_len-120.json,len__T18__base_len-200.json,len__T18__base_len-78.json,tapi__T-API-1.json,tapi__T-API-2.json,tapi__T-API-3.json,tapi__T-API-4.json,trap__T09.json,trap__T14.json,trap__T19.json
+controls_pass=true
+OUTCOME=NOT-CLEAN missing=0 non_cell_files=0 void=74

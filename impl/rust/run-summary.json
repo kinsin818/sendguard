@@ -1,0 +1,226 @@
+{
+  "run_id": "7e65ccb45140",
+  "blocked_rows": [],
+  "runs_root": "D:\\sg-rust-scratch\\run-7e65ccb45140",
+  "tier_dirs": {
+    "(13, 'plain')": "D:\\sg7e65ccb4",
+    "(78, 'plain')": "D:\\xg7e65ccb4\\t78qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq",
+    "(120, 'plain')": "D:\\xg7e65ccb4\\t120qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq",
+    "(200, 'plain')": "D:\\xg7e65ccb4\\t200qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq",
+    "(240, 'plain')": "D:\\xg7e65ccb4\\t240qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq",
+    "(13, 'extended')": "D:\\yg7e65ccb4",
+    "(78, 'extended')": "D:\\zg7e65ccb4\\t78qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq",
+    "(120, 'extended')": "D:\\zg7e65ccb4\\t120qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq",
+    "(200, 'extended')": "D:\\zg7e65ccb4\\t200qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq",
+    "(240, 'extended')": "D:\\zg7e65ccb4\\t240qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq"
+  },
+  "contract": {
+    "path": "D:\\sendguard-work\\seat-qoder\\spec\\cells-required.json",
+    "sha256": "3742747dd412e8a9d799e6c7f215f561f4c14774466759de515335b76ee90ff6",
+    "rows_for_rust": 48,
+    "primary_entry": "std::fs::File::create",
+    "base_len_ladder": [
+      78,
+      120,
+      200
+    ],
+    "generated_by": "ci/gen_cells_required.py - derived from the committed spec face; deterministic, no timestamp in the output so the file can be byte-compared against a re-run",
+    "withdraws": "the first version of this file (generated 03:4x from a mis-parse that saw only the 20 traps) is void; any port that used it must re-derive from this one"
+  },
+  "cells_required_rows": 48,
+  "retirement_ledger": {
+    "run_id": "7e65ccb45140",
+    "results_dir": "D:\\sendguard-work\\seat-qoder\\results\\rust.windows.x64",
+    "retired": [],
+    "skipped_not_mine": [],
+    "retired_count": 0
+  },
+  "cells_expected": 174,
+  "cells_produced": 174,
+  "planned_by_group": {
+    "trap": 32,
+    "ctrl": 5,
+    "len": 40,
+    "tapi": 92,
+    "blind": 5
+  },
+  "problems": [],
+  "controls_pass": true,
+  "control_verdicts": [
+    [
+      "T-CTRL-ASCII",
+      "PASS",
+      "{\"create_result\": \"ok\", \"error_stage\": \"null\", \"error_code\": null, \"bytes_written\": 28, \"bytes_on_disk\": 28, \"read_result\": \"ok\", \"sha256_truth\": \"c9fe45b2fee8ea846f0cf4f2cacc2a891e7b082e7719923502d12a9813e21994\"}",
+      1
+    ],
+    [
+      "T-CTRL-ILLEGAL-CHAR",
+      "PASS",
+      "{\"create_result\": \"err_at_syscall\", \"error_stage\": \"syscall\", \"error_code\": \"123\", \"bytes_written\": null, \"bytes_on_disk\": 0, \"read_result\": \"not_applicable\", \"sha256_truth\": null}",
+      1
+    ],
+    [
+      "T-CTRL-PARSE",
+      "PASS",
+      "{\"create_result\": \"err_at_parse\", \"error_stage\": \"parse\", \"error_code\": null, \"bytes_written\": null, \"bytes_on_disk\": 0, \"read_result\": \"not_applicable\", \"sha256_truth\": null}",
+      1
+    ],
+    [
+      "T-CTRL-NAMETOOLONG",
+      "PASS",
+      "{\"create_result\": \"err_at_syscall\", \"error_stage\": \"syscall\", \"error_code\": \"123\", \"bytes_written\": null, \"bytes_on_disk\": 0, \"read_result\": \"not_applicable\", \"sha256_truth\": null}",
+      1
+    ],
+    [
+      "T-CTRL-CANON",
+      "PASS",
+      "{\"create_result\": \"ok\", \"error_stage\": \"null\", \"error_code\": null, \"bytes_written\": 28, \"bytes_on_disk\": 28, \"read_result\": \"ok\", \"sha256_truth\": \"c9fe45b2fee8ea846f0cf4f2cacc2a891e7b082e7719923502d12a9813e21994\"}",
+      1
+    ]
+  ],
+  "tapi_disagreements": {
+    "T-API": [
+      "{\"bytes_on_disk\": 0, \"bytes_written\": 28, \"create_result\": \"ok\", \"error_stage\": \"null\", \"name_mutated\": false, \"os_legality_verdict\": \"illegal\", \"phantom\": true, \"read_result\": \"not_applicable\"}",
+      "{\"bytes_on_disk\": 0, \"bytes_written\": null, \"create_result\": \"err_at_syscall\", \"error_stage\": \"syscall\", \"name_mutated\": false, \"os_legality_verdict\": \"illegal\", \"phantom\": false, \"read_result\": \"not_"
+    ]
+  },
+  "spec_faces": {
+    "head": "2ff39db34b8f1ae9229c2320dde462ec96800e27",
+    "git_rc": 0,
+    "cat_file_rc": 0,
+    "cat_file_stderr": "",
+    "blob_sha256": "b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1",
+    "blob_bytes": 10611,
+    "worktree_sha256": "b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1",
+    "worktree_bytes": 10611,
+    "faces_identical": true,
+    "frozen_declared": "b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1",
+    "frozen_declared_matches_blob": true,
+    "frozen_declared_matches_worktree": true
+  },
+  "env": {
+    "path_rustc": "C:\\Users\\Administrator\\.cargo\\bin\\rustc.EXE",
+    "rustup_which_rc": 0,
+    "resolved_rustc": "C:\\Users\\Administrator\\.rustup\\toolchains\\stable-x86_64-pc-windows-msvc\\bin\\rustc.exe",
+    "resolved_rustc_vV_rc": 0,
+    "resolved_rustc_vV": "rustc 1.98.0 (88d9e12ae 2026-08-18)\nbinary: rustc\ncommit-hash: 88d9e12ae178fab0fb5cc050a94da85685d449ea\ncommit-date: 2026-08-18\nhost: x86_64-pc-windows-msvc\nrelease: 1.98.0\nLLVM version: 22.1.8\n",
+    "rustc_release": "1.98.0",
+    "rustc_commit_hash": "88d9e12ae178fab0fb5cc050a94da85685d449ea",
+    "rustc_host": "x86_64-pc-windows-msvc",
+    "rustc_llvm": "22.1.8",
+    "rustup_show_rc": 0,
+    "rustup_show": "Default host: x86_64-pc-windows-msvc\nrustup home:  C:\\Users\\Administrator\\.rustup\n\ninstalled toolchains\n--------------------\nstable-x86_64-pc-windows-msvc (active, default)\n\nactive toolchain\n----------------\nname: stable-x86_64-pc-windows-msvc\nactive because: it's the default toolchain\ninstalled targets:\n  x86_64-pc-windows-msvc\n",
+    "shim_dash_V": "rustc 1.98.0 (88d9e12ae 2026-08-18)",
+    "shim_sha256": "86478e53f769379d7f0ebfa7c9aa97cb76ca92233f79aa2cc0dbee2efaac73c7",
+    "shim_bytes": 12814336,
+    "shim_longPathAware_hits": 0,
+    "resolved_sha256": "777119d5feeca3d9fc163dc0e0d8be896cfcb65c45255328cef214d833546c6a",
+    "resolved_bytes": 110592,
+    "resolved_longPathAware_hits": 2,
+    "shim_and_resolved_differ": true,
+    "LongPathsEnabled": 0,
+    "LongPathsEnabled_rc": 0,
+    "LongPathsEnabled_face": "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\FileSystem\r\n    LongPathsEnabled    REG_DWORD    0x0",
+    "os_version": "Windows 10.0 build 19041",
+    "locale": "zh-CN console cp936; python default encoding cp936; see evidence/S00/env-facts-windows-local.json",
+    "toolchain_line": "rustc 1.98.0 (88d9e12ae178fab0fb5cc050a94da85685d449ea) host=x86_64-pc-windows-msvc LLVM=22.1.8; PATH rustc is the rustup shim C:\\Users\\Administrator\\.cargo\\bin\\rustc.EXE, resolved toolchain binary C:\\Users\\Administrator\\.rustup\\toolchains\\stable-x86_64-pc-windows-msvc\\bin\\rustc.exe",
+    "env_face_rc": 0,
+    "env_face_command": "D:\\sendguard-work\\seat-qoder\\impl\\rust\\target\\release\\sg_probe.exe --mode env --out D:\\sg-rust-scratch\\run-7e65ccb45140\\env-face.json --mark \"\" --volume-root D:\\ --dos-device-names CON,NUL,AUX,PRN,COM1,LPT9,CONIN$,trail.,a<b.txt",
+    "max_component": 255,
+    "filesystem": "NTFS",
+    "dos_devices": [
+      {
+        "name": "CON",
+        "device_bound": true,
+        "skipped": false,
+        "target": "\\Device\\ConDrv\\Console"
+      },
+      {
+        "name": "NUL",
+        "device_bound": true,
+        "skipped": false,
+        "target": "\\Device\\Null"
+      },
+      {
+        "name": "AUX",
+        "device_bound": true,
+        "skipped": false,
+        "target": "\\DosDevices\\COM1"
+      },
+      {
+        "name": "PRN",
+        "device_bound": true,
+        "skipped": false,
+        "target": "\\DosDevices\\LPT1"
+      },
+      {
+        "name": "COM1",
+        "device_bound": true,
+        "skipped": false,
+        "target": "\\Device\\Serial0"
+      },
+      {
+        "name": "LPT9",
+        "device_bound": false,
+        "skipped": false,
+        "target": ""
+      },
+      {
+        "name": "CONIN$",
+        "device_bound": true,
+        "skipped": false,
+        "target": "\\Device\\ConDrv\\CurrentIn"
+      },
+      {
+        "name": "trail.",
+        "device_bound": false,
+        "skipped": false,
+        "target": ""
+      },
+      {
+        "name": "a<b.txt",
+        "device_bound": false,
+        "skipped": false,
+        "target": ""
+      }
+    ]
+  },
+  "deps": {
+    "build_std_rc": 0,
+    "build_std_face": "   |     ^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_prior_claimed`\n     |\n     = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default\n\nwarning: `sendguard-rust-seat` (bin \"sg_probe\") generated 1 warning (run `cargo fix --bin \"sg_probe\" -p sendguard-rust-seat` to apply 1 suggestion)\n    Finished `release` profile [optimized] target(s) in 2.75s",
+    "build_norm_rc": 0,
+    "build_norm_face": "   |     ^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_prior_claimed`\n     |\n     = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default\n\nwarning: `sendguard-rust-seat` (bin \"sg_probe\") generated 1 warning (run `cargo fix --bin \"sg_probe\" -p sendguard-rust-seat` to apply 1 suggestion)\n    Finished `release` profile [optimized] target(s) in 2.38s",
+    "sg_probe_path": "D:\\sendguard-work\\seat-qoder\\impl\\rust\\target\\release\\sg_probe.exe",
+    "sg_probe_sha256": "f5f3f4ac5e42ce198d4bf25eebae81adeeda0647b75d9db8ac5f3ff59b93d79d",
+    "sg_probe_bytes": 442880,
+    "sg_probe_longPathAware_hits": 0,
+    "sg_probe_mtime": "2026-10-11T05:11:56",
+    "sg_probe_unchanged_by_this_build": false,
+    "sg_probe_norm_path": "D:\\sendguard-work\\seat-qoder\\impl\\rust\\target\\release\\sg_probe_norm.exe",
+    "sg_probe_norm_sha256": "c52d0fee13b86cd893c7a8ad0ec052fa854961de4ddd171e769e2eedf98e4705",
+    "sg_probe_norm_bytes": 442880,
+    "sg_probe_norm_longPathAware_hits": 0,
+    "sg_probe_norm_mtime": "2026-10-11T05:10:56",
+    "sg_probe_norm_unchanged_by_this_build": true,
+    "source_mtime": "2026-10-11T05:10:51",
+    "source_newer_than_exe": false,
+    "cargo_lock_packages": [
+      "tinyvec",
+      "unicode-normalization"
+    ],
+    "deps_total_norm": 2,
+    "deps_direct_norm": 1,
+    "deps_list_norm": [
+      "unicode-normalization"
+    ]
+  },
+  "blocked": [
+    {
+      "cells": "B1..B5",
+      "case_group": "blind",
+      "command": "python impl/rust/run_cells.py --plan-blind",
+      "exit_code": 3,
+      "attempted_fix": "python impl/rust/run_cells.py --plan-blind --allow-sealed-map -> exit 2, the driver refuses to open a sealed artifact (M17), so the rows stay blocked"
+    }
+  ]
+}

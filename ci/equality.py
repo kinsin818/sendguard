@@ -399,6 +399,15 @@ def main(argv):
         return 4
     ports, files_seen, problems, xcheck, skipped = discover()
     extras = ports.pop("_extra_counts", {})
+    declared = sorted(json.load(io.open(REQUIRED, encoding="utf-8"))["primary_entry_per_port"])
+    empty = [d for d in declared if d not in ports or not ports.get(d)]
+    if empty:
+        print("== declared ports with no readable canonical face")
+        for d in empty:
+            print("   FACE-MISSING %s - spec/cells-required.json declares a primary entry for this port,"
+                  % d)
+            print("        so the contract expects it; its absence is reported here rather than the port"
+                  " list quietly shrinking to the ports that did answer.")
     for p in problems[:8]:
         print("LOAD-PROBLEM %s" % p)
     if skipped:

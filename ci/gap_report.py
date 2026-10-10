@@ -58,6 +58,17 @@ def main():
         lines.append("Load problems: %d (%s)" % (len(problems), problems[0][:80]))
         lines.append("")
 
+    declared = sorted(man["primary_entry_per_port"])
+    missing_faces = [d for d in declared if d not in cells or not cells[d]]
+    if missing_faces:
+        lines.append("### Ports the contract declares with no readable cells at generation time")
+        lines.append("")
+        for d in missing_faces:
+            lines.append("- FACE-MISSING `%s` - the required list names a primary entry for it, so this is"
+                         % d)
+            lines.append("  not a row that can be quietly dropped from the denominator.")
+        lines.append("")
+
     total_missing = 0
     for port in sorted(cells):
         have = set(cells[port])
@@ -74,7 +85,9 @@ def main():
         if len(stray) > 10:
             lines.append("  - ...and %d more outside-list cells" % (len(stray) - 10))
         lines.append("")
-    lines.append("**total missing cells across ports = %d**" % total_missing)
+    lines.append("**total missing cells across ports with a face = %d**; declared ports without a face = %d%s"
+                 % (total_missing, len(missing_faces),
+                    " (%s)" % ", ".join(missing_faces) if missing_faces else ""))
     text = "\n".join(lines) + "\n"
     io.open(a.out, "w", encoding="utf-8", newline="\n").write(text)
     print("wrote %s bytes=%d ports=%d total_missing=%d"

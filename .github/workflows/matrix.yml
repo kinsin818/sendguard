@@ -33,6 +33,13 @@ jobs:
           mkdir -p evidence/S00/ci-probe
           echo "probe-$(date +%s)" > evidence/S00/ci-probe/env.txt
 
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.23'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
       - name: Audit self-check (build + enumerate + json valid)
         shell: bash
         run: |

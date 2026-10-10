@@ -5,6 +5,8 @@ Usage:
     python validate.py <file.json>        # validate one cell
     python validate.py <dir>              # validate every *.json under dir
     python validate.py --schema           # print frozen schema path
+    python validate.py --count N          # assert frozen case count == N (cases.yaml)
+    python validate.py --assert-expectation-null   # assert all case expectations are null
 
 Exit 0 = all cells valid. Exit 1 = at least one VOID (details printed).
 Status words are the closed set from spec/canonical.md; unknown words -> VOID.
@@ -15,6 +17,7 @@ import re
 import sys
 
 SCHEMA = pathlib.Path(__file__).resolve().parent / "schema.json"
+CASES_YAML = pathlib.Path(__file__).resolve().parent / "cases.yaml"
 
 CLOSED_SETS = {
     "case_group": {"trap", "ctrl", "tapi", "blind", "len"},
@@ -84,6 +87,36 @@ def main() -> int:
     if not args or args[0] == "--schema":
         print(SCHEMA)
         return 0
+    if args[0] == "--count":
+        try:
+            import yaml  # local/CI: pip install pyyaml
+        except ImportError:
+            print("VOID   --count requires pyyaml (pip install pyyaml)")
+            return 1
+        want = int(args[1])
+        data = yaml.safe_load(CASES_YAML.read_text(encoding="utf-8"))
+        cases = [c for c in data.get("cases", []) if c.get("id", "").startswith("T")]
+        if len(cases) == want:
+            print(f"VALID   frozen cases: {len(cases)} (expected {want})")
+            return 0
+        print(f"VOID    frozen cases: {len(cases)} (expected {want})")
+        return 1
+    if args[0] == "--assert-expectation-null":
+        try:
+            import yaml
+        except ImportError:
+            print("VOID   --assert-expectation-null requires pyyaml (pip install pyyaml)")
+            return 1
+        data = yaml.safe_load(CASES_YAML.read_text(encoding="utf-8"))
+        bad = []
+        for c in data.get("cases", []):
+            if c.get("expectation") is not None:
+                bad.append(c.get("id"))
+        if not bad:
+            print("VALID   all case expectations are null (20/20)")
+            return 0
+        print(f"VOID    non-null expectations: {bad}")
+        return 1
     target = pathlib.Path(args[0])
     if target.is_dir():
         files = sorted(target.rglob("*.json"))

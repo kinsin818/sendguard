@@ -42,6 +42,29 @@ BEHAVIOUR = [
 SET_FIELDS = ("create_result", "read_result", "error_stage", "os_legality_verdict",
               "path_form", "longpath_mechanism", "case_group", "attribution_layer")
 
+# per spec/cell-identity.md section 1: a cell that is run more than once must carry the varying
+# dimension as a named field, and that field is part of the identity. Filenames are not identity.
+SUB_FIELDS = ("base_len", "builder", "reader", "packer", "extractor")
+
+
+def sub_identity(cell):
+    parts = []
+    for f in SUB_FIELDS:
+        v = cell.get(f)
+        if v is None or v == "":
+            continue
+        parts.append((f, v if not isinstance(v, dict) else json.dumps(v, sort_keys=True)))
+    return tuple(parts)
+
+
+def key_of(cell):
+    return (cell.get("case_group") or "?", cell.get("case_id"), sub_identity(cell))
+
+
+def fmt(k):
+    g, c, s = k
+    return "%s/%s%s" % (g, c, ("[" + ",".join("%s=%s" % p for p in s) + "]") if s else "")
+
 
 def load_closed_sets():
     if not os.path.isfile(CANON):
@@ -107,14 +130,14 @@ def discover():
                 if not c.get("case_group"):
                     problems.append("%s: cell with empty case_group in %s" % (port, os.path.basename(f)))
                     continue
-                key = (c["case_group"], c["case_id"])
+                key = key_of(c)
                 ident = (port, key, str(c.get("api_entry")))
                 d = digest(c)[0]
                 if ident in seen:
                     prev_d, prev_shape = seen[ident]
                     if prev_d != d:
-                        xcheck.append("%s %s/%s: %s vs %s representations disagree"
-                                      % (port, key[0], key[1], prev_shape, shape))
+                        xcheck.append("%s %s: %s vs %s representations disagree"
+                                      % (port, fmt(key), prev_shape, shape))
                     continue
                 seen[ident] = (d, shape)
                 ports.setdefault(port, {}).setdefault(key, []).append(c)
@@ -200,7 +223,7 @@ def main(argv):
                         bad.append((n, key, f, v))
     print("   violations=%d" % len(bad))
     for n, key, f, v in bad[:10]:
-        print("   %s %s %s=%r not in %s" % (n, "/".join(map(str, key)), f, v, sorted(sets[f])[:6]))
+        print("   %s %s %s=%r not in %s" % (n, fmt(key), f, v, sorted(sets[f])[:6]))
 
     print("== multi-entry cells (primary not pinned)")
     amb = []
@@ -213,7 +236,7 @@ def main(argv):
     print("   cells_with_multiple_entries=%d" % len(amb))
     for n, key, entries, nd in amb[:8]:
         print("   %s %s -> %d entries (%s), %d distinct digests"
-              % (n, "/".join(map(str, key)), len(entries), ", ".join(entries)[:60], nd))
+              % (n, fmt(key), len(entries), ", ".join(entries)[:60], nd))
     same_only = [a for a in amb if a[3] == 1]
     real_amb = [a for a in amb if a[3] > 1]
     if real_amb:
@@ -250,9 +273,9 @@ def main(argv):
             print("DENOMINATOR_MISMATCH %s vs %s: only_in_%s=%d only_in_%s=%d shared=%d"
                   % (n, ref, n, len(ks - ref_keys), ref, len(ref_keys - ks), len(ks & ref_keys)))
             for k in sorted(list(ks - ref_keys))[:6]:
-                print("     only in %s: %s" % (n, "/".join(map(str, k))))
+                print("     only in %s: %s" % (n, fmt(k)))
             for k in sorted(list(ref_keys - ks))[:6]:
-                print("     only in %s: %s" % (ref, "/".join(map(str, k))))
+                print("     only in %s: %s" % (ref, fmt(k)))
     if not denom_ok:
         print("OUTCOME=NOT-COMPARABLE reason=denominators_differ "
               "(comparing different question sets and calling it agreement is what this gate exists to refuse)")
@@ -270,7 +293,7 @@ def main(argv):
     per_port, subs = {}, {}
     for n in names:
         subs[n] = {k: digest(c)[1] for k, c in flat[n].items()}
-        joined = "\n".join("%s %s" % ("/".join(map(str, k)), digest(flat[n][k])[0]) for k in sorted(flat[n]))
+        joined = "\n".join("%s %s" % (fmt(k), digest(flat[n][k])[0]) for k in sorted(flat[n]))
         per_port[n] = hashlib.sha256(joined.encode("utf-8")).hexdigest()
         print("   %-8s whole_run_digest=%s cells=%d" % (n, per_port[n][:16], len(flat[n])))
     if len(set(per_port.values())) == 1:
@@ -284,7 +307,7 @@ def main(argv):
             for n in names[1:]:
                 if subs[n][k].get(f) != v:
                     diffs.append("%s %s:%r vs %s:%r" % (f, ref, v, n, subs[n][k].get(f)))
-        print("   %s | %s" % ("/".join(map(str, k)), "; ".join(diffs[:3]) or "digest differs"))
+        print("   %s | %s" % (fmt(k), "; ".join(diffs[:3]) or "digest differs"))
     return 1
 
 

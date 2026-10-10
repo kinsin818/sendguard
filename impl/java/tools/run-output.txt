@@ -1,0 +1,81 @@
+required list: 44 cells + 4 java T-API rows (blob sha 3742747dd412e8a9)
+plan rows=52 cell_files=74 case_ids=B1,B2,B3,B4,B5,BLIND-1,BLIND-2,BLIND-3,BLIND-4,BLIND-5,T-API,T-API-1,T-API-2,T-API-3,T-API-4,T-CTRL-ASCII,T-CTRL-CANON,T-CTRL-ILLEGAL-CHAR,T-CTRL-NAMETOOLONG,T-CTRL-PARSE,T01,T02,T03,T04,T05,T06,T07,T08,T09,T09-m1,T09-m2,T10,T11,T12,T13,T14,T14-m1,T14-m2,T14-m3,T15,T16,T17,T18,T19,T19-m1,T19-m2,T20
+TOOLCHAIN javac=C:\Program Files\Eclipse Adoptium\jdk-17.0.17.10-hotspot\bin\javac.exe
+TOOLCHAIN java =C:\Program Files\Eclipse Adoptium\jdk-17.0.17.10-hotspot\bin\java.exe
+MECHANISM verdict=name-parsing-still-applies-at-long-length
+CELL trap  T01                    None           entry=Files.write              create=err_at_syscall read=not_applicable legality=legal    via=win32  spread=6
+CELL trap  T02                    None           entry=Files.write              create=ok             read=not_applicable legality=legal    via=win32  spread=6
+CELL trap  T03                    None           entry=Files.write              create=err_at_parse   read=not_applicable legality=illegal  via=win32  spread=6
+CELL trap  T04                    None           entry=Files.write              create=ok             read=not_applicable legality=legal    via=win32  spread=6
+CELL trap  T05                    None           entry=Files.write              create=err_at_parse   read=not_applicable legality=legal    via=win32  spread=6
+CELL trap  T06                    None           entry=Files.write              create=ok             read=ok     legality=legal    via=win32  spread=6
+CELL trap  T07                    None           entry=Files.write              create=ok             read=ok     legality=legal    via=win32  spread=6
+CELL trap  T08                    None           entry=Files.write              create=ok             read=ok     legality=legal    via=win32  spread=6
+CELL trap  T09-m1                 None           entry=Files.write              create=ok             read=ok     legality=legal    via=win32  spread=6
+CELL trap  T09-m2                 None           entry=Files.write              create=ok             read=ok     legality=legal    via=win32  spread=6
+CELL trap  T09                    None           entry=Files.write              create=ok             read=ok     legality=legal    via=win32  spread=6 EXTRA
+CELL trap  T10                    None           entry=Files.write              create=err_at_syscall read=not_applicable legality=legal    via=win32  spread=6
+CELL trap  T11                    None           entry=Files.write              create=ok             read=not_applicable legality=legal    via=win32  spread=6
+CELL trap  T12                    None           entry=Files.write              create=ok             read=ok     legality=legal    via=win32  spread=6
+CELL trap  T13                    None           entry=Files.write              create=ok             read=ok     legality=legal    via=win32  spread=6
+CELL trap  T14-m1                 None           entry=Files.write              create=err_at_syscall read=not_applicable legality=legal    via=win32  spread=6
+CELL trap  T14-m2                 None           entry=Files.write              create=ok             read=not_applicable legality=legal    via=win32  spread=6
+CELL trap  T14-m3                 None           entry=Files.write              create=err_at_syscall read=not_applicable legality=legal    via=win32  spread=6
+CELL trap  T14                    None           entry=Files.write              create=err_at_syscall read=not_applicable legality=legal    via=win32  spread=6 EXTRA
+CELL trap  T15                    None           entry=Files.write              create=err_at_parse   read=not_applicable legality=illegal  via=win32  spread=6
+CELL trap  T16                    None           entry=Files.write              create=ok             read=ok     legality=legal    via=win32  spread=6
+CELL len   T17                    None           entry=Files.write              create=err_at_syscall read=not_applicable legality=illegal  via=win32  spread=0
+CELL len   T17                    None           entry=Files.write              create=err_at_syscall read=not_applicable legality=illegal  via=win32  spread=0 EXTRA
+CELL len   T17                    None           entry=Files.write              create=err_at_parse   read=not_applicable legality=illegal  via=win32  spread=0
+CELL len   T17                    None           entry=Files.write              create=err_at_syscall read=not_applicable legality=illegal  via=win32  spread=0
+CELL len   T17                    None           entry=Files.write              create=err_at_syscall read=not_applicable legality=illegal  via=win32  spread=0 EXTRA
+CELL len   T17                    None           entry=Files.write              create=err_at_parse   read=not_applicable legality=illegal  via=win32  spread=0
+CELL len   T17                    None           entry=Files.write              create=err_at_syscall read=not_applicable legality=illegal  via=win32  spread=0
+CELL len   T17                    None           entry=Files.write              create=err_at_syscall read=not_applicable legality=illegal  via=win32  spread=0 EXTRA
+CELL len   T17                    None           entry=Files.write              create=err_at_parse   read=not_applicable legality=illegal  via=win32  spread=0
+CELL len   T17                    None           entry=Files.write              create=ok             read=ok     legality=legal    via=win32  spread=0 EXTRA
+CELL len   T17                    None           entry=Files.write              create=ok             read=ok     legality=legal    via=win32  spread=0 EXTRA
+CELL len   T17                    None           entry=Files.write              create=err_at_syscall read=not_applicable legality=illegal  via=win32  spread=0 EXTRA
+CELL len   T17                    None           entry=Files.write              create=err_at_syscall read=not_applicable legality=illegal  via=win32  spread=0 EXTRA
+CELL len   T18                    None           entry=Files.write              create=err_at_syscall read=not_applicable legality=illegal  via=win32  spread=0
+CELL len   T18                    None           entry=Files.write              create=err_at_syscall read=not_applicable legality=illegal  via=win32  spread=0 EXTRA
+CELL len   T18                    None           entry=Files.write              create=err_at_parse   read=not_applicable legality=illegal  via=win32  spread=0
+CELL len   T18                    None           entry=Files.write              create=err_at_syscall read=not_applicable legality=illegal  via=win32  spread=0
+CELL len   T18                    None           entry=Files.write              create=err_at_syscall read=not_applicable legality=illegal  via=win32  spread=0 EXTRA
+CELL len   T18                    None           entry=Files.write              create=err_at_parse   read=not_applicable legality=illegal  via=win32  spread=0
+CELL len   T18                    None           entry=Files.write              create=err_at_syscall read=not_applicable legality=illegal  via=win32  spread=0
+CELL len   T18                    None           entry=Files.write              create=err_at_syscall read=not_applicable legality=illegal  via=win32  spread=0 EXTRA
+CELL len   T18                    None           entry=Files.write              create=err_at_parse   read=not_applicable legality=illegal  via=win32  spread=0
+CELL len   T18                    None           entry=Files.write              create=ok             read=ok     legality=legal    via=win32  spread=0 EXTRA
+CELL len   T18                    None           entry=Files.write              create=ok             read=ok     legality=legal    via=win32  spread=0 EXTRA
+CELL len   T18                    None           entry=Files.write              create=err_at_syscall read=not_applicable legality=illegal  via=win32  spread=0 EXTRA
+CELL len   T18                    None           entry=Files.write              create=err_at_syscall read=not_applicable legality=illegal  via=win32  spread=0 EXTRA
+CELL trap  T19-m1                 None           entry=Files.write              create=ok             read=ok     legality=legal    via=win32  spread=6
+CELL trap  T19-m2                 None           entry=Files.write              create=ok             read=ok     legality=legal    via=win32  spread=6
+CELL trap  T19                    None           entry=Files.write              create=ok             read=ok     legality=legal    via=win32  spread=6 EXTRA
+CELL trap  T20                    None           entry=Files.write              create=ok             read=ok     legality=legal    via=win32  spread=6
+CELL ctrl  T-CTRL-NAMETOOLONG     None           entry=Files.write              create=err_at_syscall read=not_applicable legality=illegal  via=win32  spread=6
+CELL ctrl  T-CTRL-ASCII           None           entry=Files.write              create=ok             read=ok     legality=legal    via=win32  spread=6
+CELL ctrl  T-CTRL-ILLEGAL-CHAR    None           entry=Files.write              create=err_at_parse   read=not_applicable legality=illegal  via=win32  spread=6
+CELL ctrl  T-CTRL-PARSE           None           entry=Files.write              create=err_at_parse   read=not_applicable legality=illegal  via=win32  spread=6
+CELL ctrl  T-CTRL-CANON           None           entry=Files.write              create=ok             read=ok     legality=legal    via=win32  spread=6
+CELL blind B1                     None           entry=Files.write              create=ok             read=ok     legality=legal    via=win32  spread=0
+CELL blind BLIND-1                None           entry=Files.write              create=ok             read=ok     legality=legal    via=win32  spread=0 EXTRA
+CELL blind B2                     None           entry=Files.write              create=ok             read=ok     legality=legal    via=win32  spread=0
+CELL blind BLIND-2                None           entry=Files.write              create=ok             read=ok     legality=legal    via=win32  spread=0 EXTRA
+CELL blind B3                     None           entry=Files.write              create=ok             read=ok     legality=legal    via=win32  spread=0
+CELL blind BLIND-3                None           entry=Files.write              create=ok             read=ok     legality=legal    via=win32  spread=0 EXTRA
+CELL blind B4                     None           entry=Files.write              create=ok             read=ok     legality=legal    via=win32  spread=0
+CELL blind BLIND-4                None           entry=Files.write              create=ok             read=ok     legality=legal    via=win32  spread=0 EXTRA
+CELL blind B5                     None           entry=Files.write              create=ok             read=ok     legality=legal    via=win32  spread=0
+CELL blind BLIND-5                None           entry=Files.write              create=ok             read=ok     legality=legal    via=win32  spread=0 EXTRA
+CELL tapi  T-API                  Files.write    entry=Files.write              create=ok             read=ok     legality=legal    via=win32  spread=0
+CELL tapi  T-API-1                None           entry=Files.write              create=ok             read=ok     legality=legal    via=win32  spread=0 EXTRA
+CELL tapi  T-API                  Files.createFile entry=Files.createFile         create=ok             read=eof    legality=legal    via=win32  spread=0
+CELL tapi  T-API-2                None           entry=Files.createFile         create=ok             read=eof    legality=legal    via=win32  spread=0 EXTRA
+CELL tapi  T-API                  Files.newOutputStream entry=Files.newOutputStream    create=ok             read=ok     legality=legal    via=win32  spread=0
+CELL tapi  T-API-3                None           entry=Files.newOutputStream    create=ok             read=ok     legality=legal    via=win32  spread=0 EXTRA
+CELL tapi  T-API                  Files.move     entry=Files.move               create=ok             read=ok     legality=legal    via=win32  spread=0
+CELL tapi  T-API-4                None           entry=Files.move               create=ok             read=ok     legality=legal    via=win32  spread=0 EXTRA
+FACTS D:\sendguard-work\seat-qoder\impl\java\tools\run-facts.json
+cells_produced=74 cells_blocked=0 extra=26 missing_required=0 results_dir=D:\sendguard-work\seat-qoder\results\java.windows.x64

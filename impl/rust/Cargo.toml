@@ -1,0 +1,33 @@
+# SENDGUARD rust seat. Two faces of one source file, so the dependency face of every
+# cell is declared rather than implied:
+#   sg_probe        - std-only, no crates linked into the measured process
+#   sg_probe_norm   - same source, additionally linked against unicode-normalization,
+#                     built only with --features normalization
+[package]
+name = "sendguard-rust-seat"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[features]
+default = []
+normalization = ["dep:unicode-normalization"]
+
+[dependencies]
+unicode-normalization = { version = "=0.1.25", optional = true }
+
+[[bin]]
+name = "sg_probe"
+path = "src/probe.rs"
+
+[[bin]]
+name = "sg_probe_norm"
+path = "src/probe.rs"
+required-features = ["normalization"]
+
+[profile.release]
+opt-level = 1
+debug = false
+lto = false
+codegen-units = 16
+panic = "abort"

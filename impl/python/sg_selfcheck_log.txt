@@ -1,0 +1,35 @@
+ruler_faces_read=git cat-file blob HEAD (not the disk copy)
+frozen_hash_claims=8 verified=8 mismatched=0
+canonical_sets={"Cell": 3, "attribution_layer": 4, "case_group": 5, "create_result": 4, "error_stage": 5, "longpath_mechanism": 4, "mechanism_class": 12, "os_legality_verdict": 3, "path_form": 2, "read_result": 5}
+rev3_words_with_no_canonical_section=['name_encoding', 'length_unit', 'verdict_via'] (spec/canonical.md line 1 makes any word outside that file void; these three are defined only in schema.json)
+cells_dir=D:\sendguard-work\seat-qoder\results\python.windows.x64 files_in_cells_dir=123 non_json=[]
+cells_parsed=123 cells_unparseable_or_not_a_cell=0
+manifest_vs_frozen_table: manifest_rows=44 derived_rows=44 only_in_manifest=0 only_in_cases_yaml=0
+cells_required=44 (+python_tapi=4) blob_sha=ed8a8a29c0eea999
+cells_matched=44/44 required_missing=0 | tapi 4/4 | extra_cells=75 extra_mislabelled=0 required_but_flagged_extra=0
+gate_rules(gap_report's own path): matched=44/44 missing=0 outside_list=0 skipped_as_extra=75 duplicate_keys=0 tapi_published=4
+gate_own_logic SUB_FIELDS=('base_len', 'builder', 'reader', 'packer', 'extractor')
+digest split VERDICT=["os_legality_verdict", "mechanism_class", "phantom", "roundtrip_ok", "name_mutated", "enum_to_stat_agrees", "len_triple", "bytes_written", "bytes_on_disk", "name_landed_as"] PROBE=["create_result", "error_stage", "read_result", "longpath_mechanism", "deps_direct", "deps_total"]
+live(after extra skipped)=48 gate_keys=45 colliding_keys=1 required_identity_involved=1 | colliding_if_extras_not_skipped=20
+   GATE-COLLISION ('tapi', 'T-API', ()) holds 4 cells, 2 digests
+void_reason_histogram={}
+behavioural_fields_absent_from_some_cells={"enum_to_stat_agrees": 1, "name_mutated": 43, "phantom": 1, "roundtrip_ok": 43}
+order_term_problems=123
+   ORDER-TERM blind__B1.json ['spec_sha256 does not equal the recomputed blob face']
+   ORDER-TERM blind__B2.json ['spec_sha256 does not equal the recomputed blob face']
+   ORDER-TERM blind__B3.json ['spec_sha256 does not equal the recomputed blob face']
+   ORDER-TERM blind__B4.json ['spec_sha256 does not equal the recomputed blob face']
+   ORDER-TERM blind__B5.json ['spec_sha256 does not equal the recomputed blob face']
+   ORDER-TERM ctrl__T-CTRL-ASCII.json ['spec_sha256 does not equal the recomputed blob face']
+   ORDER-TERM ctrl__T-CTRL-CANON.json ['spec_sha256 does not equal the recomputed blob face']
+   ORDER-TERM ctrl__T-CTRL-ILLEGAL-CHAR.json ['spec_sha256 does not equal the recomputed blob face']
+controls_checked=5 control_mismatched=0
+   CONTROL T-CTRL-ASCII           PASS
+   CONTROL T-CTRL-CANON           PASS
+   CONTROL T-CTRL-ILLEGAL-CHAR    PASS
+   CONTROL T-CTRL-NAMETOOLONG     PASS
+   CONTROL T-CTRL-PARSE           PASS
+cells_with_hang=0 cells_blocked=43 could_not_run=0 migrated=73 superseded=11
+
+cells_required=44 cells_matched=44 blocked=0 extra=75 controls_pass=True
+detail: cells_produced=123 cells_valid=123 legs_blocked(read)=empty=43 cells_produced_incl_extra=75 python_tapi=4/4

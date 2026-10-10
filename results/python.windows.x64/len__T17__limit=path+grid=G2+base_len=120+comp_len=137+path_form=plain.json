@@ -1,0 +1,194 @@
+{
+ "format_version": 1,
+ "case_id": "T17",
+ "case_group": "len",
+ "language": "python",
+ "os": "windows",
+ "os_version": "Windows-10-10.0.19041-SP0",
+ "arch": "AMD64",
+ "locale": "('Chinese (Simplified)_China', '936') code_page=cp936 utf8_mode=0",
+ "interpreter_resolved": "C:\\Python314\\python.exe",
+ "api_entry": "open_wb",
+ "attempt": 1,
+ "sub_identity": {
+  "limit": "path",
+  "grid": "G2",
+  "base_len": 120,
+  "comp_len": 137,
+  "path_form": "plain"
+ },
+ "sub_identity_order": [
+  "limit",
+  "grid",
+  "base_len",
+  "comp_len",
+  "path_form"
+ ],
+ "name_source": "36313364666662626e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e",
+ "name_source_kind": "computed by length (T17/T18 sample_hex is a bisection marker, not a name; nothing was materialised from prose)",
+ "path_form": "plain",
+ "longpath_mechanism": "none",
+ "name_encoding": "hex_raw_bytes",
+ "mechanism_class": "component_length_limit",
+ "harness_version": "sg-python-s02-rederive-1",
+ "worker_id": "seat-qoder-python-port",
+ "spec_sha256": "a7f9a57df1b4d39a19421a54d175e87793100ce3393e363622ca59816e19148b",
+ "spec_face": "git cat-file blob HEAD:spec/cases.yaml rc=0 bytes=8075",
+ "env": {
+  "LongPathsEnabled": 0,
+  "LongPathsEnabled_source": "winreg HKLM ...\\FileSystem\\LongPathsEnabled",
+  "max_component": {
+   "C:\\": 255,
+   "D:\\": 255
+  },
+  "dot3name": {
+   "C:": "enabled",
+   "D:": "disabled"
+  },
+  "unicode_version": "16.0.0",
+  "toolchain": "C:\\Python314\\python.exe 3.14.7",
+  "utf8_mode": 0,
+  "longpath_manifest_on_interpreter": true,
+  "longpath_manifest_source": "evidence/S00/env-facts-windows-local.json manifest_scan: C:\\Python314\\python.exe found=true"
+ },
+ "deps_direct": 0,
+ "deps_total": 0,
+ "deps_basis": "imports are stdlib only (argparse ctypes hashlib json os pathlib stat sys time uuid zipfile shutil); third-party count = 0",
+ "scratch_root": "D:\\g",
+ "scratch_dir": "D:\\g\\613dffbb",
+ "scratch_verified_empty": true,
+ "cleanup_attempted": false,
+ "probe_timeout_s": 5.0,
+ "child_spawn_form": "subprocess.run(argv list, shell=False, timeout=5.0); one child per probe",
+ "cleanup_note": "M19: no deletion logic exists in this port; run dirs accumulate outside the repo",
+ "instrument_red": false,
+ "instrument_conflict": false,
+ "entries_run": [
+  "open_wb"
+ ],
+ "primary_entry": "open_wb",
+ "error_stage_rule": "non-OSError raised before the syscall -> parse; OSError carrying errno/winerror -> syscall (fs/tool unused, see selfcheck)",
+ "leg_dir": "D:\\g\\613dffbb\\bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+ "leg_pre_existing_entries": 0,
+ "entry_spread": {},
+ "entries_agree_with_primary": true,
+ "entries_disagreeing": [],
+ "entries_without_record": [],
+ "child_rc": 0,
+ "child_timed_out": false,
+ "child_reruns": 0,
+ "base_len_measured": 120,
+ "base_dir": "D:\\g\\613dffbb\\bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+ "phases_reached": [
+  "start",
+  "created",
+  "dir_view",
+  "path_view",
+  "read",
+  "done"
+ ],
+ "requested_triple": {
+  "code_points": 137,
+  "utf16_code_units": 137,
+  "utf8_bytes": 137
+ },
+ "landed_triple": {
+  "code_points": 137,
+  "utf16_code_units": 137,
+  "utf8_bytes": 137
+ },
+ "len_triple": {
+  "requested": {
+   "code_points": 137,
+   "utf16_code_units": 137,
+   "utf8_bytes": 137
+  },
+  "landed": {
+   "code_points": 137,
+   "utf16_code_units": 137,
+   "utf8_bytes": 137
+  }
+ },
+ "bytes_written": 28,
+ "bytes_on_disk": 28,
+ "name_landed_as": "36313364666662626e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e",
+ "landed_linkage": "exact-name",
+ "new_entries_hex": [
+  "36313364666662626e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e"
+ ],
+ "residual_src_new_entries": 0,
+ "pre_existing_entries": 0,
+ "same_name_hits": 1,
+ "dir_view_count": 1,
+ "dir_view": [
+  {
+   "is_dir": false,
+   "name_hex": "36313364666662626e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e",
+   "size": 28
+  }
+ ],
+ "residual_src_entries": 0,
+ "path_view": {
+  "attributes": 32,
+  "exists": true,
+  "face": "plain",
+  "is_dir": false,
+  "winerror": null
+ },
+ "os_legality_verdict": "legal",
+ "os_legality_detail": {
+  "attributes": 32,
+  "outcome": "entry-present-in-namespace",
+  "probe": "GetFileAttributesW(\\\\?\\\\<dir>\\\\<name>)",
+  "winerror": null
+ },
+ "win32_fullpath": {
+  "ok": true,
+  "reported_hex": "443a5c675c36313364666662625c626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262625c36313364666662626e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e"
+ },
+ "delivered_nothing": false,
+ "create_result": "ok",
+ "error_stage": "null",
+ "read_result": "ok",
+ "bytes_read": 28,
+ "sha256_self": "c9fe45b2fee8ea846f0cf4f2cacc2a891e7b082e7719923502d12a9813e21994",
+ "sha256_truth": "c9fe45b2fee8ea846f0cf4f2cacc2a891e7b082e7719923502d12a9813e21994",
+ "roundtrip_ok": true,
+ "enum_to_stat_agrees": true,
+ "phantom": false,
+ "name_mutated": false,
+ "artifact_dir_listing_count": null,
+ "attribution_layer": "L3_interaction",
+ "attribution_layer_basis": "260-char legacy wall is OS policy that no stdlib entry of python removes, and it shadows NAME_MAX -> interaction cell, reported separately; varies_across_OS pending",
+ "control_pass": true,
+ "elapsed_ms": 108,
+ "started_at": "2026-10-11T02:56:30+0800",
+ "spec_provenance": {
+  "category": null,
+  "applicable": "windows",
+  "case_locale": "en-US",
+  "spec_source": "spec/FROZEN.md G1-G4 verification grid"
+ },
+ "length_unit": "code_points",
+ "length_unit_basis": "len(python str) == code points; utf16/utf8 counts are published in len_triple, never used as the reported length",
+ "limit": "path",
+ "grid": "G2",
+ "base_len": 120,
+ "comp_len": 137,
+ "sub_identity_fields_top_level": [
+  "base_len",
+  "comp_len",
+  "grid",
+  "limit",
+  "path_form"
+ ],
+ "verdict_via": "win32",
+ "verdict_via_detail": "kernel32.GetFileAttributesW via ctypes, extended prefix, parser bypassed",
+ "instrument_base_noncompliant": "this cell's base directory was built under D:\\g, a directory created at a drive root; spec/cell-identity.md section 6 (rev3) forbids that and states the shortest legal base measured is ~78. The measurement stands as recorded, the reachability method does not comply with the sentence added after it was taken.",
+ "rev3_migrated": true,
+ "rev3_migration_notes": [],
+ "extra": true,
+ "run_status": "measured",
+ "migrated_under_spec_sha256": "b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1",
+ "migrated_under_spec_face": "git cat-file blob HEAD:spec/cases.yaml rc=0 bytes=10611"
+}

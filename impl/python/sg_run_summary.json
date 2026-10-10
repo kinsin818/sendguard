@@ -1,0 +1,155 @@
+{
+ "cells_required": 48,
+ "cells_total": 123,
+ "covered_required": 48,
+ "extra": 75,
+ "missing_required": [],
+ "cells_blocked": 43,
+ "controls": {
+  "T-CTRL-NAMETOOLONG": [],
+  "T-CTRL-ASCII": [],
+  "T-CTRL-ILLEGAL-CHAR": [],
+  "T-CTRL-PARSE": [],
+  "T-CTRL-CANON": []
+ },
+ "required_blob_sha256": "3742747dd412e8a9d799e6c7f215f561f4c14774466759de515335b76ee90ff6",
+ "meta": {
+  "spec_sha256": "b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1",
+  "spec_face": "git cat-file blob HEAD:spec/cases.yaml rc=0 bytes=10611",
+  "spec_disk_sha256": "b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1",
+  "spec_blob_equals_disk": true,
+  "blind_map_sha256": "3617e75f4906544d3e763b138bbb14fe834b9536ac0b95639d6195aaa1053e58",
+  "frozen_claims": {
+   "spec/cases.yaml": "b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1"
+  },
+  "frozen_claim_matches_cases_blob": true,
+  "frozen_claim_matches_blind_map": false,
+  "payload_hex": "53454e4447554152442d43414e4f4e2d5041594c4f41442d32303236",
+  "payload_len": 28,
+  "payload_sha256": "c9fe45b2fee8ea846f0cf4f2cacc2a891e7b082e7719923502d12a9813e21994",
+  "payload_matches_baseline": true,
+  "payload_source": "control_samples payload_hex, pinned by contract rev6 in the committed spec/cases.yaml",
+  "pin_cross_checks": {
+   "pinned_payload_equals_baseline_script_payload": true
+  },
+  "os": {
+   "os_version": "Windows-10-10.0.19041-SP0",
+   "arch": "AMD64"
+  },
+  "locale": "('Chinese (Simplified)_China', '936') code_page=cp936 utf8_mode=0",
+  "env": {
+   "LongPathsEnabled": 0,
+   "LongPathsEnabled_source": "winreg HKLM ...\\FileSystem\\LongPathsEnabled",
+   "max_component": {
+    "C:\\": 255,
+    "D:\\": 255
+   },
+   "dot3name": {
+    "C:": "enabled",
+    "D:": "disabled"
+   },
+   "unicode_version": "16.0.0",
+   "toolchain": "C:\\Python314\\python.exe 3.14.7",
+   "utf8_mode": 0,
+   "longpath_manifest_on_interpreter": true,
+   "longpath_manifest_source": "evidence/S00/env-facts-windows-local.json manifest_scan: C:\\Python314\\python.exe found=true"
+  },
+  "interpreter": {
+   "resolved_executable": "C:\\Python314\\python.exe",
+   "version": "3.14.7",
+   "basis": "sys.executable of the process that spawned every child; this box also has C:\\Windows\\py.exe and the App-Execution launcher on PATH, which were NOT used"
+  },
+  "console_window_handle": 0,
+  "volumes": {
+   "C:\\": {
+    "root": "C:\\",
+    "ok": true,
+    "filesystem": "NTFS",
+    "max_component": 255,
+    "volume_flags": 65472255
+   },
+   "D:\\": {
+    "root": "D:\\",
+    "ok": true,
+    "filesystem": "NTFS",
+    "max_component": 255,
+    "volume_flags": 65472255
+   }
+  },
+  "dot3": {
+   "C:": {
+    "root": "C:\\",
+    "status": "ok",
+    "rc": 0,
+    "short_name_generation": "enabled",
+    "state_digits": "0"
+   },
+   "D:": {
+    "root": "D:\\",
+    "status": "ok",
+    "rc": 0,
+    "short_name_generation": "disabled",
+    "state_digits": "1"
+   }
+  },
+  "parse_problems": [],
+  "ctrl_samples_parsed": [
+   "T-CTRL-ASCII",
+   "T-CTRL-CANON",
+   "T-CTRL-ILLEGAL-CHAR",
+   "T-CTRL-NAMETOOLONG",
+   "T-CTRL-PARSE"
+  ],
+  "ctrl_name_provenance": {
+   "cells_pinned": [
+    "T-CTRL-ASCII",
+    "T-CTRL-CANON",
+    "T-CTRL-ILLEGAL-CHAR",
+    "T-CTRL-NAMETOOLONG",
+    "T-CTRL-PARSE"
+   ],
+   "all_five_present": true,
+   "payload_sha_matches_sealed_baseline": true,
+   "one_payload_for_all_five": true,
+   "hex_decodes_losslessly": true,
+   "canon_name_is_pinned_not_transcribed": true,
+   "nametoollong_component_len": 256,
+   "parse_source": "control_samples in git cat-file blob HEAD:spec/cases.yaml"
+  },
+  "parse_notes": {
+   "multi_member_cases": [
+    {
+     "id": "T09",
+     "members": 2
+    },
+    {
+     "id": "T14",
+     "members": 3
+    },
+    {
+     "id": "T19",
+     "members": 2
+    }
+   ],
+   "prose_marker_cases": [
+    {
+     "id": "T17",
+     "marker": "T-LEN-PATH (length bisection, G1-G4)"
+    },
+    {
+     "id": "T18",
+     "marker": "T-LEN-COMP (component length bisection, G1-G4)"
+    }
+   ],
+   "comment_literal_confirmed": "10 of 22 members",
+   "trap_cases_with_hex": 18
+  },
+  "blind_map_frozen_claim": "see selfcheck: sealed hash does not verify on either face",
+  "zip_entry_hex": [
+   "7a69702d726f756e64747269702e7a6970",
+   "656d6f6a692df09f98802e747874"
+  ],
+  "zip_entry_provenance": "entry 1 = T16 sample (ASCII, cannot set bit 11); entry 2 = T06 sample hex, reused because the frozen table offers no non-ASCII name of its own for T16",
+  "t16_archive_len": 296
+ }
+}

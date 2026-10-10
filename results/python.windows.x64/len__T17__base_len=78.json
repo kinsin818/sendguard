@@ -1,0 +1,371 @@
+{
+ "format_version": 1,
+ "case_id": "T17",
+ "case_group": "len",
+ "language": "python",
+ "os": "windows",
+ "os_version": "Windows-10-10.0.19041-SP0",
+ "arch": "AMD64",
+ "locale": "('Chinese (Simplified)_China', '936') code_page=cp936 utf8_mode=0",
+ "interpreter_resolved": "C:\\Python314\\python.exe",
+ "api_entry": "open_wb",
+ "attempt": 1,
+ "sub_identity": {
+  "base_len": 78
+ },
+ "sub_identity_order": [
+  "base_len"
+ ],
+ "name_source": "6636333631633263396e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e",
+ "name_source_kind": "computed by length (bisection steps)",
+ "path_form": "plain",
+ "longpath_mechanism": "none",
+ "length_unit": "code_points",
+ "length_unit_basis": "len(python str) == code points; the utf16/utf8 counts are published beside it in len_triple, never used as the reported length",
+ "name_encoding": "hex_raw_bytes",
+ "sub_identity_fields_top_level": [
+  "base_len"
+ ],
+ "mechanism_class": "component_length_limit",
+ "harness_version": "sg-python-s02-rederive-1",
+ "contract_rev_seen": "rev4 (298d6e4: rulers aligned, read_result not_applicable, gate honours declared sub_identity and excludes extra cells)",
+ "worker_id": "seat-qoder-python-port",
+ "spec_sha256": "a7f9a57df1b4d39a19421a54d175e87793100ce3393e363622ca59816e19148b",
+ "spec_face": "git cat-file blob HEAD:spec/cases.yaml rc=0 bytes=8075",
+ "env": {
+  "LongPathsEnabled": 0,
+  "LongPathsEnabled_source": "winreg HKLM ...\\FileSystem\\LongPathsEnabled",
+  "max_component": {
+   "C:\\": 255,
+   "D:\\": 255
+  },
+  "dot3name": {
+   "C:": "enabled",
+   "D:": "disabled"
+  },
+  "unicode_version": "16.0.0",
+  "toolchain": "C:\\Python314\\python.exe 3.14.7",
+  "utf8_mode": 0,
+  "longpath_manifest_on_interpreter": true,
+  "longpath_manifest_source": "evidence/S00/env-facts-windows-local.json manifest_scan: C:\\Python314\\python.exe found=true"
+ },
+ "deps_direct": 0,
+ "deps_total": 0,
+ "deps_basis": "imports are stdlib only (argparse ctypes hashlib json os pathlib stat sys time uuid zipfile shutil); third-party count = 0",
+ "scratch_root": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\sendguard-run",
+ "scratch_dir": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\sendguard-run\\6361c2c9",
+ "scratch_verified_empty": false,
+ "cleanup_attempted": false,
+ "probe_timeout_s": 5.0,
+ "child_spawn_form": "subprocess.run(argv list, shell=False, timeout=5.0); one child per probe",
+ "cleanup_note": "M19: no deletion logic exists in this port; run dirs accumulate outside the repo",
+ "instrument_red": false,
+ "instrument_conflict": false,
+ "entries_run": [
+  "open_wb"
+ ],
+ "primary_entry": "open_wb",
+ "error_stage_rule": "non-OSError raised before the syscall -> parse; OSError carrying errno/winerror -> syscall (fs/tool unused, see selfcheck)",
+ "base_len": 78,
+ "face_basis": "the face on which path's own limit is reachable; on the other face the 260-char path wall hides the 255-char component wall",
+ "leg_dir": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\sendguard-run\\6361c2c9\\bbbbbbbbbbbbb",
+ "leg_pre_existing_entries": null,
+ "entry_spread": {},
+ "entries_agree_with_primary": true,
+ "entries_disagreeing": [],
+ "entries_without_record": [],
+ "child_rc": 0,
+ "child_timed_out": false,
+ "child_reruns": 0,
+ "bisection_search_range": [
+  1,
+  400
+ ],
+ "scratch_note": "the base directory is fresh and empty at cell creation; it then holds one artifact per bisection step by design (each step is a distinct component length), so leg_pre_existing is not zero for the confirmation probe",
+ "bisection_boundary_comp_len": 180,
+ "bisection_rejected_comp_len": 181,
+ "bisection_steps": 11,
+ "bisection_attempts": [
+  {
+   "comp_len": 400,
+   "create_result": "err_at_syscall",
+   "error_type": "FileNotFoundError",
+   "error_winerror": null,
+   "bytes_written": null,
+   "bytes_on_disk": null,
+   "name_landed_as_hex": null,
+   "same_name_hits": 0,
+   "elapsed_ms": 116,
+   "rc": 0,
+   "timed_out": false
+  },
+  {
+   "comp_len": 1,
+   "create_result": "ok",
+   "error_type": null,
+   "error_winerror": null,
+   "bytes_written": 28,
+   "bytes_on_disk": 28,
+   "name_landed_as_hex": "73",
+   "same_name_hits": 1,
+   "elapsed_ms": 114,
+   "rc": 0,
+   "timed_out": false
+  },
+  {
+   "comp_len": 200,
+   "create_result": "err_at_syscall",
+   "error_type": "FileNotFoundError",
+   "error_winerror": null,
+   "bytes_written": null,
+   "bytes_on_disk": null,
+   "name_landed_as_hex": null,
+   "same_name_hits": 0,
+   "elapsed_ms": 112,
+   "rc": 0,
+   "timed_out": false
+  },
+  {
+   "comp_len": 100,
+   "create_result": "ok",
+   "error_type": null,
+   "error_winerror": null,
+   "bytes_written": 28,
+   "bytes_on_disk": 28,
+   "name_landed_as_hex": "7336333631633263396e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e",
+   "same_name_hits": 1,
+   "elapsed_ms": 122,
+   "rc": 0,
+   "timed_out": false
+  },
+  {
+   "comp_len": 150,
+   "create_result": "ok",
+   "error_type": null,
+   "error_winerror": null,
+   "bytes_written": 28,
+   "bytes_on_disk": 28,
+   "name_landed_as_hex": "7336333631633263396e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e",
+   "same_name_hits": 1,
+   "elapsed_ms": 118,
+   "rc": 0,
+   "timed_out": false
+  },
+  {
+   "comp_len": 175,
+   "create_result": "ok",
+   "error_type": null,
+   "error_winerror": null,
+   "bytes_written": 28,
+   "bytes_on_disk": 28,
+   "name_landed_as_hex": "7336333631633263396e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e",
+   "same_name_hits": 1,
+   "elapsed_ms": 140,
+   "rc": 0,
+   "timed_out": false
+  },
+  {
+   "comp_len": 187,
+   "create_result": "err_at_syscall",
+   "error_type": "FileNotFoundError",
+   "error_winerror": null,
+   "bytes_written": null,
+   "bytes_on_disk": null,
+   "name_landed_as_hex": null,
+   "same_name_hits": 0,
+   "elapsed_ms": 124,
+   "rc": 0,
+   "timed_out": false
+  },
+  {
+   "comp_len": 181,
+   "create_result": "err_at_syscall",
+   "error_type": "FileNotFoundError",
+   "error_winerror": null,
+   "bytes_written": null,
+   "bytes_on_disk": null,
+   "name_landed_as_hex": null,
+   "same_name_hits": 0,
+   "elapsed_ms": 111,
+   "rc": 0,
+   "timed_out": false
+  },
+  {
+   "comp_len": 178,
+   "create_result": "ok",
+   "error_type": null,
+   "error_winerror": null,
+   "bytes_written": 28,
+   "bytes_on_disk": 28,
+   "name_landed_as_hex": "7336333631633263396e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e",
+   "same_name_hits": 1,
+   "elapsed_ms": 122,
+   "rc": 0,
+   "timed_out": false
+  },
+  {
+   "comp_len": 179,
+   "create_result": "ok",
+   "error_type": null,
+   "error_winerror": null,
+   "bytes_written": 28,
+   "bytes_on_disk": 28,
+   "name_landed_as_hex": "7336333631633263396e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e",
+   "same_name_hits": 1,
+   "elapsed_ms": 119,
+   "rc": 0,
+   "timed_out": false
+  },
+  {
+   "comp_len": 180,
+   "create_result": "ok",
+   "error_type": null,
+   "error_winerror": null,
+   "bytes_written": 28,
+   "bytes_on_disk": 28,
+   "name_landed_as_hex": "7336333631633263396e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e",
+   "same_name_hits": 1,
+   "elapsed_ms": 112,
+   "rc": 0,
+   "timed_out": false
+  }
+ ],
+ "bisection_hang_encountered": false,
+ "bisection_lo_ok": true,
+ "bisection_hi_fail": true,
+ "final_name_hex": "6636333631633263396e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e",
+ "boundary_winerror": null,
+ "phases_reached": [
+  "start",
+  "created",
+  "dir_view",
+  "path_view",
+  "read",
+  "done"
+ ],
+ "requested_triple": {
+  "code_points": 180,
+  "utf16_code_units": 180,
+  "utf8_bytes": 180
+ },
+ "landed_triple": {
+  "code_points": 180,
+  "utf16_code_units": 180,
+  "utf8_bytes": 180
+ },
+ "len_triple": {
+  "requested": {
+   "code_points": 180,
+   "utf16_code_units": 180,
+   "utf8_bytes": 180
+  },
+  "landed": {
+   "code_points": 180,
+   "utf16_code_units": 180,
+   "utf8_bytes": 180
+  }
+ },
+ "bytes_written": 28,
+ "bytes_on_disk": 28,
+ "name_landed_as": "6636333631633263396e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e",
+ "landed_linkage": "exact-name",
+ "new_entries_hex": [
+  "6636333631633263396e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e"
+ ],
+ "residual_src_new_entries": 0,
+ "pre_existing_entries": 7,
+ "same_name_hits": 1,
+ "dir_view_count": 8,
+ "dir_view": [
+  {
+   "is_dir": false,
+   "name_hex": "6636333631633263396e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e",
+   "size": 28
+  },
+  {
+   "is_dir": false,
+   "name_hex": "73",
+   "size": 28
+  },
+  {
+   "is_dir": false,
+   "name_hex": "7336333631633263396e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e",
+   "size": 28
+  },
+  {
+   "is_dir": false,
+   "name_hex": "7336333631633263396e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e",
+   "size": 28
+  },
+  {
+   "is_dir": false,
+   "name_hex": "7336333631633263396e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e",
+   "size": 28
+  },
+  {
+   "is_dir": false,
+   "name_hex": "7336333631633263396e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e",
+   "size": 28
+  },
+  {
+   "is_dir": false,
+   "name_hex": "7336333631633263396e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e",
+   "size": 28
+  },
+  {
+   "is_dir": false,
+   "name_hex": "7336333631633263396e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e",
+   "size": 28
+  }
+ ],
+ "residual_src_entries": 0,
+ "path_view": {
+  "attributes": 32,
+  "exists": true,
+  "face": "plain",
+  "is_dir": false,
+  "winerror": null
+ },
+ "os_legality_verdict": "legal",
+ "os_legality_detail": {
+  "attributes": 32,
+  "outcome": "entry-present-in-namespace",
+  "probe": "GetFileAttributesW(\\\\?\\\\<dir>\\\\<name>)",
+  "winerror": null
+ },
+ "verdict_via": "win32",
+ "verdict_via_detail": "kernel32.GetFileAttributesW via ctypes, extended prefix, parser bypassed",
+ "win32_fullpath": {
+  "ok": true,
+  "reported_hex": "433a5c55736572735c41646d696e6973747261746f725c417070446174615c4c6f63616c5c54656d705c73656e6467756172642d72756e5c36333631633263395c626262626262626262626262625c6636333631633263396e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e"
+ },
+ "delivered_nothing": false,
+ "create_result": "ok",
+ "error_stage": "null",
+ "read_result": "ok",
+ "bytes_read": 28,
+ "sha256_self": "c9fe45b2fee8ea846f0cf4f2cacc2a891e7b082e7719923502d12a9813e21994",
+ "sha256_truth": "c9fe45b2fee8ea846f0cf4f2cacc2a891e7b082e7719923502d12a9813e21994",
+ "roundtrip_ok": true,
+ "enum_to_stat_agrees": true,
+ "phantom": false,
+ "name_mutated": false,
+ "artifact_dir_listing_count": null,
+ "attribution_layer": "L3_interaction",
+ "attribution_layer_basis": "260-char legacy wall is OS policy that no stdlib entry of python removes, and it shadows NAME_MAX -> interaction cell, reported separately; varies_across_OS pending",
+ "control_pass": true,
+ "elapsed_ms": 122,
+ "started_at": "2026-10-11T04:48:57+0800",
+ "spec_provenance": {
+  "category": null,
+  "applicable": "windows",
+  "case_locale": "en-US",
+  "spec_source": "spec/cells-required.json base_len_ladder + spec/FROZEN.md T-LEN bisection cells"
+ },
+ "rev3_migrated": true,
+ "rev3_migration_notes": [],
+ "extra": true,
+ "run_status": "measured",
+ "migrated_under_spec_sha256": "b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1",
+ "migrated_under_spec_face": "git cat-file blob HEAD:spec/cases.yaml rc=0 bytes=10611"
+}

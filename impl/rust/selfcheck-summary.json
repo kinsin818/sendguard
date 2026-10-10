@@ -1,0 +1,39 @@
+{
+  "files_scanned": 174,
+  "cells_required": 48,
+  "cells_required_answered": 48,
+  "cells_produced": 174,
+  "cells_valid": 174,
+  "cells_blocked": 0,
+  "extra": 126,
+  "cells_void": [],
+  "controls_pass": true,
+  "arms_total": 29,
+  "arms_failed": [],
+  "contract": {
+    "path": "D:\\sendguard-work\\seat-qoder\\spec\\cells-required.json",
+    "sha256": "3742747dd412e8a9d799e6c7f215f561f4c14774466759de515335b76ee90ff6",
+    "rows_for_rust": 48,
+    "primary_entry": "std::fs::File::create",
+    "base_len_ladder": [
+      78,
+      120,
+      200
+    ],
+    "generated_by": "ci/gen_cells_required.py - derived from the committed spec face; deterministic, no timestamp in the output so the file can be byte-compared against a re-run",
+    "withdraws": "the first version of this file (generated 03:4x from a mis-parse that saw only the 20 traps) is void; any port that used it must re-derive from this one",
+    "spec_blob_sha256": "b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1"
+  },
+  "gate_identity": {
+    "identities": 174,
+    "multi_face": {},
+    "disagreeing": {}
+  },
+  "missing_required_rows": [],
+  "unmarked_extra": [],
+  "blind": {
+    "rows_in_required_list": 5,
+    "plan_blind_exit": 0,
+    "note": "the rev3 required list publishes no blind rows; the frozen table still publishes no blind sample hex"
+  }
+}

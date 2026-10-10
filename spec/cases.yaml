@@ -3,7 +3,12 @@
 # is NEVER materialized as a real file in this repo.
 # All comments in English (M21). No real usernames/emails/company names (Qoder e).
 format_version: 1
+freeze_revision: 2
 frozen_at: "2026-10-10"
+rev2_note: "2026-10-10 defect fix (P0, freeze-blocking): 9 corrupted sample hex values
+  replaced with correct UTF-8 hex per evidence/S02/defects/sample-corruption.md
+  (T06/T07/T09a/T09b/T12/T13/T15/T19a/T19b). No trap id, category, locale, or
+  applicability changed. Old sha256 recorded in spec/FROZEN.md rev2 changelog."
 seed_blind_samples: "7f3c1a9e5b2d8f40c6e1a7b3d9f2e5c8a1b6d4f0e9c2a7b5d3f8e6c1a9b4d7f0"
 blind_map_ref: "evidence/S00/blind-map.json"
 expectation_policy: "all expectations MUST be null at freeze; filled only after measurement (whitepaper gold)"
@@ -74,7 +79,7 @@ cases:
     expectation: null
     repro_cmd: "<runner> <lang> T05"
   - id: T06
-    sample_hex: "656d6f6a692d26646564726f6d2664656461736d636865612e747874"  # emoji-<smile>.txt
+    sample_hex: "656d6f6a692df09f98802e747874"  # emoji-U+1F600.txt (rev2 fix)
     category: unicode_normalization
     spec_source: "Unicode emoji on filesystems"
     locale: en-US
@@ -82,7 +87,7 @@ cases:
     expectation: null
     repro_cmd: "<runner> <lang> T06"
   - id: T07
-    sample_hex: "636166652b5c75303033312e747874"  # NFD: cafe + U+0301
+    sample_hex: "63616665cc812e747874"  # NFD: cafe + U+0301 (rev2 fix)
     category: unicode_normalization
     spec_source: "Unicode NormalizationTest.txt (NFD)"
     locale: en-US
@@ -99,8 +104,8 @@ cases:
     repro_cmd: "<runner> <lang> T08"
   - id: T09
     sample_hex_list:
-      - "726573756d652d6e66642b5c75303033312e747874"   # NFD member
-      - "726573756d652d6ec383a92e747874"               # NFC member
+      - "726573756d652d65cc812e747874"   # NFD member: resume-e + U+0301 (rev2 fix)
+      - "726573756d652dc3a92e747874"     # NFC member: resume-é (rev2 fix)
     category: unicode_normalization
     spec_source: "NFC/NFD coexistence in one directory (headline cell)"
     locale: en-US
@@ -124,7 +129,7 @@ cases:
     expectation: null
     repro_cmd: "<runner> <lang> T11"
   - id: T12
-    sample_hex: "626964692b5c75323032652e747874"      # bidi + U+202E
+    sample_hex: "626964692de280ae2e747874"      # bidi-U+202E.txt (rev2 fix)
     category: bidi_handling
     spec_source: "BidiTest.txt"
     locale: en-US
@@ -132,7 +137,7 @@ cases:
     expectation: null
     repro_cmd: "<runner> <lang> T12"
   - id: T13
-    sample_hex: "7a65726f77696474682b5c75323030422e747874"  # zero-width U+200B
+    sample_hex: "7a65726f77696474682de2808b2e747874"  # zero-width U+200B (rev2 fix)
     category: zero_width_handling
     spec_source: "Unicode U+200B"
     locale: en-US
@@ -151,7 +156,7 @@ cases:
     expectation: null
     repro_cmd: "<runner> <lang> T14"
   - id: T15
-    sample_hex: "6374726c2d75303030312e747874"        # control char U+0001
+    sample_hex: "6374726c2d012e747874"        # control char U+0001 (rev2 fix)
     category: control_char_handling
     spec_source: "MS Learn naming-a-file (chars 0-31)"
     locale: en-US
@@ -184,8 +189,8 @@ cases:
     repro_cmd: "<runner> <lang> T18"
   - id: T19
     sample_hex_list:
-      - "ff21414243ff212e747874"                     # fullwidth ABC
-      - "313131312e747874"                           # Hangul jamo row
+      - "efbca1efbca2efbca32e747874"                 # fullwidth ABC (rev2 fix)
+      - "e384b1e384b4e384b72e747874"                 # Hangul jamo row (rev2 fix)
     category: case_folding
     spec_source: "full/half-width + Hangul jamo"
     locale: ja-JP

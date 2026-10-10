@@ -55,24 +55,31 @@ def main():
     if rb.returncode != 0:
         print("WARN spec blob unreadable rc=%d" % rb.returncode)
 
-    rows = []
-    ports = []
-    for entry in sorted(os.listdir(os.path.join(REPO, "results"))):
-        full = os.path.join(REPO, "results", entry)
-        if not os.path.isdir(full):
-            continue
-        port = entry.split(".")[0]
-        if port == "node":
-            ports.append((port, entry, None, 0, "excluded: self-declared instrument_red (see NOTICE)"))
-            continue
-        cells, bad = load_port(full)
+    # the same face rule the gate uses: results/<port>.<os>.<arch>/ only. Measured reason: this table used
+    # to print 9 rows for 6 ports, because results/ also carried earlier revisions of the same ports under
+    # other names, and a reader counted nine ports.
+    ports, files_seen, problems, xcheck, skipped = equality.discover()
+    extras = ports.pop("_extra_counts", {})
+    man = json.load(io.open(equality.REQUIRED, encoding="utf-8"))
+    req = set((r["case_group"], r["case_id"], tuple(sorted((r.get("sub_identity") or {}).items())))
+              for r in man["required_cells"])
+    ports_list = []
+    for port in sorted(ports):
+        cells = {k: lst[0] for k, lst in ports[port].items() if k[0] != "tapi"}
+        matched = len(set(cells) & req)
         if not cells:
+            ports_list.append((port, "%s.windows.x64" % port, None, 0, "no canonical face found"))
             continue
-        joined = "\n".join("%s %s" % (equality.fmt(k), equality.digest(c)[0]) for k, c in sorted(cells.items()))
+        joined = "\n".join("%s %s" % (equality.fmt(k), equality.digest(c)[0])
+                           for k, c in sorted(cells.items()))
         digest = hashlib.sha256(joined.encode("utf-8")).hexdigest()
         env = next(iter(cells.values()))
-        ports.append((port, entry, digest[:16], len(cells),
-                      "%s / %s / %s" % (env.get("os", "?"), env.get("arch", "?"), env.get("os_version", "?"))))
+        ports_list.append((port, "%s.windows.x64" % port, digest[:16], matched,
+                           "%s / %s / %s  (records=%d, extra-flagged=%d, tapi held out)"
+                           % (env.get("os", "?"), env.get("arch", "?"), env.get("os_version", "?")[:24],
+                              files_seen.get(port, 0), extras.get(port, 0))))
+
+    rows = []
 
     rc_eq, out_eq, _ = run(sys.executable, os.path.join(HERE, "equality.py"))
     verdict = "NOT-COMPARABLE (rc=%d)" % rc_eq
@@ -93,11 +100,13 @@ def main():
            "- frozen spec `spec/cases.yaml` blob sha256: `%s`" % spec_digest,
            "- equality verdict right now: **%s**" % verdict,
            "- gate self-test: **%s**" % st,
+           "- faces on disk but not read (earlier revisions or other naming): %s" % (
+               ", ".join("`%s` (%d records)" % (e, n) for e, n in skipped) or "none"),
            "",
-           "| port | result face | cells | behaviour digest | os / arch / build |",
+           "| port | canonical face read | required cells matched (of 44) | behaviour digest | os / arch / build |",
            "|---|---|---|---|---|",
            ]
-    for port, entry, digest, n, info in ports:
+    for port, entry, digest, n, info in ports_list:
         out.append("| %s | `%s` | %s | `%s` | %s |"
                    % (port, entry, n if n else "-", digest[:16] if digest else "-", info))
     out += ["", "## What this table does not claim", "",
@@ -105,7 +114,8 @@ def main():
             "agree - that is the equality verdict above, and until it reads PASS the deliverable is unfinished.",
             "A port excluded by the health leg is listed with its reason, not silently dropped.", ""]
     io.open(os.path.join(REPO, "docs", "evidence.md"), "w", encoding="utf-8", newline="\n").write("\n".join(out))
-    print("wrote docs/evidence.md ports=%d verdict=%s selftest=%s" % (len(ports), verdict, st))
+    print("wrote docs/evidence.md ports=%d excluded_faces=%d verdict=%s selftest=%s"
+          % (len(ports_list), len(skipped), verdict, st))
     return 0
 
 

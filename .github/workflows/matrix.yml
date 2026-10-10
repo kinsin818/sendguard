@@ -1,0 +1,74 @@
+# SENDGUARD CI matrix (S00 skeleton).
+# Frozen images only; *-latest floating labels are FORBIDDEN (M20).
+# os list: windows-2025 (S00 pick; fall back windows-2022 if unavailable),
+#          macos-15, ubuntu-24.04. arch NOT preset (macos-15 has x64/arm64 pools).
+name: sendguard-matrix
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  matrix-probe:
+    name: probe-${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-2025, macos-15, ubuntu-24.04]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Env probe (os_version / arch / locale / LongPathsEnabled)
+        shell: bash
+        run: |
+          echo "runner_os=$RUNNER_OS"
+          echo "runner_arch=$RUNNER_ARCH"
+          echo "os_version=$(uname -sr 2>/dev/null || cmd //c ver 2>/dev/null || true)"
+          echo "locale=$LANG"
+          if [ "$RUNNER_OS" = "Windows" ]; then
+            reg query "HKLM\\SYSTEM\\CurrentControlSet\\Control\\FileSystem" /v LongPathsEnabled 2>/dev/null || echo "LongPathsEnabled=missing"
+          fi
+          mkdir -p evidence/S00/ci-probe
+          echo "probe-$(date +%s)" > evidence/S00/ci-probe/env.txt
+
+      - name: Audit self-check (build + enumerate + json valid)
+        shell: bash
+        run: |
+          if [ "$RUNNER_OS" = "Windows" ]; then
+            (cd harness && CGO_ENABLED=0 go build -trimpath -o audit.exe audit.go)
+            ./harness/audit.exe evidence/S00/ci-probe > evidence/S00/ci-probe/audit.json
+          else
+            (cd harness && CGO_ENABLED=0 go build -trimpath -o audit.bin audit.go)
+            ./harness/audit.bin evidence/S00/ci-probe > evidence/S00/ci-probe/audit.json
+          fi
+          python3 spec/validate.py --schema > /dev/null
+          python3 -c "import json;d=json.load(open('evidence/S00/ci-probe/audit.json'));assert d['tool']=='sendguard-audit';print('audit json OK, entries=',len(d['entries']))"
+
+      - name: CI lint (3-piece, with red/green arms)
+        shell: bash
+        run: |
+          python3 ci/lint.py --selftest
+          python3 ci/lint.py --repo-root "${{ github.workspace }}"
+
+  crossread:
+    name: crossread (node<->python interop gate)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Node writes, Python reads (empty-run interop)
+        shell: bash
+        run: |
+          mkdir -p evidence/S00/crossread
+          node -e "require('fs').writeFileSync('evidence/S00/crossread/from-node.txt','node->python')"
+          python3 -c "print('python read:', open('evidence/S00/crossread/from-node.txt').read())"
+          python3 -c "open('evidence/S00/crossread/from-python.txt','w').write('python->node')"
+          node -e "console.log('node read:', require('fs').readFileSync('evidence/S00/crossread/from-python.txt','utf8'))"
+          echo "crossread OK"

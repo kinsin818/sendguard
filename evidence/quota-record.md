@@ -23,7 +23,14 @@ Fetched: 2026-10-10 (S00).
   ACTUAL consumption must be read from the billing/usage readout. If no real
   consumption figure can be read, the six-language full-matrix claim steps back
   to "deep-measure Node/Python/Go only" (no gambling on macOS being free).
-  - macOS hello-world leg status: PENDING (runs after repo push; readout from
-    GitHub usage page, login state permitting).
+  - macOS hello-world leg status: **DONE (2026-10-10)**. Run #1 (failed, go
+    not found) + Run #2 (success, 47s total, all 3 OS probes + crossread).
+  - Readout: GitHub billing summary shows **metered usage USD 0.21** for the
+    period 2026-10-01..10-30 (spike on 10-10 = today's matrix runs);
+    included usage discount 0.21; plan GitHub Free $0/mo.
+    Screenshot: `evidence/S00/quota.png` (billing summary, 1920x1080).
+  - **Decision (M20 leg)**: a REAL consumption figure WAS read -> the
+    six-language full-matrix claim across all three OS keeps its name.
+    Magnitude is trivial (0.21 USD << any limit; 2000 free min/mo pool).
 - quota.png: screenshot of the billing page / usage readout appended when
   accessible; official numbers above remain the paper trail.

@@ -65,6 +65,16 @@ control_samples:
     expectation: null
     # (payload pinned once for all five: the same 28 bytes every port must hand to the write)
 
+# rev7: the two length traps pinned a length and a path form but never the bytes the component is made of.
+# Measured consequence: the twelve len cells came back with six different fillers, so the gate could not
+# compare any of them. One code unit, repeated, is now the rule; a port that wants to publish an emoji or
+# CJK tier keeps it as an `extra` cell, which is where the multi-byte width story belongs.
+len_fill:
+  unit_hex: "61"                     # one code unit: U+0061 LATIN SMALL LETTER A
+  rule: "repeat unit_hex until the component is exactly base_len code units, then append nothing"
+  applies_to: [T17, T18]
+  name_source_rule: "name_source is the hex of the component that was actually passed to the API, not a label"
+
 # 20 frozen traps. sample = UTF-8 hex of the synthetic name.
 cases:
   - id: T01

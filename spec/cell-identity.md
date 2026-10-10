@@ -169,3 +169,17 @@ recorded a name cut at a display width while their own record said `name_mutated
 self-contradictory record. From the hex alone the two are indistinguishable, so `ci/equality.py` prints
 `PREFIX-SHAPED` naming the ports and leaves the disagreement standing. A rule that cannot tell a finding
 from an artefact must not be allowed to choose which one to delete.
+
+**9.7 Three quantities, one name.** The frozen spec's `sample_hex` for T17/T18 was prose
+(`T-LEN-PATH (length bisection, G1-G4)`), and the rev6 run showed what that allows: one port recorded that
+prose as the name it created (and a length triple of 48/48/48, the length of the prose), one recorded `a`
+repeated, one a `0123456789abcdef` cycle, one an alphanumeric run padded with `n`, one `t.bin` with a
+code-point count of 32739, and one the two characters `61` where a byte was meant. The triples were not
+different spellings of one number but three different quantities: the width of the requested name, the
+width of the landed name, and the ceiling a bisection converged on.
+
+So: `name_source` is the hex of the bytes passed to the API; `len_triple` is the three widths of that name
+and nothing else; the converged ceiling is `len_ceiling`, a separate field. `spec/cases.yaml` now pins
+`len_fill` (one code unit `U+0061`, repeated to `base_len`) so the twelve required length cells ask one
+question. Multi-byte tiers (emoji, CJK) remain valid as `extra` cells - the width disagreement is the
+subject, it is just not this comparison.

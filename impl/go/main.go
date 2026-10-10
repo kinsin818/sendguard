@@ -48,18 +48,18 @@ var (
 // ---------------- ---------- ---------------- ----------------
 
 type member struct {
-	Hex      string
-	DirFound bool
-	DirSize  *int64
-	PathOK   bool
-	PathSize *int64
-	PathErr  string
-	Read     string
-	ReadN    *int64
-	ReadErr  string
-	Diverg   bool
-	Drift    bool
-	SameHits int
+	Hex      string `json:"name_utf8_hex"`
+	Create   string `json:"create_result"`
+	DirFound bool   `json:"dir_found"`
+	DirSize  *int64 `json:"dir_size"`
+	PathOK   bool   `json:"path_exists"`
+	PathSize *int64 `json:"path_size"`
+	PathErr  string `json:"path_error,omitempty"`
+	Read     string `json:"read_result"`
+	ReadN    *int64 `json:"read_bytes"`
+	ReadErr  string `json:"read_error,omitempty"`
+	Diverg   bool   `json:"view_divergence"`
+	SameHits int    `json:"same_name_hits"`
 }
 
 type cellOut struct {
@@ -166,8 +166,14 @@ func loadCases() ([]Case, []string, []string, error) {
 				cases[cur].Defect += "sample_hex not valid hex; "
 			}
 		case strings.HasPrefix(t, "      - \"") && cur >= 0:
-			hx := strings.Trim(strings.TrimSpace(strings.TrimPrefix(t, "      - \"")), `"`)
+			// ORDER FIX (W-GO blocker): strip the trailing comment FIRST, then
+			// trim quotes. The old order trimmed quotes while the comment was
+			// still attached (nothing to trim at the end), leaving a dangling
+			// `"` after the comment cut -> hex.DecodeString failed -> raw hex
+			// text (with quote) stored as the sample -> WIN123 on create.
+			hx := strings.TrimSpace(strings.TrimPrefix(t, "      - \""))
 			hx = strings.TrimSpace(strings.Split(hx, "#")[0])
+			hx = strings.Trim(hx, `"`)
 			if b, e := hex.DecodeString(hx); e == nil {
 				cases[cur].Samples = append(cases[cur].Samples, b)
 			} else {
@@ -615,8 +621,9 @@ func runTAPI(cases []Case) {
 		return
 	}
 	hx := hexOf(string(t01.Samples[0]))
+	tapi := Case{ID: "TAPI-T01", Group: "tapi", Samples: [][]byte{hex2bytes(hx)}, Category: "unknown"}
 	for _, e := range goEntries {
-		childCell("TAPI-T01", "tapi", e, hx, []byte(payloadCanon), "")
+		childCell(&tapi, e, []string{hx}, []byte(payloadCanon))
 	}
 }
 
@@ -640,21 +647,22 @@ func runLenGrids() {
 	}
 }
 
-func childCell(caseID, group, entry, hexName string, payload []byte, defect string) {
+func childCell(c *Case, entry string, hexList []string, payload []byte) {
 	self, _ := os.Executable()
-	ctx, cancel := context.WithTimeout(context.Background(), perActionTO)
+	ctx, cancel := context.WithTimeout(context.Background(), perActionTO*time.Duration(len(hexList)+1))
 	defer cancel()
 	scratch := filepath.Join(repo, "_pilot_scratch", "go",
-		caseID+"__"+strings.ReplaceAll(entry, ".", "_")+"__"+fmt.Sprintf("%d", time.Now().UnixNano()%1000000))
+		c.ID+"__"+strings.ReplaceAll(entry, ".", "_")+"__"+fmt.Sprintf("%d", time.Now().UnixNano()%1000000))
 	os.MkdirAll(scratch, 0o755)
 	cmd := exec.CommandContext(ctx, self, selfExeKey, "cell",
-		"--case", caseID, "--group", group, "--entry", entry,
-		"--dir", scratch, "--hex", hexName, "--payload", hexOf(string(payload)))
-	cmd.Env = append(os.Environ(), "SENDSGARD_DEFECT="+defect)
+		"--case", c.ID, "--group", c.Group, "--entry", entry,
+		"--dir", scratch, "--members", strings.Join(hexList, ","),
+		"--payload", hexOf(string(payload)), "--defect", c.Defect,
+		"--mech", c.Category)
 	o, e := cmd.CombinedOutput()
 	if ctx.Err() == context.DeadlineExceeded {
-		fmt.Printf("CELL %-28s %-12s hang(>5s, killed)\n", caseID, entry)
-		writeHangCell(caseID, group, entry, hexName, defect)
+		fmt.Printf("CELL %-28s %-12s hang(>5s, killed)\n", c.ID, entry)
+		writeHangCell(c.ID, c.Group, entry, hexList[0], "")
 		return
 	}
 	for _, ln := range strings.Split(string(o), "\n") {
@@ -663,11 +671,8 @@ func childCell(caseID, group, entry, hexName string, payload []byte, defect stri
 		}
 	}
 	if e != nil && !strings.Contains(string(o), "CELL") {
-		fmt.Printf("CELL %-28s %-12s child-error %v %s\n", caseID, entry, e, ascii(string(o))[:min(120, len(o))])
-		return
+		fmt.Printf("CHILD-ERR %-24s %-12s %v %s\n", c.ID, entry, e, ascii(string(o))[:min(160, len(o))])
 	}
-	_ = o
-	_ = e
 }
 
 func childLen(caseID, group, grid string, base, comp int, form string) {
@@ -743,8 +748,16 @@ func main() {
 			payload, _ := hex.DecodeString(m["payload"])
 			base, _ := strconv.Atoi(m["base"])
 			comp, _ := strconv.Atoi(m["comp"])
-			out := buildCell(m["case"], m["group"], m["entry"], m["dir"], m["hex"], payload,
-				os.Getenv("SENDSGARD_DEFECT"), m["form"], base, comp)
+			var hexList []string
+			if mm, ok := m["members"]; ok && mm != "" {
+				for _, h := range strings.Split(mm, ",") {
+					hexList = append(hexList, strings.TrimSpace(h))
+				}
+			} else {
+				hexList = []string{m["hex"]}
+			}
+			out := runCellMulti(m["case"], m["group"], m["entry"], m["dir"], hexList, payload,
+				os.Getenv("SENDSGARD_DEFECT"), defaultForm(m["form"]), m["mech"], base, comp)
 			d := filepath.Join(repo, "results", "go.windows."+runtime.Version())
 			os.MkdirAll(d, 0o755)
 			id := m["case"] + "__" + strings.ReplaceAll(m["entry"], ".", "_")
@@ -753,7 +766,7 @@ func main() {
 			}
 			b, _ := json.MarshalIndent(out, "", " ")
 			os.WriteFile(filepath.Join(d, id+".json"), b, 0o644)
-			fmt.Printf("CELL %-24s %-12s %s\n", m["case"], m["entry"], out.CreateResult)
+			fmt.Printf("CELL %-24s %-12s %s members=%d\n", m["case"], m["entry"], out.CreateResult, len(out.Members))
 			return
 		case "read1":
 			t0 := time.Now()
@@ -780,14 +793,225 @@ func main() {
 		fmt.Println("VERIFY PASS: frozen artifacts intact")
 	case "run":
 		group := "all"
+		only := ""
 		if len(os.Args) >= 3 {
 			group = os.Args[2]
 		}
-		runAll(group)
+		if len(os.Args) >= 5 && os.Args[3] == "-only" {
+			only = os.Args[4]
+		}
+		runAll(group, only)
 	default:
 		fmt.Println("unknown mode")
 		os.Exit(2)
 	}
+}
+
+// runCellMulti: one scratch dir per (case x entry); ALL members created
+// sequentially in the SAME directory (T09 coexistence semantics), enumeration
+// re-run after every member; one cell JSON with members[] per cell.
+func runCellMulti(caseID, group, entry, scratch string, hexList []string, payload []byte,
+	defect, form, mech string, base, comp int) cellOut {
+
+	started := time.Now().UTC().Format(time.RFC3339Nano)
+	t0 := time.Now()
+	out := cellOut{FormatVersion: 1, CaseID: caseID, CaseGroup: group,
+		Language: "go", OS: "windows", Arch: runtime.GOARCH, Locale: "en-US",
+		APIEntry: entry, Attempt: 1, NameEncoding: "utf8_bytes",
+		PathForm: defaultForm(form), LongpathMech: probeLongpathMech(filepath.Dir(scratch)),
+		ErrorStage: "null", ReadResult: "eof", EnumAPIEntry: "os.ReadDir",
+		Mechanism: mech, WorkerID: workerID, HarnessVer: "runner-v1", StartedAt: started,
+		Env: map[string]any{"LongPathsEnabled": longPaths(), "dot3name": nil,
+			"max_component": nil, "unicode_version": "unavailable-no-api",
+			"toolchain": runtime.Version()},
+		RootLen: len([]rune(scratch)), SpecDefect: defect != "", DefectNote: defect,
+		ControlPass: true}
+	if base > 0 {
+		b := base
+		out.BaseUnits = &b
+	}
+	c := comp
+	out.CompUnits = &c
+
+	for _, hx := range hexList {
+		name := string(hex2bytes(hx))
+		p := filepath.Join(scratch, name)
+		if form == "extended" {
+			abs, _ := filepath.Abs(p)
+			p = `\?\` + abs
+		}
+		m := member{Hex: hx}
+		var err error
+		var bw *int64
+		switch entry {
+		case "os.Create":
+			var f *os.File
+			f, err = os.Create(p)
+			if err == nil {
+				_, werr := f.Write(payload)
+				f.Close()
+				if werr == nil {
+					b := int64(len(payload))
+					bw = &b
+				} else {
+					err = werr
+				}
+			}
+		case "os.WriteFile":
+			err = os.WriteFile(p, payload, 0o644)
+			if err == nil {
+				b := int64(len(payload))
+				bw = &b
+			}
+		case "os.OpenFile":
+			var f *os.File
+			f, err = os.OpenFile(p, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0o644)
+			if err == nil {
+				_, werr := f.Write(payload)
+				f.Close()
+				if werr == nil {
+					b := int64(len(payload))
+					bw = &b
+				} else {
+					err = werr
+				}
+			}
+		case "os.Mkdir":
+			err = os.Mkdir(p, 0o755)
+		}
+		if err != nil {
+			stage, code, msg := classify(err, name)
+			m.Create = stage2create(stage)
+			out.ErrorStage = stage
+			out.ErrorCode = code
+			out.ErrorMessage = ascii(msg)
+		} else {
+			m.Create = "ok"
+			out.BytesWritten = bw
+		}
+
+		// dir_view: re-enumerate AFTER this member (coexistence state)
+		ents, derr := os.ReadDir(scratch)
+		found := false
+		hits := 0
+		var dsize *int64
+		if derr == nil {
+			for _, e := range ents {
+				eh := hexOf(e.Name())
+				if eh == hx {
+					found = true
+					hits++
+					if fi, er := e.Info(); er == nil {
+						s := fi.Size()
+						dsize = &s
+					}
+				}
+			}
+		}
+		m.DirFound = found
+		m.DirSize = dsize
+		m.SameHits = hits
+		if found && dsize != nil {
+			out.BytesOnDisk = dsize
+		}
+
+		// path_view (recorded, never authoritative)
+		if st, serr := os.Stat(p); serr == nil {
+			m.PathOK = true
+			s := st.Size()
+			m.PathSize = &s
+		} else {
+			m.PathErr = ascii(serr.Error())
+		}
+		m.Diverg = (m.DirFound != m.PathOK) ||
+			(m.DirSize != nil && m.PathSize != nil && *m.DirSize != *m.PathSize)
+		out.EnumToStat = !m.Diverg
+
+		// read-by-path: grandchild 5s (the only measured hang-capable op)
+		if m.PathOK {
+			ctx, cancel := context.WithTimeout(context.Background(), perActionTO)
+			self, _ := os.Executable()
+			cmd := exec.CommandContext(ctx, self, selfExeKey, "read1", p)
+			o, e := cmd.CombinedOutput()
+			s := strings.TrimSpace(string(o))
+			switch {
+			case ctx.Err() == context.DeadlineExceeded:
+				m.Read = "hang"
+			case e == nil && strings.HasPrefix(s, "READOK"):
+				m.Read = "ok"
+				n, _ := strconv.ParseInt(fieldN(s), 10, 64)
+				m.ReadN = &n
+			case strings.Contains(s, "WinError 6") || strings.Contains(s, "invalid handle"):
+				m.Read = "err6"
+				m.ReadErr = ascii(s)
+			default:
+				m.Read = "eof"
+				m.ReadErr = "mapped-from:" + ascii(s)
+				out.Notes = append(out.Notes, "SCHEMA-GAP: read_result closed set lacks err_open; raw="+ascii(s))
+			}
+			cancel()
+		} else {
+			m.Read = "eof"
+			m.ReadErr = "mapped: path_view unresolvable; raw=" + m.PathErr
+		}
+		out.Members = append(out.Members, m)
+		if m.Create != "ok" && out.CreateResult != "err_at_syscall" && out.CreateResult != "err_at_parse" {
+			out.CreateResult = m.Create
+			out.ErrorStage = stageOf(m.Create)
+		}
+	}
+	// top-level aggregates
+	allOK := true
+	for _, mm := range out.Members {
+		if mm.Create != "ok" {
+			allOK = false
+		}
+	}
+	if allOK && len(out.Members) > 0 {
+		out.CreateResult = "ok"
+		out.ErrorStage = "null"
+	}
+	// canonical self hash: full final dir state (utf8-hex names, sorted, compact)
+	names := []string{}
+	if es, er := os.ReadDir(scratch); er == nil {
+		for _, e := range es {
+			names = append(names, hexOf(e.Name()))
+		}
+	}
+	sort.Strings(names)
+	cj, _ := json.Marshal(names)
+	out.SelfSHA = sha(cj)
+	switch {
+	case out.CreateResult == "err_at_syscall":
+		out.OSLegality = "illegal"
+	case out.CreateResult == "err_at_parse":
+		out.OSLegality = "unknown"
+	default:
+		legal := true
+		for _, mm := range out.Members {
+			if !mm.DirFound {
+				legal = false
+			}
+		}
+		if legal && len(out.Members) > 0 {
+			out.OSLegality = "legal"
+		} else {
+			out.OSLegality = "unknown"
+			out.Notes = append(out.Notes, "PHANTOM-OK: at least one member create=ok without matching dir entry")
+		}
+	}
+	out.ElapsedMS = time.Since(t0).Milliseconds()
+	return out
+}
+
+func stageOf(cr string) string {
+	if cr == "err_at_parse" {
+		return "parse"
+	}
+	if cr == "hang" {
+		return "null"
+	}
+	return "syscall"
 }
 
 func buildCell(caseID, group, entry, scratch, hexName string, payload []byte, defect, form string, base, comp int) cellOut {
@@ -980,7 +1204,13 @@ func mechFor(form string) string {
 	return "none"
 }
 
-func runAll(group string) {
+func runAll(group, only string) {
+	onlySet := map[string]bool{}
+	if only != "" {
+		for _, id := range strings.Split(only, ",") {
+			onlySet[strings.TrimSpace(id)] = true
+		}
+	}
 	fmt.Println("W-GO runner start; toolchain=" + runtime.Version() + " arch=" + runtime.GOARCH)
 	if err := verifyFrozen(); err != nil {
 		fmt.Println("HARD STOP: " + ascii(err.Error()))
@@ -1009,12 +1239,15 @@ func runAll(group string) {
 			runZipCell(c)
 			continue
 		}
-		for mi, smp := range c.Samples {
-			hx := hexOf(string(smp))
-			for _, e := range goEntries {
-				def := c.Defect
-				childCell(c.ID+memberSuffix(len(c.Samples), mi), c.Group, e, hx, []byte("X"), def)
+		if len(onlySet) > 0 && !onlySet[c.ID] {
+			continue
+		}
+		for _, e := range goEntries {
+			hexList := make([]string, 0, len(c.Samples))
+			for _, smp := range c.Samples {
+				hexList = append(hexList, hexOf(string(smp)))
 			}
+			childCell(c, e, hexList, []byte("X"))
 		}
 	}
 	runLenGrids()

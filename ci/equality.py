@@ -578,6 +578,10 @@ def main(argv):
             return None            # a JSON null is a port saying "no value", not a fifth answer
         return v
 
+    def pinned_input(port, k):
+        c = cmp[port][k]
+        return canon_name(c.get("name_source") or c.get("requested_name") or c.get("name_landed_as"))
+
     def compare(fields, cell):
         """returns (agree, values) per field over the ports that recorded it"""
         out = {}
@@ -634,10 +638,40 @@ def main(argv):
     skip = unpinned_keys | set(incomparable)
     cells_live = [k for k in sorted(shared) if k not in skip]
 
+    def truncation(k, f, rec):
+        """Which ports wrote a landed name that is a prefix of the pinned input, at a cut the record
+        itself does not explain. Printed as a note; never used to delete a value (see below).
+
+        A port that wrote the landed name cut short may be claiming either of two true things: that the OS
+
+        Measured (rev6 run): three ports recorded the landed name of `report-2026.txt` as the hex of
+        `report-2026`, and `invoice_FINAL_2026.xls` as the hex of `invoice_FIN` - a fixed-width cut of the
+        hex string - while the same record said `name_mutated=false`. Two other ports wrote the whole name
+        as text. Scoring that as a disagreement about Windows would be the gate inventing a finding out of
+        a display width; scoring it as agreement would hide that three ports cannot currently show the name
+        they saw. It is reported as TRUNCATED, which is a defect against those records.
+        """
+        if f not in NAMEISH:
+            return set()
+        want = {n: pinned_input(n, k) for n in rec}
+        bad = set()
+        for n, v in rec.items():
+            src = want.get(n)
+            if v[0] != "h" or not v[1] or src[0] not in ("h", "r") or not src[1]:
+                continue
+            if v[1] == src[1][:len(v[1])] and len(v[1]) < len(src[1]) and len(v[1]) % 2 == 0:
+                bad.add(n)
+        return bad
+
     def sweep(fields):
-        dis, nr, agree = [], [], 0
+        dis, nr, agree, trunc = [], [], 0, []
         for k in cells_live:
             for f, rec in compare(fields, {n: cmp[n][k] for n in names}).items():
+                if not rec:
+                    continue
+                cut = truncation(k, f, rec)
+                if cut:
+                    trunc.append((k, f, sorted(cut)))
                 if not rec:
                     continue
                 if len({str(v) for v in rec.values()}) > 1:
@@ -646,15 +680,20 @@ def main(argv):
                     agree += 1
                 else:
                     nr.append((k, f, sorted(set(names) - set(rec))))
-        return dis, nr, agree
+        return dis, nr, agree, trunc
 
-    vdis, vnr, vagree = sweep(VERDICT_FIELDS)
-    pdis, pnr, pagree = sweep(PROBE_FIELDS)
+    vdis, vnr, vagree, vtrunc = sweep(VERDICT_FIELDS)
+    pdis, pnr, pagree, ptrunc = sweep(PROBE_FIELDS)
 
     print("== verdict equality (the claim under test: six independent ports, same checker answer)")
-    print("   cells_compared=%d fields=%d fact_cells=%d agree=%d disagree=%d not_recorded=%d"
+    print("   cells_compared=%d fields=%d fact_cells=%d agree=%d disagree=%d not_recorded=%d truncated_value=%d"
           % (len(cells_live), len(VERDICT_FIELDS), vagree + len(vdis) + len(vnr), vagree,
-             len(vdis), len(vnr)))
+             len(vdis), len(vnr), len(vtrunc)))
+    for k, f, who in vtrunc[:8]:
+        print("   PREFIX-SHAPED %s %s by %s - check each against that port's own length fields:"
+              % (fmt(k), f, ",".join(who)))
+        print("        a trailing character the OS dropped is a finding; a hex string cut at a display"
+              " width is a record that contradicts its own name_mutated flag")
     for k, f, rec in vdis[:20]:
         parts = sorted({"%s:%s" % (n, str(v)[1:-1])[:26] for n, v in rec.items()})
         print("   VERDICT-DISAGREE %s %s -> %s" % (fmt(k), f, " | ".join(parts)))
@@ -679,15 +718,16 @@ def main(argv):
 
     if vdis:
         print("OUTCOME=RED verdict_disagreements=%d verdict_identical_cells=%d/%d "
-              "probe_cells_differing=%d unpinned_input=%d incomparable=%d required_cells_missing=%d"
+              "probe_cells_differing=%d unpinned_input=%d incomparable=%d truncated_values=%d "
+              "required_cells_missing=%d"
               % (len(vdis), len(identical_cells), len(cells_live), len({k for k, _, _ in pdis}),
-                 len(unpinned), len(incomparable), short_total))
+                 len(unpinned), len(incomparable), len(vtrunc) + len(ptrunc), short_total))
         return 1
     if short_total or vnr or unpinned or incomparable:
         print("OUTCOME=INCOMPLETE verdict_identical_cells=%d/%d required_cells_missing=%d unpinned_input=%d "
-              "incomparable=%d verdict_not_recorded=%d"
+              "incomparable=%d verdict_not_recorded=%d truncated_values=%d"
               % (len(identical_cells), len(cells_live), short_total, len(unpinned),
-                 len(incomparable), len(vnr)))
+                 len(incomparable), len(vnr), len(vtrunc) + len(ptrunc)))
         print("   No port disagrees with another on any checker verdict this gate could compare. What is")
         print("   missing is a cell, a pinned input, or a recorded verdict -- and a missing measurement is")
         print("   not agreement.")

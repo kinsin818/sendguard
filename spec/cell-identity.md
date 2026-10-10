@@ -162,3 +162,10 @@ held `python`, `python.windows.x64` and `python.windows.3.14.7.json` at once - d
 revisions of one port. Folding them inflates a denominator with cells produced under another schema;
 splitting them reads one port as two disagreeing ports. Non-canonical faces are printed by name and count
 and excluded.
+**9.6 A prefix-shaped landed name is flagged, never deleted.** Tried first as a deletion rule and rejected
+in the same hour: on `trail.` and `trailsp ` the landed name genuinely IS a prefix of the input (Windows
+drops the trailing character), which is the project's best finding; on `report-2026.txt` three ports
+recorded a name cut at a display width while their own record said `name_mutated=false`, which is a
+self-contradictory record. From the hex alone the two are indistinguishable, so `ci/equality.py` prints
+`PREFIX-SHAPED` naming the ports and leaves the disagreement standing. A rule that cannot tell a finding
+from an artefact must not be allowed to choose which one to delete.

@@ -44,12 +44,21 @@ SET_FIELDS = ("create_result", "read_result", "error_stage", "os_legality_verdic
 
 # per spec/cell-identity.md section 1: a cell that is run more than once must carry the varying
 # dimension as a named field, and that field is part of the identity. Filenames are not identity.
-SUB_FIELDS = ("base_len", "builder", "reader", "packer", "extractor")
+SUB_FIELDS = ("base_len", "builder", "reader", "packer", "extractor", "path_form",
+            "member", "member_index", "requested_form")
 
 
 def sub_identity(cell):
+    """Declared by the cell when it knows better than this list; otherwise fall back to the known
+    dimensions. A port that adds a dimension must be able to say so, or its cells collide."""
+    declared = cell.get("sub_identity")
+    fields = list(SUB_FIELDS)
+    if isinstance(declared, dict):
+        fields = [f for f in declared if declared[f] is not None] or fields
+    elif isinstance(declared, list):
+        fields = [f for f in declared if cell.get(f) is not None] or fields
     parts = []
-    for f in SUB_FIELDS:
+    for f in fields:
         v = cell.get(f)
         if v is None or v == "":
             continue

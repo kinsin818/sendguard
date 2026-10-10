@@ -104,9 +104,16 @@ def build():
     for name in ctrl:
         req.append({"case_group": "ctrl", "case_id": name, "sub_identity": {}})
 
+    # the frozen table's api_entry map predates the typescript port; the runtime is node's, so the
+    # entry list is aliased rather than editing a frozen file to add a language
+    ENTRY_ALIAS = {"typescript": "node"}
     tapi = [{"case_group": "tapi", "case_id": "T-API", "language": lang, "api_entry": e,
              "sub_identity": {}}
             for lang in sorted(entries) for e in entries[lang]]
+    for lang, src in sorted(ENTRY_ALIAS.items()):
+        for e in entries.get(src, []):
+            tapi.append({"case_group": "tapi", "case_id": "T-API", "language": lang,
+                         "api_entry": e, "sub_identity": {}})
 
     seen = set()
     uniq = []

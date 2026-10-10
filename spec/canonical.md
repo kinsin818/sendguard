@@ -33,7 +33,7 @@ Status words are a closed set. A measurement cell whose status word is not in th
 
 `parse` / `syscall` / `fs` / `tool` / `null` (no error).
 
-## 5. read_result (observation side, 4 values - 2nd-round verdict 4)
+## 5. read_result (observation side, 5 values - 2nd-round verdict 4, fifth word added by rev4)
 
 | word | meaning |
 |---|---|
@@ -41,6 +41,11 @@ Status words are a closed set. A measurement cell whose status word is not in th
 | `eof` | Read returned EOF / zero bytes. |
 | `err6` | WinError 6 (invalid handle) path. |
 | `hang` | Read hung (timeout). |
+| `not_applicable` | Nothing was read because nothing landed: creation failed, or the name is a device this project refuses to open. Requires `read_skipped_reason`. |
+
+Rev4 note: the four original words all presuppose that a read happened. A cell whose create failed has
+nothing to read, and inventing `eof` there would be rewriting a verdict to satisfy a ruler. `not_applicable`
+is the honest fifth value; it is required by `schema.json` like the others, so absence is still a defect.
 
 Hang conflicts are NOT adjudicated: both recipes run in the same job, both readings are printed as-is.
 

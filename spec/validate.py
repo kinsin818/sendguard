@@ -21,14 +21,15 @@ CASES_YAML = pathlib.Path(__file__).resolve().parent / "cases.yaml"
 
 CLOSED_SETS = {
     "case_group": {"trap", "ctrl", "tapi", "blind", "len"},
-    "language": {"node", "python", "go", "java", "csharp", "rust"},
+    "language": {"node", "typescript", "python", "go", "java", "csharp", "rust"},
     "os": {"windows", "macos", "ubuntu"},
-    "name_encoding": {"utf16_code_units", "code_points", "utf8_bytes"},
+    "name_encoding": {"hex_utf16le", "hex_raw_bytes"},
+    "length_unit": {"utf16_code_units", "code_points", "utf8_bytes"},
     "path_form": {"plain", "extended"},
     "longpath_mechanism": {"manifest", "prefix_rewrite", "none", "unknown"},
     "create_result": {"ok", "err_at_parse", "err_at_syscall", "hang"},
     "error_stage": {"parse", "syscall", "fs", "tool", "null"},
-    "read_result": {"ok", "eof", "err6", "hang"},
+    "read_result": {"ok", "eof", "err6", "hang", "not_applicable"},
     "os_legality_verdict": {"legal", "illegal", "unknown"},
     "attribution_layer": {"L1", "L2", "L3", "L3_interaction"},
 }

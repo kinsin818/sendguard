@@ -16,7 +16,17 @@ the main agent) may reinterpret it mid-run; changes require a FROZEN.md update.
   whole batch, re-run; only rework-then-still-zero -> No-Go.
 - `instrument_conflict` -> INSTRUMENT-RED + rework; it is NOT a Go hit source.
 
-## 2. T-API instrument self-check gate
+## 2. T-API instrument self-check gate (corrected by rev4)
+
+Two different things were conflated here. Measured by the TypeScript port: its pinned entries all sit on
+one underlying open, so its entry spread is genuinely zero.
+
+- `T-API produced no records at all` => instrument failure: the harness did not run every pinned entry,
+  the whole batch is re-run. This is what the original clause was protecting.
+- `T-API ran every pinned entry and they agree` => **a finding, published as entry-invariance**, not a
+  failure. A gate that requires divergence will manufacture it.
+
+The old wording ("hits == 0 => instrument broken, batch void") is withdrawn: it made agreement illegal.
 
 - T-API cells enter the matrix as data cells and become whitepaper page-3
   selling points; they do NOT gate Go/No-Go.
@@ -42,7 +52,21 @@ IV' (above) is the gate form; IV (cross-language unit) is a data column.
 | > 1 unit, other cells of domain normal | unresolved (evidence only, not whitepaper, instrument NOT guilty) |
 | > 1 unit, systematic domain shift (>= 2 cells same direction) | INSTRUMENT-RED: domain re-run |
 
-## 5. Bisection override procedure (Qoder 3-3)
+## 5. Bisection override procedure (regime model corrected by rev4)
+
+The regime is decided by `longpath_mechanism`, not by `path_form`. Measured: a runtime that rewrites to the
+extended prefix itself shows the component ceiling (255 ok / 256 refused, code 123) on **both** path forms
+and at every base depth, so "plain face => total length 259 - base - 1, zero tolerance" is not a universal
+law and cannot be a gate condition.
+
+- `longpath_mechanism = manifest` or `prefix_rewrite`: expect `max_component == volume max_component`
+  (255 measured here) at every base; boundary code 123.
+- `longpath_mechanism = none` and no prefix: expect `max_component == 259 - base_len - 1`; boundary code 3.
+- A port that satisfies neither model is `unresolved` and is reported, not forced into a bucket.
+- Base depth 13 is reachable inside a copy through a mapped drive (`subst`); the ladder is
+  {78, 120, 200} required and 13 permitted as extra.
+
+## 5bis. Old heading kept for provenance (Qoder 3-3)
 
 Only the arbitration seat may sign a bisection downgrade. Basis: domain B four
 base tiers each hit `259 - base - 1` EXACTLY (zero tolerance), boundary code 3.

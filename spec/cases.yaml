@@ -1,0 +1,202 @@
+# SENDGUARD frozen case table (S01).
+# N12 hard rule: samples are stored as UTF-8 hex ONLY; a forbidden-name sample
+# is NEVER materialized as a real file in this repo.
+# All comments in English (M21). No real usernames/emails/company names (Qoder e).
+format_version: 1
+frozen_at: "2026-10-10"
+seed_blind_samples: "7f3c1a9e5b2d8f40c6e1a7b3d9f2e5c8a1b6d4f0e9c2a7b5d3f8e6c1a9b4d7f0"
+blind_map_ref: "evidence/S00/blind-map.json"
+expectation_policy: "all expectations MUST be null at freeze; filled only after measurement (whitepaper gold)"
+spec_sources:
+  - "MS Learn: Naming Files, Paths, and Namespaces (learn.microsoft.com/windows/win32/fileio/naming-a-file)"
+  - "Unicode NormalizationTest.txt (T07/T08/T09)"
+  - "BidiTest.txt (T12)"
+  - "filename-reserved-regex (npm; CONIN$ agrees with arbitration B5)"
+
+# ---- entry lists, pinned per language (workers may NOT self-select) ----
+# T-API sub-cells (not counted in the 20): python 4 / go 4 / node 3 (军令 P3)
+api_entry:
+  node: [writeFileSync, createWriteStream, appendFileSync]
+  python: [open_wb, os.mkdir, pathlib.write_bytes, os.rename]
+  go: [os.Create, os.WriteFile, os.OpenFile, os.Mkdir]
+  java: [Files.write, Files.createFile, Files.newOutputStream, Files.move]
+  csharp: [File.WriteAllBytes, File.Create, FileStream, File.Move]
+  rust: [std::fs::write, std::fs::File::create, std::fs::OpenOptions, std::fs::rename]
+
+# 5 control cells (not counted in the 20); expectations ONLY from evidence/S00-ctrl-baseline.md
+control_cells:
+  - T-CTRL-NAMETOOLONG
+  - T-CTRL-ASCII
+  - T-CTRL-ILLEGAL-CHAR
+  - T-CTRL-PARSE
+  - T-CTRL-CANON
+
+# 20 frozen traps. sample = UTF-8 hex of the synthetic name.
+cases:
+  - id: T01
+    sample_hex: "434f4e2e747874"               # CON.txt
+    category: reserved_device_name
+    spec_source: "MS Learn naming-a-file (reserved device names)"
+    locale: en-US
+    applicable: [windows, macos, ubuntu]
+    expectation: null
+    repro_cmd: "<runner> <lang> T01"
+  - id: T02
+    sample_hex: "4e554c2e7461722e677a"          # NUL.tar.gz
+    category: reserved_device_name
+    spec_source: "MS Learn naming-a-file"
+    locale: en-US
+    applicable: [windows, macos, ubuntu]
+    expectation: null
+    repro_cmd: "<runner> <lang> T02"
+  - id: T03
+    sample_hex: "613c622e747874"                # a<b.txt
+    category: illegal_char_filter
+    spec_source: "MS Learn naming-a-file (invalid chars < > : \" | ? *)"
+    locale: en-US
+    applicable: [windows, macos, ubuntu]
+    expectation: null
+    repro_cmd: "<runner> <lang> T03"
+  - id: T04
+    sample_hex: "747261696c2e"                  # trail.
+    category: path_preprocessing_policy
+    spec_source: "MS Learn naming-a-file (trailing dot)"
+    locale: en-US
+    applicable: [windows, macos, ubuntu]
+    expectation: null
+    repro_cmd: "<runner> <lang> T04"
+  - id: T05
+    sample_hex: "747261696c737020"              # "trailsp " (trailing space)
+    category: path_preprocessing_policy
+    spec_source: "MS Learn naming-a-file (trailing space)"
+    locale: en-US
+    applicable: [windows, macos, ubuntu]
+    expectation: null
+    repro_cmd: "<runner> <lang> T05"
+  - id: T06
+    sample_hex: "656d6f6a692d26646564726f6d2664656461736d636865612e747874"  # emoji-<smile>.txt
+    category: unicode_normalization
+    spec_source: "Unicode emoji on filesystems"
+    locale: en-US
+    applicable: [windows, macos, ubuntu]
+    expectation: null
+    repro_cmd: "<runner> <lang> T06"
+  - id: T07
+    sample_hex: "636166652b5c75303033312e747874"  # NFD: cafe + U+0301
+    category: unicode_normalization
+    spec_source: "Unicode NormalizationTest.txt (NFD)"
+    locale: en-US
+    applicable: [macos, ubuntu]
+    expectation: null
+    repro_cmd: "<runner> <lang> T07"
+  - id: T08
+    sample_hex: "636166c3a92e747874"             # NFC: café
+    category: unicode_normalization
+    spec_source: "Unicode NormalizationTest.txt (NFC)"
+    locale: en-US
+    applicable: [macos, ubuntu]
+    expectation: null
+    repro_cmd: "<runner> <lang> T08"
+  - id: T09
+    sample_hex_list:
+      - "726573756d652d6e66642b5c75303033312e747874"   # NFD member
+      - "726573756d652d6ec383a92e747874"               # NFC member
+    category: unicode_normalization
+    spec_source: "NFC/NFD coexistence in one directory (headline cell)"
+    locale: en-US
+    applicable: [macos, ubuntu]
+    expectation: null
+    repro_cmd: "<runner> <lang> T09"
+  - id: T10
+    sample_hex: "434f4e"                             # CON
+    category: reserved_device_name
+    spec_source: "MS Learn naming-a-file"
+    locale: en-US
+    applicable: [windows, macos, ubuntu]
+    expectation: null
+    repro_cmd: "<runner> <lang> T10"
+  - id: T11
+    sample_hex: "434f4d312e6c6f67"                   # COM1.log
+    category: reserved_device_name
+    spec_source: "MS Learn naming-a-file"
+    locale: en-US
+    applicable: [windows, macos, ubuntu]
+    expectation: null
+    repro_cmd: "<runner> <lang> T11"
+  - id: T12
+    sample_hex: "626964692b5c75323032652e747874"      # bidi + U+202E
+    category: bidi_handling
+    spec_source: "BidiTest.txt"
+    locale: en-US
+    applicable: [windows, macos, ubuntu]
+    expectation: null
+    repro_cmd: "<runner> <lang> T12"
+  - id: T13
+    sample_hex: "7a65726f77696474682b5c75323030422e747874"  # zero-width U+200B
+    category: zero_width_handling
+    spec_source: "Unicode U+200B"
+    locale: en-US
+    applicable: [windows, macos, ubuntu]
+    expectation: null
+    repro_cmd: "<runner> <lang> T13"
+  - id: T14
+    sample_hex_list:
+      - "50524e"                                     # PRN
+      - "4155582e6c6f67"                             # AUX.log
+      - "4c505439"                                   # LPT9
+    category: reserved_device_name
+    spec_source: "MS Learn naming-a-file (device table)"
+    locale: en-US
+    applicable: [windows, macos, ubuntu]
+    expectation: null
+    repro_cmd: "<runner> <lang> T14"
+  - id: T15
+    sample_hex: "6374726c2d75303030312e747874"        # control char U+0001
+    category: control_char_handling
+    spec_source: "MS Learn naming-a-file (chars 0-31)"
+    locale: en-US
+    applicable: [windows, macos, ubuntu]
+    expectation: null
+    repro_cmd: "<runner> <lang> T15"
+  - id: T16
+    sample_hex: "7a69702d726f756e64747269702e7a6970"  # zip-roundtrip.zip (bit 11)
+    category: zip_roundtrip
+    spec_source: "ZIP bit 11 (UTF-8 filename) roundtrip"
+    locale: en-US
+    applicable: [windows, macos, ubuntu]
+    expectation: null
+    repro_cmd: "<runner> <lang> T16"
+  - id: T17
+    sample_hex: "T-LEN-PATH (length bisection, G1-G4)"
+    category: component_length_limit
+    spec_source: "2nd-round arbitration 3 / Qoder 3-1/3-2: measure curve not points"
+    locale: en-US
+    applicable: [windows, macos, ubuntu]
+    expectation: null
+    repro_cmd: "<runner> <lang> T17"
+  - id: T18
+    sample_hex: "T-LEN-COMP (component length bisection, G1-G4)"
+    category: component_length_limit
+    spec_source: "2nd-round arbitration 3 / Qoder 3-1/3-2"
+    locale: en-US
+    applicable: [windows, macos, ubuntu]
+    expectation: null
+    repro_cmd: "<runner> <lang> T18"
+  - id: T19
+    sample_hex_list:
+      - "ff21414243ff212e747874"                     # fullwidth ABC
+      - "313131312e747874"                           # Hangul jamo row
+    category: case_folding
+    spec_source: "full/half-width + Hangul jamo"
+    locale: ja-JP
+    applicable: [windows, macos, ubuntu]
+    expectation: null
+    repro_cmd: "<runner> <lang> T19"
+  - id: T20
+    sample_hex: "2d2d666f7263652e747874"             # --force.txt
+    category: unknown
+    spec_source: "filename that looks like a CLI flag"
+    locale: en-US
+    applicable: [windows, macos, ubuntu]
+    expectation: null
+    repro_cmd: "<runner> <lang> T20"

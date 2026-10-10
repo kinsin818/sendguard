@@ -1,0 +1,519 @@
+{
+  "collected_on_host": "MS-MJHQJOCTVCHZ",
+  "commands": {
+    "command_failures": 0,
+    "commands_run": 9,
+    "contradictions_rc0_no_output": 0,
+    "form": "argv list only, shell=False, rc checked before use"
+  },
+  "manifest_scan": {
+    "disclaimer": "this is a byte scan for the ASCII token longPathAware across raw file bytes; it is NOT a PE manifest parse and cannot prove the loader honours the setting",
+    "distinct_executables": [
+      {
+        "bytes_scanned": 176552,
+        "file_size": 176552,
+        "found": false,
+        "hit_count": 0,
+        "hits": [],
+        "kind_assumed": "pe-executable",
+        "method": "byte-scan of raw executable bytes for b\"longPathAware\"; NOT a PE manifest parse",
+        "path": "C:\\Program Files (x86)\\Java\\jre1.8.0_31\\bin\\java.exe",
+        "status": "scanned"
+      },
+      {
+        "bytes_scanned": 145168,
+        "file_size": 145168,
+        "found": true,
+        "hit_count": 2,
+        "hits": [
+          {
+            "excerpt_ascii_safe": "osoft-com:asm.v3\"><windowsSettings><[longPathAware] xmlns=\"http://schemas.microsoft.com",
+            "offset": 130155
+          },
+          {
+            "excerpt_ascii_safe": "com/SMI/2016/WindowsSettings\">true</[longPathAware]></windowsSettings></application><ms",
+            "offset": 130237
+          }
+        ],
+        "kind_assumed": "pe-executable",
+        "method": "byte-scan of raw executable bytes for b\"longPathAware\"; NOT a PE manifest parse",
+        "path": "C:\\Program Files (x86)\\dotnet\\dotnet.exe",
+        "status": "scanned"
+      },
+      {
+        "bytes_scanned": 50344,
+        "file_size": 50344,
+        "found": false,
+        "hit_count": 0,
+        "hits": [],
+        "kind_assumed": "pe-executable",
+        "method": "byte-scan of raw executable bytes for b\"longPathAware\"; NOT a PE manifest parse",
+        "path": "C:\\Program Files\\Eclipse Adoptium\\jdk-17.0.17.10-hotspot\\bin\\java.exe",
+        "status": "scanned"
+      },
+      {
+        "bytes_scanned": 49768,
+        "file_size": 49768,
+        "found": false,
+        "hit_count": 0,
+        "hits": [],
+        "kind_assumed": "pe-executable",
+        "method": "byte-scan of raw executable bytes for b\"longPathAware\"; NOT a PE manifest parse",
+        "path": "C:\\Program Files\\Eclipse Adoptium\\jdk-21.0.6.7-hotspot\\bin\\java.exe",
+        "status": "scanned"
+      },
+      {
+        "bytes_scanned": 13765120,
+        "file_size": 13765120,
+        "found": false,
+        "hit_count": 0,
+        "hits": [],
+        "kind_assumed": "pe-executable",
+        "method": "byte-scan of raw executable bytes for b\"longPathAware\"; NOT a PE manifest parse",
+        "path": "C:\\Program Files\\Go\\bin\\go.exe",
+        "status": "scanned"
+      },
+      {
+        "bytes_scanned": 167712,
+        "file_size": 167712,
+        "found": true,
+        "hit_count": 2,
+        "hits": [
+          {
+            "excerpt_ascii_safe": "osoft-com:asm.v3\"><windowsSettings><[longPathAware] xmlns=\"http://schemas.microsoft.com",
+            "offset": 154731
+          },
+          {
+            "excerpt_ascii_safe": "com/SMI/2016/WindowsSettings\">true</[longPathAware]></windowsSettings></application><ms",
+            "offset": 154813
+          }
+        ],
+        "kind_assumed": "pe-executable",
+        "method": "byte-scan of raw executable bytes for b\"longPathAware\"; NOT a PE manifest parse",
+        "path": "C:\\Program Files\\dotnet\\dotnet.exe",
+        "status": "scanned"
+      },
+      {
+        "bytes_scanned": 91694408,
+        "file_size": 91694408,
+        "found": false,
+        "hit_count": 0,
+        "hits": [],
+        "kind_assumed": "pe-executable",
+        "method": "byte-scan of raw executable bytes for b\"longPathAware\"; NOT a PE manifest parse",
+        "path": "C:\\Program Files\\nodejs\\node.exe",
+        "status": "scanned"
+      },
+      {
+        "bytes_scanned": 106208,
+        "file_size": 106208,
+        "found": true,
+        "hit_count": 2,
+        "hits": [
+          {
+            "excerpt_ascii_safe": "v3\">..    <windowsSettings>..      <[longPathAware] xmlns=\"http://schemas.microsoft.com",
+            "offset": 12136
+          },
+          {
+            "excerpt_ascii_safe": "com/SMI/2016/WindowsSettings\">true</[longPathAware]>..    </windowsSettings>..  </appli",
+            "offset": 12218
+          }
+        ],
+        "kind_assumed": "pe-executable",
+        "method": "byte-scan of raw executable bytes for b\"longPathAware\"; NOT a PE manifest parse",
+        "path": "C:\\Python314\\python.exe",
+        "status": "scanned"
+      },
+      {
+        "bytes_scanned": 12814336,
+        "file_size": 12814336,
+        "found": false,
+        "hit_count": 0,
+        "hits": [],
+        "kind_assumed": "pe-executable",
+        "method": "byte-scan of raw executable bytes for b\"longPathAware\"; NOT a PE manifest parse",
+        "path": "C:\\Users\\Administrator\\.cargo\\bin\\rustup.exe",
+        "status": "scanned"
+      }
+    ],
+    "excerpt_padding_bytes": 36,
+    "token": "longPathAware"
+  },
+  "not_obtainable_legend": {
+    "not-obtainable-here": "this host/toolchain could not produce the fact; no substitute value was invented"
+  },
+  "os": {
+    "build": 19041,
+    "console_code_page": {
+      "input": 936,
+      "method": "kernel32.GetConsoleCP/GetConsoleOutputCP via ctypes",
+      "output": 936
+    },
+    "cpu_architecture": {
+      "ENVIRON_ARCHITEW6432": null,
+      "PROCESSOR_ARCHITECTURE": "AMD64",
+      "platform_machine": "AMD64"
+    },
+    "locale": {
+      "getdefaultlocale_env": "C.UTF-8",
+      "getlocale": [
+        "Chinese (Simplified)_China",
+        "936"
+      ],
+      "preferred_encoding": "cp936",
+      "utf8_mode_enabled": false
+    },
+    "platform_name": "Windows-10-10.0.19041-SP0",
+    "release": "10",
+    "self_interpreter": {
+      "argv0": "harness/envfacts.py",
+      "python_version": "3.14.7",
+      "resolved_executable": "C:\\Python314\\python.exe"
+    },
+    "service_pack": null,
+    "system": "Windows",
+    "version": "10.0.19041"
+  },
+  "registry_longpaths": {
+    "hive": "HKLM",
+    "key": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\FileSystem",
+    "status": "present",
+    "value": 0,
+    "value_name": "LongPathsEnabled",
+    "value_type": "REG_DWORD"
+  },
+  "runtimes": {
+    "dotnet": {
+      "candidates_found": 2,
+      "per_candidate": [
+        {
+          "kind": "pe-executable",
+          "manifest_scan_status": "scanned",
+          "manifest_token_found": true,
+          "resolved_path": "C:\\Program Files\\dotnet\\dotnet.exe"
+        },
+        {
+          "kind": "pe-executable",
+          "manifest_scan_status": "scanned",
+          "manifest_token_found": true,
+          "resolved_path": "C:\\Program Files (x86)\\dotnet\\dotnet.exe"
+        }
+      ],
+      "resolved_paths": [
+        "C:\\Program Files\\dotnet\\dotnet.exe",
+        "C:\\Program Files (x86)\\dotnet\\dotnet.exe"
+      ],
+      "shim_note": "files with .cmd/.bat extension are batch wrappers; a byte-scan of them cannot carry a PE manifest token -- this is recorded per file, not assumed",
+      "version_probe": {
+        "argv": [
+          "C:\\Program Files\\dotnet\\dotnet.exe",
+          "--version"
+        ],
+        "note": "rc=0 with output; output used only after rc check",
+        "rc": 0,
+        "status": "ok",
+        "stream_used": "stdout",
+        "version_string": "8.0.413"
+      }
+    },
+    "go": {
+      "candidates_found": 1,
+      "per_candidate": [
+        {
+          "kind": "pe-executable",
+          "manifest_scan_status": "scanned",
+          "manifest_token_found": false,
+          "resolved_path": "C:\\Program Files\\Go\\bin\\go.exe"
+        }
+      ],
+      "resolved_paths": [
+        "C:\\Program Files\\Go\\bin\\go.exe"
+      ],
+      "shim_note": "files with .cmd/.bat extension are batch wrappers; a byte-scan of them cannot carry a PE manifest token -- this is recorded per file, not assumed",
+      "version_probe": {
+        "argv": [
+          "C:\\Program Files\\Go\\bin\\go.exe",
+          "version"
+        ],
+        "note": "rc=0 with output; output used only after rc check",
+        "rc": 0,
+        "status": "ok",
+        "stream_used": "stdout",
+        "version_string": "go version go1.23.5 windows/amd64"
+      }
+    },
+    "java": {
+      "candidates_found": 3,
+      "per_candidate": [
+        {
+          "kind": "pe-executable",
+          "manifest_scan_status": "scanned",
+          "manifest_token_found": false,
+          "resolved_path": "C:\\Program Files\\Eclipse Adoptium\\jdk-17.0.17.10-hotspot\\bin\\java.exe"
+        },
+        {
+          "kind": "pe-executable",
+          "manifest_scan_status": "scanned",
+          "manifest_token_found": false,
+          "resolved_path": "C:\\Program Files\\Eclipse Adoptium\\jdk-21.0.6.7-hotspot\\bin\\java.exe"
+        },
+        {
+          "kind": "pe-executable",
+          "manifest_scan_status": "scanned",
+          "manifest_token_found": false,
+          "resolved_path": "C:\\Program Files (x86)\\Java\\jre1.8.0_31\\bin\\java.exe"
+        }
+      ],
+      "resolved_paths": [
+        "C:\\Program Files\\Eclipse Adoptium\\jdk-17.0.17.10-hotspot\\bin\\java.exe",
+        "C:\\Program Files\\Eclipse Adoptium\\jdk-21.0.6.7-hotspot\\bin\\java.exe",
+        "C:\\Program Files (x86)\\Java\\jre1.8.0_31\\bin\\java.exe"
+      ],
+      "shim_note": "files with .cmd/.bat extension are batch wrappers; a byte-scan of them cannot carry a PE manifest token -- this is recorded per file, not assumed",
+      "version_probe": {
+        "argv": [
+          "C:\\Program Files\\Eclipse Adoptium\\jdk-17.0.17.10-hotspot\\bin\\java.exe",
+          "-version"
+        ],
+        "note": "rc=0 with output; output used only after rc check",
+        "rc": 0,
+        "status": "ok",
+        "stream_used": "combined",
+        "version_string": "openjdk version \"17.0.17\" 2025-10-21"
+      }
+    },
+    "node": {
+      "candidates_found": 1,
+      "per_candidate": [
+        {
+          "kind": "pe-executable",
+          "manifest_scan_status": "scanned",
+          "manifest_token_found": false,
+          "resolved_path": "C:\\Program Files\\nodejs\\node.exe"
+        }
+      ],
+      "resolved_paths": [
+        "C:\\Program Files\\nodejs\\node.exe"
+      ],
+      "shim_note": "files with .cmd/.bat extension are batch wrappers; a byte-scan of them cannot carry a PE manifest token -- this is recorded per file, not assumed",
+      "version_probe": {
+        "argv": [
+          "C:\\Program Files\\nodejs\\node.exe",
+          "--version"
+        ],
+        "note": "rc=0 with output; output used only after rc check",
+        "rc": 0,
+        "status": "ok",
+        "stream_used": "stdout",
+        "version_string": "v24.15.0"
+      }
+    },
+    "python": {
+      "candidates_found": 1,
+      "per_candidate": [
+        {
+          "kind": "pe-executable",
+          "manifest_scan_status": "scanned",
+          "manifest_token_found": true,
+          "resolved_path": "C:\\Python314\\python.exe"
+        }
+      ],
+      "resolved_paths": [
+        "C:\\Python314\\python.exe"
+      ],
+      "shim_note": "files with .cmd/.bat extension are batch wrappers; a byte-scan of them cannot carry a PE manifest token -- this is recorded per file, not assumed",
+      "version_probe": {
+        "argv": [
+          "C:\\Python314\\python.exe",
+          "--version"
+        ],
+        "note": "rc=0 with output; output used only after rc check",
+        "rc": 0,
+        "status": "ok",
+        "stream_used": "combined",
+        "version_string": "Python 3.14.7"
+      }
+    },
+    "rustc": {
+      "candidates_found": 1,
+      "per_candidate": [
+        {
+          "kind": "pe-executable",
+          "manifest_scan_status": "scanned",
+          "manifest_token_found": false,
+          "resolved_path": "C:\\Users\\Administrator\\.cargo\\bin\\rustup.exe"
+        }
+      ],
+      "resolved_paths": [
+        "C:\\Users\\Administrator\\.cargo\\bin\\rustup.exe"
+      ],
+      "shim_note": "files with .cmd/.bat extension are batch wrappers; a byte-scan of them cannot carry a PE manifest token -- this is recorded per file, not assumed",
+      "version_probe": {
+        "argv": [
+          "C:\\Users\\Administrator\\.cargo\\bin\\rustup.exe",
+          "--version"
+        ],
+        "note": "rc=0 with output; output used only after rc check",
+        "rc": 0,
+        "status": "ok",
+        "stream_used": "stdout",
+        "version_string": "rustup 1.29.0 (28d1352db 2026-03-05)"
+      }
+    },
+    "tsc": {
+      "candidates_found": 0,
+      "per_candidate": [],
+      "resolved_paths": [],
+      "shim_note": "files with .cmd/.bat extension are batch wrappers; a byte-scan of them cannot carry a PE manifest token -- this is recorded per file, not assumed",
+      "version_probe": {
+        "status": "no-candidate"
+      }
+    }
+  },
+  "runtimes_denominator": {
+    "bytes_scanned": 118969616,
+    "candidates_total": 9,
+    "distinct_executables_scanned": 9,
+    "executables_scanned": 9,
+    "manifest_scan_disclaimer": "byte-scan for the token string, not a PE manifest parse; batch shims carry no manifest",
+    "runtime_names_searched": 7,
+    "runtimes_found": 6
+  },
+  "schema": "envfacts/1",
+  "short_name_83": {
+    "denominator": {
+      "commands_run_for_83": 3,
+      "failed": 0,
+      "needs_elevation": 0,
+      "ok": 2
+    },
+    "per_volume": [
+      {
+        "ascii_safe_excerpt": "......:  .............................................................. GUID .............................: 0 (8dot3 .....................).......................: 2 (............ - .........)............................... C:\\ ......... 8dot3 ............",
+        "command": [
+          "fsutil",
+          "8dot3name",
+          "query",
+          "C:\\"
+        ],
+        "decoded_as": "cp936",
+        "decoded_text": "错误:  系统找不到指定的路径。\r\n正在尝试打开具有卷 GUID 路径的卷。\r\n卷状态为: 0 (8dot3 名称创建已启用)。\r\n注册表状态为: 2 (按卷设置 - 默认值)。\r\n\r\n基于上述设置，在 C:\\ 上启用 8dot3 名称创建",
+        "global_disable8dot3": "per-volume",
+        "preamble_error_line_present": true,
+        "rc": 0,
+        "short_name_generation": "enabled",
+        "state_numbers": [
+          0,
+          2
+        ],
+        "status": "ok",
+        "volume": "C:\\"
+      },
+      {
+        "ascii_safe_excerpt": "......:  .............................................................. GUID .............................: 1 (8dot3 .....................).......................: 2 (............ - .........)............................... D:\\ ......... 8dot3 ............",
+        "command": [
+          "fsutil",
+          "8dot3name",
+          "query",
+          "D:\\"
+        ],
+        "decoded_as": "cp936",
+        "decoded_text": "错误:  系统找不到指定的路径。\r\n正在尝试打开具有卷 GUID 路径的卷。\r\n卷状态为: 1 (8dot3 名称创建被禁用)。\r\n注册表状态为: 2 (按卷设置 - 默认值)。\r\n\r\n基于上述设置，在 D:\\ 上禁用 8dot3 名称创建",
+        "global_disable8dot3": "per-volume",
+        "preamble_error_line_present": true,
+        "rc": 0,
+        "short_name_generation": "disabled",
+        "state_numbers": [
+          1,
+          2
+        ],
+        "status": "ok",
+        "volume": "D:\\"
+      }
+    ],
+    "policy": "recorded as needs-elevation when fsutil refuses; never guessed"
+  },
+  "unicode_data": {
+    "note": "other runtimes (node/go/java/dotnet/rustc) do not expose a Unicode data version through a version command; for them the version is not-obtainable-here without an in-language probe program",
+    "other_runtime_dotnet_unicode_version": "not-obtainable-here",
+    "other_runtime_go_unicode_version": "not-obtainable-here",
+    "other_runtime_java_unicode_version": "not-obtainable-here",
+    "other_runtime_node_unicode_version": "not-obtainable-here",
+    "other_runtime_rustc_unicode_version": "not-obtainable-here",
+    "probe_status": "probed",
+    "probes": [
+      {
+        "actual_name": "GEORGIAN MTAVRULI CAPITAL LETTER AN",
+        "category": "Lu",
+        "codepoint": "U+1C90",
+        "declared_name": "GEORGIAN MTAVRULI CAPITAL LETTER AN",
+        "decomposition": null,
+        "nfc_result": [
+          "0x1c90"
+        ],
+        "version_sensitivity": "code point exists only from Unicode 11.0 (Mtavruli capitals); on older unicodedata the name lookup raises ValueError; NFC of it is stable (no decomposition) where present"
+      },
+      {
+        "actual_name": "SQUARE ERA NAME REIWA",
+        "category": "So",
+        "codepoint": "U+32FF",
+        "declared_name": "SQUARE ERA NAME REIWA",
+        "decomposition": "<square> 4EE4 548C",
+        "nfc_result": [
+          "0x32ff"
+        ],
+        "version_sensitivity": "the code point itself exists only from Unicode 13.0"
+      },
+      {
+        "actual_name": "GEORGIAN LETTER AN",
+        "category": "Ll",
+        "codepoint": "U+10D0",
+        "declared_name": "GEORGIAN AN",
+        "decomposition": null,
+        "nfc_result": [
+          "0x10d0"
+        ],
+        "version_sensitivity": "control character, stable across versions"
+      }
+    ],
+    "probes_run": 3,
+    "python_unicodedata_version": "16.0.0",
+    "version_source": "unicodedata.unidata_version (authoritative for this interpreter)"
+  },
+  "volumes": [
+    {
+      "drive_type": {
+        "class": "fixed",
+        "code": 3,
+        "method": "kernel32.GetDriveTypeW via ctypes",
+        "note": "GetDriveTypeW: fixed (local) disk"
+      },
+      "filesystem_name": "NTFS",
+      "max_component": 255,
+      "method": "kernel32.GetVolumeInformationW via ctypes",
+      "root": "C:\\",
+      "volume_flags": 65472255,
+      "volume_label": "",
+      "volume_serial": 3893123664
+    },
+    {
+      "drive_type": {
+        "class": "fixed",
+        "code": 3,
+        "method": "kernel32.GetDriveTypeW via ctypes",
+        "note": "GetDriveTypeW: fixed (local) disk"
+      },
+      "filesystem_name": "NTFS",
+      "max_component": 255,
+      "method": "kernel32.GetVolumeInformationW via ctypes",
+      "root": "D:\\",
+      "volume_flags": 65472255,
+      "volume_label": "",
+      "volume_serial": 3900905234
+    }
+  ],
+  "volumes_denominator": {
+    "api_failures": 0,
+    "volumes_scanned": 2
+  }
+}

@@ -3,22 +3,25 @@
 Point it at a folder and it tells you which file names will break on the recipient's machine, before you
 hit send.
 
-The same core exists in six implementations. **They are required to behave identically, and there is a gate
-that decides whether they do.** That gate, not the language count, is the point of this repository.
+The same core exists in six implementations. **They are required to give the same answer, and there is a
+gate that decides whether they do.** The gate separates the answer from the asking: the checker's verdict on
+a name must be byte-identical across the six, while what each language's own standard library did when asked
+is the matrix, not a failure. That gate, not the language count, is the point of this repository.
 
 ## 1. Verify first; the claims come after
 
 ```
 git clone <this repo> && cd sendguard
 python ci/selftest.py --scratch-root ../sg-selftest   # proves every gate can pass AND can fail
-python ci/equality.py                                 # six ports, one frozen spec, byte-identical output
+python ci/equality.py                                 # six ports, one frozen spec, same verdict bytes
 python ci/evidence_table.py                           # regenerates docs/evidence.md from the committed data
 ```
 
 Exit codes are documented in each file. `ci/selftest.py` feeds a one-byte difference, a flipped verdict, an
-invented status word, a crash record passed off as a measurement and a failed control into the equality
-gate, and also requires that the gate **say yes** to a genuinely equal pair - a gate that has only ever been
-seen refusing is not proven to work.
+invented status word, a crash record passed off as a measurement, a failed control and two spelling-drift
+cases into the equality gate, and it also requires the gate to **say yes** to a genuinely equal pair, to say
+yes when two ports spelled the same cell differently, and to refuse to fold a bare case id into a member it
+cannot prove. A gate that has only ever been seen refusing is not proven to work.
 
 Nothing below is worth believing that those three commands do not back up.
 
@@ -42,10 +45,12 @@ unsigned-executable launch behaviour, and any agreement between ports that the g
   above tells you whether they currently do.
 
 This is a delivery process, not a vocabulary of six syntaxes. It does not declare success because code was
-generated: two of the six ports' committed results in this repository's own history were **rejected by the
-gate** (31 of their cells carried a self-declared instrument failure and a runtime crash message), and the
-first version of a contract file published by this seat was withdrawn by name inside the file after it turned
-out to be derived from a mis-parse.
+generated: a port's committed results were **rejected by the gate** and sit unread in `results/node` (31 of
+their cells carried a self-declared instrument failure and a runtime crash message), the first version of a
+contract file published by this seat was withdrawn by name inside the file after it turned out to be derived
+from a mis-parse, and the equality gate reported 29 of 29 cells as failing until the disagreement was traced
+to how four ports had *written down* one fact - which was this repository's own defect, not the ports', and
+is recorded in `docs/FINDINGS-rev6.md` section M5 rather than smoothed over.
 
 ## 4. The discipline, and what each piece stops
 
@@ -60,6 +65,9 @@ out to be derived from a mis-parse.
 | expectation table written by a window that wrote no port and no skeleton | `spec/expectations.sealed.md` | six ports agreeing on a shared misreading |
 | outside referee: the machine's own tools | `evidence/S00/referee-windows.md` | our code and our own expectations being each other's only witness |
 | equality gate that refuses to compare unequal sets | `ci/equality.py` | comparing an intersection and reporting a pass |
+| representations folded before judging; absences never folded into answers | `ci/equality.py`, `spec/cell-identity.md` §9 | four spellings of one fact reported as four disagreements |
+| the checker's verdict separated from each language's own stdlib behaviour | `spec/cell-identity.md` §9.3 | calling the matrix a failure, or calling a shared bug agreement |
+| one canonical result face per port, others named and unread | `ci/blobhash.py`, `ci/evidence_table.py` | nine rows for six ports, and a denominator that means nothing |
 | two-sided self-test for every gate | `ci/selftest.py` | a gate hard-wired to green - which this project actually shipped once |
 
 ## 5. Where findings live
@@ -71,8 +79,11 @@ caused.
 
 ## 6. Status
 
-Under construction. Until `ci/equality.py` prints `OUTCOME=PASS`, treat §1's claim as unverified and the
-project as unfinished - that is the honest reading of `docs/evidence.md` as of this commit.
+Under construction. `docs/evidence.md` carries the current verdict line, regenerated from the committed
+result files; `docs/GAP.md` carries the required cells each port has not answered yet, by name. Until
+`ci/equality.py` prints `OUTCOME=PASS`, treat §1's claim as unverified and the project as unfinished - that
+is the honest reading of both files as of this commit. A cell that no port answered is a gap; a cell whose
+ports asked different layers is listed as not comparable, with the reason; neither is counted as agreement.
 
 License: to be set by the owner. Until then: forking and re-running to verify is welcome; redistribution as
 closed source is not licensed.

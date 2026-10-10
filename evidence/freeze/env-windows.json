@@ -1,0 +1,14 @@
+{
+    "machine":  "MS-MJHQJOCTVCHZ",
+    "arch":  "AMD64",
+    "os_version":  "Microsoft Windows 10.0.19041 ",
+    "os_build":  "10.0.19041.0",
+    "locale":  "zh-CN",
+    "LongPathsEnabled_hex":  "0",
+    "dot3name":  "The registry state is: 2 (Per volume setting - the default).",
+    "max_component":  255,
+    "volume_label":  "",
+    "filesystem":  "NTFS",
+    "toolchain_ref":  "evidence/S00/toolchain.txt",
+    "date":  "2026-10-10T12:56:33.9449997Z"
+}

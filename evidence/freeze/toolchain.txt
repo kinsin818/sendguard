@@ -1,0 +1,58 @@
+﻿SENDGUARD toolchain probe - S00 (2026-10-10, local machine)
+
+[node]
+  path : C:\Users\Administrator\AppData\Local\Doubao\User Data\sandbox_runtime\bases\d0ace100fdff5b2d247847aca1e3d83b\node\node.exe
+  ver  : v22.23.2
+
+[npm]
+  path : C:\Users\Administrator\AppData\Local\Doubao\User Data\sandbox_runtime\bases\d0ace100fdff5b2d247847aca1e3d83b\node\npm.ps1
+  ver  : 10.9.8
+
+[python]
+  path : C:\Users\Administrator\AppData\Local\Doubao\User Data\sandbox_runtime\bases\d0ace100fdff5b2d247847aca1e3d83b\python\python.exe
+  ver  : Python 3.13.13
+
+[go]
+  path : C:\Program Files\Go\bin\go.exe
+  ver  : go version go1.23.5 windows/amd64
+
+[rustc]
+  path : C:\Users\Administrator\.cargo\bin\rustc.exe
+  ver  : rustc 1.98.0 (88d9e12ae 2026-08-18)
+
+[cargo]
+  path : C:\Users\Administrator\.cargo\bin\cargo.exe
+  ver  : cargo 1.98.0 (797e8a9bc 2026-08-05)
+
+[java]
+  path : C:\Program Files\Eclipse Adoptium\jdk-17.0.17.10-hotspot\bin\java.exe
+  ver  : openjdk version "17.0.17" 2025-10-21
+
+[javac]
+  path : C:\Program Files\Eclipse Adoptium\jdk-17.0.17.10-hotspot\bin\javac.exe
+  ver  : javac 17.0.17
+
+[dotnet]
+  path : C:\Program Files\dotnet\dotnet.exe
+  ver  : 8.0.413
+
+--- all java on PATH (3+ expected) ---
+C:\Program Files\Eclipse Adoptium\jdk-17.0.17.10-hotspot\bin\java.exe
+C:\Program Files\Eclipse Adoptium\jdk-21.0.6.7-hotspot\bin\java.exe
+C:\ProgramData\Oracle\Java\javapath\java.exe
+--- PATH (condensed) ---
+C:\Users\Administrator\AppData\Local\Doubao\User Data\sandbox_runtime\bases\d0ace100fdff5b2d247847aca1e3d83b\node_modules\.bin
+C:\Users\Administrator\AppData\Local\Doubao\User Data\sandbox_runtime\bases\d0ace100fdff5b2d247847aca1e3d83b\python\Scripts
+C:\Users\Administrator\AppData\Local\Doubao\User Data\sandbox_runtime\bases\d0ace100fdff5b2d247847aca1e3d83b\python
+C:\Users\Administrator\AppData\Local\Doubao\User Data\sandbox_runtime\bases\d0ace100fdff5b2d247847aca1e3d83b\node
+C:\Python314\Scripts\
+C:\Python314\
+C:\ProgramData\Oracle\Java\javapath
+C:\Program Files\dotnet\
+C:\Program Files (x86)\dotnet\
+C:\Program Files\nodejs\
+C:\Program Files\Go\bin
+C:\Users\Administrator\.cargo\bin
+C:\Users\Administrator\AppData\Local\Programs\Python\Launcher\
+C:\Users\Administrator\go\bin
+C:\Users\Administrator\.dotnet\tools

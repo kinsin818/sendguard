@@ -1,0 +1,27 @@
+{
+  "sealed_at": "2026-10-10T12:58:57.360737Z",
+  "purpose": "blind samples for S01 dual-blind audit; identity map sealed until audit completes; blind samples are NOT part of the 20 frozen traps and do not gate any judgment",
+  "entries": [
+    {
+      "blind_id": 1,
+      "name_utf8_hex": "696e766f6963655f46494e414c5f323032362e786c7378"
+    },
+    {
+      "blind_id": 2,
+      "name_utf8_hex": "70686f746f5f325f2e6a7067"
+    },
+    {
+      "blind_id": 3,
+      "name_utf8_hex": "436f70795f6f665f7265706f72742e646f6378"
+    },
+    {
+      "blind_id": 4,
+      "name_utf8_hex": "646174615f76325f315f2e637376"
+    },
+    {
+      "blind_id": 5,
+      "name_utf8_hex": "7765656b656e642d7265706f72742e747874"
+    }
+  ],
+  "sha256_self": "289188cfbc6a1efe460e9548380fc3aa4d18901c0bd39c134570e228792d574c"
+}

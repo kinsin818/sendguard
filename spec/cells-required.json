@@ -357,6 +357,27 @@
    "language": "rust",
    "api_entry": "std::fs::write",
    "sub_identity": {}
+  },
+  {
+   "case_group": "tapi",
+   "case_id": "T-API",
+   "language": "typescript",
+   "api_entry": "appendFileSync",
+   "sub_identity": {}
+  },
+  {
+   "case_group": "tapi",
+   "case_id": "T-API",
+   "language": "typescript",
+   "api_entry": "createWriteStream",
+   "sub_identity": {}
+  },
+  {
+   "case_group": "tapi",
+   "case_id": "T-API",
+   "language": "typescript",
+   "api_entry": "writeFileSync",
+   "sub_identity": {}
   }
  ]
 }

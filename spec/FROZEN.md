@@ -19,13 +19,13 @@ hex (never hand-typed names).
 | file | sha256 |
 |---|---|
 | spec/cases.yaml | a7f9a57df1b4d39a19421a54d175e87793100ce3393e363622ca59816e19148b |
-| spec/gate.md | 5b36eb45e8deed82f2d86400c291aaeded883274453fcf78ae856a7e2c8d793b |
-| spec/canonical.md | 64d8addcf36f6e8ead7933fb0089d95ebee0746814281f13050ea180c161d20a |
+| spec/gate.md | 6a3894573214b49889965104ea44c863d73dc09b386b8d838362c5b19ac46a50 |
+| spec/canonical.md | f3fe3122c131649d5df81d6c5331d0224dc270065f8ff46dd328d465324e6e69 |
 | spec/attribution-tree.md | 286f81914c73a73986e5de234121ce159fd1bdf39126dc9b22b5560988bde805 |
-| spec/validate.py | f19a5d142d737997edf35b2b4ec88b6ab5340b2684c836b52ea89703cd746587 |
-| spec/schema.json | 0bee4f15c18c0b2fcc50d6ae57d8380d8f5cdac43f20bd3c5e7ff164c349720b |
+| spec/validate.py | 66f8c0035981bf7c518378b96206309860057e215c08cad2f533dde26d87dfbe |
+| spec/schema.json | 52abbc86c8899f41e1889e71d35cdf73bd363204274e862bf6bcb2ab9f761435 |
 | spec/cell-identity.md | 1ca6660ded3390222f6181911b83a7ac3988ec81300ef83bcadf72d3f672330e |
-| spec/cells-required.json | fe2d08245c6b5229ad4d74525adb25c57d83101402d719facdd3ba578815f608 |
+| spec/cells-required.json | 779b6ce33b0db4f02763998baa7268999d9ca52552b3145b8a6cddf7ee4e6e99 |
 
 ## 20 frozen traps (ids only; samples are hex-only per N12)
 
@@ -75,3 +75,8 @@ T-CTRL-CANON. Expectations come ONLY from evidence/S00-ctrl-baseline.md.
 ## rev3 changelog (2026-10-11 04:20:59 +0800, Qoder seat)
 
 Schema defects fixed, no trap was touched: `format_version` demanded the string "1" while every port writes integer 1 (this alone made every cell VOID under strict validation); `language` had no `typescript`; `name_encoding` carried two different meanings between schema.json and canonical.md, so the length field is now `length_unit` and `name_encoding` matches canonical. `verdict_via` became a required field: a legality verdict must name the tool asked. `spec/cell-identity.md` and `spec/cells-required.json` joined the locked set; the first, wrong `cells-required.json` is withdrawn by name in that file.
+
+
+## rev4 changelog (2026-10-11 04:42:29 +0800, Qoder seat)
+
+Prompted by the TypeScript port's report. Closed sets were inconsistent between the two rulers: `spec/schema.json` was updated by rev3 and `spec/validate.py` was not, so no cell could satisfy both. Also: a fifth `read_result` word (`not_applicable`) so a cell whose create failed is not forced to claim it read something; the T-API clause no longer treats agreement as an instrument failure; the bisection regime is keyed by `longpath_mechanism` because a prefix-rewriting runtime shows the component ceiling on both path forms; `typescript` aliased to node's pinned entries; `extra` cells and cell-declared `sub_identity` honoured by the gate.

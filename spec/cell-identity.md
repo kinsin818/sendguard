@@ -92,3 +92,12 @@ Two sentences this contract was missing, added because the referee measured thei
 Zip cells must carry `packer` and `extractor` with versions. That was already required by section 1 and is
 now demonstrably not ceremony: `Compress-Archive` sets the UTF-8 flag (bit 11) while `bsdtar` does not and
 stores names in CP936, so two archives made on the same machine differ in portability.
+
+## 7. Every digest in this repository is a blob-face digest
+
+`git cat-file blob HEAD:<path>` is the only authoritative byte source for a hash. A digest computed from a
+checked-out file is not comparable between machines, because checkout may rewrite bytes (measured here:
+384 of 388 files differed before `-text` was pinned). Use `ci/blobhash.py`; do not hand-hash.
+
+Two independent defects of this class were found in one night - the generated evidence table, and the
+sealed expectation table's binding line - which is why this is a rule and a helper, not a correction.

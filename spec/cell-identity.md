@@ -75,3 +75,20 @@ ports had answered three different questionnaires.
   the port digests are in.
 - Whether a given machine's answer depends on hardware (a reserved name with a device behind it) or on
   policy (`LongPathsEnabled`) is an environment fact, recorded per run, never folded into a verdict.
+## 6. Addendum from the outside referee (2026-10-11, `evidence/S00/referee-windows.md`)
+
+Two sentences this contract was missing, added because the referee measured their absence:
+
+- **`os_legality_verdict` must be accompanied by `verdict_via`** ∈ {`win32`, `dotnet`, `cmd`, `posix`}.
+  Measured on one machine: `.NET`/PowerShell strip a trailing U+00A0 while `cmd` preserves it, and `cmd`
+  does not reject `a"b.txt` / `a:b.txt` at all - it silently creates `ab.txt` and `a`. There is no
+  tool-independent answer to "is this name legal", so a verdict without the name of the tool asked is not
+  comparable and the cell is `void`.
+- **`len` cells use the base ladder {78, 120, 200}**, not {13, 60, 120, 200}. The short rungs are
+  unreachable under the rule that an instrument may not create directories at a drive root; the shortest
+  legal base measured here is ~78 characters. Each cell still records its own `base_len` rather than
+  assuming a canonical root length.
+
+Zip cells must carry `packer` and `extractor` with versions. That was already required by section 1 and is
+now demonstrably not ceremony: `Compress-Archive` sets the UTF-8 flag (bit 11) while `bsdtar` does not and
+stores names in CP936, so two archives made on the same machine differ in portability.

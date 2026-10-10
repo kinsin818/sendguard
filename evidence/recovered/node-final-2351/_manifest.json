@@ -1,0 +1,253 @@
+{
+ "captured_at": "2026-10-11 01:51:06 +0800",
+ "source": "D:\\sendguard (working tree, read-only)",
+ "reason": "the only on-disk copy of the corrected Node run; a checkout in the source tree would destroy it",
+ "files": [
+  {
+   "path": "results/node.windows.22.22.2.json",
+   "bytes": 67134,
+   "sha256": "bf389c0c1bd6c1f00396703cacf8c6c469e7d6cb4fba41c52ddeaacd1321dbf2",
+   "source_mtime": "2026-10-11 01:51:06 +0800"
+  },
+  {
+   "path": "results/node/phantom.windows.json",
+   "bytes": 7612,
+   "sha256": "4b226d8f54f2f967a9237f030d9a9d6000cfcc9bf8bcb5327e0610198565df6f",
+   "source_mtime": "2026-10-11 01:51:06 +0800"
+  },
+  {
+   "path": "results/node/windows/B1.json",
+   "bytes": 1727,
+   "sha256": "b6cf426b29c313cf19a169c7f8e1e9450a17a8fa484bdc1b560a6956d0e070b2",
+   "source_mtime": "2026-10-11 01:51:06 +0800"
+  },
+  {
+   "path": "results/node/windows/B2.json",
+   "bytes": 1705,
+   "sha256": "cfc96982dfd68dbadcced34103fff0de1ab275a2acdc39236eb6460552d26e49",
+   "source_mtime": "2026-10-11 01:51:06 +0800"
+  },
+  {
+   "path": "results/node/windows/B3.json",
+   "bytes": 1719,
+   "sha256": "4cdeb845d7acb6c49ee94dfc2523e11c686b637df18bb912c0de0d89979479b8",
+   "source_mtime": "2026-10-11 01:51:06 +0800"
+  },
+  {
+   "path": "results/node/windows/B4.json",
+   "bytes": 1709,
+   "sha256": "d74e22e784dba3a2d2e95d886ac1cf47cccdb506181c33ff607d608f2c966fe5",
+   "source_mtime": "2026-10-11 01:51:06 +0800"
+  },
+  {
+   "path": "results/node/windows/B5.json",
+   "bytes": 1717,
+   "sha256": "dbb03bafcd4a94f7ce95a47c439262d82df6fcc8bf9b2a7d80fc3b3f29ae8528",
+   "source_mtime": "2026-10-11 01:51:06 +0800"
+  },
+  {
+   "path": "results/node/windows/T-CTRL-ASCII.json",
+   "bytes": 1731,
+   "sha256": "4946f2c25c8e71bedddaabb4d3f23edad2bf2a47073f8550fdcf60aa8907b771",
+   "source_mtime": "2026-10-11 01:51:06 +0800"
+  },
+  {
+   "path": "results/node/windows/T-CTRL-CANON.json",
+   "bytes": 1145,
+   "sha256": "5b17ba337a3188ab431dae429cbf5166ef18fe83f1becc4511ce285ace0cfe43",
+   "source_mtime": "2026-10-11 01:51:06 +0800"
+  },
+  {
+   "path": "results/node/windows/T-CTRL-ILLEGAL-CHAR.json",
+   "bytes": 1780,
+   "sha256": "e770eb5ff47acd571678e117ff95c06080d3685c098eab197608a0c805a86546",
+   "source_mtime": "2026-10-11 01:51:06 +0800"
+  },
+  {
+   "path": "results/node/windows/T-CTRL-NAMETOOLONG.json",
+   "bytes": 2535,
+   "sha256": "00f4405e96d32205daec5c0d6388f98d3857d5691f8958ab16d59c81884a926c",
+   "source_mtime": "2026-10-11 01:51:06 +0800"
+  },
+  {
+   "path": "results/node/windows/T-CTRL-PARSE.json",
+   "bytes": 1863,
+   "sha256": "d9549842718844789e4d3bf4878ba413acf0abe15eb1e13896d56fc2a5c5834f",
+   "source_mtime": "2026-10-11 01:51:06 +0800"
+  },
+  {
+   "path": "results/node/windows/T01.json",
+   "bytes": 1597,
+   "sha256": "e575e89db16cd7a45614160305ca9e360a94d06ffb89887d76dbfce300db9256",
+   "source_mtime": "2026-10-11 01:51:06 +0800"
+  },
+  {
+   "path": "results/node/windows/T02.json",
+   "bytes": 1603,
+   "sha256": "8a823557dab9e4e88afc4836a835cdc263136fdee38cb95382904423c93de0e1",
+   "source_mtime": "2026-10-11 01:51:06 +0800"
+  },
+  {
+   "path": "results/node/windows/T03.json",
+   "bytes": 1708,
+   "sha256": "daa2747d2710bfb09860b76409eb7f672a6ad49ed83e26387bcaa6cd64415825",
+   "source_mtime": "2026-10-11 01:51:06 +0800"
+  },
+  {
+   "path": "results/node/windows/T04.json",
+   "bytes": 1583,
+   "sha256": "3595ba80b2e4fc7853103a906b1f3edf7a2e1100c87c52bee94bba974b83bc89",
+   "source_mtime": "2026-10-11 01:51:06 +0800"
+  },
+  {
+   "path": "results/node/windows/T05.json",
+   "bytes": 1587,
+   "sha256": "059c8dd7f3ca26d9ded455e918cd8191f70b2ab53dd5dac68382756efc561fbd",
+   "source_mtime": "2026-10-11 01:51:06 +0800"
+  },
+  {
+   "path": "results/node/windows/T06.json",
+   "bytes": 1706,
+   "sha256": "a6affd8329c1cbc2b1f0b75c267cd252e0853d351f76fc0f9b94076dca329450",
+   "source_mtime": "2026-10-11 01:51:06 +0800"
+  },
+  {
+   "path": "results/node/windows/T07.json",
+   "bytes": 1698,
+   "sha256": "a0df5c9ff6bb8ec91f38ed95ff29102ad23d100c7f51d90612f0ff07445d4e54",
+   "source_mtime": "2026-10-11 01:51:06 +0800"
+  },
+  {
+   "path": "results/node/windows/T08.json",
+   "bytes": 1696,
+   "sha256": "21244a38f2f448057c774a52860682ebabc5e80929c94c05052a5dbe390a1320",
+   "source_mtime": "2026-10-11 01:51:06 +0800"
+  },
+  {
+   "path": "results/node/windows/T09a.json",
+   "bytes": 1707,
+   "sha256": "ee0152b01dba4c5e06c0cda4d90564682a95df5269573e3c8e0a7407e093c64b",
+   "source_mtime": "2026-10-11 01:51:06 +0800"
+  },
+  {
+   "path": "results/node/windows/T09b.json",
+   "bytes": 1705,
+   "sha256": "b05c77217fc2e9b7acf6fb28a37000f8abcca5337803efee72e4d1653d21083a",
+   "source_mtime": "2026-10-11 01:51:06 +0800"
+  },
+  {
+   "path": "results/node/windows/T10.json",
+   "bytes": 1586,
+   "sha256": "af40f8446beeba2ea7796c260002aee250a768f43e63364443790d8a226017ad",
+   "source_mtime": "2026-10-11 01:51:06 +0800"
+  },
+  {
+   "path": "results/node/windows/T11.json",
+   "bytes": 1599,
+   "sha256": "8de38e6acdc3b9e37a2f8227b3e013948636ccf2304ca505df94cadc460f09cd",
+   "source_mtime": "2026-10-11 01:51:06 +0800"
+  },
+  {
+   "path": "results/node/windows/T12.json",
+   "bytes": 1694,
+   "sha256": "71951c143ef1ea01a1497376a72797ac59a85f8a92200e2d394147ca1bbca3fd",
+   "source_mtime": "2026-10-11 01:51:06 +0800"
+  },
+  {
+   "path": "results/node/windows/T13.json",
+   "bytes": 1710,
+   "sha256": "59fe86eb91a49d8cc2901dd3cfc79e933f10d949faeb625897caa249b23aecf6",
+   "source_mtime": "2026-10-11 01:51:06 +0800"
+  },
+  {
+   "path": "results/node/windows/T14a.json",
+   "bytes": 1597,
+   "sha256": "c86969de1e4310b93d5d6a88c6ebbfe7dc81280bd5a1a512a1bf2211bc8e0c24",
+   "source_mtime": "2026-10-11 01:51:06 +0800"
+  },
+  {
+   "path": "results/node/windows/T14b.json",
+   "bytes": 1598,
+   "sha256": "90a80ad4713903875107dc6da3a3aeae02d47fa4e9e71cde9fda3c14312bb0e5",
+   "source_mtime": "2026-10-11 01:51:06 +0800"
+  },
+  {
+   "path": "results/node/windows/T14c.json",
+   "bytes": 1599,
+   "sha256": "c42f0846f5c09b1ca622519f1aa3d23dc8647dc1ff93a6d86031cde0624ac7e7",
+   "source_mtime": "2026-10-11 01:51:06 +0800"
+  },
+  {
+   "path": "results/node/windows/T15.json",
+   "bytes": 1724,
+   "sha256": "68d8d538b331915b6ed68a9e7b0574424ec1b7c28c658e9f5764fc946fddd879",
+   "source_mtime": "2026-10-11 01:51:06 +0800"
+  },
+  {
+   "path": "results/node/windows/T16.json",
+   "bytes": 1704,
+   "sha256": "ac82dd4d765b7e215d5f792b0bf6886fe66ead9f5e0a3df92aa6b80d4776a423",
+   "source_mtime": "2026-10-11 01:51:06 +0800"
+  },
+  {
+   "path": "results/node/windows/T17-extended.json",
+   "bytes": 887,
+   "sha256": "354adfc3bf431726d3669ee9bc12f59923b78b91940f36d5dc529229d450633e",
+   "source_mtime": "2026-10-11 01:51:06 +0800"
+  },
+  {
+   "path": "results/node/windows/T17-plain.json",
+   "bytes": 871,
+   "sha256": "88600673289b9ced4b07fa83a8cb80ec7e72c605d6581186f8a74530eb3d6c95",
+   "source_mtime": "2026-10-11 01:51:06 +0800"
+  },
+  {
+   "path": "results/node/windows/T18-extended.json",
+   "bytes": 891,
+   "sha256": "f9231ffc9b9054f54d3e9881076a5801e0df7de4a3aabb71f2bd05ced0154b06",
+   "source_mtime": "2026-10-11 01:51:06 +0800"
+  },
+  {
+   "path": "results/node/windows/T18-plain.json",
+   "bytes": 875,
+   "sha256": "39a089b5ccd06cb03b8c1325425d64fd4791c0bc1042caf68bea2388dcef43d5",
+   "source_mtime": "2026-10-11 01:51:06 +0800"
+  },
+  {
+   "path": "results/node/windows/T19a.json",
+   "bytes": 1696,
+   "sha256": "e0be884389458e78acc215197b2f558b2d582356752ce81a47985114e96c764d",
+   "source_mtime": "2026-10-11 01:51:06 +0800"
+  },
+  {
+   "path": "results/node/windows/T19b.json",
+   "bytes": 1696,
+   "sha256": "9883f157d63f3398a82106bdbc8fb124b9d99d1b45f20fe05703fea7a9b2c201",
+   "source_mtime": "2026-10-11 01:51:06 +0800"
+  },
+  {
+   "path": "results/node/windows/T20.json",
+   "bytes": 1686,
+   "sha256": "5f78a9bbe3cf3a8f53b20f0138b7a1913d435226a86cdfd5b47a28df50c3c6f8",
+   "source_mtime": "2026-10-11 01:51:06 +0800"
+  },
+  {
+   "path": "results/node/windows/_audit-manifest.json",
+   "bytes": 22673,
+   "sha256": "6d1ad8d4912abf7a3794fbfc130744992bac982cf32d1a3ca08c97db80769894",
+   "source_mtime": "2026-10-11 01:51:06 +0800"
+  },
+  {
+   "path": "results/node/windows/_audit-truth.ndjson",
+   "bytes": 47296,
+   "sha256": "3d73905325916b7896e6b9bdd221334129ab04e2b5a5b79eeadcfad20fe7a9e9",
+   "source_mtime": "2026-10-11 01:51:06 +0800"
+  },
+  {
+   "path": "results/node/windows/_pyreader-manifest.json",
+   "bytes": 19706,
+   "sha256": "c623bbb02a4642418c50f166d995cfeb40453889208172dbc31c3aea456e0d35",
+   "source_mtime": "2026-10-11 01:51:06 +0800"
+  }
+ ]
+}

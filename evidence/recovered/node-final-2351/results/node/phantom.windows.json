@@ -1,0 +1,294 @@
+{
+  "count": 36,
+  "note": "authoritative: recomputed from audit.exe truth by merge-truth.mjs",
+  "cells": [
+    {
+      "case_id": "T01",
+      "case_group": "trap",
+      "create_result": "ok",
+      "os_legality_verdict": "illegal",
+      "truth_is_device": true,
+      "bytes_on_disk_truth": 0
+    },
+    {
+      "case_id": "T02",
+      "case_group": "trap",
+      "create_result": "ok",
+      "os_legality_verdict": "illegal",
+      "truth_is_device": true,
+      "bytes_on_disk_truth": 0
+    },
+    {
+      "case_id": "T04",
+      "case_group": "trap",
+      "create_result": "ok",
+      "os_legality_verdict": "illegal",
+      "truth_is_device": false,
+      "bytes_on_disk_truth": 0
+    },
+    {
+      "case_id": "T05",
+      "case_group": "trap",
+      "create_result": "ok",
+      "os_legality_verdict": "illegal",
+      "truth_is_device": false,
+      "bytes_on_disk_truth": 0
+    },
+    {
+      "case_id": "T10",
+      "case_group": "trap",
+      "create_result": "ok",
+      "os_legality_verdict": "illegal",
+      "truth_is_device": true,
+      "bytes_on_disk_truth": 0
+    },
+    {
+      "case_id": "T11",
+      "case_group": "trap",
+      "create_result": "ok",
+      "os_legality_verdict": "illegal",
+      "truth_is_device": true,
+      "bytes_on_disk_truth": 0
+    },
+    {
+      "case_id": "T14a",
+      "case_group": "trap",
+      "create_result": "ok",
+      "os_legality_verdict": "illegal",
+      "truth_is_device": true,
+      "bytes_on_disk_truth": 0
+    },
+    {
+      "case_id": "T14b",
+      "case_group": "trap",
+      "create_result": "ok",
+      "os_legality_verdict": "illegal",
+      "truth_is_device": true,
+      "bytes_on_disk_truth": 0
+    },
+    {
+      "case_id": "T14c",
+      "case_group": "trap",
+      "create_result": "ok",
+      "os_legality_verdict": "illegal",
+      "truth_is_device": true,
+      "bytes_on_disk_truth": 0
+    },
+    {
+      "case_id": "T01@appendFileSync",
+      "case_group": "tapi",
+      "create_result": "ok",
+      "os_legality_verdict": "illegal",
+      "truth_is_device": true,
+      "bytes_on_disk_truth": 0
+    },
+    {
+      "case_id": "T01@createWriteStream",
+      "case_group": "tapi",
+      "create_result": "ok",
+      "os_legality_verdict": "illegal",
+      "truth_is_device": true,
+      "bytes_on_disk_truth": 0
+    },
+    {
+      "case_id": "T01@writeFileSync",
+      "case_group": "tapi",
+      "create_result": "ok",
+      "os_legality_verdict": "illegal",
+      "truth_is_device": true,
+      "bytes_on_disk_truth": 0
+    },
+    {
+      "case_id": "T02@appendFileSync",
+      "case_group": "tapi",
+      "create_result": "ok",
+      "os_legality_verdict": "illegal",
+      "truth_is_device": true,
+      "bytes_on_disk_truth": 0
+    },
+    {
+      "case_id": "T02@createWriteStream",
+      "case_group": "tapi",
+      "create_result": "ok",
+      "os_legality_verdict": "illegal",
+      "truth_is_device": true,
+      "bytes_on_disk_truth": 0
+    },
+    {
+      "case_id": "T02@writeFileSync",
+      "case_group": "tapi",
+      "create_result": "ok",
+      "os_legality_verdict": "illegal",
+      "truth_is_device": true,
+      "bytes_on_disk_truth": 0
+    },
+    {
+      "case_id": "T04@appendFileSync",
+      "case_group": "tapi",
+      "create_result": "ok",
+      "os_legality_verdict": "illegal",
+      "truth_is_device": false,
+      "bytes_on_disk_truth": 0
+    },
+    {
+      "case_id": "T04@createWriteStream",
+      "case_group": "tapi",
+      "create_result": "ok",
+      "os_legality_verdict": "illegal",
+      "truth_is_device": false,
+      "bytes_on_disk_truth": 0
+    },
+    {
+      "case_id": "T04@writeFileSync",
+      "case_group": "tapi",
+      "create_result": "ok",
+      "os_legality_verdict": "illegal",
+      "truth_is_device": false,
+      "bytes_on_disk_truth": 0
+    },
+    {
+      "case_id": "T05@appendFileSync",
+      "case_group": "tapi",
+      "create_result": "ok",
+      "os_legality_verdict": "illegal",
+      "truth_is_device": false,
+      "bytes_on_disk_truth": 0
+    },
+    {
+      "case_id": "T05@createWriteStream",
+      "case_group": "tapi",
+      "create_result": "ok",
+      "os_legality_verdict": "illegal",
+      "truth_is_device": false,
+      "bytes_on_disk_truth": 0
+    },
+    {
+      "case_id": "T05@writeFileSync",
+      "case_group": "tapi",
+      "create_result": "ok",
+      "os_legality_verdict": "illegal",
+      "truth_is_device": false,
+      "bytes_on_disk_truth": 0
+    },
+    {
+      "case_id": "T10@appendFileSync",
+      "case_group": "tapi",
+      "create_result": "ok",
+      "os_legality_verdict": "illegal",
+      "truth_is_device": true,
+      "bytes_on_disk_truth": 0
+    },
+    {
+      "case_id": "T10@createWriteStream",
+      "case_group": "tapi",
+      "create_result": "ok",
+      "os_legality_verdict": "illegal",
+      "truth_is_device": true,
+      "bytes_on_disk_truth": 0
+    },
+    {
+      "case_id": "T10@writeFileSync",
+      "case_group": "tapi",
+      "create_result": "ok",
+      "os_legality_verdict": "illegal",
+      "truth_is_device": true,
+      "bytes_on_disk_truth": 0
+    },
+    {
+      "case_id": "T11@appendFileSync",
+      "case_group": "tapi",
+      "create_result": "ok",
+      "os_legality_verdict": "illegal",
+      "truth_is_device": true,
+      "bytes_on_disk_truth": 0
+    },
+    {
+      "case_id": "T11@createWriteStream",
+      "case_group": "tapi",
+      "create_result": "ok",
+      "os_legality_verdict": "illegal",
+      "truth_is_device": true,
+      "bytes_on_disk_truth": 0
+    },
+    {
+      "case_id": "T11@writeFileSync",
+      "case_group": "tapi",
+      "create_result": "ok",
+      "os_legality_verdict": "illegal",
+      "truth_is_device": true,
+      "bytes_on_disk_truth": 0
+    },
+    {
+      "case_id": "T14a@appendFileSync",
+      "case_group": "tapi",
+      "create_result": "ok",
+      "os_legality_verdict": "illegal",
+      "truth_is_device": true,
+      "bytes_on_disk_truth": 0
+    },
+    {
+      "case_id": "T14a@createWriteStream",
+      "case_group": "tapi",
+      "create_result": "ok",
+      "os_legality_verdict": "illegal",
+      "truth_is_device": true,
+      "bytes_on_disk_truth": 0
+    },
+    {
+      "case_id": "T14a@writeFileSync",
+      "case_group": "tapi",
+      "create_result": "ok",
+      "os_legality_verdict": "illegal",
+      "truth_is_device": true,
+      "bytes_on_disk_truth": 0
+    },
+    {
+      "case_id": "T14b@appendFileSync",
+      "case_group": "tapi",
+      "create_result": "ok",
+      "os_legality_verdict": "illegal",
+      "truth_is_device": true,
+      "bytes_on_disk_truth": 0
+    },
+    {
+      "case_id": "T14b@createWriteStream",
+      "case_group": "tapi",
+      "create_result": "ok",
+      "os_legality_verdict": "illegal",
+      "truth_is_device": true,
+      "bytes_on_disk_truth": 0
+    },
+    {
+      "case_id": "T14b@writeFileSync",
+      "case_group": "tapi",
+      "create_result": "ok",
+      "os_legality_verdict": "illegal",
+      "truth_is_device": true,
+      "bytes_on_disk_truth": 0
+    },
+    {
+      "case_id": "T14c@appendFileSync",
+      "case_group": "tapi",
+      "create_result": "ok",
+      "os_legality_verdict": "illegal",
+      "truth_is_device": true,
+      "bytes_on_disk_truth": 0
+    },
+    {
+      "case_id": "T14c@createWriteStream",
+      "case_group": "tapi",
+      "create_result": "ok",
+      "os_legality_verdict": "illegal",
+      "truth_is_device": true,
+      "bytes_on_disk_truth": 0
+    },
+    {
+      "case_id": "T14c@writeFileSync",
+      "case_group": "tapi",
+      "create_result": "ok",
+      "os_legality_verdict": "illegal",
+      "truth_is_device": true,
+      "bytes_on_disk_truth": 0
+    }
+  ]
+}

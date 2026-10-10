@@ -147,6 +147,41 @@ def main(argv):
     print("== denominators (distinct cells after collapsing duplicate representations)")
     for n in sorted(ports):
         print("   %-8s cells=%-4d read from %d cell records" % (n, len(ports[n]), files_seen.get(n, 0)))
+
+    # A record that declares its own failure is not a measurement. Checking this before denominators,
+    # because a run that is 62/72 self-declared red must not be allowed to reach a comparison at all.
+    CRASH = re.compile(r"is not defined|ReferenceError|TypeError|SyntaxError|Cannot find (module|name)", re.I)
+    dead = []
+    print("== self-declared health per port")
+    for n in sorted(ports):
+        red = crash = cp_false = no_truth = 0
+        for key, lst in ports[n].items():
+            for c in lst:
+                if c.get("instrument_red") is True or c.get("instrument_conflict") is True:
+                    red += 1
+                if c.get("control_pass") is False:
+                    cp_false += 1
+                if CRASH.search(str(c.get("error_message") or "")):
+                    crash += 1
+                if c.get("create_result") == "ok" and c.get("bytes_on_disk") is None:
+                    no_truth += 1
+        print("   %-8s instrument_red_or_conflict=%-3d control_pass_false=%-3d "
+              "runtime_crash_text_in_error_message=%-3d create_ok_without_disk_truth=%d"
+              % (n, red, cp_false, crash, no_truth))
+        if red or cp_false or crash:
+            dead.append((n, red, cp_false, crash))
+    for n, red, cp_false, crash in dead:
+        print("   PORT %s is INSTRUMENT-RED (%d red-flagged, %d failed controls, %d crash records) "
+              "-> excluded from comparison; its cells are not evidence" % (n, red, cp_false, crash))
+    live = [n for n in sorted(ports) if n not in {d[0] for d in dead}]
+    if len(live) < 2:
+        print("OUTCOME=NOT-COMPARABLE reason=self_declared_instrument_red live_ports=%d "
+              "(a run that marks itself red may not be compared, only reported)" % len(live))
+        return 3
+    for n in [d[0] for d in dead]:
+        ports.pop(n, None)
+        files_seen.pop(n, None)
+    print("   comparing only the live ports: %s" % " ".join(sorted(ports)))
     print("== the two stored representations of the same cell")
     print("   disagreements=%d" % len(xcheck))
     for line in xcheck[:10]:

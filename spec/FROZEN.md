@@ -25,7 +25,7 @@ hex (never hand-typed names).
 | spec/validate.py | 66f8c0035981bf7c518378b96206309860057e215c08cad2f533dde26d87dfbe |
 | spec/schema.json | 52abbc86c8899f41e1889e71d35cdf73bd363204274e862bf6bcb2ab9f761435 |
 | spec/cell-identity.md | fb675a32bff73a433c9bcf6fe80f5408315ed6576be7ac676ec3cd272f70ac82 |
-| spec/cells-required.json | 39fb768385ce3e63e087b854887400ad016f7a389f7b1aa486fdfeeefd31d765 |
+| spec/cells-required.json | 3742747dd412e8a9d799e6c7f215f561f4c14774466759de515335b76ee90ff6 |
 
 ## 20 frozen traps (ids only; samples are hex-only per N12)
 

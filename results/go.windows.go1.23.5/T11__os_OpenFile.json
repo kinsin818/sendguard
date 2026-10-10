@@ -1,0 +1,63 @@
+{
+ "format_version": 1,
+ "case_id": "T11",
+ "case_group": "trap",
+ "language": "go",
+ "os": "windows",
+ "os_version": "",
+ "arch": "amd64",
+ "locale": "en-US",
+ "api_entry": "os.OpenFile",
+ "attempt": 1,
+ "name_source": "434f4d312e6c6f67",
+ "name_encoding": "utf8_bytes",
+ "path_form": "plain",
+ "longpath_mechanism": "none",
+ "create_result": "ok",
+ "error_stage": "null",
+ "error_code": "",
+ "error_message": "",
+ "bytes_written": 1,
+ "bytes_on_disk": null,
+ "read_result": "eof",
+ "enum_to_stat_agrees": false,
+ "enum_api_entry": "os.ReadDir",
+ "os_legality_verdict": "unknown",
+ "mechanism_class": "component_length_limit",
+ "worker_id": "W-GO/qianwen",
+ "harness_version": "runner-v1",
+ "sha256_self": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+ "started_at": "2026-10-10T15:00:38.8784773Z",
+ "elapsed_ms": 273,
+ "env": {
+  "LongPathsEnabled": 0,
+  "dot3name": null,
+  "max_component": null,
+  "toolchain": "go1.23.5",
+  "unicode_version": "unavailable-no-api"
+ },
+ "notes": [
+  "PHANTOM-OK: create ok, dir_view lacks requested bytes"
+ ],
+ "members": [
+  {
+   "Hex": "434f4d312e6c6f67",
+   "DirFound": false,
+   "DirSize": null,
+   "PathOK": true,
+   "PathSize": 0,
+   "PathErr": "",
+   "Read": "",
+   "ReadN": null,
+   "ReadErr": "",
+   "Diverg": true,
+   "Drift": false,
+   "SameHits": 0
+  }
+ ],
+ "root_len_units": 55,
+ "comp_units": 0,
+ "spec_defect": false,
+ "control_pass": true,
+ "instrument_red": false
+}

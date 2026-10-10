@@ -1,0 +1,113 @@
+W-GO runner start; toolchain=go1.23.5 arch=amd64
+HASH-OK   spec/cases.yaml                        a7f9a57df1b4...
+HASH-OK   spec/gate.md                           5b36eb45e8de...
+HASH-OK   spec/canonical.md                      64d8addcf36f...
+HASH-OK   spec/attribution-tree.md               286f81914c73...
+HASH-OK   spec/validate.py                       f19a5d142d73...
+HASH-OK   spec/schema.json                       f387ec4bc80a...
+HASH-SEMANTICS-EXCEPTION evidence/S00/blind-map.json    inner-self-hash semantics (blocker filed; git HEAD==worktree)
+CTRL T-CTRL-NAMETOOLONG       PASS (attempt=1 create=err_at_syscall)
+CTRL T-CTRL-ASCII             PASS (attempt=1 create=ok)
+CTRL T-CTRL-ILLEGAL-CHAR      PASS (attempt=1 create=err_at_syscall)
+CTRL T-CTRL-PARSE             PASS (attempt=1 create=err_at_parse)
+CTRL T-CTRL-CANON             PASS (attempt=1 create=ok)
+CONTROLS: all 5 PASS (baseline-verified)
+CELL TAPI-T01                 os.Create    err_at_syscall
+CELL TAPI-T01                 os.WriteFile ok
+CELL TAPI-T01                 os.OpenFile  ok
+CELL TAPI-T01                 os.Mkdir     err_at_syscall
+CELL T01                      os.Create    err_at_syscall
+CELL T01                      os.WriteFile ok
+CELL T01                      os.OpenFile  ok
+CELL T01                      os.Mkdir     err_at_syscall
+CELL T02                      os.Create    ok
+CELL T02                      os.WriteFile ok
+CELL T02                      os.OpenFile  ok
+CELL T02                      os.Mkdir     ok
+CELL T03                      os.Create    err_at_syscall
+CELL T03                      os.WriteFile err_at_syscall
+CELL T03                      os.OpenFile  err_at_syscall
+CELL T03                      os.Mkdir     err_at_syscall
+CELL T04                      os.Create    ok
+CELL T04                      os.WriteFile ok
+CELL T04                      os.OpenFile  ok
+CELL T04                      os.Mkdir     ok
+CELL T05                      os.Create    ok
+CELL T05                      os.WriteFile ok
+CELL T05                      os.OpenFile  ok
+CELL T05                      os.Mkdir     ok
+CELL T06                      os.Create    ok
+CELL T06                      os.WriteFile ok
+CELL T06                      os.OpenFile  ok
+CELL T06                      os.Mkdir     ok
+CELL T07                      os.Create    ok
+CELL T07                      os.WriteFile ok
+CELL T07                      os.OpenFile  ok
+CELL T07                      os.Mkdir     ok
+CELL T08                      os.Create    ok
+CELL T08                      os.WriteFile ok
+CELL T08                      os.OpenFile  ok
+CELL T08                      os.Mkdir     ok
+CELL T09-m1                   os.Create    err_at_syscall
+CELL T09-m1                   os.WriteFile err_at_syscall
+CELL T09-m1                   os.OpenFile  err_at_syscall
+CELL T09-m1                   os.Mkdir     err_at_syscall
+CELL T09-m2                   os.Create    err_at_syscall
+CELL T09-m2                   os.WriteFile err_at_syscall
+CELL T09-m2                   os.OpenFile  err_at_syscall
+CELL T09-m2                   os.Mkdir     err_at_syscall
+CELL T10                      os.Create    err_at_syscall
+CELL T10                      os.WriteFile ok
+CELL T10                      os.OpenFile  ok
+CELL T10                      os.Mkdir     err_at_syscall
+CELL T11                      os.Create    ok
+CELL T11                      os.WriteFile ok
+CELL T11                      os.OpenFile  ok
+CELL T11                      os.Mkdir     err_at_syscall
+CELL T12                      os.Create    ok
+CELL T12                      os.WriteFile ok
+CELL T12                      os.OpenFile  ok
+CELL T12                      os.Mkdir     ok
+CELL T13                      os.Create    ok
+CELL T13                      os.WriteFile ok
+CELL T13                      os.OpenFile  ok
+CELL T13                      os.Mkdir     ok
+CELL T14-m1                   os.Create    err_at_syscall
+CELL T14-m1                   os.WriteFile err_at_syscall
+CELL T14-m1                   os.OpenFile  err_at_syscall
+CELL T14-m1                   os.Mkdir     err_at_syscall
+CELL T14-m2                   os.Create    err_at_syscall
+CELL T14-m2                   os.WriteFile err_at_syscall
+CELL T14-m2                   os.OpenFile  err_at_syscall
+CELL T14-m2                   os.Mkdir     err_at_syscall
+CELL T14-m3                   os.Create    err_at_syscall
+CELL T14-m3                   os.WriteFile err_at_syscall
+CELL T14-m3                   os.OpenFile  err_at_syscall
+CELL T14-m3                   os.Mkdir     err_at_syscall
+CELL T15                      os.Create    err_at_syscall
+CELL T15                      os.WriteFile err_at_syscall
+CELL T15                      os.OpenFile  err_at_syscall
+CELL T15                      os.Mkdir     err_at_syscall
+CELL T16                          archive/zip  ok roundtrip=true
+CELL T17                      os.Create    ok
+CELL T17                      os.WriteFile ok
+CELL T17                      os.OpenFile  ok
+CELL T17                      os.Mkdir     ok
+CELL T18                      os.Create    ok
+CELL T18                      os.WriteFile ok
+CELL T18                      os.OpenFile  ok
+CELL T18                      os.Mkdir     ok
+CELL T19-m1                   os.Create    err_at_syscall
+CELL T19-m1                   os.WriteFile err_at_syscall
+CELL T19-m1                   os.OpenFile  err_at_syscall
+CELL T19-m1                   os.Mkdir     err_at_syscall
+CELL T19-m2                   os.Create    err_at_syscall
+CELL T19-m2                   os.WriteFile err_at_syscall
+CELL T19-m2                   os.OpenFile  err_at_syscall
+CELL T19-m2                   os.Mkdir     err_at_syscall
+CELL T20                      os.Create    ok
+CELL T20                      os.WriteFile ok
+CELL T20                      os.OpenFile  ok
+CELL T20                      os.Mkdir     ok
+W-GO run complete; cells in results/go.windows.go1.23.5/
+NEXT: python spec/validate.py results/go.windows.go1.23.5

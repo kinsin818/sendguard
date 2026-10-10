@@ -1,0 +1,43 @@
+{
+ "format_version": 1,
+ "case_id": "T-CTRL-ILLEGAL-CHAR",
+ "case_group": "ctrl",
+ "language": "go",
+ "os": "windows",
+ "os_version": "",
+ "arch": "amd64",
+ "locale": "en-US",
+ "api_entry": "os.WriteFile",
+ "attempt": 1,
+ "name_source": "613c622e747874",
+ "name_encoding": "utf8_bytes",
+ "path_form": "plain",
+ "longpath_mechanism": "none",
+ "create_result": "err_at_syscall",
+ "error_stage": "syscall",
+ "error_code": "c9fe45b2fee8ea846f0cf4f2cacc2a891e7b082e7719923502d12a9813e21994",
+ "error_message": "open D:\\sendguard\\evidence\\S02\\ctrl-go\\a\u003cb.txt: The filename, directory name, or volume label syntax is incorrect.",
+ "bytes_written": null,
+ "bytes_on_disk": null,
+ "read_result": "eof",
+ "roundtrip_ok": true,
+ "enum_to_stat_agrees": true,
+ "enum_api_entry": "os.ReadDir",
+ "os_legality_verdict": "legal",
+ "mechanism_class": "control",
+ "worker_id": "W-GO/qianwen",
+ "harness_version": "",
+ "started_at": "2026-10-10T15:00:35.5459109Z",
+ "elapsed_ms": 0,
+ "env": {
+  "LongPathsEnabled": null,
+  "toolchain": "go1.23.5"
+ },
+ "notes": [
+  "CANON: go sha256 == node/python baseline (c9fe45b2fee8...)"
+ ],
+ "root_len_units": 33,
+ "spec_defect": false,
+ "control_pass": true,
+ "instrument_red": false
+}

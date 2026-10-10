@@ -95,7 +95,9 @@ def build():
         grp = "len" if cid in ("T17", "T18") else c["group"]
         if grp == "len":
             for b in BASES:
-                req.append({"case_group": "len", "case_id": cid, "sub_identity": {"base_len": b}})
+                for pf in ("plain", "extended"):
+                    req.append({"case_group": "len", "case_id": cid,
+                                "sub_identity": {"base_len": b, "path_form": pf}})
         elif c["hex"] > 1:
             for k in range(1, c["hex"] + 1):
                 req.append({"case_group": grp, "case_id": "%s-m%d" % (cid, k), "sub_identity": {}})
@@ -103,6 +105,16 @@ def build():
             req.append({"case_group": grp, "case_id": cid, "sub_identity": {}})
     for name in ctrl:
         req.append({"case_group": "ctrl", "case_id": name, "sub_identity": {}})
+    # blind cells: the ids come from the sealed map so every port names them the same way.
+    # The names themselves stay in the map; a port reads them there, not from prose.
+    bmap = os.path.join(REPO, "evidence", "S00", "blind-map.json")
+    blind_ids = []
+    if os.path.isfile(bmap):
+        for e in json.load(io.open(bmap, encoding="utf-8")).get("entries", []):
+            if "blind_id" in e:
+                blind_ids.append("B%s" % e["blind_id"])
+    for b in sorted(blind_ids, key=lambda x: int(x[1:])):
+        req.append({"case_group": "blind", "case_id": b, "sub_identity": {}})
 
     # the frozen table's api_entry map predates the typescript port; the runtime is node's, so the
     # entry list is aliased rather than editing a frozen file to add a language

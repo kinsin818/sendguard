@@ -101,3 +101,64 @@ checked-out file is not comparable between machines, because checkout may rewrit
 
 Two independent defects of this class were found in one night - the generated evidence table, and the
 sealed expectation table's binding line - which is why this is a rule and a helper, not a correction.
+
+## 8. Final identity and comparison-set rule (rev5)
+
+- The comparison set **is** `spec/cells-required.json`. The gate compares exactly those cells; anything a
+  port emits outside the list is published and counted, never compared. This removes the last way a port
+  can be "right on its own terms" and still not line up with the others.
+- `sub_identity` is an object holding exactly the applicable dimensions. For `len` cells the dimensions are
+  `base_len` and `path_form` (plain and extended are two separate measurements). For every other group
+  `sub_identity` is `{}` - `path_form` there is a behaviour field, not identity.
+- Blind cells are named `B1`..`B5`, taken from `blind_id` in `evidence/S00/blind-map.json`. No port invents
+  its own blind spelling.
+- `tapi` cells are per-language by construction (the pinned entries are different strings), so they are
+  **excluded from the equality digest** and reported separately as the instrument self-check. They are
+  still required, and `gate.md` section 2 governs what their results mean.
+
+## 9. rev6 - what may differ, and what the gate folds before it judges
+
+Two rules were added after the rev5 run, both from measurements in that run rather than from argument.
+
+**9.1 Representations are folded; absences are not.** Four ports recorded one control cell identically
+(create ok, 28 written, 28 on disk, read ok, legal, same payload digest `c9fe45b2...`) and the gate still
+called it a disagreement, because the landed name was written as hex by two ports and as text by two,
+the length triple as a dict by one, as `15/15/15` by another, as `[15,15,15]` by a third, and omitted by
+a fourth. `ci/equality.py` now canonicalises those forms (`canon_name`, `canon_triple`) and nothing else:
+a field a port did not record stays `NOT-RECORDED`, which is a completeness finding, never an answer.
+`name_encoding` and `length_unit` left the compared field set for the same reason - they say how a value
+was written down. `control_pass` and `instrument_red` left it too: they are health declarations and the
+health leg already reads them, so comparing them again turned "this port does not stamp control_pass on a
+trap cell" into a disagreement about that trap cell.
+
+**9.2 Spelling drift is folded only where the record says which cell it is.** Measured drift:
+`B1` / `BLIND-1` / `T-BLIND-1` for one blind sample; `T09a` / `T09-m1` for one member of a
+`sample_hex_list`; `T17-GRID-B120-L137` for one rung point of `T17`. The folder is in
+`canonical_case_id` and it refuses to guess:
+
+- a bare family id (`T09`, no member) is **not** folded into `T09-m1` - the record does not say which
+  member it measured, and folding it would be the gate inventing data;
+- a grid id folds only when the base length written inside the id equals the cell's own `base_len`;
+  an id that contradicts its own payload stays outside the list.
+
+**9.3 Two classes of field, because a port answers two questions.** `VERDICT_FIELDS` are the checker's
+answer about the name - is it creatable, by which mechanism, did the name survive, how many bytes are on
+the disk, what does the directory enumerate - and six independent implementations of one spec must give
+the same bytes there. `PROBE_FIELDS` are what this language's own standard library did
+(`create_result`, `error_stage`, `read_result`, `longpath_mechanism`, `deps_*`), and those are *allowed*
+to differ: they are the matrix and the appendix. Six ports reporting the same verdict for what `go`
+`os.Create` returns would be the suspicious result, not the good one. A run is `RED` only on a
+`VERDICT_FIELDS` disagreement; probe spread is counted and published.
+
+**9.4 Cells that are not the same question are named, not judged.** If two ports recorded different
+`path_form` or different `verdict_via` for one cell, they asked different layers different questions; the
+cell goes to the `incomparable` list. If the pinned input bytes themselves differ (`name_source`), the cell
+goes to `unpinned_input`. Measured in the rev5 run: 5 cells had unpinned inputs (two ports embedded their
+own language name in the `T-CTRL-CANON` sample, one used a different NUL sample, one a different filler for
+`T-CTRL-NAMETOOLONG`) and 7 differed by `verdict_via`.
+
+**9.5 Only the canonical face of a port is read**: `results/<port>.<os>.<arch>/`. Measured: `results/`
+held `python`, `python.windows.x64` and `python.windows.3.14.7.json` at once - different contract
+revisions of one port. Folding them inflates a denominator with cells produced under another schema;
+splitting them reads one port as two disagreeing ports. Non-canonical faces are printed by name and count
+and excluded.

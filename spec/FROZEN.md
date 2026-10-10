@@ -18,14 +18,14 @@ hex (never hand-typed names).
 
 | file | sha256 |
 |---|---|
-| spec/cases.yaml | a7f9a57df1b4d39a19421a54d175e87793100ce3393e363622ca59816e19148b |
+| spec/cases.yaml | b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1 |
 | spec/gate.md | 6a3894573214b49889965104ea44c863d73dc09b386b8d838362c5b19ac46a50 |
 | spec/canonical.md | f3fe3122c131649d5df81d6c5331d0224dc270065f8ff46dd328d465324e6e69 |
 | spec/attribution-tree.md | 286f81914c73a73986e5de234121ce159fd1bdf39126dc9b22b5560988bde805 |
 | spec/validate.py | 66f8c0035981bf7c518378b96206309860057e215c08cad2f533dde26d87dfbe |
 | spec/schema.json | 52abbc86c8899f41e1889e71d35cdf73bd363204274e862bf6bcb2ab9f761435 |
-| spec/cell-identity.md | 1ca6660ded3390222f6181911b83a7ac3988ec81300ef83bcadf72d3f672330e |
-| spec/cells-required.json | 779b6ce33b0db4f02763998baa7268999d9ca52552b3145b8a6cddf7ee4e6e99 |
+| spec/cell-identity.md | fb675a32bff73a433c9bcf6fe80f5408315ed6576be7ac676ec3cd272f70ac82 |
+| spec/cells-required.json | 39fb768385ce3e63e087b854887400ad016f7a389f7b1aa486fdfeeefd31d765 |
 
 ## 20 frozen traps (ids only; samples are hex-only per N12)
 

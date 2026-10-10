@@ -19,6 +19,31 @@
  ],
  "required_cells": [
   {
+   "case_group": "blind",
+   "case_id": "B1",
+   "sub_identity": {}
+  },
+  {
+   "case_group": "blind",
+   "case_id": "B2",
+   "sub_identity": {}
+  },
+  {
+   "case_group": "blind",
+   "case_id": "B3",
+   "sub_identity": {}
+  },
+  {
+   "case_group": "blind",
+   "case_id": "B4",
+   "sub_identity": {}
+  },
+  {
+   "case_group": "blind",
+   "case_id": "B5",
+   "sub_identity": {}
+  },
+  {
    "case_group": "ctrl",
    "case_id": "T-CTRL-ASCII",
    "sub_identity": {}
@@ -47,42 +72,96 @@
    "case_group": "len",
    "case_id": "T17",
    "sub_identity": {
-    "base_len": 78
+    "base_len": 78,
+    "path_form": "plain"
    }
   },
   {
    "case_group": "len",
    "case_id": "T17",
    "sub_identity": {
-    "base_len": 120
+    "base_len": 78,
+    "path_form": "extended"
    }
   },
   {
    "case_group": "len",
    "case_id": "T17",
    "sub_identity": {
-    "base_len": 200
+    "base_len": 120,
+    "path_form": "plain"
+   }
+  },
+  {
+   "case_group": "len",
+   "case_id": "T17",
+   "sub_identity": {
+    "base_len": 120,
+    "path_form": "extended"
+   }
+  },
+  {
+   "case_group": "len",
+   "case_id": "T17",
+   "sub_identity": {
+    "base_len": 200,
+    "path_form": "plain"
+   }
+  },
+  {
+   "case_group": "len",
+   "case_id": "T17",
+   "sub_identity": {
+    "base_len": 200,
+    "path_form": "extended"
    }
   },
   {
    "case_group": "len",
    "case_id": "T18",
    "sub_identity": {
-    "base_len": 78
+    "base_len": 78,
+    "path_form": "plain"
    }
   },
   {
    "case_group": "len",
    "case_id": "T18",
    "sub_identity": {
-    "base_len": 120
+    "base_len": 78,
+    "path_form": "extended"
    }
   },
   {
    "case_group": "len",
    "case_id": "T18",
    "sub_identity": {
-    "base_len": 200
+    "base_len": 120,
+    "path_form": "plain"
+   }
+  },
+  {
+   "case_group": "len",
+   "case_id": "T18",
+   "sub_identity": {
+    "base_len": 120,
+    "path_form": "extended"
+   }
+  },
+  {
+   "case_group": "len",
+   "case_id": "T18",
+   "sub_identity": {
+    "base_len": 200,
+    "path_form": "plain"
+   }
+  },
+  {
+   "case_group": "len",
+   "case_id": "T18",
+   "sub_identity": {
+    "base_len": 200,
+    "path_form": "extended"
    }
   },
   {

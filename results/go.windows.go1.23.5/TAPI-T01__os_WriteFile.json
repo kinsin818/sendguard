@@ -9,7 +9,7 @@
  "locale": "en-US",
  "api_entry": "os.WriteFile",
  "attempt": 1,
- "name_source": "434f4e2e747874",
+ "name_source": "",
  "name_encoding": "utf8_bytes",
  "path_form": "plain",
  "longpath_mechanism": "none",
@@ -23,12 +23,12 @@
  "enum_to_stat_agrees": false,
  "enum_api_entry": "os.ReadDir",
  "os_legality_verdict": "unknown",
- "mechanism_class": "component_length_limit",
+ "mechanism_class": "unknown",
  "worker_id": "W-GO/qianwen",
  "harness_version": "runner-v1",
  "sha256_self": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
- "started_at": "2026-10-10T15:00:35.626866Z",
- "elapsed_ms": 33,
+ "started_at": "2026-10-10T15:52:31.1431072Z",
+ "elapsed_ms": 5032,
  "env": {
   "LongPathsEnabled": 0,
   "dot3name": null,
@@ -37,25 +37,23 @@
   "unicode_version": "unavailable-no-api"
  },
  "notes": [
-  "PHANTOM-OK: create ok, dir_view lacks requested bytes"
+  "PHANTOM-OK: at least one member create=ok without matching dir entry"
  ],
  "members": [
   {
-   "Hex": "434f4e2e747874",
-   "DirFound": false,
-   "DirSize": null,
-   "PathOK": true,
-   "PathSize": 0,
-   "PathErr": "",
-   "Read": "",
-   "ReadN": null,
-   "ReadErr": "",
-   "Diverg": true,
-   "Drift": false,
-   "SameHits": 0
+   "name_utf8_hex": "434f4e2e747874",
+   "create_result": "ok",
+   "dir_found": false,
+   "dir_size": null,
+   "path_exists": true,
+   "path_size": 0,
+   "read_result": "hang",
+   "read_bytes": null,
+   "view_divergence": true,
+   "same_name_hits": 0
   }
  ],
- "root_len_units": 60,
+ "root_len_units": 61,
  "comp_units": 0,
  "spec_defect": false,
  "control_pass": true,

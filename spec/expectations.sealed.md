@@ -256,3 +256,18 @@ guessing silently is exactly what this document exists to forbid. Recorded inste
 - Rows carrying the literal tag `confidence: low`: 16 (T01-win, T08-mac, T09-mac, T10-win, T11-win,
   T14 PRN-win, T14 AUX-win, T15-mac, T16 roundtrip x3 OS, T17-win, T19a-win,
   T-CTRL-ILLEGAL-CHAR mac+ubuntu, T-CTRL-PARSE all-OS single row).
+
+
+---
+
+## Seat correction (append-only, 2026-10-11 04:35) - does not alter any prediction
+
+The header binds this table to `sha256_cases_yaml: 08484788745D...`, which is the digest of the
+**checked-out file**, taken with `Get-FileHash`. The committed blob face of the same file is
+`a7f9a57df1b4d39a19421a54d175e87793100ce3393e363622ca59816e19148b`. The sealer did nothing wrong in substance - it read the spec it was told to read and predicted from
+it - but the binding line pointed at the wrong face, so a stranger could not verify which spec this table
+was written against.
+
+Predictions, confidence marks and the machine-dependency register below are unchanged. See
+`spec/cell-identity.md` section 7: from now on every digest in this repository is a blob-face digest, and
+`ci/blobhash.py` is the only way to compute one.

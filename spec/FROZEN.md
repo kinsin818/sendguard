@@ -4,11 +4,21 @@ Freeze date: 2026-10-10. Frozen by: main agent (doubao seat) per 军令 S01,
 after S00 DoD 10/10 PASS. THIS FILE IS THE LOCK. S01 and later may not add,
 remove, or rename cases; additions go to backlog and require a new freeze.
 
+**FREEZE REVISION 2 (2026-10-10, P0 defect fix)**:
+`spec/cases.yaml` was amended per `evidence/S02/defects/sample-corruption.md`
+(found by W-PY): 9 corrupted sample hex values (T06/T07/T09a/T09b/T12/T13/
+T15/T19a/T19b) replaced with the correct UTF-8 hex. No trap id / category /
+locale / applicability changed; `freeze_revision: 2` + `rev2_note` added to the
+yaml. Old sha256 of cases.yaml: `2708ae44f61f448db5ef9abcdb91e1a7a81484626b7edf8b70fca6a77f87b880`
+(declared defective and superseded). All other locked artifacts unchanged.
+All seats must read the new freeze; affected cells must be re-run with the new
+hex (never hand-typed names).
+
 ## Locked artifacts (SHA-256, public)
 
 | file | sha256 |
 |---|---|
-| spec/cases.yaml | 2708ae44f61f448db5ef9abcdb91e1a7a81484626b7edf8b70fca6a77f87b880 |
+| spec/cases.yaml | a7f9a57df1b4d39a19421a54d175e87793100ce3393e363622ca59816e19148b |
 | spec/gate.md | 5b36eb45e8deed82f2d86400c291aaeded883274453fcf78ae856a7e2c8d793b |
 | spec/canonical.md | 64d8addcf36f6e8ead7933fb0089d95ebee0746814281f13050ea180c161d20a |
 | spec/attribution-tree.md | 286f81914c73a73986e5de234121ce159fd1bdf39126dc9b22b5560988bde805 |

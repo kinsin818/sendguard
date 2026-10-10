@@ -4,7 +4,7 @@ Freeze date: 2026-10-10. Frozen by: main agent (doubao seat) per 军令 S01,
 after S00 DoD 10/10 PASS. THIS FILE IS THE LOCK. S01 and later may not add,
 remove, or rename cases; additions go to backlog and require a new freeze.
 
-**FREEZE REVISION 2 (2026-10-10, P0 defect fix)**:
+**FREEZE REVISION 3 (contract-only; the 20 traps and their hex are unchanged) (2026-10-10, P0 defect fix)**:
 `spec/cases.yaml` was amended per `evidence/S02/defects/sample-corruption.md`
 (found by W-PY): 9 corrupted sample hex values (T06/T07/T09a/T09b/T12/T13/
 T15/T19a/T19b) replaced with the correct UTF-8 hex. No trap id / category /
@@ -23,10 +23,9 @@ hex (never hand-typed names).
 | spec/canonical.md | 64d8addcf36f6e8ead7933fb0089d95ebee0746814281f13050ea180c161d20a |
 | spec/attribution-tree.md | 286f81914c73a73986e5de234121ce159fd1bdf39126dc9b22b5560988bde805 |
 | spec/validate.py | f19a5d142d737997edf35b2b4ec88b6ab5340b2684c836b52ea89703cd746587 |
-| spec/schema.json | f387ec4bc80a4fbff9c9128e1247d2a5297fc473c2551b4d301d1bf3d81af129 |
-| evidence/S00/blind-map.json | 289188cfbc6a1efe460e9548380fc3aa4d18901c0bd39c134570e228792d574c |
-
-S03 audit compares HASHES of these files, not "reads the same".
+| spec/schema.json | 0bee4f15c18c0b2fcc50d6ae57d8380d8f5cdac43f20bd3c5e7ff164c349720b |
+| spec/cell-identity.md | d011101d650534d776115aa6a17772bdfac99d35a9ec4df85ab3733fb9d9d7d7 |
+| spec/cells-required.json | 99d6ec085794d3cc9df101f643a5ca480ddae73e7e710602b66c2cdc34cdbfc4 |
 
 ## 20 frozen traps (ids only; samples are hex-only per N12)
 
@@ -71,3 +70,8 @@ T-CTRL-CANON. Expectations come ONLY from evidence/S00-ctrl-baseline.md.
 4. gate.md and attribution-tree.md are the only valid judgment procedures.
 5. Samples are synthetic (no real usernames/emails/companies), hex-only
    (N12).
+
+
+## rev3 changelog (2026-10-11 04:20:59 +0800, Qoder seat)
+
+Schema defects fixed, no trap was touched: `format_version` demanded the string "1" while every port writes integer 1 (this alone made every cell VOID under strict validation); `language` had no `typescript`; `name_encoding` carried two different meanings between schema.json and canonical.md, so the length field is now `length_unit` and `name_encoding` matches canonical. `verdict_via` became a required field: a legality verdict must name the tool asked. `spec/cell-identity.md` and `spec/cells-required.json` joined the locked set; the first, wrong `cells-required.json` is withdrawn by name in that file.

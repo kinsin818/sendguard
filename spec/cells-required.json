@@ -1,0 +1,363 @@
+{
+ "generated_at": "2026-10-11 04:20:59 +0800",
+ "generated_by": "ci/gen_cells_required.py - derived from the committed spec face, not hand-typed",
+ "spec_blob_sha256": "a7f9a57df1b4d39a19421a54d175e87793100ce3393e363622ca59816e19148b",
+ "withdraws": "the first version of this file (generated 03:4x from a mis-parse) listed only 20 cells and is void; any port that used it must re-derive from this one",
+ "note": "A port must emit exactly these cells. Missing => status blocked with command, exit code and one attempted fix. Extra => allowed, marked extra, excluded from the equality digest.",
+ "primary_entry_per_port": {
+  "python": "open_wb",
+  "node": "writeFileSync",
+  "typescript": "writeFileSync",
+  "go": "os.Create",
+  "java": "Files.write",
+  "csharp": "File.WriteAllBytes",
+  "rust": "std::fs::File::create"
+ },
+ "base_len_ladder": [
+  78,
+  120,
+  200
+ ],
+ "required_cells": [
+  {
+   "case_group": "ctrl",
+   "case_id": "T-CTRL-ASCII",
+   "sub_identity": {}
+  },
+  {
+   "case_group": "ctrl",
+   "case_id": "T-CTRL-CANON",
+   "sub_identity": {}
+  },
+  {
+   "case_group": "ctrl",
+   "case_id": "T-CTRL-ILLEGAL-CHAR",
+   "sub_identity": {}
+  },
+  {
+   "case_group": "ctrl",
+   "case_id": "T-CTRL-NAMETOOLONG",
+   "sub_identity": {}
+  },
+  {
+   "case_group": "ctrl",
+   "case_id": "T-CTRL-PARSE",
+   "sub_identity": {}
+  },
+  {
+   "case_group": "len",
+   "case_id": "T17",
+   "sub_identity": {
+    "base_len": 78
+   }
+  },
+  {
+   "case_group": "len",
+   "case_id": "T17",
+   "sub_identity": {
+    "base_len": 120
+   }
+  },
+  {
+   "case_group": "len",
+   "case_id": "T17",
+   "sub_identity": {
+    "base_len": 200
+   }
+  },
+  {
+   "case_group": "len",
+   "case_id": "T18",
+   "sub_identity": {
+    "base_len": 78
+   }
+  },
+  {
+   "case_group": "len",
+   "case_id": "T18",
+   "sub_identity": {
+    "base_len": 120
+   }
+  },
+  {
+   "case_group": "len",
+   "case_id": "T18",
+   "sub_identity": {
+    "base_len": 200
+   }
+  },
+  {
+   "case_group": "trap",
+   "case_id": "T01",
+   "sub_identity": {}
+  },
+  {
+   "case_group": "trap",
+   "case_id": "T02",
+   "sub_identity": {}
+  },
+  {
+   "case_group": "trap",
+   "case_id": "T03",
+   "sub_identity": {}
+  },
+  {
+   "case_group": "trap",
+   "case_id": "T04",
+   "sub_identity": {}
+  },
+  {
+   "case_group": "trap",
+   "case_id": "T05",
+   "sub_identity": {}
+  },
+  {
+   "case_group": "trap",
+   "case_id": "T06",
+   "sub_identity": {}
+  },
+  {
+   "case_group": "trap",
+   "case_id": "T07",
+   "sub_identity": {}
+  },
+  {
+   "case_group": "trap",
+   "case_id": "T08",
+   "sub_identity": {}
+  },
+  {
+   "case_group": "trap",
+   "case_id": "T09-m1",
+   "sub_identity": {}
+  },
+  {
+   "case_group": "trap",
+   "case_id": "T09-m2",
+   "sub_identity": {}
+  },
+  {
+   "case_group": "trap",
+   "case_id": "T10",
+   "sub_identity": {}
+  },
+  {
+   "case_group": "trap",
+   "case_id": "T11",
+   "sub_identity": {}
+  },
+  {
+   "case_group": "trap",
+   "case_id": "T12",
+   "sub_identity": {}
+  },
+  {
+   "case_group": "trap",
+   "case_id": "T13",
+   "sub_identity": {}
+  },
+  {
+   "case_group": "trap",
+   "case_id": "T14-m1",
+   "sub_identity": {}
+  },
+  {
+   "case_group": "trap",
+   "case_id": "T14-m2",
+   "sub_identity": {}
+  },
+  {
+   "case_group": "trap",
+   "case_id": "T14-m3",
+   "sub_identity": {}
+  },
+  {
+   "case_group": "trap",
+   "case_id": "T15",
+   "sub_identity": {}
+  },
+  {
+   "case_group": "trap",
+   "case_id": "T16",
+   "sub_identity": {}
+  },
+  {
+   "case_group": "trap",
+   "case_id": "T19-m1",
+   "sub_identity": {}
+  },
+  {
+   "case_group": "trap",
+   "case_id": "T19-m2",
+   "sub_identity": {}
+  },
+  {
+   "case_group": "trap",
+   "case_id": "T20",
+   "sub_identity": {}
+  }
+ ],
+ "tapi_cells_per_language": [
+  {
+   "case_group": "tapi",
+   "case_id": "T-API",
+   "language": "csharp",
+   "api_entry": "File.WriteAllBytes",
+   "sub_identity": {}
+  },
+  {
+   "case_group": "tapi",
+   "case_id": "T-API",
+   "language": "csharp",
+   "api_entry": "File.Create",
+   "sub_identity": {}
+  },
+  {
+   "case_group": "tapi",
+   "case_id": "T-API",
+   "language": "csharp",
+   "api_entry": "FileStream",
+   "sub_identity": {}
+  },
+  {
+   "case_group": "tapi",
+   "case_id": "T-API",
+   "language": "csharp",
+   "api_entry": "File.Move",
+   "sub_identity": {}
+  },
+  {
+   "case_group": "tapi",
+   "case_id": "T-API",
+   "language": "go",
+   "api_entry": "os.Create",
+   "sub_identity": {}
+  },
+  {
+   "case_group": "tapi",
+   "case_id": "T-API",
+   "language": "go",
+   "api_entry": "os.WriteFile",
+   "sub_identity": {}
+  },
+  {
+   "case_group": "tapi",
+   "case_id": "T-API",
+   "language": "go",
+   "api_entry": "os.OpenFile",
+   "sub_identity": {}
+  },
+  {
+   "case_group": "tapi",
+   "case_id": "T-API",
+   "language": "go",
+   "api_entry": "os.Mkdir",
+   "sub_identity": {}
+  },
+  {
+   "case_group": "tapi",
+   "case_id": "T-API",
+   "language": "java",
+   "api_entry": "Files.write",
+   "sub_identity": {}
+  },
+  {
+   "case_group": "tapi",
+   "case_id": "T-API",
+   "language": "java",
+   "api_entry": "Files.createFile",
+   "sub_identity": {}
+  },
+  {
+   "case_group": "tapi",
+   "case_id": "T-API",
+   "language": "java",
+   "api_entry": "Files.newOutputStream",
+   "sub_identity": {}
+  },
+  {
+   "case_group": "tapi",
+   "case_id": "T-API",
+   "language": "java",
+   "api_entry": "Files.move",
+   "sub_identity": {}
+  },
+  {
+   "case_group": "tapi",
+   "case_id": "T-API",
+   "language": "node",
+   "api_entry": "writeFileSync",
+   "sub_identity": {}
+  },
+  {
+   "case_group": "tapi",
+   "case_id": "T-API",
+   "language": "node",
+   "api_entry": "createWriteStream",
+   "sub_identity": {}
+  },
+  {
+   "case_group": "tapi",
+   "case_id": "T-API",
+   "language": "node",
+   "api_entry": "appendFileSync",
+   "sub_identity": {}
+  },
+  {
+   "case_group": "tapi",
+   "case_id": "T-API",
+   "language": "python",
+   "api_entry": "open_wb",
+   "sub_identity": {}
+  },
+  {
+   "case_group": "tapi",
+   "case_id": "T-API",
+   "language": "python",
+   "api_entry": "os.mkdir",
+   "sub_identity": {}
+  },
+  {
+   "case_group": "tapi",
+   "case_id": "T-API",
+   "language": "python",
+   "api_entry": "pathlib.write_bytes",
+   "sub_identity": {}
+  },
+  {
+   "case_group": "tapi",
+   "case_id": "T-API",
+   "language": "python",
+   "api_entry": "os.rename",
+   "sub_identity": {}
+  },
+  {
+   "case_group": "tapi",
+   "case_id": "T-API",
+   "language": "rust",
+   "api_entry": "std::fs::write",
+   "sub_identity": {}
+  },
+  {
+   "case_group": "tapi",
+   "case_id": "T-API",
+   "language": "rust",
+   "api_entry": "std::fs::File::create",
+   "sub_identity": {}
+  },
+  {
+   "case_group": "tapi",
+   "case_id": "T-API",
+   "language": "rust",
+   "api_entry": "std::fs::OpenOptions",
+   "sub_identity": {}
+  },
+  {
+   "case_group": "tapi",
+   "case_id": "T-API",
+   "language": "rust",
+   "api_entry": "std::fs::rename",
+   "sub_identity": {}
+  }
+ ]
+}

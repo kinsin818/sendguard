@@ -8,7 +8,12 @@ Rules face: `spec/cases.yaml` sha256 `a7f9a57df1b4…` — **matches** the hash 
 `spec/FROZEN.md`; the tool prints that comparison in every report header, so this claim is
 re-runnable and not a promise made here.
 
-**Nothing in this file is committed.** The three faces are on disk in `tool/`, `docs/tool-usage.md`
+> **SUPERSEDED IN PART — see `#rev6-addendum` at the bottom of this file.** Everything below this line was
+> measured against contract rev5's output shape (folder-only, one field order, no verdict/probe split, no
+> `verdict_via`). The plant list, the safety method, the missed cases and the defect list still stand and were
+> not re-measured. The line shape, the exit-code table and the deliverables changed under rev6, and the faces
+> quoted below (`tool/check.py` at 42,985 bytes) are the earlier face, kept as history rather than rewritten.
+
 and this file; `git status` shows them untracked. I did not commit because the other five port
 seats are working in this same working tree and a path-scoped commit here moves their shared index.
 

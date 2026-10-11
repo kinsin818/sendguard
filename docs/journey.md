@@ -358,6 +358,19 @@ declare which verdict fields apply to which case group, and give a boolean a doc
 there). Cost if the owner says yes: six ports re-emit their faces, and every "0 invalid" in the tree starts
 carrying a second number.
 
+**And a worker caught this seat leaving a broken instrument in the shared tree.** At 12:02 the TypeScript
+window reported that `ci/equality.py` would not parse - `SyntaxError: unmatched ')'` at line 944, 13 format
+arguments against 11 placeholders - and refused to touch `ci/`, re-deriving its own counts from
+`git show HEAD:ci/equality.py` so its report would not depend on the broken file. That was me: I was
+sabotaging arms to prove they bite, and the work tree carried a half-edited gate for several minutes while a
+worker was running against it. Two rules come out of it, and the second one is the one I would otherwise
+skip: a seat's tool edits are worker-facing files, so they belong in history before somebody else trips over
+them; and a sabotage experiment is only honest if the file is shown to compile and its arms to pass **after**
+it, which is now a step in the routine rather than something I remember to do (`python -m py_compile` on the
+five `ci/` files touched today, rc=0, before the 12:27 commit). The lane's own wording, kept because it is
+the cleanest description of the discipline in this whole build: "It ran cleanly for me minutes earlier, so
+the edit is in flight, not abandoned."
+
 
 ## 3. What the six windows did that the plan did not expect
 

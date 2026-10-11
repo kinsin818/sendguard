@@ -30,6 +30,7 @@ import json
 import os
 import re
 import sys
+import time
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RESULTS = os.path.join(REPO, "results")
@@ -854,7 +855,15 @@ def main(argv):
         "verdict_fields": VERDICT_FIELDS,
         "probe_fields": PROBE_FIELDS,
     }
-    vpath = os.path.join(REPO, "evidence", "S02", "equality-verdict.json")
+    # The artifact path is an argument, not a constant. Measured reason: ci/selftest.py runs this gate
+    # against small fixture trees, and with a hardcoded path each fixture run overwrote the real verdict
+    # in evidence/S02/ - so docs/matrix.md, which reads that file, was judging a fixture for a while.
+    # A test that writes into the evidence face is a defect even when the test itself passes.
+    vpath = os.environ.get("SG_VERDICT_OUT") or os.path.join(
+        REPO, "evidence", "S02", "equality-verdict.json")
+    verdict["source_results"] = os.path.relpath(RESULTS, REPO).replace(BSLASH, FWD)
+    verdict["source_required_list"] = os.path.relpath(REQUIRED, REPO).replace(BSLASH, FWD)
+    verdict["written_at"] = time.strftime("%Y-%m-%dT%H:%M:%S%z")
     io.open(vpath, "w", encoding="utf-8", newline=NL).write(
         json.dumps(verdict, ensure_ascii=False, sort_keys=True, indent=1) + NL)
     print("wrote %s outcome=%s" % (os.path.relpath(vpath, REPO).replace(BSLASH, FWD), verdict["outcome"]))

@@ -358,5 +358,14 @@
  "attribution_layer": "L3",
  "attribution_basis": "R2: java.nio rejected the path string before any syscall and every entry of this port agrees; third evidence: the OS-level leg answered err_at_syscall, so the name verdict is not language-only but the refusal STAGE is",
  "dir_view_contains_probe_created_files": false,
- "required_by_contract": true
+ "required_by_contract": true,
+ "control_pass": true,
+ "control_pass_rule": "may reject before syscall, but all 6 langs MUST be err-at-parse",
+ "control_pass_observed": "create_result='err_at_parse' error_stage='parse'",
+ "control_pass_command": "python impl/java/tools/stamp_controls.py --apply",
+ "control_pass_tool": "impl/java/tools/stamp_controls.py",
+ "control_pass_basis": "judged from the fields this cell already recorded; no child process was started and no measurement was re-taken for this stamp",
+ "control_pass_spec_sha256_face": "committed blob face HEAD:spec/cases.yaml",
+ "control_pass_partial": "the expectation's second half is cross-port ('all 6 langs MUST be err-at-parse'); this tool can only judge this port's own record, where create_result=err_at_parse and error_stage=parse hold. The cross-port half belongs to ci/equality.py, not to a stamp this window is entitled to give.",
+ "control_pass_stamped_at": "2026-10-11 13:15:57 +0800"
 }

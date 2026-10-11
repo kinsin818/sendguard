@@ -40,13 +40,18 @@ BUILD = os.path.join(PORT, "build")
 RESULTS_DIR = os.path.join(REPO, "results", "java.windows.x64")
 SCRATCH_ROOT = "D:\\s\\"           # one parent dir outside the repo, never under D:\sendguard
 FACTS_PATH = os.path.join(PORT, "tools", "run-facts.json")
+OUT_DIR = [RESULTS_DIR]   # set from --out-dir in main; assemble reads a PAIRED cell from here
 TIMEOUT_S = 5.0
-HARNESS_VERSION = "sg-java-S02-r4-rev6"
+HARNESS_VERSION = "sg-java-S02-r5-SG-F2"
 PAYLOAD_HEX_PINNED = "53454e4447554152442d43414e4f4e2d5041594c4f41442d32303236"   # rev6 control_samples, 28 bytes
 PAYLOAD = bytes.fromhex(PAYLOAD_HEX_PINNED)   # its sha256 is the sealed S00 baseline value
 PAD = "0123456789abcdef"
 
 PRIMARY_ENTRY = "Files.write"
+# SG-F2 part 1: the second instrument of this port, published as its own cell per pinned length
+# rung. It is a java.io call driven from the requested String, so it never passes through
+# java.nio's path parser (impl/java/tools/ext-path-of-repro.txt is the reproduction).
+IO_SPREAD_ENTRY = "FileOutputStream.write"
 LENGTH_UNIT = "utf16_code_units"        # java.nio counts path/name length in UTF-16 code units
 NAME_ENCODING = "hex_raw_bytes"         # the record carries the name as UTF-8 hex, the cases.yaml face
 VERDICT_VIA = "win32"
@@ -378,6 +383,37 @@ def build_plan(cases, api, ctrl_ids, blind_entries, java_entries, req, csamples,
                                    "sub_parts": ["base_len-%d" % base, form],
                                    "member_index": None, "sub_identity": sub_id,
                                    "path_form": form, "extra": False}]})
+                    # SG-F2 part 1: the same rung measured by this port's second instrument, as its
+                    # own extra cell. `builder` is a dimension spec/cell-identity.md section 1
+                    # already declares, and its value is the entry this cell called; the arm in
+                    # impl/java/tools/selfcheck.py requires builder == api_entry, so the filename
+                    # cannot lie about which instrument answered.
+                    req_fn = "len__%s__base_len-%d__%s.json" % (c["id"], base, form)
+                    plan.append({
+                        "kind": "len", "group": "len", "case_id": c["id"], "row_tag": "io-spread",
+                        "sub_parts": ["base_len-%d" % base, form, "builder-" + IO_SPREAD_ENTRY],
+                        "sub": None, "tier": None, "base_len": base, "grades": grades, "sweep": None,
+                        "path_form": form, "mechanism": False, "members_hex": None,
+                        "name_source": pinned.hex(), "category": c["category"],
+                        "locale": c["locale"], "applicable": c["applicable"], "fill_unit": unit,
+                        "headline": "pinned", "pinned_component_bytes": len(pinned),
+                        "entries": [IO_SPREAD_ENTRY], "zip": False, "grid_rule": "SG-F2-part1",
+                        "paired_required_cell": req_fn,
+                        "emits": [{"case_id": c["id"], "group": "len",
+                                   "sub_parts": ["base_len-%d" % base, form,
+                                                 "builder-" + IO_SPREAD_ENTRY],
+                                   "member_index": None,
+                                   "sub_identity": dict(list(sub_id.items()) +
+                                                        [("builder", IO_SPREAD_ENTRY)]),
+                                   "path_form": form, "extra": True,
+                                   "paired_required_cell": req_fn,
+                                   "extra_reason":
+                                       "SG-F2 part 1: the java.io leg of this pinned rung published "
+                                       "as its own cell on the contract's own `builder` dimension. "
+                                       "Extra because api_entry is not part of the equality key "
+                                       "(spec/cell-identity.md section 1), so it is published and "
+                                       "never compared; the required Files.write answer for the same "
+                                       "rung is the paired cell " + req_fn}]})
             # the pre-rev3 FROZEN.md tier cells stay on the disk, marked extra
             for tier, base, grades in LEN_GRID:
                 sweep = None
@@ -564,6 +600,47 @@ def attribute(primary, spread, ext, entry_count):
                   "(OS leg create_result=%s, landed=%s), so the behaviour is an "
                   "environment/OS fact for this port on this machine"
                   % (ext.get("create_result"), ext.get("landed_by_enumeration")))
+
+
+def paired_rung_claim(plan, head, spec_sha):
+    """SG-F2 part 1. This row ran exactly ONE entry, so it may not say "every entry of this port
+    agrees" - that claim needs evidence about the other entries, and here there is none in the row.
+    The paired required cell for the same rung IS published, so read it and describe the agreement
+    or disagreement as what was observed, naming both files."""
+    fn = plan.get("paired_required_cell")
+    out = {"paired_cell": fn, "paired_cell_read": False, "keys_compared": ["create_result",
+                                                                           "error_stage"]}
+    if not fn:
+        out["paired_cell_read_error"] = "the plan row names no paired cell"
+        return None, None, out
+    path = os.path.join(OUT_DIR[0], fn)
+    try:
+        d = json.loads(io.open(path, encoding="utf-8").read())
+    except Exception as e:
+        out["paired_cell_read_error"] = "%s: %s" % (type(e).__name__, e)
+        return None, None, out
+    out["paired_cell_read"] = True
+    out["paired_cell_api_entry"] = d.get("api_entry")
+    out["paired_cell_spec_sha256_matches_this_run"] = (d.get("spec_sha256") == spec_sha)
+    out["paired_cell_harness_version"] = d.get("harness_version")
+    a = tuple(d.get(k) for k in out["keys_compared"])
+    b = tuple(head.get(k) for k in out["keys_compared"])
+    out["paired_answer"] = list(a)
+    out["this_answer"] = list(b)
+    if a != b:
+        return "L2", ("R1 across two published cells of this port: for this same rung the paired %s "
+                      "cell (entry %s) answered %s/%s and this cell (entry %s) answered %s/%s, so "
+                      "switching a stdlib entry of the SAME language removes the difference - an "
+                      "L2 fact about java on this machine, not a Windows fact"
+                      % (fn, d.get("api_entry"), a[0], a[1], plan["entries"][0], b[0], b[1])), out
+    if a[0] == "err_at_parse":
+        return "L3", ("R2: both entries of this port that were asked refuse the requested string at "
+                      "parse, the paired %s cell at %s/%s and this cell at %s/%s, so no stdlib entry "
+                      "of this language removes it - core path-model behaviour"
+                      % (fn, a[0], a[1], b[0], b[1])), out
+    return "L1", ("R3: both entries reached the filesystem and answered the same (%s/%s in the "
+                  "paired %s cell, %s/%s here), so the answer is an environment/OS fact on this "
+                  "machine" % (a[0], a[1], fn, b[0], b[1])), out
 
 
 def assemble(tc, plan, runs, spec_sha, env, canon_extra=None, emit=None):
@@ -861,6 +938,25 @@ def assemble(tc, plan, runs, spec_sha, env, canon_extra=None, emit=None):
                     "carries only the first, this field carries the third"}
         rec["bisection_regime"] = rev4_regime(rec.get("longpath_mechanism"), max_ok_component,
                                             rec.get("base_len"))
+        if plan.get("row_tag") == "io-spread":
+            # both columns of this cell are the same instrument, so the inherited key names need
+            # saying what they hold here rather than quietly meaning something else
+            rec["len_ceiling"]["measured_through_this_cells_entry"] = entry_under_test
+            rec["len_ceiling"]["leg_instrument"] = (
+                "this cell ran one instrument, %s, called with the requested String. The column "
+                "named 'plain' in points[] is this cell's own create through the path form the rung "
+                "asked for (%s); the column named 'extended' is the second leg inside the same "
+                "child, which for this entry is the SAME instrument on the SAME kind of string, so "
+                "the two columns agreeing here is by construction, not a confirmation. "
+                "through_the_pinned_entry keeps the key name the required cells use, but on this "
+                "cell it holds %s's answer, not Files.write's; the Files.write answer for this rung "
+                "is the paired required cell." % (entry_under_test, plan.get("path_form"),
+                                                  entry_under_test))
+            rec["points_column_note"] = (
+                "points[].plain = create through the requested path form via this cell's entry; "
+                "points[].extended = the java.io extended-string leg of the same child. On the "
+                "required Files.write cells these two columns are two different instruments; on "
+                "this cell they are one instrument twice, which is why they never differ.")
     if rec.get("bisection_regime"):
         rec["bisection_regime_evidence"] = {
             "max_name_len_observed_ok": max_ok_component,
@@ -870,6 +966,28 @@ def assemble(tc, plan, runs, spec_sha, env, canon_extra=None, emit=None):
             "model_2_none": "expect max_component == 259 - base_len - 1",
             "read_result_word": "rev4 gate.md section 5 keys the regime on longpath_mechanism"}
     layer, basis = attribute(head, spread, ext, len(runs))
+    if head.get("instrument_face"):
+        rec["instrument_face"] = head["instrument_face"]
+    if plan.get("row_tag") == "io-spread":
+        pl, pb, pe = paired_rung_claim(plan, head, spec_sha)
+        rec["spread_pair"] = pe
+        rec["why_this_cell_exists"] = (
+            "SG-F2 part 1: the twelve pinned length rungs were recorded through Files.write only, "
+            "with the java.io answer kept as a leg inside that cell. The java.io answer is now "
+            "published as its own extra cell so a stranger can compare the two entries of this "
+            "port as cells, not as a note. api_entry is not an equality dimension "
+            "(spec/cell-identity.md section 1), so this cell is extra and is never compared.")
+        if plan.get("row_tag") == "io-spread":
+            rec["extended_leg_note"] = (
+                "this cell IS the leg the paired Files.write cell kept as a footnote: the requested "
+                "string (%s form) is handed to java.io as a String, which is why instrument_face "
+                "says 'called with the requested String'. java.nio's parser throws "
+                "InvalidPathException on the extended string (index 2; "
+                "impl/java/tools/ext-path-of-repro.txt TAG 2/3/4/6/8/10) and the paired cell records "
+                "that as create_result=err_at_parse; java.io never asks that parser and reached the "
+                "filesystem instead." % plan.get("path_form"))
+        if pl:
+            layer, basis = pl, pb
     rec["attribution_layer"] = layer
     rec["attribution_basis"] = basis
     if head.get("zip_leg", {}).get("attempted"):
@@ -934,9 +1052,13 @@ def mechanism_preflight(tc, out_parent):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--only")
+    ap.add_argument("--only-row-tag", dest="only_row_tag")
+    ap.add_argument("--facts-out", dest="facts_out", default=FACTS_PATH)
     ap.add_argument("--dry", action="store_true")
     ap.add_argument("--out-dir", default=RESULTS_DIR)
     a = ap.parse_args()
+    OUT_DIR[0] = a.out_dir
+    facts_path = a.facts_out
 
     log = []
     cases_path = os.path.join(REPO, "spec", "cases.yaml")
@@ -982,6 +1104,16 @@ def main():
         plan = [p for p in plan if p["case_id"] in want
                 or any(e["case_id"] in want for e in p["emits"])
                 or p.get("tapi_entry_under_test") in want]
+    if a.only_row_tag:
+        # SG-F2 runs append-only: the 44 required Files.write cells were measured and published
+        # already, and the ticket says not to re-answer them. A filtered run must therefore NOT
+        # overwrite the facts face the record cites, hence --facts-out.
+        wantt = set(x.strip() for x in a.only_row_tag.split(","))
+        plan = [p for p in plan if p.get("row_tag") in wantt]
+        print("ROW_FILTER %s -> plan_rows=%d" % (",".join(sorted(wantt)), len(plan)))
+        if not plan:
+            print("INSTRUMENT-RED the row filter selected nothing")
+            return 3
     names = [cell_filename({"case_group": e["group"], "case_id": e["case_id"]}, e)
              for p in plan for e in p["emits"]]
     dupes = sorted({n for n in names if names.count(n) > 1})
@@ -1121,9 +1253,15 @@ def main():
         if t["language"] == "java":
             required_names.add(cell_filename({"case_group": "tapi", "case_id": t["case_id"]},
                                              {"sub": t["api_entry"]}))
-    missing = sorted(required_names - set(produced))
-    if missing:
-        print("MISSING_REQUIRED %s" % ",".join(missing))
+    missing_all = sorted(required_names - set(produced))
+    # under a row filter the absent required identities are this run's scope, not a gap in the
+    # matrix: reporting them as MISSING would read as a blocked cell that was never attempted
+    missing = [] if a.only_row_tag else missing_all
+    if a.only_row_tag and missing_all:
+        print("ROW_FILTER append-only: %d required identities are outside this run's filter; they "
+              "are on the disk from the full run and were NOT re-answered here" % len(missing_all))
+    elif missing_all:
+        print("MISSING_REQUIRED %s" % ",".join(missing_all))
     facts = {"started_local": stamp(), "clock_note": "host-local time, UTC+08:00, no offset in string",
              "toolchain": tc, "spec_sha256_blob": sha_blob,
              "spec_sha256_disk": sha_disk, "blob_equals_disk": sha_blob == sha_disk,
@@ -1151,10 +1289,22 @@ def main():
              "mechanism_preflight": MECH,
              "device_namespace_preflight": MECH2[0],
              "primary_entry": PRIMARY_ENTRY, "spread_entries": SPREAD_ENTRIES,
+             "io_spread_entry": IO_SPREAD_ENTRY,
              "plan_size": len(plan), "cell_files": len(produced)}
-    io.open(FACTS_PATH, "w", encoding="utf-8", newline="\n").write(
+    if a.only_row_tag:
+        facts["row_filter"] = {
+            "only_row_tag": a.only_row_tag,
+            "required_cells_not_in_this_run": len(required_names) - len(
+                set(produced) & required_names),
+            "note": "append-only run. The required Files.write cells this run did not touch were "
+                    "measured by the earlier full run and are deliberately NOT re-answered: SG-F2 "
+                    "orders it, and rewriting them would move faces the derived docs already quote. "
+                    "This facts file therefore describes THIS run only; the full-matrix face is "
+                    "run-facts.json.",
+        }
+    io.open(facts_path, "w", encoding="utf-8", newline="\n").write(
         json.dumps(facts, ensure_ascii=True, indent=1) + "\n")
-    print("FACTS %s" % FACTS_PATH)
+    print("FACTS %s" % facts_path)
     print("cells_produced=%d cells_blocked=%d extra=%d missing_required=%d results_dir=%s"
           % (len(produced), len(blocked), len(set(produced) - required_names), len(missing), a.out_dir))
     return 1 if (blocked or missing) else 0

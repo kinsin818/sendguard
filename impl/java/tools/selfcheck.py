@@ -529,9 +529,44 @@ def check_cell(path, sets, schema, exp, sha_blob, pins=None):
         elif str(obj.get("blind_id")) != want[0]:
             errs.append("blind cell %s carries blind_id=%r, not %s"
                         % (obj.get("case_id"), obj.get("blind_id"), want[0]))
+    is_io_spread = (obj.get("case_group") == "len" and obj.get("extra") is True
+                    and (obj.get("sub_identity") or {}).get("builder"))
     if obj.get("api_entry") != PRIMARY and obj.get("case_group") != "tapi":
-        errs.append("primary entry of this port must be %r, cell carries %r"
-                    % (PRIMARY, obj.get("api_entry")))
+        if not obj.get("extra"):
+            # a REQUIRED cell of this port must answer through its primary entry: cell-identity.md
+            # section 2 forbids silently substituting another entry and passing
+            errs.append("primary entry of this port must be %r, cell carries %r"
+                        % (PRIMARY, obj.get("api_entry")))
+        elif is_io_spread and (obj.get("sub_identity") or {}).get("builder") != obj.get("api_entry"):
+            errs.append("extra length cell publishes entry %r while its declared `builder` "
+                        "dimension says %r: the varying dimension must be a named field and it "
+                        "must agree with the field the record answers through "
+                        "(spec/cell-identity.md section 1)"
+                        % (obj.get("api_entry"), (obj.get("sub_identity") or {}).get("builder")))
+    if is_io_spread:
+        # SG-F2 part 1 arms: this cell exists to publish a second instrument, so it must say which
+        # call answered, must not smuggle a random name into the pinned length family, and must name
+        # the required cell it is paired with - otherwise it is a duplicate with extra steps.
+        if "String" not in str(obj.get("instrument_face") or ""):
+            errs.append("java.io spread cell carries no instrument_face naming the String-form call "
+                        "(%r)" % obj.get("instrument_face"))
+        if not obj.get("points_column_note"):
+            errs.append("SPREAD_NOTE_MISSING: the points[] columns mean something different in a "
+                        "one-instrument cell, and the cell must say so")
+        pair = obj.get("spread_pair") or {}
+        if not pair.get("paired_cell"):
+            errs.append("java.io spread cell names no paired required rung cell")
+        elif not os.path.isfile(os.path.join(RESULTS, str(pair.get("paired_cell")))):
+            errs.append("spread_pair.paired_cell=%r is not a file in this face"
+                        % pair.get("paired_cell"))
+        elif pair.get("paired_cell_api_entry") != PRIMARY:
+            errs.append("the paired cell of a java.io spread cell must be the %r cell, found %r"
+                        % (PRIMARY, pair.get("paired_cell_api_entry")))
+        if (obj.get("len_ceiling") or {}).get("measured_through_this_cells_entry") \
+                != obj.get("api_entry"):
+            errs.append("len_ceiling.measured_through_this_cells_entry=%r disagrees with api_entry=%r"
+                        % ((obj.get("len_ceiling") or {}).get("measured_through_this_cells_entry"),
+                           obj.get("api_entry")))
     # --- contract rev3 fields -------------------------------------------------
     for f in ("length_unit", "name_encoding", "verdict_via"):
         if f not in obj:
@@ -544,7 +579,16 @@ def check_cell(path, sets, schema, exp, sha_blob, pins=None):
     if obj.get("verdict_via") == "none" and obj.get("os_legality_verdict") != "unknown":
         errs.append("verdict_via=none but os_legality_verdict=%r (no tool was asked, so no "
                     "verdict may be claimed)" % obj.get("os_legality_verdict"))
-    if obj.get("case_group") == "len" and not obj.get("extra"):
+    # SG-F2 criterion 4: the 17-vs-21 flip is only checkable by a stranger if every cell names the
+    # JVM that answered it. A blocked cell never started a JVM, so it is exempt on its face.
+    if not obj.get("blocked"):
+        if not (obj.get("jvm_self_report") or {}).get("java_version"):
+            errs.append("SELF_REPORT_MISSING: no jvm_self_report.java_version, so a reader cannot "
+                        "tell which JDK this cell answered")
+        if not (obj.get("toolchain") or {}).get("java"):
+            errs.append("TOOLCHAIN_MISSING: no toolchain.java path, so a reader cannot tell which "
+                        "binary on this host ran the child")
+    if obj.get("case_group") == "len" and (not obj.get("extra") or is_io_spread):
         # rev7: the length family finally has bytes. The cell's name is the pinned filler
         # unit repeated base_len times, its triple is THAT name's width, and the ceiling the
         # bisection converged on is a separate quantity in its own field.
@@ -591,8 +635,18 @@ def check_cell(path, sets, schema, exp, sha_blob, pins=None):
                     if sid.get("path_form") != p or obj.get("path_form") != p:
                         errs.append("filename form %s disagrees with sub_identity %r and "
                                     "path_form %r" % (p, sid, obj.get("path_form")))
+                elif p.startswith("builder-"):
+                    want_b = p[len("builder-"):]
+                    if sid.get("builder") != want_b or obj.get("api_entry") != want_b:
+                        errs.append("filename slot %s disagrees with sub_identity.builder=%r and "
+                                    "api_entry=%r" % (p, sid.get("builder"), obj.get("api_entry")))
                 elif p.startswith("T-") or p.startswith("G"):
                     pass
+        if is_io_spread and not any(str(p).startswith("builder-") for p in tailp):
+            # the required rung cell already owns the shorter filename; a spread cell that left the
+            # instrument out of its name would be sitting on top of a compared record
+            errs.append("java.io spread cell does not carry its builder dimension in the filename, "
+                        "so it would collide with the required rung cell for the same identity")
     is_required = fn in exp
     if is_required and obj.get("extra"):
         errs.append("cell is in spec/cells-required.json but marks itself extra")
@@ -736,6 +790,65 @@ def selftest(sets, schema, exp, sha_blob, pins):
             arms += 1
             if any("UNPINNED_INPUT" in e or "len_triple" in e or "len_ceiling" in e for e in errs):
                 problems.append("rev7 GREEN rung arm refused: %s" % errs[:3])
+        # SG-F2 arms: a java.io spread cell is a second instrument on a pinned rung. Every field that
+        # makes it readable has to be shown able to refuse, and the cell itself has to pass.
+        io_name, io_base = None, None
+        for cand in sorted(glob.glob(os.path.join(RESULTS, "len__*__builder-*.json"))):
+            io_name, io_base = os.path.basename(cand), json.loads(io.open(cand, encoding="utf-8").read())
+            break
+        if io_base is None:
+            problems.append("no java.io spread cell on disk to test the SG-F2 arms")
+        else:
+            obj, errs, conf = check_cell(write(io_base, name=io_name), sets, schema, exp,
+                                         sha_blob, pins)
+            arms += 1
+            if errs:
+                problems.append("GREEN java.io spread arm refused: %s" % errs[:3])
+
+            def iomut(**kw):
+                c = json.loads(json.dumps(io_base))
+                for k, v in kw.items():
+                    if v == "__del__":
+                        c.pop(k, None)
+                    elif isinstance(v, tuple):     # (path, key, value) inside a nested dict
+                        c[v[0]][v[1]] = v[2]
+                    else:
+                        c[k] = v
+                return c
+            ioreds = [
+                ("no points-column note", iomut(points_column_note="__del__"),
+                 "SPREAD_NOTE_MISSING"),
+                ("builder dimension disagreeing with api_entry",
+                 iomut(sub_identity=dict(io_base["sub_identity"], builder=PRIMARY)), "disagrees with"),
+                ("no paired rung named", iomut(spread_pair="__del__"), "names no paired"),
+                ("a random name in the pinned family", iomut(name_source=hx4("t.bin")),
+                 "UNPINNED_INPUT"),
+                ("ceiling key pointing at another entry",
+                 iomut(len_ceiling=("len_ceiling", "measured_through_this_cells_entry", PRIMARY)),
+                 "measured_through_this_cells_entry"),
+                ("no jvm self report", iomut(jvm_self_report="__del__"), "SELF_REPORT_MISSING"),
+                ("no toolchain path", iomut(toolchain="__del__"), "TOOLCHAIN_MISSING"),
+            ]
+            for name, cell, needle in ioreds:
+                obj, errs, conf = check_cell(write(cell, name=io_name), sets, schema, exp,
+                                             sha_blob, pins)
+                arms += 1
+                if not any(needle in e for e in errs):
+                    problems.append("RED SG-F2 arm %s not caught: %s" % (name, errs[:2]))
+            # a spread cell that dropped its instrument slot from the filename would sit on top of
+            # the required rung record
+            obj, errs, conf = check_cell(write(io_base, name="len__T17__base_len-78__plain.json"),
+                                         sets, schema, exp, sha_blob, pins)
+            arms += 1
+            if not any("builder dimension" in e or "marks itself extra" in e for e in errs):
+                problems.append("RED SG-F2 arm filename-without-builder not caught: %s" % errs[:2])
+            # a REQUIRED cell may never answer through a substituted entry
+            obj, errs, conf = check_cell(write(mut(api_entry="FileOutputStream.write"),
+                                                name="trap__T04.json"), sets, schema, exp, sha_blob)
+            arms += 1
+            if not any("primary entry of this port" in e for e in errs):
+                problems.append("RED SG-F2 arm required-cell-entry-substitution not caught: %s"
+                                % errs[:2])
         # rev6 arms on their own bases: a control cell that ignored the pinned sample,
         # and a blind cell whose id does not carry the blind_id the map gives
         ctrl_base = None

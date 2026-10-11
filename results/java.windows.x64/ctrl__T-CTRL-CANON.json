@@ -393,5 +393,12 @@
   "verdict": "not-determinate across ports: the baseline publishes a hash but not the payload bytes, so a payload of the same declared length cannot be ruled in or out against it; the canon control this port can run is agreement between two of its own instruments, and control_pass reports exactly that"
  },
  "control_pass": true,
- "required_by_contract": true
+ "required_by_contract": true,
+ "control_pass_rule": "identical canonical bytes; else INSTRUMENT-RED",
+ "control_pass_observed": "sha256_primary=c9fe45b2fee8... second_instrument=c9fe45b2fee8... payload=c9fe45b2fee8... instruments_identical=True equals_sealed_s00_baseline=True",
+ "control_pass_command": "python impl/java/tools/stamp_controls.py --apply",
+ "control_pass_tool": "impl/java/tools/stamp_controls.py",
+ "control_pass_basis": "judged from the fields this cell already recorded; no child process was started and no measurement was re-taken for this stamp",
+ "control_pass_spec_sha256_face": "committed blob face HEAD:spec/cases.yaml",
+ "control_pass_stamped_at": "2026-10-11 13:15:57 +0800"
 }

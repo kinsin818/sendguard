@@ -1,0 +1,286 @@
+{
+ "started_local": "2026-10-11T13:17:25.413597",
+ "clock_note": "host-local time, UTC+08:00, no offset in string",
+ "toolchain": {
+  "JAVA_HOME_env": "C:\\Program Files\\Eclipse Adoptium\\jdk-21.0.6.7-hotspot",
+  "java_on_path": [
+   "C:\\Program Files\\Eclipse Adoptium\\jdk-17.0.17.10-hotspot\\bin\\java.exe",
+   "C:\\Program Files\\Eclipse Adoptium\\jdk-21.0.6.7-hotspot\\bin\\java.exe",
+   "C:\\ProgramData\\Oracle\\Java\\javapath\\java.exe"
+  ],
+  "javac_on_path": [
+   "C:\\Program Files\\Eclipse Adoptium\\jdk-17.0.17.10-hotspot\\bin\\javac.exe",
+   "C:\\Program Files\\Eclipse Adoptium\\jdk-21.0.6.7-hotspot\\bin\\javac.exe"
+  ],
+  "all_java_version_probes": [
+   {
+    "exe": "C:\\Program Files\\Eclipse Adoptium\\jdk-17.0.17.10-hotspot\\bin\\java.exe",
+    "argv": [
+     "C:\\Program Files\\Eclipse Adoptium\\jdk-17.0.17.10-hotspot\\bin\\java.exe",
+     "-version"
+    ],
+    "rc": 0,
+    "status": "rc0-with-output",
+    "first_line": "openjdk version \"17.0.17\" 2025-10-21",
+    "stdout": "",
+    "stderr": "openjdk version \"17.0.17\" 2025-10-21\r\nOpenJDK Runtime Environment Temurin-17.0.17+10 (build 17.0.17+10)\r\nOpenJDK 64-Bit Server VM Temurin-17.0.17+10 (build 17.0.17+10, mixed mode, sharing)"
+   },
+   {
+    "exe": "C:\\Program Files\\Eclipse Adoptium\\jdk-21.0.6.7-hotspot\\bin\\java.exe",
+    "argv": [
+     "C:\\Program Files\\Eclipse Adoptium\\jdk-21.0.6.7-hotspot\\bin\\java.exe",
+     "-version"
+    ],
+    "rc": 0,
+    "status": "rc0-with-output",
+    "first_line": "openjdk version \"21.0.6\" 2025-01-21 LTS",
+    "stdout": "",
+    "stderr": "openjdk version \"21.0.6\" 2025-01-21 LTS\r\nOpenJDK Runtime Environment Temurin-21.0.6+7 (build 21.0.6+7-LTS)\r\nOpenJDK 64-Bit Server VM Temurin-21.0.6+7 (build 21.0.6+7-LTS, mixed mode, sharing)"
+   },
+   {
+    "exe": "C:\\ProgramData\\Oracle\\Java\\javapath\\java.exe",
+    "argv": [
+     "C:\\ProgramData\\Oracle\\Java\\javapath\\java.exe",
+     "-version"
+    ],
+    "rc": 0,
+    "status": "rc0-with-output",
+    "first_line": "java version \"1.8.0_31\"",
+    "stdout": "",
+    "stderr": "java version \"1.8.0_31\"\r\nJava(TM) SE Runtime Environment (build 1.8.0_31-b13)\r\nJava HotSpot(TM) Client VM (build 25.31-b07, mixed mode, sharing)"
+   }
+  ],
+  "all_javac_version_probes": [
+   {
+    "exe": "C:\\Program Files\\Eclipse Adoptium\\jdk-17.0.17.10-hotspot\\bin\\javac.exe",
+    "argv": [
+     "C:\\Program Files\\Eclipse Adoptium\\jdk-17.0.17.10-hotspot\\bin\\javac.exe",
+     "-version"
+    ],
+    "rc": 0,
+    "status": "rc0-with-output",
+    "first_line": "javac 17.0.17",
+    "stdout": "javac 17.0.17",
+    "stderr": ""
+   },
+   {
+    "exe": "C:\\Program Files\\Eclipse Adoptium\\jdk-21.0.6.7-hotspot\\bin\\javac.exe",
+    "argv": [
+     "C:\\Program Files\\Eclipse Adoptium\\jdk-21.0.6.7-hotspot\\bin\\javac.exe",
+     "-version"
+    ],
+    "rc": 0,
+    "status": "rc0-with-output",
+    "first_line": "javac 21.0.6",
+    "stdout": "javac 21.0.6",
+    "stderr": ""
+   }
+  ],
+  "chosen_javac": "C:\\Program Files\\Eclipse Adoptium\\jdk-17.0.17.10-hotspot\\bin\\javac.exe",
+  "chosen_java": "C:\\Program Files\\Eclipse Adoptium\\jdk-17.0.17.10-hotspot\\bin\\java.exe",
+  "chosen_javac_probe": {
+   "exe": "C:\\Program Files\\Eclipse Adoptium\\jdk-17.0.17.10-hotspot\\bin\\javac.exe",
+   "argv": [
+    "C:\\Program Files\\Eclipse Adoptium\\jdk-17.0.17.10-hotspot\\bin\\javac.exe",
+    "-version"
+   ],
+   "rc": 0,
+   "status": "rc0-with-output",
+   "first_line": "javac 17.0.17",
+   "stdout": "javac 17.0.17",
+   "stderr": ""
+  },
+  "chosen_java_probe": {
+   "exe": "C:\\Program Files\\Eclipse Adoptium\\jdk-17.0.17.10-hotspot\\bin\\java.exe",
+   "argv": [
+    "C:\\Program Files\\Eclipse Adoptium\\jdk-17.0.17.10-hotspot\\bin\\java.exe",
+    "-version"
+   ],
+   "rc": 0,
+   "status": "rc0-with-output",
+   "first_line": "openjdk version \"17.0.17\" 2025-10-21",
+   "stdout": "",
+   "stderr": "openjdk version \"17.0.17\" 2025-10-21\r\nOpenJDK Runtime Environment Temurin-17.0.17+10 (build 17.0.17+10)\r\nOpenJDK 64-Bit Server VM Temurin-17.0.17+10 (build 17.0.17+10, mixed mode, sharing)"
+  },
+  "bare_path_java_is_chosen": true,
+  "JAVA_HOME_is_chosen_home": false,
+  "status": "ok"
+ },
+ "spec_sha256_blob": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261",
+ "spec_sha256_disk": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261",
+ "blob_equals_disk": true,
+ "required_list_sha256_blob": "ed8a8a29c0eea99925659f6d0f2f63b94469654e1f793ab027b6e55a4a1a8cb8",
+ "required_list_sha256_worktree": "ed8a8a29c0eea99925659f6d0f2f63b94469654e1f793ab027b6e55a4a1a8cb8",
+ "required_list_face_equal": true,
+ "head_commit": "e0d80a86b6ccf27e252c15b93a509cd7409fec3c",
+ "required_cells_declared": 48,
+ "required_cells_produced": 0,
+ "required_cells_missing": [],
+ "extra_cells_produced": [
+  "len__T17__base_len-120__extended__builder-FileOutputStream.write.json",
+  "len__T17__base_len-120__plain__builder-FileOutputStream.write.json",
+  "len__T17__base_len-200__extended__builder-FileOutputStream.write.json",
+  "len__T17__base_len-200__plain__builder-FileOutputStream.write.json",
+  "len__T17__base_len-78__extended__builder-FileOutputStream.write.json",
+  "len__T17__base_len-78__plain__builder-FileOutputStream.write.json",
+  "len__T18__base_len-120__extended__builder-FileOutputStream.write.json",
+  "len__T18__base_len-120__plain__builder-FileOutputStream.write.json",
+  "len__T18__base_len-200__extended__builder-FileOutputStream.write.json",
+  "len__T18__base_len-200__plain__builder-FileOutputStream.write.json",
+  "len__T18__base_len-78__extended__builder-FileOutputStream.write.json",
+  "len__T18__base_len-78__plain__builder-FileOutputStream.write.json"
+ ],
+ "env_facts_this_run": {
+  "LongPathsEnabled": 0,
+  "LongPathsEnabled_regexe": 0,
+  "LongPathsEnabled_regexe_rc": 0,
+  "LongPathsEnabled_regexe_excerpt": "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\FileSystem | LongPathsEnabled    REG_DWORD    0x0",
+  "LongPathsEnabled_two_faces_agree": true,
+  "dot3name_rc": 0,
+  "dot3name_volume_state_number": 1,
+  "dot3name_generation": "disabled",
+  "dot3name_state_meaning": "fsutil prints <n> (8dot3 name creation ...); 0=enabled 1=disabled",
+  "dot3name_verbatim_excerpt": "\u9519\u8bef:  \u7cfb\u7edf\u627e\u4e0d\u5230\u6307\u5b9a\u7684\u8def\u5f84\u3002 | \u6b63\u5728\u5c1d\u8bd5\u6253\u5f00\u5177\u6709\u5377 GUID \u8def\u5f84\u7684\u5377\u3002 | \u5377\u72b6\u6001\u4e3a: 1 (8dot3 \u540d\u79f0\u521b\u5efa\u88ab\u7981\u7528)\u3002 | \u6ce8\u518c\u8868\u72b6\u6001\u4e3a: 2 (\u6309\u5377\u8bbe\u7f6e - \u9ed8\u8ba4\u503c)\u3002 |  | \u57fa\u4e8e\u4e0a\u8ff0\u8bbe\u7f6e\uff0c\u5728 D:\\ \u4e0a\u7981\u7528 8dot3 \u540d\u79f0\u521b\u5efa",
+  "fsutil_decoded_as": "cp936 (console code page recorded in evidence/S00/env-facts-windows-local.json)",
+  "max_component": 255,
+  "max_component_basis": "NTFS; GetVolumeInformationW measured 255 at S00 (env-facts-windows-local.json), same host and same D: volume",
+  "unicode_version": "not-obtainable-here",
+  "unicode_version_note": "java does not expose a Unicode data version through a version command; not probed by an in-language program in this round",
+  "toolchain": "C:\\Program Files\\Eclipse Adoptium\\jdk-17.0.17.10-hotspot\\bin\\java.exe | openjdk version \"17.0.17\" 2025-10-21"
+ },
+ "cells_produced": 12,
+ "cells_blocked": [],
+ "scratch_root": "D:\\s\\",
+ "scratch_parent": "D:\\s",
+ "scratch_dirs_retained": 4122,
+ "child_result_files_retained": 4117,
+ "child_runs": 13,
+ "payload_bytes": 28,
+ "payload_sha256": "c9fe45b2fee8ea846f0cf4f2cacc2a891e7b082e7719923502d12a9813e21994",
+ "timeout_s": 5.0,
+ "harness_version": "sg-java-S02-r5-SG-F2",
+ "contract_revision_read": "rev3 (docs/NOTICE-rev3.md)",
+ "length_unit": "utf16_code_units",
+ "name_encoding": "hex_raw_bytes",
+ "verdict_via": "win32",
+ "mechanism_preflight": {
+  "attempted": true,
+  "dir_name_requested_hex": "6d70303132333435363738396162636465663031323334353637383961626364656630313233343536372e",
+  "dir_name_utf16_units": 43,
+  "mkdir_create_result": "ok",
+  "dir_names_landed": [
+   "mp0123456789abcdef0123456789abcdef01234567"
+  ],
+  "dir_name_stripped_hex": "6d7030313233343536373839616263646566303132333435363738396162636465663031323334353637",
+  "dot_was_stripped": true,
+  "legs": [
+   {
+    "leg": "A-short-stripped",
+    "dir_used_hex": "6d7030313233343536373839616263646566303132333435363738396162636465663031323334353637",
+    "file_name_utf16_units": 5,
+    "total_path_len_plain": 69,
+    "exceeds_legacy_259": false,
+    "create_result": "ok",
+    "error_class": null,
+    "error_message": null,
+    "file_exists_after": true
+   },
+   {
+    "leg": "B-short-dotsuffixed",
+    "dir_used_hex": "6d70303132333435363738396162636465663031323334353637383961626364656630313233343536372e",
+    "file_name_utf16_units": 5,
+    "total_path_len_plain": 70,
+    "exceeds_legacy_259": false,
+    "create_result": "ok",
+    "error_class": null,
+    "error_message": null,
+    "file_exists_after": true
+   },
+   {
+    "leg": "C-long-dotsuffixed",
+    "dir_used_hex": "6d70303132333435363738396162636465663031323334353637383961626364656630313233343536372e",
+    "file_name_utf16_units": 240,
+    "total_path_len_plain": 305,
+    "exceeds_legacy_259": true,
+    "create_result": "ok",
+    "error_class": null,
+    "error_message": null,
+    "file_exists_after": true
+   }
+  ],
+  "verdict": "name-parsing-still-applies-at-long-length",
+  "verdict_basis": "legs B and C differ only in total path length; the dot-suffixed directory is reachable through name parsing only",
+  "child_rc": 0,
+  "child_timed_out": false,
+  "child_argv": "C:\\Program Files\\Eclipse Adoptium\\jdk-17.0.17.10-hotspot\\bin\\java.exe -cp D:\\sendguard-work\\seat-qoder\\impl\\java\\build CellProbe --entry Files.write --scratch D:\\s\\a861d2\\86940bf7 --payload 53454e4447554152442d43414e4f4e2d5041594c4f41442d32303236 --out D:\\s\\_out\\1d1cff2a9e6e479c8f7615a6387bfff1.json --extended off --mechanism on --mechanism2 on --members 707265666c696768742d626173652e747874",
+  "scratch": "D:\\s\\a861d2\\86940bf7"
+ },
+ "device_namespace_preflight": {
+  "attempted": true,
+  "dir_requested_hex": "434f4d31",
+  "mkdir_via_io_extended_rc": true,
+  "io_sees_directory": true,
+  "directory_landed_by_enumeration": true,
+  "directory_names_in_scratch": [
+   "COM1",
+   "mp0123456789abcdef0123456789abcdef01234567",
+   "preflight-base.txt"
+  ],
+  "legs": [
+   {
+    "leg": "short-into-COM1",
+    "total_path_len_plain": 31,
+    "exceeds_legacy_259": false,
+    "create_result": "ok",
+    "error_class": null,
+    "error_message": null,
+    "file_exists_after": true
+   },
+   {
+    "leg": "long-into-COM1",
+    "total_path_len_plain": 266,
+    "exceeds_legacy_259": true,
+    "create_result": "ok",
+    "error_class": null,
+    "error_message": null,
+    "file_exists_after": true
+   }
+  ],
+  "verdict": "device-name-not-intercepted-in-this-shape",
+  "verdict_basis": "only the extended prefix stops Win32 from reading COM1 as a device; the two legs differ only in total path length",
+  "final_component_leg": {
+   "short_final_name_hex": "434f4e2e747874",
+   "same_final_name_on_both_legs": true,
+   "short_total_len": 28,
+   "short_create_result": "err_at_syscall",
+   "short_error_class": "java.nio.file.FileSystemException",
+   "long_final_name_hex": "434f4e2e747874",
+   "long_total_len": 430,
+   "long_exceeds_259": true,
+   "long_create_result": "err_at_syscall",
+   "long_error_class": "java.nio.file.FileSystemException",
+   "long_landed_by_enumeration": false,
+   "contents_read": false,
+   "verdict": "not-rewritten",
+   "verdict_basis": "short leg is the known refusal of a reserved final name; the long leg differs only in total path length, so a difference in answer can only come from the form the string left in"
+  },
+  "combined_verdict": "not-rewritten"
+ },
+ "primary_entry": "Files.write",
+ "spread_entries": [
+  "Files.createFile",
+  "Files.newOutputStream",
+  "Files.move",
+  "File.createNewFile",
+  "FileOutputStream.write",
+  "File.renameTo"
+ ],
+ "io_spread_entry": "FileOutputStream.write",
+ "plan_size": 12,
+ "cell_files": 12,
+ "row_filter": {
+  "only_row_tag": "io-spread",
+  "required_cells_not_in_this_run": 48,
+  "note": "append-only run. The required Files.write cells this run did not touch were measured by the earlier full run and are deliberately NOT re-answered: SG-F2 orders it, and rewriting them would move faces the derived docs already quote. This facts file therefore describes THIS run only; the full-matrix face is run-facts.json."
+ }
+}

@@ -79,3 +79,81 @@ jobs:
           python3 -c "open('evidence/S00/crossread/from-python.txt','w').write('python->node')"
           node -e "console.log('node read:', require('fs').readFileSync('evidence/S00/crossread/from-python.txt','utf8'))"
           echo "crossread OK"
+  # The instrument itself, on all three frozen OS labels. This job is the only thing this repository can
+  # honestly claim CI proves on macOS and Ubuntu: the five pure-Python legs, the equality gate over the
+  # committed Windows faces, and the generated documents as an artifact. It does NOT produce result faces -
+  # the six port harnesses write `results/<port>.windows.x64/` by hard-coded path and probe Windows-only
+  # semantics (measured 13:10 today across impl/*), so the macOS and Linux rows need the portability work in
+  # docs/tickets/SG-F3-os-portability.md before a runner can emit them. Saying that here, in the file that a
+  # reader would otherwise trust to be doing the work, is the point of this job's last step.
+  instrument:
+    name: instrument-${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-2025, macos-15, ubuntu-24.04]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Ports are not run on this runner OS (declared, not discovered later)
+        shell: bash
+        run: |
+          if [ "$RUNNER_OS" != "Windows" ]; then
+            echo "PORT-HARNESS: NOT-REACHED(reason=harness_is_windows_only) os=$RUNNER_OS"
+            echo "port runners write results/<port>.windows.x64 by hard-coded path: see impl/python/sg_run.py, impl/csharp/run_csharp.py, impl/rust/run_cells.py"
+            echo "no macOS or Ubuntu result face is produced by this workflow"
+          else
+            echo "PORT-HARNESS: faces are produced on the six worker seats' hosts, not in CI; this job re-judges them"
+          fi
+
+      - name: Gate self-test (every leg must be able to say yes and no)
+        shell: bash
+        run: python ci/selftest.py --scratch-root "$RUNNER_TEMP/sg-selftest"
+
+      - name: CI lint with its own red/green arms
+        shell: bash
+        run: |
+          python ci/lint.py --selftest
+          python ci/lint.py --repo-root "${{ github.workspace }}"
+
+      - name: Cell conformance ruler, arms first
+        shell: bash
+        run: |
+          python ci/validate_cells.py --selftest
+          python ci/validate_cells.py || true
+
+      - name: Spec fingerprint drift, arms first
+        shell: bash
+        run: |
+          python ci/spec_drift.py --selftest
+          python ci/equality.py
+          python ci/spec_drift.py || true
+
+      - name: Regenerate every derived document
+        shell: bash
+        run: |
+          python ci/equality.py || true
+          python ci/coverage_report.py
+          python ci/expected_summary.py || true
+          python ci/status_brief.py
+          python ci/gap_report.py
+          python ci/tapi_report.py
+          python ci/acceptance.py
+          python ci/evidence_table.py
+
+      - name: Deliverable smoke test (one name, asked on this runner)
+        shell: bash
+        run: |
+          python tool/check.py --name "trail." || true
+          python tool/check.py --name "CON.txt" || true
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: derived-docs-${{ matrix.os }}
+          path: docs/
+          if-no-files-found: error

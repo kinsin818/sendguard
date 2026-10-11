@@ -54,7 +54,7 @@ generator now says so in that line. Three runs, with their limits and the number
 [`evidence/S10/cold-clone-20261011b.md`](evidence/S10/cold-clone-20261011b.md),
 [`evidence/S10/cold-clone-20261011c.md`](evidence/S10/cold-clone-20261011c.md).
 
-**Currently not evidenced, and therefore not claimed anywhere:** macOS and Linux rows (CI has not run yet),
+**Currently not evidenced, and therefore not claimed anywhere:** macOS and Linux rows - and the blocker is not `git push`. The sealed table already holds 22 macOS and 22 Ubuntu predictions, but no port harness can emit them: every runner writes `results/<port>.windows.x64/` by hard-coded path and probes Windows-only semantics (`docs/tickets/SG-F3-os-portability.md`). A new `instrument` job in `.github/workflows/matrix.yml` is written to re-verify the **instrument** on all three operating systems - **it has never run, because nothing has been pushed** - and the workflow file states in its own steps that it produces no result faces,
 mobile storage and download layers, cloud-drive and mail-attachment renaming, exFAT/FAT32 volumes,
 unsigned-executable launch behaviour, and any agreement between ports that the gate has not certified.
 

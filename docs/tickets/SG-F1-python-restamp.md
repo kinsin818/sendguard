@@ -64,3 +64,16 @@ Applicability of blank verdict fields, a `runtime_executable` field, tightening 
 list. Those are contract round 9 and are written up as a proposal in `docs/NOTICE-rev9-proposal.md` waiting on
 the owner's word. A port that "helpfully" edits the spec while re-stamping its cells would turn a
 bookkeeping fix into an unauthorised contract change.
+
+## Amendment, written after acceptance (`evidence/S11/SG-F1-acceptance.md`) — the dispatcher's defect
+
+The lane completed this ticket at 13:20 (`e0d80a8`) and all five criteria passed. One thing it reported back is
+a fault in the ticket, not in the work: the Allowed-surface list named `results/python.windows.x64/` and
+`evidence/S02/python-selfcheck.md`, but `spec/cell-identity.md` §3 says instrument dumps belong under
+`evidence/`, and this ticket did not grant that path. The worker chose to put its dumps under `impl/` and
+**say so** rather than quietly break either rule - correct behaviour, wrong ticket.
+
+Standing lesson for whoever writes the next one: **an Allowed-surface list must cover every path the
+project's own rules require the deliverable to touch.** A list that doesn't is not stricter, it just hands the
+worker a rule conflict and lets whichever reading is convenient win. `docs/tickets/SG-F2-*.md` and the F3
+shape were written with the evidence path included for that reason.

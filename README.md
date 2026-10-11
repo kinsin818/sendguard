@@ -77,6 +77,11 @@ name is meant - and compares the eleven fields the gate scores: `tool| names=5
 fields_compared=55 differing=0`, on one host and one interpreter, which is what it says it proves
 (`evidence/S11/tool-coldrun-20261011.md`).
 
+The coverage report, which is the face that says who answered rather than who agreed, runs its own 9 arms
+both-sided (`python ci/coverage_report.py --selftest`), and it refuses to publish at all when the gate's
+artifact does not carry the per-port answer counts its blank attribution needs - it will not guess a
+coverage number from the raw faces, because a second ruler is this project's oldest defect.
+
 **Currently not evidenced, and therefore not claimed anywhere:** macOS and Linux rows - and the blocker is not `git push`. The sealed table already holds 22 macOS and 22 Ubuntu predictions, but no port harness can emit them: every runner writes `results/<port>.windows.x64/` by hard-coded path and probes Windows-only semantics (`docs/tickets/SG-F3-os-portability.md`). A new `instrument` job in `.github/workflows/matrix.yml` is written to re-verify the **instrument** on all three operating systems - **it has never run, because nothing has been pushed** - and the workflow file states in its own steps that it produces no result faces,
 mobile storage and download layers, cloud-drive and mail-attachment renaming, exFAT/FAT32 volumes,
 unsigned-executable launch behaviour, and any agreement between ports that the gate has not certified.

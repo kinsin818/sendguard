@@ -471,6 +471,17 @@ was right about. And a filter must have a green arm proving it passes something:
 tracked artifact must survive the filter", because every other arm in the suite was satisfiable by a filter that
 dropped the world.
 
+What the four defects also changed in the process, not just in one file: the cold-clone rehearsal that found
+three of them had been run all afternoon by a script outside the tree, which is a habit and not a gate.
+`ci/clone_parity.py` (8900037) is that rehearsal as a leg - caller-supplied scratch root, drive root refused,
+nothing ever deleted, an existing clone adopted only when its HEAD equals the source's and its status is empty,
+and a difference allowed only inside a line shape declared in advance. Its red side was probed deliberately
+without committing a false face: a one-digit tamper of `docs/coverage.md` was put into an unreachable probe
+commit on a temporary branch in a separate work tree, and the leg answered
+`OUTCOME=RED faces_compared=12 identical=10 declared=1 differing=1 missing=0`, naming the file, the line count
+and both texts. The probe, its cleanup and the first attempt that failed because the probe commit predated the
+leg itself are in `evidence/S11/parity-red-probe-20261011.md`.
+
 
 ## 3. What the six windows did that the plan did not expect
 

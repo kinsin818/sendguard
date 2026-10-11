@@ -2,7 +2,10 @@
 """Standing scan: the deliverable may describe the product, not the production line.
 
 Run:  python ci/process_leak_scan.py --repo-root .
-      python ci/process_leak_scan.py --selftest --scratch-root ../sg-leak
+      python ci/process_leak_scan.py --selftest
+
+This leg writes nothing, so it takes no --scratch-root; handing it one is refused with rc=3 rather than ignored,
+and one of the arms below asserts exactly that.
 
 Why this leg exists. On 2026-10-12 a census of the published tree found 1,150 occurrences of a schema property
 whose values named sessions, seats and engines rather than artifacts - the data contract was carrying the studio.
@@ -175,6 +178,12 @@ def selftest():
     chk(scan_face("", root_forms=rf, home_forms=hf) == [], "green: an empty face yields nothing")
     chk(len(ID_SHAPE.pattern) > 0 and not ID_SHAPE.match("a" * 40 + "-port"), "red: an over-long value is rejected")
     chk(not ID_SHAPE.match("Test"), "red: an uppercase fixture value is rejected")
+    # the leg writes nothing, so its refusals can be exercised by calling main() with a fake argv - these two
+    # arms exist because a reviewer's report showed my own header documenting `--scratch-root`, which this
+    # leg rejects: a comment that promises what the code does not do is the defect class this project has
+    # caught in itself twice, and an arm is the only thing that keeps the header honest
+    chk(main(["--scratch-root", "whatever"]) == 3, "red: an argument the leg does not implement is refused, not ignored")
+    chk(main([]) == 3, "red: a scan with no named root refuses with rc=3 rather than defaulting")
     return errs, arms[0]
 
 

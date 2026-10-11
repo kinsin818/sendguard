@@ -31,9 +31,17 @@ different.
 1. **Work in a clone, never in the tree you were handed.** `python ci/refresh_all.py` regenerates tracked
    documentation faces as its last step, so running it where someone else is editing makes you a concurrent
    writer and your findings unattributable.
-   `git clone --no-local file:///D:/sendguard-work/seat-qoder <empty-dir>` on the host, or
-   `git clone https://github.com/kinsin818/sendguard.git <dir>` anywhere else. `--no-local` matters: a local
-   clone hard-links objects and can read files the published tree does not contain.
+   `git clone --no-local file:///D:/sendguard-work/seat-qoder <empty-dir>` on the host. `--no-local` matters: a
+   local clone hard-links objects and can read files the published tree does not contain.
+   **Do not clone this kit from the published URL.** As measured by a reviewer on 2026-10-12, the public tip
+   (`git ls-remote github refs/heads/main`, read live, not from a cached ref) is behind this tree and contains
+   neither `docs/AUDIT-KIT.md` nor `evidence/audit-in/` - `git cat-file -e <tip>:docs/AUDIT-KIT.md` returns
+   fatal. How far behind is not written here on purpose: it changes with every commit and nothing polices this
+   page, so read it yourself with `git rev-list --count <published-tip>..HEAD`. A reviewer who follows that path
+   reads a stale tree, cannot find this page's own claims to attack, and has nowhere to submit. Until the owner
+   gives the word to push (pushing is a publishing act, and it is his alone), the kit reaches an off-host
+   reviewer only as text handed to them by the owner, and their packet comes back as text too - which the seat
+   lands in `evidence/audit-in/` unchanged, as it did for the 2026-10-11 batch.
 2. **Do not commit, branch, or push.** The remote named `origin` is a non-bare tree on the author's disk and
    refuses pushes by design; the remote named `github` is published, and pushing to it is the owner's act.
 3. **Do not clean up.** Scratch directories, run logs, and seeded fixtures are provenance. A removal that
@@ -80,7 +88,12 @@ Three local conventions that will bite you if you ignore them:
 - **Never pipe a gate.** `python ci/equality.py | tail -5` reports the exit code of `tail`. This author has
   committed broken code that way.
 
-## 3. Read these five before you start
+## 3. Read these before you start
+
+The authoritative list of legs is `JUDGE` in `ci/refresh_all.py`, not this page - this page is prose and has
+already fallen behind the tree once (a leg added the same morning was missing from it). Read the script's list,
+then run whatever it names. What follows is the set that answers the questions reviewers keep asking, and each row
+says what its reading depends on.
 
 All generated, none hand-written. Do not quote a number from this page or from `README.md` — read it out of
 the command that produces it. A prose number is a permanent assertion, and this repository has a leg whose
@@ -92,7 +105,8 @@ only job is to catch prose numbers going stale.
 | `python ci/coverage_report.py && cat docs/coverage.md` | who answered what, per port and per field, including the field-cells nobody answered at all |
 | `python ci/delivery_form.py && cat docs/delivery-form.md` | what a stranger actually receives, with an independent `git` enumeration cross-checking the leg's own file lists |
 | `python ci/claim_digest.py --scratch-root ../<your-dir>` | every number printed in the prose faces is re-measured against the artifact it came from; a stale number makes the leg RED |
-| `python ci/clone_parity.py --scratch-root ../<your-dir>` | the whole pipeline re-run from a `--no-local` clone and compared face-by-face, with the lines allowed to differ declared before the comparison |
+| `python ci/clone_parity.py --scratch-root ../<your-dir>` | the whole pipeline re-run from a `--no-local` clone and compared face-by-face, with the lines allowed to differ declared before the comparison. **Its green side is host-bound until `docs/tickets/SG-F10-parity-leg-host-bound.md` lands**: one compared face carries the interpreter stamp of the machine that generated it, so a reviewer whose interpreter differs reads `RED differing=1` on the stamp line, not on a content difference. Four reviewers hit this independently on 2026-10-11/12 and their readings are on file in `evidence/audit-in/` |
+| `python ci/process_leak_scan.py --repo-root .` | does the deliverable describe the product, or the production line? Five classes counted separately, with the run-time-assembled needle for the retired producer-metadata key. It reads `RED` on this tree by design (the finding is ticketed as SG-F8/SG-F9), and `CLEAN` on a sibling repository - the positive control is the point |
 
 To run the whole battery at once: `python ci/refresh_all.py`. It is the generator, so see rule 1.
 
@@ -157,7 +171,11 @@ What has **not** been fixed, and where you should push hardest:
   sheet reads a partial tree status, and a quoted-path defect), `SG-F6` (the digest cannot police faces
   outside the repository, such as the owner-facing status page), `SG-F7` (the deliverable has no version
   string at all, so a reviewer holding a zip cannot name what they audited — which is why the packet template
-  asks for a commit instead).
+  asks for a commit instead), `SG-F8` and `SG-F9` (the published data contract and narrative faces carry
+  production metadata rather than product provenance; the standing leg is
+  `python ci/process_leak_scan.py --repo-root .` and it reads `RED` here on purpose), and `SG-F10` (the
+  reproducibility leg cannot reach its green side on another interpreter — the finding four reviewers landed on
+  independently, so read it before treating a `differing=1` from a foreign host as a content drift).
 - The third CI job in `.github/workflows/` has never run to completion from a tree this seat can read, so its
   findings are unread rather than absent.
 - Three contract questions are unowned: whether "which executable answered" becomes a public field; which

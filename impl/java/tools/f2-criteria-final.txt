@@ -1,0 +1,34 @@
+# SG-F2 criteria, final reading after the lane's own commit
+# run_local=2026-10-11 13:32:22 +0800
+# HEAD=b56e9c4
+## 1 validate_cells
+wrote docs/cell-validation.md bytes=3338 invalid=0 missing_faces=0 verdict_fields_not_required=9 verdict_fields_undocumented=4 cells_omitting_a_compared_field=371
+rc=0
+## 2 acceptance
+wrote docs/acceptance-S02.md bytes=5394 ports=6 faces_excluded=5 faces_ahead_of_head=0 git_status_rc_nonzero=0
+rc=0
+## 2b java row
+| csharp | 50 | 44/44 | 0 | 0 | 2 | 4/4 | pass (5/5 stamped) | 0 | 50 | OK | `cells_required=48 cells_produced=50 cells_valid=50 blocked=0 extra=2 c` (evidence/S02/csharp-selfcheck.md) |
+| go | 49 | 44/44 | 0 | 0 | 1 | 4/4 | pass (5/5 stamped) | 0 | 49 | OK | `cells_required=48        (44 rows of spec/cells-required.json + the 4 ` (evidence/S02/go-selfcheck.md) |
+## 3 equality
+OUTCOME=RED verdict_disagreements=54 verdict_identical_cells=24/44 cells_fully_recorded_and_identical=4 verdict_not_recorded_pairs=121 verdict_pairs_recorded=2281/2640 probe_cells_differing=29 unpinned_input=0 cells_excluded=0 channel_abstentions=13 truncated_values=2 required_cells_missing=0
+grep_rc=1
+rc=1
+## 4 length_report
+wrote docs/length-family.md bytes=7455 rows=84
+rc=0
+## 4b java extended rows still err_at_parse in the split
+6
+## 5 porcelain results
+lines=0
+## 6 this lane's own gates
+ALL-VALID cells_required=48 cells_produced=86 cells_valid=86 blocked=0 extra=38
+selfcheck_rc=0
+selftest arms_checked=49 problems=0
+selftest_rc=0
+arms_checked=8 problems=2 fixtures=D:\s\3f9b2c\stamp-selftest-1cd5c6aa
+stamper_rc=1
+NOTE mode=post-commit spread_committed=12/12
+NOTE cells=86 identical_to_HEAD=86 stamped_ctrl=0 spread_new=12 rewritten=[] uncommitted_extra=0 moved=0
+spread_checked=12 problems=0
+verify_rc=0

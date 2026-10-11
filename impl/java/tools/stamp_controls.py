@@ -251,18 +251,46 @@ def selftest(criteria):
         problems.append("green canon re-derivation failed: %s" % obs)
     print("  arm %-32s holds=%s %s | %s" % ("green-canon-rederived-not-circular", holds,
                                             "OK" if holds else "PROBLEM", obs))
-    # red: same cell with one sha moved and NO stamp on it yet -> the criterion fails (rc=1) and the
-    # stamp says false; a failing control must never be able to buy a true
-    arm("red-canon-sha-mismatch",
-        fixture("T-CTRL-CANON", {"canon_sha256_second_instrument": "0" * 64,
-                                 "control_pass": "__drop__"}, "red"), 1, "FAIL")
-    # red: the same mismatch on a cell that ALREADY claims true -> refused, not silently rewritten
+    # red: a control whose own criterion fails must cost rc=1, not a friendly true. The live cells
+    # are stamped now, so the pre-stamp state has to be rebuilt by dropping the whole control_pass
+    # family - otherwise these fixtures test the contradiction path instead, which is its own arm.
+    unstamped = ["control_pass", "control_pass_rule", "control_pass_observed",
+                 "control_pass_command", "control_pass_tool", "control_pass_basis",
+                 "control_pass_partial", "control_pass_spec_sha256_face",
+                 "control_pass_stamped_at"]
+
+    def drop_stamp(rec):
+        for k in unstamped:
+            rec.pop(k, None)
+        return rec
+
+    def fixture_unstamped(cid, mut=None, tag=None):
+        p = fixture(cid, mut, tag)
+        rec = json.loads(io.open(p, encoding="utf-8").read())
+        drop_stamp(rec)
+        if mut:
+            rec.update(mut)
+        if cid == "T-CTRL-CANON" and mut and "canon_sha256_second_instrument" in mut:
+            # the derived observation must not be left describing the OLD shas
+            rec.pop("control_pass_observed", None)
+        io.open(p, "wb").write(canonical_bytes(rec))
+        return p
+
+    # red: canon sha mismatch on a cell that carries no stamp yet -> criterion says FAIL, rc=1
+    arm("red-canon-sha-mismatch-pre-stamp",
+        fixture_unstamped("T-CTRL-CANON", {"canon_sha256_second_instrument": "0" * 64}, "red"),
+        1, "FAIL")
+    # red: a failing criterion on an unstamped cell -> rc=1, and the stamp it writes says false
+    arm("red-failing-criterion-pre-stamp",
+        fixture_unstamped("T-CTRL-ASCII", {"create_result": "err_at_syscall"}, "red"), 1, "FAIL")
+    # red: now the SAME tampering on a cell that already claims true - the tool must refuse rather
+    # than rewrite a verdict that is on the face (this is the arm that caught itself when the live
+    # cells became stamped, which is why it exists)
+    arm("red-stamped-cell-whose-data-moved",
+        fixture("T-CTRL-CANON", {"canon_sha256_second_instrument": "0" * 64}, "red2"), 3, "REFUSED")
     arm("red-stamp-contradicts-recording",
-        fixture("T-CTRL-CANON", {"canon_sha256_second_instrument": "0" * 64}, "red2"), 3,
+        fixture("T-CTRL-ASCII", {"create_result": "err_at_syscall"}, "red3"), 3,
         "STAMP_CONTRADICTS_RECORDING")
-    # red: a control whose own criterion fails must cost rc=1, not a friendly true
-    arm("red-failing-criterion",
-        fixture("T-CTRL-ASCII", {"create_result": "err_at_syscall"}, "red"), 1)
     # red: citing a spec face that is not the committed one
     arm("red-stale-cell", fixture("T-CTRL-PARSE", {"spec_sha256": "f" * 64}, "red"), 3, "STALE_CELL")
     # red: a trap cell smuggled in under a ctrl filename
@@ -278,6 +306,19 @@ def selftest(criteria):
     p = os.path.join(d, "ctrl__T-CTRL-HANDFORMATTED.json")
     io.open(p, "w", encoding="utf-8").write(json.dumps(rec, indent=2) + "\n")
     arm("red-hand-formatted-face", p, 3, "NON_CANONICAL_FACE")
+    # green: an UNSTAMPED cell that satisfies its criterion is stamped true (this is what the four
+    # cells looked like before the ticket, so the pass path stays tested now that they are stamped)
+    gup = fixture_unstamped("T-CTRL-ILLEGAL-CHAR", None, "green")
+    arms[0] += 1
+    rc_g, out_g = cap(process, gup, True, sha_blob, pins, criteria)
+    after_g = json.loads(io.open(gup, encoding="utf-8").read())
+    if rc_g != 0 or after_g.get("control_pass") is not True or "control_pass_stamped_at" not in after_g:
+        problems.append("green stamp-on-unstamped failed: rc=%s pass=%r" % (rc_g,
+                                                                           after_g.get("control_pass")))
+    print("  arm %-32s rc=%s control_pass=%s stamped_at=%s %s"
+          % ("green-stamp-unstamped", rc_g, after_g.get("control_pass"),
+             "control_pass_stamped_at" in after_g,
+             "OK" if rc_g == 0 and after_g.get("control_pass") is True else "PROBLEM"))
     # green: apply, twice, byte-identical, and no recorded field moves
     gp = fixture("T-CTRL-NAMETOOLONG")
     arms[0] += 1

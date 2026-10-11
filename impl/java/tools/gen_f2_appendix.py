@@ -9,6 +9,7 @@ import hashlib
 import io
 import json
 import os
+import re
 import subprocess
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -166,16 +167,25 @@ def main():
           % (len(lines), len([l for l in lines if l.startswith(" M")]),
              len([l for l in lines if l.startswith("??")]), rcg))
     print("")
-    rcv, _ = sh("python", "impl/java/tools/selfcheck.py")
-    rcs, _ = sh("python", "impl/java/tools/selfcheck.py", "--selftest")
-    rct, _ = sh("python", "impl/java/tools/stamp_controls.py", "--selftest")
+    rcv, sout = sh("python", "impl/java/tools/selfcheck.py")
+    rcs, stout = sh("python", "impl/java/tools/selfcheck.py", "--selftest")
+    rct, ttout = sh("python", "impl/java/tools/stamp_controls.py", "--selftest")
     rcv2, vout = sh("python", "impl/java/tools/verify_sg_f2.py")
     vnotes = [l.strip() for l in vout.splitlines() if l.startswith("NOTE")]
-    print("This window's own gates after the change: `selfcheck.py` rc=%d, "
-          "`selfcheck.py --selftest` rc=%d (49 arms, 0 problems - 39 before SG-F2, ten of them about "
-          "the spread cells and the entry-substitution rule), `stamp_controls.py --selftest` rc=%d "
-          "(8 arms, 0 problems), `verify_sg_f2.py` rc=%d, and that verifier's own arithmetic line, "
-          "printed from its stdout rather than retyped here:" % (rcv, rcs, rct, rcv2))
+
+    def arms_of(text):
+        m = re.search(r"arms_checked=(\d+) problems=(\d+)", text)
+        return (m.group(1), m.group(2)) if m else ("?", "?")
+    sa, sp = arms_of(stout)
+    ta, tp = arms_of(ttout)
+    print("")
+    print("This window's own gates after the change, with every count read out of the run that "
+          "produced it rather than written down beforehand: `selfcheck.py` rc=%d, "
+          "`selfcheck.py --selftest` rc=%d (%s arms, %s problems - 39 arms before SG-F2, the ten "
+          "new ones about the spread cells and the entry-substitution rule), "
+          "`stamp_controls.py --selftest` rc=%d (%s arms, %s problems), `verify_sg_f2.py` rc=%d, "
+          "and that verifier's own arithmetic lines, printed from its stdout:"
+          % (rcv, rcs, sa, sp, rct, ta, tp, rcv2))
     print("")
     for l in vnotes:
         print("    " + l)

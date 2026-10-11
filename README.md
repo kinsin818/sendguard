@@ -71,7 +71,11 @@ own arms are 8, both-sided; reading from this tree: `OUTCOME=CLEAN faces_compare
 differing=0 missing=0`, where the one declared face is `docs/evidence.md` naming the commit it was generated
 under.
 Its red side was probed on a tampered generated face held in an unreachable probe commit, and it refused:
-`evidence/S11/parity-red-probe-20261011.md`.
+`evidence/S11/parity-red-probe-20261011.md`. The same leg also asks the deliverable itself - `tool/check.py` run in the working copy
+and in the clone over five declared names, handed to the checker as hex so the probe cannot change which
+name is meant - and compares the eleven fields the gate scores: `tool| names=5
+fields_compared=55 differing=0`, on one host and one interpreter, which is what it says it proves
+(`evidence/S11/tool-coldrun-20261011.md`).
 
 **Currently not evidenced, and therefore not claimed anywhere:** macOS and Linux rows - and the blocker is not `git push`. The sealed table already holds 22 macOS and 22 Ubuntu predictions, but no port harness can emit them: every runner writes `results/<port>.windows.x64/` by hard-coded path and probes Windows-only semantics (`docs/tickets/SG-F3-os-portability.md`). A new `instrument` job in `.github/workflows/matrix.yml` is written to re-verify the **instrument** on all three operating systems - **it has never run, because nothing has been pushed** - and the workflow file states in its own steps that it produces no result faces,
 mobile storage and download layers, cloud-drive and mail-attachment renaming, exFAT/FAT32 volumes,

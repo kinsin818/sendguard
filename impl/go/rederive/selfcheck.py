@@ -257,6 +257,22 @@ def validate(cell, schema, cexp):
     if cell.get("language") != "go":
         errs.append("language is %r in the go port directory" % cell.get("language"))
     if cell.get("case_group") == "len":
+        unit = (cell.get("len_pinned_fill") or {}).get("unit_hex")
+        bl = cell.get("base_len")
+        if isinstance(bl, int) and unit:
+            want = unit * bl
+            if cell.get("name_source") != want:
+                errs.append("rev7 rule 1: name_source is %r, the pinned filler repeated to base_len=%d is %r (a case label or a boundary result is not the component handed to the API)"
+                            % (str(cell.get("name_source"))[:24] + "...", bl, want[:24] + "..."))
+        tri = cell.get("len_triple")
+        if isinstance(tri, str) and isinstance(bl, int):
+            parts = [x for x in re.split(r"[/,]", tri) if x != ""]
+            if len(parts) == 3 and any(p != idval(bl) for p in parts):
+                errs.append("rev7 rule 2: len_triple %r is not the width of this name (base_len=%d); a measured ceiling belongs in len_ceiling" % (tri, bl))
+        if "len_ceiling" not in cell:
+            errs.append("rev7 rule 3: no len_ceiling field, so the measured ceiling has nowhere to live")
+        if cell.get("run_status") not in ("ran", "blocked"):
+            errs.append("len cell run_status=%r outside ran|blocked" % cell.get("run_status"))
         if not isinstance(cell.get("base_len"), int):
             errs.append("len cell without an integer base_len inside the cell")
         if cell.get("path_form") not in ("plain", "extended"):
@@ -427,6 +443,28 @@ def selftest():
     errs = validate(dict(base, roundtrip_ok=None), ({}, {}), {})
     arms.append(("red: roundtrip_ok published as null is refused (schema says boolean)",
                  any("roundtrip_ok" in e for e in errs), errs))
+    labelish = dict(base, case_group="len", case_id="T17", base_len=78,
+                    name_source="61" * 78, len_triple="48/48/48",
+                    len_pinned_fill={"unit_hex": "61"}, len_ceiling={"ceiling_code_units": 255},
+                    run_status="ran")
+    errs = validate(labelish, ({}, {}), {})
+    arms.append(("red: len_triple carrying a foreign width (a label's length) is refused",
+                 any("len_triple" in e for e in errs), errs))
+    boundaryish = dict(labelish, len_triple="255/255/255")
+    errs = validate(boundaryish, ({}, {}), {})
+    arms.append(("red: len_triple carrying the measured ceiling is refused (rev7 rule 2)",
+                 any("len_triple" in e for e in errs), errs))
+    noceil = dict(labelish, len_triple="78/78/78")
+    del noceil["len_ceiling"]
+    errs = validate(noceil, ({}, {}), {})
+    arms.append(("red: len cell without len_ceiling is refused (rev7 rule 3)",
+                 any("len_ceiling" in e for e in errs), errs))
+    good = dict(labelish, len_triple="78/78/78")
+    arms.append(("green: a rev7-shaped len cell passes", not any("rev7" in e for e in validate(good, ({}, {}), {})), validate(good, ({}, {}), {})))
+    wrongbytes = dict(good, name_source="542d4c454e2d50415448")  # a case label, as spec/cases.yaml once printed
+    errs = validate(wrongbytes, ({}, {}), {})
+    arms.append(("red: name_source that is not the pinned filler repeated is refused",
+                 any("rule 1" in e for e in errs), errs))
     errs = validate(dict(base, enum_to_stat_agrees=False), ({}, {}), {})
     arms.append(("green: a recorded boolean verdict passes", not any("enum_to_stat_agrees" in e for e in errs), errs))
     arms.append(("identity: required-file row and published cell render alike",

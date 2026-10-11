@@ -274,7 +274,7 @@ def make_scratch(base_len=None):
 
 # --------------------------------------------------------------------- child
 def run_child(tc, scratch, entry, members_hex, grades, out_path, zip_leg, ext="on", sweep=None,
-              mechanism=False, extra_args=None, path_form=None):
+              mechanism=False, extra_args=None, path_form=None, fill_unit=None):
     argv = [tc["chosen_java"], "-cp", BUILD, "CellProbe",
             "--entry", entry, "--scratch", scratch, "--payload", hx(PAYLOAD),
             "--out", out_path, "--extended", ext]
@@ -286,6 +286,8 @@ def run_child(tc, scratch, entry, members_hex, grades, out_path, zip_leg, ext="o
         argv += ["--mechanism", "on"]
     if path_form and path_form != "plain":
         argv += ["--path-form", path_form]
+    if fill_unit:
+        argv += ["--fill-unit-hex", fill_unit]
     if extra_args:
         argv += list(extra_args)
     if grades:
@@ -326,7 +328,7 @@ def rev3_grid(base):
     return sorted(set([hit - 1, hit, hit + 1, 254, 255, 256]))
 
 
-def build_plan(cases, api, ctrl_ids, blind_entries, java_entries, req, csamples):
+def build_plan(cases, api, ctrl_ids, blind_entries, java_entries, req, csamples, len_fill):
     """One plan row = one set of child processes (case x entry, all members sequential in one
     fresh directory). A row may EMIT several cell files: rev3 identities are per member."""
     plan = []
@@ -340,8 +342,12 @@ def build_plan(cases, api, ctrl_ids, blind_entries, java_entries, req, csamples)
         if c["id"] in ("T17", "T18"):
             rungs = sorted({rc["sub_identity"]["base_len"] for rc in req["required_cells"]
                             if rc["case_group"] == "len" and rc["case_id"] == c["id"]})
+            unit = (len_fill or {}).get("unit_hex") or "61"
             for base in rungs:
-                grades = rev3_grid(base)
+                # rev7: the component this cell passes is base_len units of the pinned filler unit,
+                # and name_source is the hex of exactly that string - not a label, not prose
+                pinned = bytes.fromhex(unit) * base
+                grades = [base] + [g for g in rev3_grid(base) if g != base]
                 for form in ("plain", "extended"):
                     sub_id = {"base_len": base, "path_form": form}
                     plan.append({
@@ -350,10 +356,11 @@ def build_plan(cases, api, ctrl_ids, blind_entries, java_entries, req, csamples)
                         "tier": None, "base_len": base, "grades": grades, "sweep": None,
                         "path_form": form,
                         "mechanism": (c["id"] == "T17" and base == min(rungs) and form == "plain"),
-                        "members_hex": None, "name_source": hx(padded_name(grades[-1])),
+                        "members_hex": None, "name_source": pinned.hex(),
                         "category": c["category"], "locale": c["locale"],
-                        "applicable": c["applicable"],
-                        "entries": [PRIMARY_ENTRY], "zip": False, "grid_rule": "rev6",
+                        "applicable": c["applicable"], "fill_unit": unit,
+                        "headline": "pinned", "pinned_component_bytes": len(pinned),
+                        "entries": [PRIMARY_ENTRY], "zip": False, "grid_rule": "rev7",
                         "emits": [{"case_id": c["id"], "group": "len",
                                    "sub_parts": ["base_len-%d" % base, form],
                                    "member_index": None, "sub_identity": sub_id,
@@ -381,7 +388,7 @@ def build_plan(cases, api, ctrl_ids, blind_entries, java_entries, req, csamples)
                 plan.append({
                     "kind": "len", "group": "len", "case_id": c["id"], "sub_parts": [tier],
                     "sub": None, "tier": tier, "base_len": base, "grades": grades, "sweep": sweep,
-                    "path_form": "plain",
+                    "path_form": "plain", "headline": "largest", "fill_unit": None,
                     "mechanism": False, "members_hex": None,
                     "name_source": hx(padded_name(grades[-1])), "category": c["category"],
                     "locale": c["locale"], "applicable": c["applicable"],
@@ -644,13 +651,19 @@ def assemble(tc, plan, runs, spec_sha, env, canon_extra=None, emit=None):
 
     members = doc["members"]
     if plan["kind"] == "len":
-        head = members[-1]
+        head = members[0] if plan.get("headline") == "pinned" else members[-1]
+        rec["headline_rule"] = (
+            "the component of exactly base_len units of the pinned filler unit IS the cell; the "
+            "other grid points are bracket evidence, not the cell"
+            if plan.get("headline") == "pinned" else
+            "largest grid point describes this tier cell")
         rec["members"] = members
         rec["members_observed"] = len(members)
         rec["tier"] = plan["tier"]
         rec["base_len"] = plan["base_len"]
         rec["base_len_actual"] = doc["scratch_len"]
         rec["grid_name_lens"] = plan["grades"]
+        rec["pinned_component_units"] = plan["base_len"] if plan.get("headline") == "pinned" else None
         rec["breakpoint_rule"] = ("top-level fields describe the largest grid point; "
                                   "every grade is kept in grades[]")
         rec["grades"] = [{k: m.get(k) for k in ("label", "name_utf16_units", "name_utf8_bytes",
@@ -833,6 +846,19 @@ def assemble(tc, plan, runs, spec_sha, env, canon_extra=None, emit=None):
         ok_names = [q["name_len"] for q in rec.get("points", []) if q["plain"] == "ok"]
         max_ok_component = max(ok_names) if ok_names else None
         rec["max_name_len_observed_ok"] = max_ok_component
+        ok_ext = [q["name_len"] for q in rec.get("points", []) if q["extended"] == "ok"]
+        rec["len_ceiling"] = {
+            "through_the_pinned_entry": max_ok_component,
+            "through_the_os_leg": max(ok_ext) if ok_ext else None,
+            "leg_instrument": "java.nio Files.write for the plain column; java.io handing the same "
+                              "string to CreateFileW for the extended column",
+            "bracket": {"last_ok_total": (rec.get("measured_plain_wall") or {}).get(
+                            "max_total_len_observed_ok"),
+                        "first_fail_total": (rec.get("measured_plain_wall") or {}).get(
+                            "min_total_len_observed_fail")},
+            "note": "rev7 cell-identity 9.7: the requested name's width, the landed name's width "
+                    "and the ceiling a bisection converged on are three quantities; len_triple "
+                    "carries only the first, this field carries the third"}
         rec["bisection_regime"] = rev4_regime(rec.get("longpath_mechanism"), max_ok_component,
                                             rec.get("base_len"))
     if rec.get("bisection_regime"):
@@ -947,7 +973,10 @@ def main():
           % (len(req["required_cells"]),
              len([t for t in req["tapi_cells_per_language"] if t["language"] == "java"]),
              REQ_SHA[0][:16]))
-    plan = build_plan(cases, api, ctrl_ids, blind, java_entries, req, csamples)
+    len_fill = parse_len_fill(cases_path)
+    print("len_fill pinned unit=%s applies_to=%s" % ((len_fill or {}).get("unit_hex"),
+                                                    (len_fill or {}).get("applies_to")))
+    plan = build_plan(cases, api, ctrl_ids, blind, java_entries, req, csamples, len_fill)
     if a.only:
         want = set(x.strip() for x in a.only.split(","))
         plan = [p for p in plan if p["case_id"] in want
@@ -1023,7 +1052,8 @@ def main():
             runs[entry] = run_child(tc, scratch, entry, p["members_hex"], p.get("grades"),
                                     out_path, p.get("zip", False), sweep=p.get("sweep"),
                                     mechanism=p.get("mechanism", False),
-                                    path_form=p.get("path_form"))
+                                    path_form=p.get("path_form"),
+                                    fill_unit=p.get("fill_unit"))
         canon_extra = None
         if p["kind"] == "canon":
             a1 = (runs.get(PRIMARY_ENTRY, {}).get("doc") or {}).get("members", [{}])[0]

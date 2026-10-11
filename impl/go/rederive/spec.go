@@ -75,6 +75,7 @@ var (
 	reKeyVal     = regexp.MustCompile(`^\s+([a-z_]+):\s*(.*)$`)
 	reListItem   = regexp.MustCompile(`^\s+-\s*(.+)$`)
 	reBlindRef   = regexp.MustCompile(`^blind_map_ref:\s*"([^"]+)"`)
+	reTopLevel   = regexp.MustCompile(`^([a-z_]+):\s*(.+)$`)
 	reGoEntryKey = regexp.MustCompile(`^\s+go:\s*\[(.*)\]\s*$`)
 )
 
@@ -118,6 +119,15 @@ func LoadSpec(path string) (*FrozenSpec, map[string]*CaseDef, error) {
 			continue
 		}
 		if !strings.HasPrefix(line, " ") {
+			// top-level scalars are read wherever they sit in the file
+			if m := reTopLevel.FindStringSubmatch(line); m != nil {
+				switch m[1] {
+				case "freeze_revision":
+					spec.FreezeRevision = unquote(m[2])
+				case "blind_map_ref":
+					spec.BlindMap = unquote(m[2])
+				}
+			}
 			section = strings.TrimSuffix(strings.TrimSpace(line), ":")
 			cur = nil
 			inHexList = false

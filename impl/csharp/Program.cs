@@ -828,10 +828,16 @@ namespace SendGuardProbe
                         break;
                     case "co-name-hex": o.CoNameHex = v; break;
                     case "payload-hex": o.PayloadHex = v; break;
+                    case "pinned-len": o.PinnedLen = int.Parse(v, CultureInfo.InvariantCulture); break;
                     default: throw new ArgumentException("unknown flag " + k);
                 }
             }
             if (o.ReportPath == "" || o.Dir == "") throw new ArgumentException("--dir and --report are required");
+            if (o.Mode == "len" && o.PinnedLen < 1)
+            {
+                throw new ArgumentException("--mode len requires --pinned-len (rev7 pins the recorded "
+                                           + "component; without it the cell would describe an empty name)");
+            }
         }
 
         private static int WriteReport(Opts o, Dictionary<string, object> report, Stopwatch sw)

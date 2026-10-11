@@ -41,7 +41,7 @@ SCRATCH_BASE13 = r"D:\sgcs"              # len cells need a directory path of ex
 SCRATCH_ROOT = r"D:\sg-cs-scratch\cells"
 REPORT_DIR = r"D:\sg-cs-scratch\reports"
 TIMEOUT_S = 5.0
-HARNESS_VERSION = "csharp-s02-4-rev6"
+HARNESS_VERSION = "csharp-s02-5-rev7"
 WORKER_ID = "seat-qoder/csharp-port"
 LANG = "csharp"
 OS = "windows"
@@ -55,6 +55,7 @@ REQUIRED_MANIFEST = os.path.join(REPO, "spec", "cells-required.json")
 # the frozen grid points that belong to a base rung (spec/FROZEN.md); base 78 has none defined
 GRID_BY_BASE = {120: [137, 138, 139], 200: [254, 255, 256], 13: [244, 245, 246]}
 LEN_SHAPE = {"T17": "nested", "T18": "comp"}
+LEN_FILL = None            # rev7: filled by len_fill_pin() from spec/cases.yaml, never retyped
 
 RESERVED_RE = re.compile(r"^(CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9]|CONIN\$|CONOUT\$)(\..*)?$", re.I)
 UNSAFE_CONTENT_RE = re.compile(r'[<>:"|?*\x00-\x1f]')
@@ -276,6 +277,7 @@ def run_child(spec, dir_path):
         argv += ["--comp-len", str(spec.get("comp_len") or 0), "--fill", spec["fill"]]
     if spec["mode"] == "len":
         argv += ["--bisect-lo", str(spec["bisect_lo"]), "--bisect-hi", str(spec["bisect_hi"])]
+        argv += ["--pinned-len", str(spec["pinned_len"])]      # rev7: the recorded component
         if spec.get("points"):
             argv += ["--points", ",".join(str(x) for x in spec["points"])]
     elif spec["mode"] == "bisect":
@@ -507,104 +509,102 @@ def build_cell(kind, spec, cases, blind, env, ctx):
     else:
         fill_from_report(cell, rep, meta, spec, cdir, name, name_hex, reserved, env)
 
-    # --- length dimensions. One cell answers one question: where does the length stop binding
-    # at THIS base rung. The child bisects inside the cell, so the cell's own create attempt is
-    # the last length that succeeds and the boundary is that attempt's x (base_len is in the
-    # cell, not only in the filename - spec/cell-identity.md s1).
+    # --- length family, rev7. Three separate quantities, three separate fields:
+    #   name_source  = hex of the component actually handed to the API (the pinned filler,
+    #                  base_len code units of len_fill.unit_hex, nothing appended)
+    #   len_triple   = code points / UTF-16 code units / UTF-8 bytes OF THAT NAME
+    #   len_ceiling  = what the bisection converged to - a different quantity, never a name width
     if group == "len":
         lm = (rep or {}).get("len_measure")
         cell["base_len"] = spec["base_len"]
         cell["base_len_measured"] = len(cdir)
         cell["len_shape"] = spec["shape"]
         cell["sub_identity"] = {"base_len": spec["base_len"], "path_form": spec["form"]}
-        cell["frozen_grid_points_for_this_base"] = GRID_BY_BASE.get(spec["base_len"], [])
+        cell["len_fill_unit_hex"] = LEN_FILL["unit_hex"]
+        cell["len_fill_rule"] = LEN_FILL["rule"]
+        cell["tier_points_from_frozen_grid"] = spec.get("points") or []
         if not lm:
             cell["len_measure_missing"] = True
-            for f in ("grid_point", "len_target_extra_units", "component_len", "total_path_len",
-                      "len_triple", "bisect_boundary", "bisect_conclusive"):
+            for f in ("component_len", "total_path_len", "len_triple", "len_ceiling",
+                      "len_ceiling_conclusive"):
                 cell[f] = None
         else:
             primary = lm.get("primary") or {}
-            unit = int(primary.get("name_utf16_units") or 0)
-            cell["grid_point"] = lm.get("boundary")
-            cell["len_target_extra_units"] = lm.get("boundary")
-            cell["component_len"] = unit
-            # for the nested shape the x units are split across a chain of short directories, so
-            # the component that binds is never near the volume limit - record the split
-            if spec["shape"] == "nested":
-                x = lm.get("boundary") or 0
-                cell["nested_chain_depth"] = (x - unit) // 61
-                cell["max_component_len"] = max(60, unit)
-            else:
-                cell["nested_chain_depth"] = 0
-                cell["max_component_len"] = unit
-            cell["total_path_len"] = cell.get("api_path_len") or (len(cdir) + 1 + unit)
-            # the fill is ASCII, so the three counting units coincide for this corpus by fact
-            cell["len_triple"] = [unit, unit, unit]
-            cell["bisect_boundary"] = lm.get("boundary")
-            cell["bisect_lo"] = lm.get("bisect_lo")
-            cell["bisect_hi"] = lm.get("bisect_hi")
-            cell["bisect_probes_run"] = (lm.get("bisect") or {}).get("probes_run")
-            cell["bisect_conclusive"] = not lm.get("boundary_at_instrument_ceiling")
-            cell["bisect_ceiling_is_instrument_not_filesystem"] = bool(
-                lm.get("boundary_at_instrument_ceiling"))
+            n_hex = primary.get("name_hex") or ""
+            cell["name_source"] = n_hex                       # rev7 rule 1, from the child's record
+            cell["name_source_rule"] = LEN_FILL["name_source_rule"]
+            n_cp = rep.get("name_code_points")
+            n_u = rep.get("name_utf16_units")
+            n_b = rep.get("name_utf8_bytes")
+            cell["len_triple"] = [n_cp, n_u, n_b] if None not in (n_cp, n_u, n_b) else None
+            cell["component_len"] = n_u
+            cell["total_path_len"] = len(cdir) + 1 + (n_u or 0)   # the recorded name under the rung
+            cell["api_path_len_recorded"] = primary.get("path_len")
+            ceil = lm.get("boundary")
+            cell["len_ceiling"] = ceil
+            cell["len_ceiling_conclusive"] = not lm.get("boundary_at_instrument_ceiling")
+            cell["len_ceiling_instrument_hi"] = lm.get("bisect_hi")
+            cell["len_ceiling_lo"] = lm.get("bisect_lo")
+            cell["len_ceiling_probes_run"] = (lm.get("bisect") or {}).get("probes_run")
+            cell["len_ceiling_basis"] = (
+                "component-length bisection: longest single component that lands in the rung dir"
+                if spec["shape"] == "comp" else
+                "total-path-length bisection over a chain of <=60-unit components, so no single "
+                "component approaches the volume limit")
             b1 = lm.get("boundary_plus1") or {}
-            cell["boundary_plus1_result"] = b1.get("create_result")
-            cell["boundary_plus1_error_code"] = b1.get("error_code")
-            cell["grid_point_attempts"] = [
+            cell["len_ceiling_boundary_code"] = b1.get("error_code")
+            cell["len_ceiling_boundary_attempt"] = b1.get("create_result")
+            cell["len_ceiling_at_boundary"] = (lm.get("boundary_attempt") or {}).get("create_result")
+            cell["tier_point_attempts"] = [
                 {"x": g.get("x"), "create_result": g.get("create_result"),
                  "error_code": g.get("error_code"), "name_hex": g.get("name_hex"),
-                 "path_len": g.get("path_len")} for g in (lm.get("grid_points") or [])]
-            ext = lm.get("extended_corroboration") or {}
-            cell["extended_corroboration"] = {k: ext.get(k) for k in
-                                              ("create_result", "error_code", "form", "path_len",
-                                               "name_hex", "name_utf16_units")}
-            cell["extended_leg_lives_inside_cell_because"] = (
-                "path_form is not part of the cell identity (ci/equality.py sub_identity carries "
-                "base_len only), so a second record with this identity would be read as the port "
-                "disagreeing with itself")
+                 "name_utf16_units": g.get("name_utf16_units"), "path_len": g.get("path_len")}
+                for g in (lm.get("tier_points") or [])]
 
-            # spec/gate.md s5 (rev4): the bisection regime is keyed by longpath_mechanism, NOT by
-            # path_form, and a port that fits neither model is reported `unresolved`.
+            # spec/gate.md s5 (rev4): the regime is keyed by longpath_mechanism, not path_form, and
+            # a port that fits neither model is reported `unresolved` rather than bucketed.
             mech = cell["longpath_mechanism"]
-            b1 = lm.get("boundary_plus1") or {}
             obs_code = b1.get("error_code")
             cell["bisection_regime"] = mech
             cell["regime_observed_boundary_code"] = obs_code
             if spec["shape"] == "comp":
                 if mech in ("manifest", "prefix_rewrite"):
-                    cell["regime_expected_max_component"] = env["max_component"]
+                    cell["regime_expected_ceiling"] = env["max_component"]
                     cell["regime_expected_boundary_code"] = "winerror=123"
                 elif mech == "none":
-                    cell["regime_expected_max_component"] = 259 - spec["base_len"] - 1
+                    cell["regime_expected_ceiling"] = 259 - spec["base_len"] - 1
                     cell["regime_expected_boundary_code"] = "winerror=3"
                 else:
-                    cell["regime_expected_max_component"] = None
+                    cell["regime_expected_ceiling"] = None
                     cell["regime_expected_boundary_code"] = None
-                cell["regime_observed_max_component"] = unit
+                cell["regime_observed_ceiling"] = ceil
                 cell["regime_verdict"] = (
-                    "unresolved" if cell["regime_expected_max_component"] is None else
-                    "satisfied" if (unit == cell["regime_expected_max_component"]
+                    "unresolved" if cell["regime_expected_ceiling"] is None else
+                    "satisfied" if (ceil == cell["regime_expected_ceiling"]
                                     and obs_code == cell["regime_expected_boundary_code"])
                     else "violated")
             else:
-                # the nested shape varies the TOTAL, and the rev4 regime only predicts a component
-                # ceiling; it says nothing about where the total stops. Reported, not bucketed.
-                cell["regime_expected_max_component"] = None
+                cell["regime_expected_ceiling"] = None
                 cell["regime_expected_boundary_code"] = None
-                cell["regime_observed_max_component"] = cell["max_component_len"]
+                cell["regime_observed_ceiling"] = ceil
                 cell["regime_verdict"] = "unresolved"
                 cell["regime_unresolved_reason"] = (
-                    "gate.md s5 (rev4) predicts max_component under a prefix-rewriting runtime; "
-                    "this cell varies the total path length with every component <= 60, so no "
-                    "regime covers it. Bisection ran to the instrument ceiling %s without "
-                    "bracketing a boundary." % (lm.get("bisect_hi")))
+                    "gate.md s5 (rev4) predicts a component ceiling under a prefix-rewriting runtime; "
+                    "this cell's question is the TOTAL length, which no regime covers. Bisection ran "
+                    "to the instrument ceiling %s without bracketing a boundary, so len_ceiling is a "
+                    "ceiling of the probe, not of the filesystem." % (lm.get("bisect_hi")))
+            if cell["len_triple"] and len(set(cell["len_triple"])) != 1:
+                cell["len_triple_widths_disagree"] = (
+                    "the pinned filler is one ASCII code unit, so all three widths must coincide; "
+                    "if they do not, this port is counting something other than the name")
         if cell["base_len"] != cell["base_len_measured"]:
             cell["instrument_conflict"] = True
             cell["base_len_conflict"] = "manifest says %s, directory is %s chars" % (
                 cell["base_len"], cell["base_len_measured"])
 
     needles = [cdir]
+    if spec.get("pinned_len") and LEN_FILL:
+        needles.append(LEN_FILL["unit_char"] * spec["pinned_len"])
     if spec.get("name_hex"):
         needles.append(hexdecode(spec["name_hex"]))
     if spec.get("fill") and spec.get("comp_len"):
@@ -840,6 +840,30 @@ def longpath_mechanism(cell, spec, env):
 
 
 # ------------------------------------------------------------------ plan
+def len_fill_pin():
+    """rev7: spec/cases.yaml pins what a length component is made of. Read it, never retype it."""
+    text = io.open(CASES_YAML, encoding="utf-8").read()
+    m = re.search(r"(?m)^len_fill:\s*\n(.*?)(?=\n[a-z_]+:|\Z)", text, re.S)
+    if not m:
+        raise RuntimeError("spec/cases.yaml has no len_fill block; rev7 requires it before len cells run")
+    block = m.group(1)
+
+    def field(name):
+        mm = re.search(r'(?m)^\s+%s:\s*"?([^"\n]*)"?\s*(?:#.*)$' % name, block)
+        return mm.group(1).strip() if mm else None
+
+    unit = field("unit_hex")
+    rule = field("rule")
+    applies = field("applies_to")
+    if not unit or len(unit) != 2:
+        raise RuntimeError("len_fill.unit_hex must be exactly one code unit in hex, got %r" % unit)
+    if not rule or "base_len" not in rule:
+        raise RuntimeError("len_fill.rule missing, got %r" % rule)
+    return {"unit_hex": unit.lower(), "unit_char": hexdecode(unit), "rule": rule,
+            "applies_to": applies,
+            "name_source_rule": field("name_source_rule")}
+
+
 def read_required():
     with io.open(REQUIRED_MANIFEST, encoding="utf-8") as f:
         return json.load(f)
@@ -879,10 +903,12 @@ def ctrl_pins(cases, manifest):
 
 def make_plan():
     """Cell set is DRIVEN by spec/cells-required.json (rev3); samples come from cases.yaml."""
+    global LEN_FILL
     cases = read_spec()
     blind_ids, blind_doc = read_blind_map()
     req = read_required()
     pins = ctrl_pins(cases, req)
+    LEN_FILL = len_fill_pin()
     plan = []
 
     ctrl_class = {"T-CTRL-NAMETOOLONG": "component_length_limit",
@@ -926,11 +952,12 @@ def make_plan():
                 "phase": "matrix", "group": "len", "case_id": cid, "cell_id": cid,
                 "entry": PRIMARY_ENTRY, "form": form, "shape": shape, "name_hex": None,
                 "mode": "len", "legality": True, "payload": "canon",
-                "name_source": cases[cid].get("literal") or LEN_LITERAL[cid],
+                # rev7: name_source is filled from what the child actually passed, never a label
+                "name_source": None, "name_source_from_bytes_passed": True,
                 "mechanism_class": "component_length_limit",
                 "base_len": base, "points": GRID_BY_BASE.get(base, []),
+                "pinned_len": base, "fill": LEN_FILL["unit_char"],
                 "bisect_lo": 1, "bisect_hi": 300 if shape == "comp" else 2000,
-                "fill": "a" if form == "plain" else "z",
                 "sub": "base%d-%s" % (base, form), "comp_len": None,
                 "sub_identity": {"base_len": base, "path_form": form},
                 "extra": False, "in_required": True,
@@ -972,11 +999,12 @@ def make_plan():
             "phase": "matrix", "group": "len", "case_id": cid, "cell_id": cid,
             "entry": PRIMARY_ENTRY, "form": "plain", "shape": shape, "name_hex": None,
             "mode": "len", "legality": True, "payload": "canon",
-            "name_source": cases[cid].get("literal") or LEN_LITERAL[cid],
+            "name_source": None, "name_source_from_bytes_passed": True,
             "mechanism_class": "component_length_limit",
             "base_len": 13, "points": [244, 245, 246, 254, 255, 256],
+            "pinned_len": 13, "fill": LEN_FILL["unit_char"],
             "bisect_lo": 1, "bisect_hi": 300 if shape == "comp" else 2000,
-            "fill": "a", "sub": "base13-plain", "comp_len": None,
+            "sub": "base13-plain", "comp_len": None,
             "sub_identity": {"base_len": 13, "path_form": "plain"},
             "extra": True, "in_required": False,
             "extra_reason": "spec/gate.md s5 (rev4) permits base depth 13 as extra; it is the rung "

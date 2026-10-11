@@ -17,12 +17,12 @@
   "case_id": "T06",
   "case_id_frozen_base": "T06",
   "case_locale": "en-US",
-  "cell_dir": "D:\\sendguard-run\\d5cfe638-b8dd-443c-b1e4-fed5e30518e5\\t",
+  "cell_dir": "D:\\sendguard-run\\bc742312-6ec9-497d-8e3e-91685a5a0259\\t",
   "child_command": [
     "D:\\sendguard-work\\seat-qoder\\impl\\go\\rederive\\bin\\sg.exe",
     "cell",
     "--plan",
-    "D:\\sendguard-run\\d5cfe638-b8dd-443c-b1e4-fed5e30518e5\\_plan.json"
+    "D:\\sendguard-run\\bc742312-6ec9-497d-8e3e-91685a5a0259\\_plan.json"
   ],
   "child_process": "one child process per cell, killed by the parent on deadline",
   "child_rc": 0,
@@ -54,14 +54,22 @@
     "LongPathsEnabled": 0,
     "LongPathsEnabled_status": "present",
     "dot3name": null,
+    "manifest_scanner_green_arm": {
+      "bytes_scanned": 106208,
+      "hit_count": 2,
+      "path": "C:\\Python314\\python.exe",
+      "purpose": "green arm for manifestScan: this binary must show the token",
+      "status": "scanned"
+    },
     "max_component": 255,
     "os_build_claim": "recorded from env probe, see os_version",
     "runner_manifest_scan": {
-      "bytes_scanned": 4624896,
-      "hit_count": 1,
-      "method": "byte scan of the runner exe, NOT a PE manifest parse",
-      "token": "longPathAware",
-      "why": "LongPathsEnabled=0 on this host, but whether the 259-unit ceiling bites depends on the manifest of the binary that asks, so the runner's own face is recorded instead of assumed"
+      "bytes_scanned": 4638720,
+      "disclaimer": "proves the string is present, not that the loader honours it; absence is recorded, not assumed",
+      "hit_count": 0,
+      "hits": [],
+      "method": "byte scan of the file, NOT a PE manifest parse",
+      "token": "the needle is assembled at run time and is not stored as a literal in this binary"
     },
     "sandbox_root": "D:\\sendguard-run",
     "toolchain": "go version go1.23.5 windows/amd64 | builder=C:\\Program Files\\Go\\bin\\go.exe | runner=D:\\sendguard-work\\seat-qoder\\impl\\go\\rederive\\bin\\sg.exe",
@@ -72,7 +80,7 @@
   "error_stage": "null",
   "extra": false,
   "format_version": 1,
-  "harness_version": "sg-go-rederive-1.0.0+52e0eb46a0d9",
+  "harness_version": "sg-go-rederive-1.0.0+8bd578a296a9",
   "independent_readback_arm": {
     "arm": "python open('rb') + hashlib.sha256",
     "attempted": true,
@@ -84,7 +92,7 @@
           "-c",
           "\u003c4-line readback script\u003e",
           "\u003clanded-name-hex\u003e",
-          "D:\\sendguard-run\\d5cfe638-b8dd-443c-b1e4-fed5e30518e5\\t",
+          "D:\\sendguard-run\\bc742312-6ec9-497d-8e3e-91685a5a0259\\t",
           ""
         ],
         "face": "plain",
@@ -106,7 +114,7 @@
     "attempted": true,
     "created": true,
     "deletes": false,
-    "dir": "D:\\sendguard-run\\d5cfe638-b8dd-443c-b1e4-fed5e30518e5\\l",
+    "dir": "D:\\sendguard-run\\bc742312-6ec9-497d-8e3e-91685a5a0259\\l",
     "listing": [
       {
         "is_dir": false,
@@ -175,15 +183,15 @@
     "legality"
   ],
   "provenance": {
-    "freeze_revision": "",
+    "freeze_revision": "2",
     "go_exe_resolved": "C:\\Program Files\\Go\\bin\\go.exe",
     "go_version_string": "go version go1.23.5 windows/amd64",
     "harness_source": "impl/go/rederive/",
     "independence": "no file under results/ and no other language under impl/ was opened by this seat",
     "independent_enumerator": "harness/audit.go is the audit instrument; this port shares no code with it and never invoked it",
     "runner_exe": "D:\\sendguard-work\\seat-qoder\\impl\\go\\rederive\\bin\\sg.exe",
-    "sg_exe_sha256_before": "52e0eb46a0d9309660904ac2964d892e100efa812d787e1cb24ea3874054e8d1",
-    "spec_sha256": "b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1",
+    "sg_exe_sha256_before": "8bd578a296a9da6c38015b8c9b332e328a52b4198fedeb5508ebefba4be647b5",
+    "spec_sha256": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261",
     "spec_sha256_face": "git cat-file blob HEAD:spec/cases.yaml",
     "spec_sha256_worktree": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261"
   },
@@ -196,12 +204,12 @@
   "roundtrip_leg_executed": true,
   "roundtrip_ok": true,
   "run_status": "ran",
-  "sandbox_dir": "D:\\sendguard-run\\d5cfe638-b8dd-443c-b1e4-fed5e30518e5",
+  "sandbox_dir": "D:\\sendguard-run\\bc742312-6ec9-497d-8e3e-91685a5a0259",
   "sandbox_sharing": {
-    "extended_probe_dir": "D:\\sendguard-run\\d5cfe638-b8dd-443c-b1e4-fed5e30518e5\\e",
+    "extended_probe_dir": "D:\\sendguard-run\\bc742312-6ec9-497d-8e3e-91685a5a0259\\e",
     "first_cell_in_group": false,
     "group_id": "T06|os.Create|trap",
-    "measured_dir": "D:\\sendguard-run\\d5cfe638-b8dd-443c-b1e4-fed5e30518e5\\t",
+    "measured_dir": "D:\\sendguard-run\\bc742312-6ec9-497d-8e3e-91685a5a0259\\t",
     "multi_member_case": false,
     "rule": "one fresh uuid sandbox per cell; the multi-member cases T09/T14/T19 share the directory of their (case x entry) group because coexistence in ONE directory is the frozen question, and the port own plan/phase/observation files sit in the sandbox root so they can never enter a dir_view"
   },
@@ -209,7 +217,7 @@
   "sha256_self": "c9fe45b2fee8ea846f0cf4f2cacc2a891e7b082e7719923502d12a9813e21994",
   "sha256_truth": "c9fe45b2fee8ea846f0cf4f2cacc2a891e7b082e7719923502d12a9813e21994",
   "spec_source": "Unicode emoji on filesystems",
-  "started_at": "2026-10-10T22:11:11.3979379Z",
+  "started_at": "2026-10-11T00:02:51.214115Z",
   "timed_out": false,
   "verdict_via": "win32",
   "verdict_via_note": "every legality answer in this port comes from kernel32 FindFirstFileW through syscall, which creates nothing and opens no contents; the cell with no verdict_via tool is the one whose name this runtime refused before any call",

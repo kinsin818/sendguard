@@ -1,0 +1,246 @@
+{
+  "api_entry": "writeFileSync",
+  "attempt": 1,
+  "bytes_on_disk": null,
+  "bytes_written": null,
+  "canon_payload_sha256_written": "c9fe45b2fee8ea846f0cf4f2cacc2a891e7b082e7719923502d12a9813e21994",
+  "case_group": "ctrl",
+  "case_id": "T-CTRL-NAMETOOLONG",
+  "cells_required_face": {
+    "cells_n": 44,
+    "face": "tracked working-tree file",
+    "sha256": "ed8a8a29c0eea99925659f6d0f2f63b94469654e1f793ab027b6e55a4a1a8cb8",
+    "tapi_rows_required_of_this_port": [
+      "appendFileSync",
+      "createWriteStream",
+      "writeFileSync"
+    ]
+  },
+  "control_expectation": {
+    "create_result": "err_at_syscall",
+    "error_stage": "syscall",
+    "source": "evidence/S00-ctrl-baseline.md"
+  },
+  "control_match": true,
+  "control_observed": {
+    "create_result": "err_at_syscall",
+    "error_stage": "syscall"
+  },
+  "control_pass": true,
+  "create_result": "err_at_syscall",
+  "deps_direct": 0,
+  "deps_total": 0,
+  "elapsed_ms": 267,
+  "entry_spread": [
+    {
+      "api_entry": "writeFileSync",
+      "bytes_on_disk": null,
+      "bytes_written": null,
+      "create_result": "err_at_syscall",
+      "error_code": "ENOENT",
+      "error_message": "ENOENT: no such file or directory, open 'S:\\998974c\\oz\\aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'",
+      "error_stage": "syscall",
+      "name_landed_as": null,
+      "path_form": "extended",
+      "probe_exit_rc": 0,
+      "probe_signal": null,
+      "probe_wall_ms": 139,
+      "role": "osprobe"
+    }
+  ],
+  "enum_listed": [],
+  "enum_matched_by": "none",
+  "enum_to_stat_agrees": null,
+  "enum_unclaimed": [],
+  "env": {
+    "LongPathsEnabled": 0,
+    "console_code_page": 936,
+    "cpu_architecture": "AMD64",
+    "dot3name": "disabled",
+    "eight_dot_three_c": "enabled",
+    "eight_dot_three_d": "disabled",
+    "env_block_source": "evidence/S00/env-facts-windows-local.json",
+    "interpreter_matches_record": true,
+    "locale": "cp936",
+    "max_component": 255,
+    "observed_node_executable": "C:\\Program Files\\nodejs\\node.exe",
+    "observed_node_version": "v24.15.0",
+    "os_build": 19041,
+    "os_platform_name": "Windows-10-10.0.19041-SP0",
+    "recorded_node_executable": "C:\\Program Files\\nodejs\\node.exe",
+    "recorded_node_version": "v24.15.0",
+    "scratch_drive_mapped": true,
+    "toolchain": "node v24.15.0 at C:\\Program Files\\nodejs\\node.exe; TypeScript run by native type stripping (no tsc on this host)",
+    "unicode_version": "not-obtainable-here",
+    "volume_c_max_component": 255,
+    "volume_d_filesystem": "NTFS",
+    "volume_d_max_component": 255,
+    "volume_d_root": "D:\\"
+  },
+  "errno": -4058,
+  "error_code": "ENOENT",
+  "error_message": "ENOENT: no such file or directory, open 'S:\\998974c\\p0\\aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'",
+  "error_stage": "syscall",
+  "error_winerror": "not-obtainable-in-stdlib",
+  "format_version": 1,
+  "harness_version": "sg-ts-1.0.0",
+  "in_cells_required": true,
+  "instrument_conflict": false,
+  "instrument_red": false,
+  "language": "typescript",
+  "len_triple": [
+    256,
+    256,
+    256
+  ],
+  "length_unit": "utf16_code_units",
+  "longpath_mechanism": "none",
+  "mechanism_class": "component_length_limit",
+  "meta": {
+    "LongPathsEnabled": 0,
+    "arch": "x64",
+    "blind_map": {
+      "authorized_by": "docs/NOTICE-rev6.md item 2 (contract owner instruction on 2026-10-11)",
+      "blob_sha256": "3617e75f4906544d3e763b138bbb14fe834b9536ac0b95639d6195aaa1053e58",
+      "expectation_policy": "expectations in the frozen table stay null; spec/expectations.sealed.md was not opened by this port",
+      "hash_matches_lock": "no lock line found",
+      "locked_in_frozen_md": null,
+      "source": "evidence/S00/blind-map.json"
+    },
+    "canon_payload_sha256": "c9fe45b2fee8ea846f0cf4f2cacc2a891e7b082e7719923502d12a9813e21994",
+    "canon_payload_source": "control_samples payload_hex in spec/cases.yaml (rev6 pin); sha256 of the 28 bytes",
+    "cells_required": {
+      "base_len_ladder": [
+        78,
+        120,
+        200
+      ],
+      "cells_n": 44,
+      "conflict": "required_cells lists the 20 trap ids each with an EMPTY sub_identity, but the frozen table makes T09/T14/T19 multi-member and T17/T18 length sweeps, and cell-identity.md S1 requires a sub_identity whenever a case is run more than once. The two clauses cannot both be satisfied by one record, so those 5 keys are emitted blocked and the per-member / per-point cells are marked extra.",
+      "face": "tracked working-tree file",
+      "groups_declared": [
+        "trap",
+        "ctrl",
+        "len"
+      ],
+      "present": true,
+      "sha256": "ed8a8a29c0eea99925659f6d0f2f63b94469654e1f793ab027b6e55a4a1a8cb8",
+      "tapi_rows_required_of_this_port": [
+        "appendFileSync",
+        "createWriteStream",
+        "writeFileSync"
+      ],
+      "withdrawn_derivation": "the first version of this file (generated 03:4x from a mis-parse that saw only the 20 traps) is void; any port that used it must re-derive from this one"
+    },
+    "dependency_policy": "zero third-party dependencies; no node_modules in this port",
+    "deps_direct": 0,
+    "deps_total": 0,
+    "eight_dot_three": {
+      "C": "enabled",
+      "D": "disabled"
+    },
+    "implementation_language": "typescript",
+    "instrument_c2": "node:fs did not apply the Win32 name-parsing layer to the plain absolute paths this port passed: a real CON.txt and a real 'trail.' (trailing dot kept) were created, and totals above 259 characters were accepted. Controlled on the same volume in the same directory: cmd.exe mapped CON.txt to the device (no file listed), wrote 'trail.' as 'trail', and refused a 309-char path (rc=1 ERROR_PATH_NOT_FOUND), as did python 3.14 (rc=1) while LongPathsEnabled=0. Measured, not inferred. See evidence/S02/typescript-selfcheck.md C-2.",
+    "len_fill": {
+      "applies_to": [
+        "T17",
+        "T18"
+      ],
+      "name_source_rule": "name_source is the hex of the component that was actually passed to the API, not a label",
+      "rule": "repeat unit_hex until the component is exactly base_len code units, then append nothing",
+      "source": "len_fill block in spec/cases.yaml (rev7 pin)",
+      "unit_hex": "61"
+    },
+    "locale": "cp936",
+    "node_manifest_longPathAware": false,
+    "node_manifest_longPathAware_basis": "evidence/S00/env-facts-windows-local.json manifest_scan: node.exe hit_count=0",
+    "os": "windows",
+    "os_version": "Windows-10-10.0.19041-SP0",
+    "port": "typescript",
+    "resolved_interpreter_path": "C:\\Program Files\\nodejs\\node.exe",
+    "runtime": "node",
+    "runtime_version": "v24.15.0",
+    "scratch_carrier": {
+      "drive": "S:",
+      "mapped": true,
+      "note": "S: was already mapped by an earlier run in this session",
+      "target": "D:\\sendguard-work\\seat-qoder\\.sgscratch"
+    },
+    "spec_sha256": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261",
+    "spec_sha256_basis": "git cat-file blob HEAD:spec/cases.yaml, hashed (committed blob face, not the disk file)",
+    "spec_sha256_set": {
+      "spec/canonical.md": "f3fe3122c131649d5df81d6c5331d0224dc270065f8ff46dd328d465324e6e69",
+      "spec/cases.yaml": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261",
+      "spec/cell-identity.md": "0b436a8fc24f1ec6855e6cc8e547d5ecbf3cc544467595d1f31ebfa39a6e59a2",
+      "spec/schema.json": "52abbc86c8899f41e1889e71d35cdf73bd363204274e862bf6bcb2ab9f761435"
+    },
+    "volume_component_limit": 255
+  },
+  "name_encoding": "hex_raw_bytes",
+  "name_landed_as": null,
+  "name_landed_as_hex": null,
+  "name_mutated": false,
+  "name_source": "61616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161",
+  "name_source_basis": "control_samples entry for T-CTRL-NAMETOOLONG in spec/cases.yaml (rev6 pin)",
+  "note": "control cell: it verifies the ruler, it is not counted in the 20 traps; payload is the pinned 28 bytes",
+  "os": "windows",
+  "os_legality_authority": "extended-prefix (\\\\?\\) create probe through node:fs, i.e. the Win32 file API",
+  "os_legality_basis": "extended-prefix create refused: ENOENT ENOENT: no such file or directory, open 'S:\\998974c\\oz\\aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "os_legality_verdict": "illegal",
+  "os_probe_error_code": "ENOENT",
+  "os_probe_landed_as": null,
+  "path_form": "plain",
+  "phantom": false,
+  "probe": {
+    "carrier": "one child process per probe: node built-in TypeScript type stripping of src/probe.ts",
+    "external_timeout_ms": 5000,
+    "interpreter": "C:\\Program Files\\nodejs\\node.exe",
+    "jobs": [
+      {
+        "api_entry": "writeFileSync",
+        "exit_rc": 0,
+        "malformed_log_lines": 0,
+        "mode": "cell",
+        "path_form": "plain",
+        "role": "primary",
+        "signal": null,
+        "stderr_tail": null,
+        "tag": "c0",
+        "timed_out": false,
+        "wall_ms": 128
+      },
+      {
+        "api_entry": "writeFileSync",
+        "exit_rc": 0,
+        "malformed_log_lines": 0,
+        "mode": "cell",
+        "path_form": "extended",
+        "role": "osprobe",
+        "signal": null,
+        "stderr_tail": null,
+        "tag": "oz",
+        "timed_out": false,
+        "wall_ms": 139
+      }
+    ],
+    "node_version": "v24.15.0"
+  },
+  "read_result": null,
+  "read_skipped_reason": "nothing landed, so no read was attempted",
+  "roundtrip_ok": null,
+  "scratch": {
+    "cell_root": "S:\\998974c",
+    "cell_root_real": "D:\\sendguard-work\\seat-qoder\\.sgscratch\\998974c",
+    "cleanup": "not attempted by the port (M19 forbids deletion logic in this port); the path is recorded for the operator",
+    "verified_empty_before_use": true
+  },
+  "sha256_self": "a1d08a7864d180350751af48330e88cd339900b0ec57f09b53f2b8a690dcec27",
+  "sha256_truth": null,
+  "spec_sha256": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261",
+  "spec_sha256_basis": "git cat-file blob HEAD:spec/cases.yaml, hashed (committed blob face, not the disk file)",
+  "started_at": "2026-10-10T23:51:02.211Z",
+  "status": "measured",
+  "sub_identity": "",
+  "verdict_via": "win32",
+  "worker_id": "seat-qoder-typescript"
+}

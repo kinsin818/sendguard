@@ -92,24 +92,25 @@ func (c *Cell) Bytes() []byte {
 
 // envFace is measured once per run and stamped into every cell.
 type envFace struct {
-	OS             string         `json:"os"`
-	OSVersion      string         `json:"os_version"`
-	Arch           string         `json:"arch"`
-	Locale         string         `json:"locale"`
-	GoExe          string         `json:"go_exe_resolved"`
-	GoVersion      string         `json:"go_version"`
-	RunnerExe      string         `json:"runner_exe"`
-	ManifestToken  map[string]any `json:"runner_manifest_scan"`
-	ExeSHA         string         `json:"runner_exe_sha256_before"`
-	ExeSHAAfter    string         `json:"runner_exe_sha256_after"`
-	LongPaths      map[string]any `json:"longpaths_registry"`
-	Volume         map[string]any `json:"volume_d"`
-	SpecSHA        string         `json:"spec_sha256"`
-	SpecSHAOnDisk  string         `json:"spec_sha256_worktree_face"`
-	FreezeRevision string         `json:"freeze_revision"`
-	RunStartedAt   string         `json:"run_started_at"`
-	PythonExe      string         `json:"python_readback_arm_exe"`
-	SandboxRoot    string         `json:"sandbox_root"`
+	OS              string         `json:"os"`
+	OSVersion       string         `json:"os_version"`
+	Arch            string         `json:"arch"`
+	Locale          string         `json:"locale"`
+	GoExe           string         `json:"go_exe_resolved"`
+	GoVersion       string         `json:"go_version"`
+	RunnerExe       string         `json:"runner_exe"`
+	ManifestToken   map[string]any `json:"runner_manifest_scan"`
+	ManifestControl map[string]any `json:"manifest_scanner_green_arm"`
+	ExeSHA          string         `json:"runner_exe_sha256_before"`
+	ExeSHAAfter     string         `json:"runner_exe_sha256_after"`
+	LongPaths       map[string]any `json:"longpaths_registry"`
+	Volume          map[string]any `json:"volume_d"`
+	SpecSHA         string         `json:"spec_sha256"`
+	SpecSHAOnDisk   string         `json:"spec_sha256_worktree_face"`
+	FreezeRevision  string         `json:"freeze_revision"`
+	RunStartedAt    string         `json:"run_started_at"`
+	PythonExe       string         `json:"python_readback_arm_exe"`
+	SandboxRoot     string         `json:"sandbox_root"`
 }
 
 // assembleCell maps one raw observation onto the published cell record.
@@ -289,15 +290,16 @@ func assembleCell(p *planRow, o *Observation, spec *FrozenSpec, env *envFace,
 		c.set("independent_readback_arm", armOnly)
 	}
 	c.set("env", map[string]any{
-		"LongPathsEnabled":        env.LongPaths["value"],
-		"LongPathsEnabled_status": env.LongPaths["status"],
-		"dot3name":                nil,
-		"max_component":           env.Volume["max_component"],
-		"unicode_version":         "not-obtainable-here",
-		"toolchain":               env.GoVersion + " | builder=" + env.GoExe + " | runner=" + env.RunnerExe,
-		"runner_manifest_scan":    env.ManifestToken,
-		"os_build_claim":          "recorded from env probe, see os_version",
-		"sandbox_root":            env.SandboxRoot,
+		"LongPathsEnabled":           env.LongPaths["value"],
+		"LongPathsEnabled_status":    env.LongPaths["status"],
+		"dot3name":                   nil,
+		"max_component":              env.Volume["max_component"],
+		"unicode_version":            "not-obtainable-here",
+		"toolchain":                  env.GoVersion + " | builder=" + env.GoExe + " | runner=" + env.RunnerExe,
+		"runner_manifest_scan":       env.ManifestToken,
+		"manifest_scanner_green_arm": env.ManifestControl,
+		"os_build_claim":             "recorded from env probe, see os_version",
+		"sandbox_root":               env.SandboxRoot,
 	})
 	c.set("provenance", map[string]any{
 		"spec_sha256":            env.SpecSHA,

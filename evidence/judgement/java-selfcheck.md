@@ -244,3 +244,33 @@ and marked. Worth buying: the write that reports success and stores nothing (thr
 that says ok where three say no, the wall sitting at 255 units per component in both path forms and
 at every rung, and the fact that no `longpath_mechanism` word in the contract describes what this
 machine does to a long plain path from java.nio.
+
+## Addendum - rev7 arrived after this text was written (run 2026-10-11T07:22:42, HEAD 559e50e)
+
+`docs/NOTICE-rev7.md` re-sealed `spec/cases.yaml` (blob face now
+`8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261`) and the manifest
+(`ed8a8a29c0eea9992565...`), pinning the length filler to one code unit U+0061 repeated `base_len`
+times, and separating three quantities that were all called "length". It named this port: my length
+cells passed a cycled `0123456789abcdef` filler and put the converged ceiling (256) into
+`len_triple`. Re-emitted under the pin:
+
+- 12 rung cells, `name_source` = hex of the exact component handed to the API (`61` x base_len: 78,
+  120, 200 code units), `len_triple` = that name's three widths (all equal `base_len`, which is the
+  check rev7 asks for), and the converged ceiling moved to `len_ceiling`
+  (`through_the_pinned_entry` 255 in the plain form, null in the extended form where every point is
+  `err_at_parse`; `through_the_os_leg` 255 in both). The 7-point bracket per cell is kept as
+  evidence inside `points`, and the 8 FROZEN tier cells plus 6 rev5 rung ids stay as `extra: true`.
+- Because the spec face moved, my own arm (a cell must cite the committed `spec_sha256`) would have
+  voided all 62 non-length cells over a hash they could not have known. So the whole matrix was
+  re-emitted in one run, and every non-length cell was then compared field-by-field against the
+  pre-re-emit snapshot at `impl/java/tools/rev6-cell-face.json`: **zero differences**. Nothing but
+  the length family changed.
+- Gates after the re-emit: `run_cells.py` rc=0 (48 identities, 26 extras, 0 blocked, 0 absent),
+  `selfcheck.py --selftest` 39 arms 0 problems (three new rev7 arms: a label instead of bytes, a
+  ceiling mixed into the triple, and a missing ceiling - each must be caught, and the pinned rung
+  must pass), `selfcheck.py` rc=0 with `controls_pass=true`.
+- Disclosed against my own rule of naming my errors: `harness_version` still reads
+  `sg-java-S02-r4-rev6` on all 74 cells after this re-emit. The field set did change (rev7 added
+  `len_ceiling`, `headline_rule`, `pinned_component_units`), so the label is one revision stale; the
+  deadline came before another full run, and a mislabelled provenance string is reported here rather
+  than quietly corrected in some cells and not others.

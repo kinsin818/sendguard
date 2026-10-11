@@ -627,7 +627,7 @@ function assembleCell(
     cell["len_triple_basis"] = "the width of the pinned component this cell passed: code points / UTF-16 code units / UTF-8 bytes, all equal for the ASCII filler";
     cell["read_result"] = null;
     cell["read_skipped_reason"] = "length cell: the question is whether the create lands, not what the bytes say";
-    cell["method"] = "len_fill_point";
+    cell["method"] = lenEv["tier"] === "len_fill" ? "len_fill_point" : "grid_point";
     const sameForm = outcomes.find((o) => o.job.form === cell["path_form"] && eventOf(o, "bisect") !== null) ?? null;
     const otherForm = outcomes.find((o) => o.job.form !== cell["path_form"] && eventOf(o, "bisect") !== null) ?? null;
     const sameEv = sameForm === null ? null : eventOf(sameForm, "bisect");

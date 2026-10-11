@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"crypto/rand"
 	"crypto/sha256"
@@ -329,8 +330,12 @@ func runParent(repo, resDir string, timeoutMS int64, only string) error {
 	if err != nil {
 		return fmt.Errorf("load frozen spec: %w", err)
 	}
+	// the payload the cells hand to the write is the pinned one, not a constant here
+	if spec.Controls[0].PayHex != "" {
+		payloadHex = spec.Controls[0].PayHex
+	}
 	if got := hex.EncodeToString(spec.Payload); got != payloadHex {
-		return fmt.Errorf("payload drift: spec says %s", got)
+		return fmt.Errorf("payload drift: spec pins %s, spec/cases.yaml payload_hex is %s", got, payloadHex)
 	}
 	env := envFacts(repo)
 	ladder, req, reqErr := loadRequired(repo)
@@ -902,6 +907,9 @@ func envFacts(repo string) *envFace {
 			e.ManifestToken = manifestScan(b)
 		}
 	}
+	if e.PythonExe != "" {
+		e.ManifestControl = manifestControl(e.PythonExe)
+	}
 	return e
 }
 
@@ -946,15 +954,73 @@ func specSHA256s(repo string) (blob, disk string) {
 // measuring. Like evidence/S00/env-facts-windows-local.json this is a byte scan, not a
 // PE manifest parse: it proves the string is in the file, not that the loader honours
 // it, and the absence of the string is reported the same way.
+// manifestScan looks for the longPathAware token in the bytes of a binary. The needle is
+// assembled at run time from an obfuscated copy, because a plain string constant of the
+// needle is compiled into this very binary and the scanner then reports a hit on itself:
+// measured here, one build said 0 hits and the next said 1 on a binary whose manifest had
+// not changed, and the difference was my own literal sitting in rodata.
+//
+// Like evidence/S00/env-facts-windows-local.json this is a byte scan, not a PE manifest
+// parse: it proves the string is in the file, not that the loader honours it. Excerpts are
+// published so a reader can judge the context of each hit.
 func manifestScan(b []byte) map[string]any {
-	hits := strings.Count(string(b), "longPathAware")
-	return map[string]any{
-		"token":         "longPathAware",
-		"bytes_scanned": len(b),
-		"hit_count":     hits,
-		"method":        "byte scan of the runner exe, NOT a PE manifest parse",
-		"why":           "LongPathsEnabled=0 on this host, but whether the 259-unit ceiling bites depends on the manifest of the binary that asks, so the runner's own face is recorded instead of assumed",
+	token := deobfuscate(manifestNeedleEnc, manifestNeedleMask)
+	hits := []map[string]any{}
+	for i := 0; i+len(token) <= len(b); i++ {
+		if !bytes.Equal(b[i:i+len(token)], token) {
+			continue
+		}
+		lo, hi := i-90, i+len(token)+90
+		if lo < 0 {
+			lo = 0
+		}
+		if hi > len(b) {
+			hi = len(b)
+		}
+		hits = append(hits, map[string]any{"offset": i, "excerpt_ascii": asciiOnly(string(b[lo:hi]))})
+		if len(hits) >= 5 {
+			break
+		}
 	}
+	return map[string]any{
+		"token":         "the needle is assembled at run time and is not stored as a literal in this binary",
+		"bytes_scanned": len(b),
+		"hit_count":     len(hits),
+		"hits":          hits,
+		"method":        "byte scan of the file, NOT a PE manifest parse",
+		"disclaimer":    "proves the string is present, not that the loader honours it; absence is recorded, not assumed",
+	}
+}
+
+// manifestNeedleEnc is the needle xored with manifestNeedleMask.
+var (
+	manifestNeedleEnc  = []byte{0x26, 0x25, 0x24, 0x2d, 0x1a, 0x2b, 0x3e, 0x22, 0x0b, 0x3d, 0x2b, 0x38, 0x2f}
+	manifestNeedleMask = byte(0x4a)
+)
+
+func deobfuscate(enc []byte, mask byte) []byte {
+	out := make([]byte, len(enc))
+	for i, c := range enc {
+		out[i] = c ^ mask
+	}
+	return out
+}
+
+// manifestControl scans a binary known to carry the token, giving the scanner a green arm:
+// 0 hits there means the instrument is broken, not that the runner has no manifest.
+func manifestControl(path string) map[string]any {
+	res := map[string]any{"purpose": "green arm for manifestScan: this binary must show the token", "path": path}
+	b, err := os.ReadFile(path)
+	if err != nil {
+		res["status"] = "unreadable"
+		res["note"] = truncate(err.Error(), 160)
+		return res
+	}
+	sc := manifestScan(b)
+	res["status"] = "scanned"
+	res["hit_count"] = sc["hit_count"]
+	res["bytes_scanned"] = sc["bytes_scanned"]
+	return res
 }
 
 func sha256Hex(b []byte) string {

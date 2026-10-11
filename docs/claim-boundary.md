@@ -1,7 +1,7 @@
 # Claim boundary - what each result licenses you to say
 
-Written for a reader who will quote this project to someone else. Three columns: what was measured, what
-that supports, and the sentence that would be an overclaim. Anything not listed as measured is not
+Written for a reader who will quote this project to someone else. The columns: what was measured, what that
+supports, and the sentence that would be an overclaim. Anything not listed as measured is not
 available to anybody, including the author.
 
 Current state, re-checkable with the commands in `README.md` §1. Rows and counts were last brought forward at 10:28 host clock, from `docs/STATUS.md` and `docs/evidence.md` rather than from memory:

@@ -215,8 +215,16 @@ def check_cell_with_sha(cell, schema, sets, cases_blob_sha, name="<memory>"):
         if case_id != cell.get("case_id"):
             v.append(f"filename case_id {case_id!r} != cell case_id {cell.get('case_id')!r}")
         dims = [] if sub is None else sub.split(".")
-        if cell.get("sub_identity", "") != ("" if sub is None else sub):
-            v.append(f"filename sub_identity {sub!r} != cell sub_identity {cell.get('sub_identity')!r}")
+        want = {} if sub is None else {}
+        if sub is not None:
+            for seg in sub.split("."):
+                kk, _, vv = seg.partition("-")
+                want[kk] = int(vv) if re.fullmatch(r"\d+", vv) else vv
+        got_si = cell.get("sub_identity")
+        if isinstance(got_si, str) and got_si != "":
+            v.append("sub_identity must be an object of declared dimensions, not the string %r" % got_si)
+        elif (got_si or {}) != want:
+            v.append("filename sub_identity %r != cell sub_identity %r" % (want, got_si))
         for seg in dims:
             if "-" not in seg:
                 v.append(f"sub_identity segment is not name-value: {seg}")

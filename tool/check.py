@@ -186,36 +186,57 @@ def load_cases(yaml_path):
     return cases
 
 
-def load_measured_cells(results_dir):
-    """-> {os: {case_id: set(port)}} read off the result files actually on disk.
+# spec/cell-identity.md 9.5 and ci/equality.py:186 RE_CANON_FACE: only a `<port>.<os>.<arch>`
+# directory is read.  Everything else on disk in results/ is an earlier contract revision or a
+# different naming rule; the gate names it and refuses to compare it, so this reader must not fold
+# it into a denominator either -- otherwise the report says seven ports and docs/equality output
+# says six.  The pattern below is the gate's, copied deliberately.
+RE_CANON_FACE = re.compile(r"^([a-z]+)\.(windows|macos|ubuntu)\.(x64|arm64)$")
 
-    A rule is 'backed' for a target only if some port left a cell for it there.
-    Nothing is assumed about operating systems with no cells (README section 2),
-    and no cell is treated as agreed truth: this repository's own equality gate
-    decides that, not this reader.
+
+def load_measured_cells(results_dir):
+    """-> ({os: {case_id: {"ports": set, "vias": set}}}, [(excluded_face, cell_records)]).
+
+    A rule is 'backed' for a target only if a canonical face left a cell for it here.  Nothing is
+    assumed about operating systems with no cells (README section 2), and no cell is treated as
+    agreed truth: the equality gate decides that, not this reader.
     """
-    measured = {}
+    import glob
+    measured, excluded = {}, []
     if not os.path.isdir(results_dir):
-        return measured
-    for dirpath, _dirnames, filenames in os.walk(results_dir):
-        for fn in filenames:
-            if not fn.endswith(".json"):
+        return measured, excluded
+    for entry in sorted(os.listdir(results_dir)):
+        full = os.path.join(results_dir, entry)
+        if entry == "phantom.json":        # the gate skips this one by name; so does this reader
+            continue
+        m = RE_CANON_FACE.match(entry)
+        if not m or not os.path.isdir(full):
+            if os.path.isdir(full):
+                n = len(glob.glob(os.path.join(full, "**", "*.json"), recursive=True))
+            elif full.endswith(".json"):
+                n = 1
+            else:
+                n = 0
+            excluded.append((entry, n))
+            continue
+        port = m.group(1)
+        for path in sorted(glob.glob(os.path.join(full, "**", "*.json"), recursive=True)):
+            data = _read_json(path)
+            if data is None:
                 continue
-            data = _read_json(os.path.join(dirpath, fn))
-            if not isinstance(data, dict):
-                continue
-            cid, osname = data.get("case_id"), data.get("os")
-            if not (isinstance(cid, str) and isinstance(osname, str)):
-                continue
-            rel = os.path.relpath(dirpath, results_dir)
-            port = rel.split(os.sep)[0].split(".")[0]
-            slot = measured.setdefault(osname.lower(), {}).setdefault(
-                cid, {"ports": set(), "vias": set()})
-            slot["ports"].add(port)
-            via = data.get("verdict_via")
-            if isinstance(via, str) and via not in ("", "none"):
-                slot["vias"].add(via)
-    return measured
+            for cell in (data if isinstance(data, list) else [data]):
+                if not isinstance(cell, dict):
+                    continue
+                cid, osname = cell.get("case_id"), cell.get("os")
+                if not (isinstance(cid, str) and isinstance(osname, str)):
+                    continue
+                slot = measured.setdefault(osname.lower(), {}).setdefault(
+                    cid, {"ports": set(), "vias": set()})
+                slot["ports"].add(port)
+                via = cell.get("verdict_via")
+                if isinstance(via, str) and via not in ("", "none"):
+                    slot["vias"].add(via)
+    return measured, excluded
 
 
 def decode_case_samples(cases):
@@ -967,7 +988,7 @@ def load_control_samples(yaml_path):
     return out
 
 
-def print_verdict_block(name, engine, results_dir, extended, payload_hex, spec_info):
+def print_verdict_block(name, engine, results_dir, extended, payload_hex, spec_info, excluded):
     rev, actual, declared, matches = spec_info
     obs = probe_name(name, payload_hex, extended=extended)
     v = verdict_from_observation(name, obs, payload_hex)
@@ -989,6 +1010,7 @@ def print_verdict_block(name, engine, results_dir, extended, payload_hex, spec_i
               "the real bytes to the probe and shows both here rather than picking one." % (
                   v["requested_hex_canon_token"]))
     print("rules: spec/cases.yaml freeze_revision=%s sha256=%s" % (rev, (actual or "?")[:12]))
+    print_excluded_faces(excluded)
     defect = tool_spelling_defect_note(name)
     if defect:
         print("SPELLING WARNING (this tool and the gate can disagree about the token below): %s" % defect)
@@ -1192,7 +1214,20 @@ def collision_findings(entries, engine, targets):
 # --------------------------------------------------------------------------- #
 # report
 # --------------------------------------------------------------------------- #
-def print_report(root, targets, entries, errors, findings, engine, measured, spec_info):
+def print_excluded_faces(excluded):
+    """The gate's own wording, so the two documents read as one rule."""
+    if not excluded:
+        print("non_canonical_faces_excluded=0 (every face in results/ matched <port>.<os>.<arch>)")
+        return
+    print("== non-canonical faces excluded (naming rule: <port>.<os>.<arch>)")
+    for e, n in excluded:
+        print("   %-32s %d cell records" % (e, n))
+    print("   excluded_faces=%d  These faces are on disk, published, and not compared; they were produced "
+          "under an earlier contract revision or a different naming rule. This tool counts ports only over "
+          "the canonical faces, so its denominator is the gate's." % len(excluded))
+
+
+def print_report(root, targets, entries, errors, findings, engine, measured, spec_info, excluded):
     esc_root = escape_path(os.path.abspath(root))
     rev, actual, declared, matches = spec_info
     print("SENDGUARD name pre-flight - risk statements, not errors")
@@ -1213,6 +1248,9 @@ def print_report(root, targets, entries, errors, findings, engine, measured, spe
             print("measured_cells: target=%s cells=0 -> every verdict for this target is `unknown`: this "
                   "project has no cell for it. The prose still says what the public spec says, and that is not "
                   "measurement." % t)
+    ports = sorted({p for cells in measured.values() for slot in cells.values() for p in slot["ports"]})
+    print("ports_counted=%d faces=%s (canonical faces only)" % (len(ports), ",".join(ports) or "-"))
+    print_excluded_faces(excluded)
     print("field classes (spec/cell-identity.md 9.3): each line prints VERDICT first - os_legality_verdict, "
           "mechanism_class, verdict_via - then EVIDENCE (which cells back it). Probe-class fields "
           "(create_result, error_stage, read_result, deps_*) are not printed here at all: they are what one "
@@ -1476,7 +1514,7 @@ def main(argv=None):
         sys.stderr.write("could not read spec/cases.yaml next to this tool (looked in %s)\n"
                          % os.path.join(root, "spec"))
         return EXIT_SCAN_FAILED
-    measured = load_measured_cells(os.path.join(root, "results"))
+    measured, excluded = load_measured_cells(os.path.join(root, "results"))
     engine = Engine(measured, cases)
     info = spec_identity(root)
     samples = load_control_samples(os.path.join(root, "spec", "cases.yaml"))
@@ -1503,7 +1541,7 @@ def main(argv=None):
 
     if probe_name_value is not None:
         return print_verdict_block(probe_name_value, engine, os.path.join(root, "results"),
-                                   args.extended, payload_hex, info)
+                                   args.extended, payload_hex, info, excluded)
 
     if not args.folder:
         sys.stderr.write("usage: python tool/check.py <folder|--name NAME|--name-hex HEX|--controls> "
@@ -1514,7 +1552,7 @@ def main(argv=None):
         print("(the argument is a file, so this is the verdict on its name alone: %s; pass the folder to "
               "check every name in it)" % escape_name(os.path.basename(args.folder)))
         return print_verdict_block(os.path.basename(args.folder), engine, os.path.join(root, "results"),
-                                   args.extended, payload_hex, info)
+                                   args.extended, payload_hex, info, excluded)
     if not os.path.isdir(args.folder):
         # A path the plain form cannot address (CON.txt, an orphan trailing-dot name) is not
         # "unreachable": it is the finding.  Split the argument by hand -- os.path.abspath is
@@ -1540,7 +1578,7 @@ def main(argv=None):
                   "- that is itself the risk; below is the verdict on the name).%s" % (
                       escape_name(leaf), note))
             return print_verdict_block(leaf, engine, os.path.join(root, "results"),
-                                       args.extended, payload_hex, info)
+                                       args.extended, payload_hex, info, excluded)
         if why:
             print("could not enumerate the parent of the argument you gave: %s" % why)
         sys.stderr.write("not a folder, or not reachable: %s\n" % escape_name(raw))
@@ -1556,7 +1594,7 @@ def main(argv=None):
         total = root_len + len(rel) + 1
         findings.extend(engine.rules_for(rel, name, parent, total, targets))
     findings.extend(collision_findings(entries, engine, targets))
-    print_report(args.folder, targets, entries, errors, findings, engine, measured, info)
+    print_report(args.folder, targets, entries, errors, findings, engine, measured, info, excluded)
     return EXIT_RISK if findings else EXIT_NO_RISK
 
 

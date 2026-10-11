@@ -1,0 +1,136 @@
+# SENDGUARD java port - extended-prefix Path.of reproduction
+# run_local=2026-10-11 10:53:14 +0800  host clock, UTC+08:00
+# step 1: javac
+javac_rc=0
+javac_stderr=
+javac_version_line=javac 17.0.17
+java_version_line=openjdk version "17.0.17" 2025-10-21
+# step 2: run with the same exe the recorded cells ran on
+java.version       = 17.0.17
+java.vendor        = Eclipse Adoptium
+java.home          = C:\Program Files\Eclipse Adoptium\jdk-17.0.17.10-hotspot
+java.class.version = 61.0
+os.name            = Windows 10
+argv0              = ExtPathOfRepro
+
+TAG 1 plain rung base_len=78 (the harness plain string) | len=141 | input=D:\s\9431b6\0123456789abcdef0123456789abcdef0123456789abcdef01\aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+    Paths.get          -> OK  impl=sun.nio.fs.WindowsPath toString=D:\s\9431b6\0123456789abcdef0123456789abcdef0123456789abcdef01\aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+    Path.of            -> same result as Paths.get (toString match=true)
+    new File(String)   -> OK  getPath=D:\s\9431b6\0123456789abcdef0123456789abcdef0123456789abcdef01\aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa | isAbsolute=true | name=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+
+TAG 2 extended rung base_len=78 (the harness extended string) | len=145 | input=\\?\D:\s\9431b6\0123456789abcdef0123456789abcdef0123456789abcdef01\aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+    Paths.get          -> THREW java.nio.file.InvalidPathException | message=Illegal character [?] in path at index 2: \\?\D:\s\9431b6\0123456789abcdef0123456789abcdef0123456789abcdef01\aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa | reason=Illegal character [?] in path | index=2 | input=\\?\D:\s\9431b6\0123456789abcdef0123456789abcdef0123456789abcdef01\aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+        at java.base/sun.nio.fs.WindowsPathParser.nextSlash(WindowsPathParser.java:212)
+        at java.base/sun.nio.fs.WindowsPathParser.parse(WindowsPathParser.java:111)
+        at java.base/sun.nio.fs.WindowsPathParser.parse(WindowsPathParser.java:77)
+        at java.base/sun.nio.fs.WindowsPath.parse(WindowsPath.java:92)
+        at java.base/sun.nio.fs.WindowsFileSystem.getPath(WindowsFileSystem.java:232)
+    Path.of            -> THREW java.nio.file.InvalidPathException
+    new File(String)   -> OK  getPath=\\?\D:\s\9431b6\0123456789abcdef0123456789abcdef0123456789abcdef01\aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa | isAbsolute=true | name=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+
+TAG 3 extended, SHORT, ordinary drive path | len=12 | input=\\?\D:\Qoder
+    Paths.get          -> THREW java.nio.file.InvalidPathException | message=Illegal character [?] in path at index 2: \\?\D:\Qoder | reason=Illegal character [?] in path | index=2 | input=\\?\D:\Qoder
+        at java.base/sun.nio.fs.WindowsPathParser.nextSlash(WindowsPathParser.java:212)
+        at java.base/sun.nio.fs.WindowsPathParser.parse(WindowsPathParser.java:111)
+        at java.base/sun.nio.fs.WindowsPathParser.parse(WindowsPathParser.java:77)
+        at java.base/sun.nio.fs.WindowsPath.parse(WindowsPath.java:92)
+        at java.base/sun.nio.fs.WindowsFileSystem.getPath(WindowsFileSystem.java:232)
+    Path.of            -> THREW java.nio.file.InvalidPathException
+    new File(String)   -> OK  getPath=\\?\D:\Qoder | isAbsolute=true | name=Qoder
+
+TAG 4 extended, drive root only | len=7 | input=\\?\C:\
+    Paths.get          -> THREW java.nio.file.InvalidPathException | message=Illegal character [?] in path at index 2: \\?\C:\ | reason=Illegal character [?] in path | index=2 | input=\\?\C:\
+        at java.base/sun.nio.fs.WindowsPathParser.nextSlash(WindowsPathParser.java:212)
+        at java.base/sun.nio.fs.WindowsPathParser.parse(WindowsPathParser.java:111)
+        at java.base/sun.nio.fs.WindowsPathParser.parse(WindowsPathParser.java:77)
+        at java.base/sun.nio.fs.WindowsPath.parse(WindowsPath.java:92)
+        at java.base/sun.nio.fs.WindowsFileSystem.getPath(WindowsFileSystem.java:232)
+    Path.of            -> THREW java.nio.file.InvalidPathException
+    new File(String)   -> OK  getPath=\\?\C: | isAbsolute=true | name=C:
+
+TAG 5 plain, SHORT, ordinary drive path | len=8 | input=D:\Qoder
+    Paths.get          -> OK  impl=sun.nio.fs.WindowsPath toString=D:\Qoder
+    Path.of            -> same result as Paths.get (toString match=true)
+    new File(String)   -> OK  getPath=D:\Qoder | isAbsolute=true | name=Qoder
+
+TAG 6 extended UNC variant | len=26 | input=\\?\UNC\server\share\x.txt
+    Paths.get          -> THREW java.nio.file.InvalidPathException | message=Illegal character [?] in path at index 2: \\?\UNC\server\share\x.txt | reason=Illegal character [?] in path | index=2 | input=\\?\UNC\server\share\x.txt
+        at java.base/sun.nio.fs.WindowsPathParser.nextSlash(WindowsPathParser.java:212)
+        at java.base/sun.nio.fs.WindowsPathParser.parse(WindowsPathParser.java:111)
+        at java.base/sun.nio.fs.WindowsPathParser.parse(WindowsPathParser.java:77)
+        at java.base/sun.nio.fs.WindowsPath.parse(WindowsPath.java:92)
+        at java.base/sun.nio.fs.WindowsFileSystem.getPath(WindowsFileSystem.java:232)
+    Path.of            -> THREW java.nio.file.InvalidPathException
+    new File(String)   -> OK  getPath=\\?\UNC\server\share\x.txt | isAbsolute=true | name=x.txt
+
+TAG 7 single leading backslash then ? | len=11 | input=\?\D:\Qoder
+    Paths.get          -> THREW java.nio.file.InvalidPathException | message=Illegal char <?> at index 1: \?\D:\Qoder | reason=Illegal char <?> | index=1 | input=\?\D:\Qoder
+        at java.base/sun.nio.fs.WindowsPathParser.normalize(WindowsPathParser.java:182)
+        at java.base/sun.nio.fs.WindowsPathParser.parse(WindowsPathParser.java:153)
+        at java.base/sun.nio.fs.WindowsPathParser.parse(WindowsPathParser.java:77)
+        at java.base/sun.nio.fs.WindowsPath.parse(WindowsPath.java:92)
+        at java.base/sun.nio.fs.WindowsFileSystem.getPath(WindowsFileSystem.java:232)
+    Path.of            -> THREW java.nio.file.InvalidPathException
+    new File(String)   -> OK  getPath=\?\D:\Qoder | isAbsolute=false | name=Qoder
+
+TAG 8 extended written with forward slashes | len=12 | input=//?/D:/Qoder
+    Paths.get          -> THREW java.nio.file.InvalidPathException | message=Illegal character [?] in path at index 2: //?/D:/Qoder | reason=Illegal character [?] in path | index=2 | input=//?/D:/Qoder
+        at java.base/sun.nio.fs.WindowsPathParser.nextSlash(WindowsPathParser.java:212)
+        at java.base/sun.nio.fs.WindowsPathParser.parse(WindowsPathParser.java:111)
+        at java.base/sun.nio.fs.WindowsPathParser.parse(WindowsPathParser.java:77)
+        at java.base/sun.nio.fs.WindowsPath.parse(WindowsPath.java:92)
+        at java.base/sun.nio.fs.WindowsFileSystem.getPath(WindowsFileSystem.java:232)
+    Path.of            -> THREW java.nio.file.InvalidPathException
+    new File(String)   -> OK  getPath=\\?\D:\Qoder | isAbsolute=true | name=Qoder
+
+TAG 9 plain rung base_len=200 (plain total path > 259) | len=263 | input=D:\s\9431b6\0123456789abcdef0123456789abcdef0123456789abcdef01\aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+    Paths.get          -> OK  impl=sun.nio.fs.WindowsPath toString=D:\s\9431b6\0123456789abcdef0123456789abcdef0123456789abcdef01\aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+    Path.of            -> same result as Paths.get (toString match=true)
+    new File(String)   -> OK  getPath=D:\s\9431b6\0123456789abcdef0123456789abcdef0123456789abcdef01\aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa | isAbsolute=true | name=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+
+TAG 10 extended rung base_len=200 | len=267 | input=\\?\D:\s\9431b6\0123456789abcdef0123456789abcdef0123456789abcdef01\aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+    Paths.get          -> THREW java.nio.file.InvalidPathException | message=Illegal character [?] in path at index 2: \\?\D:\s\9431b6\0123456789abcdef0123456789abcdef0123456789abcdef01\aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa | reason=Illegal character [?] in path | index=2 | input=\\?\D:\s\9431b6\0123456789abcdef0123456789abcdef0123456789abcdef01\aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+        at java.base/sun.nio.fs.WindowsPathParser.nextSlash(WindowsPathParser.java:212)
+        at java.base/sun.nio.fs.WindowsPathParser.parse(WindowsPathParser.java:111)
+        at java.base/sun.nio.fs.WindowsPathParser.parse(WindowsPathParser.java:77)
+        at java.base/sun.nio.fs.WindowsPath.parse(WindowsPath.java:92)
+        at java.base/sun.nio.fs.WindowsFileSystem.getPath(WindowsFileSystem.java:232)
+    Path.of            -> THREW java.nio.file.InvalidPathException
+    new File(String)   -> OK  getPath=\\?\D:\s\9431b6\0123456789abcdef0123456789abcdef0123456789abcdef01\aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa | isAbsolute=true | name=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+
+TAG 11 device-prefix variant | len=18 | input=\\.\PhysicalDrive0
+    Paths.get          -> OK  impl=sun.nio.fs.WindowsPath toString=\\.\PhysicalDrive0\
+    Path.of            -> same result as Paths.get (toString match=true)
+    new File(String)   -> OK  getPath=\\.\PhysicalDrive0 | isAbsolute=true | name=PhysicalDrive0
+
+note: the recorded cell at results/java.windows.x64/len__T17__base_len-78__extended.json carries this same
+note: message verbatim in its error_message field; this program is the one-command reproduction of it.
+run_rc=0
+
+# step 3 (same session): second instrument, the other JDK on this host, same compiled class
+# command: "C:/Program Files/Eclipse Adoptium/jdk-21.0.6.7-hotspot/bin/java" -cp impl/java/build-repro ExtPathOfRepro
+run_rc=0
+--- java.home / version lines from that run ---
+java.version       = 21.0.6
+java.vendor        = Eclipse Adoptium
+java.home          = C:\Program Files\Eclipse Adoptium\jdk-21.0.6.7-hotspot
+java.class.version = 65.0
+os.name            = Windows 10
+argv0              = ExtPathOfRepro
+--- TAG 2 / TAG 3 verdicts from that run ---
+    Paths.get          -> OK  impl=sun.nio.fs.WindowsPath toString=D:\s\9431b6\0123456789abcdef0123456789abcdef0123456789abcdef01\aaaaaaaaaaaaaaaaaaaa
+TAG 2 extended rung base_len=78 (the harness extended string) | len=145 | input=\\?\D:\s\9431b6\0123456789abcdef0123456789abcdef0123456789abcdef01\aaa
+    Paths.get          -> OK  impl=sun.nio.fs.WindowsPath toString=D:\s\9431b6\0123456789abcdef0123456789abcdef0123456789abcdef01\aaaaaaaaaaaaaaaaaaaa
+TAG 3 extended, SHORT, ordinary drive path | len=12 | input=\\?\D:\Qoder
+    Paths.get          -> OK  impl=sun.nio.fs.WindowsPath toString=D:\Qoder
+    Paths.get          -> OK  impl=sun.nio.fs.WindowsPath toString=C:\
+TAG 5 plain, SHORT, ordinary drive path | len=8 | input=D:\Qoder
+    Paths.get          -> OK  impl=sun.nio.fs.WindowsPath toString=D:\Qoder
+    Paths.get          -> OK  impl=sun.nio.fs.WindowsPath toString=\\server\share\x.txt
+    Paths.get          -> THREW java.nio.file.InvalidPathException | message=Illegal char <?> at index 1: \?\D:\Qoder | reason=Illegal char <?> | inde
+    Paths.get          -> THREW java.nio.file.InvalidPathException | message=Illegal character [?] in path at index 2: //?/D:/Qoder | reason=Illegal c
+    Paths.get          -> OK  impl=sun.nio.fs.WindowsPath toString=D:\s\9431b6\0123456789abcdef0123456789abcdef0123456789abcdef01\aaaaaaaaaaaaaaaaaaaa
+    Paths.get          -> OK  impl=sun.nio.fs.WindowsPath toString=D:\s\9431b6\0123456789abcdef0123456789abcdef0123456789abcdef01\aaaaaaaaaaaaaaaaaaaa
+    Paths.get          -> OK  impl=sun.nio.fs.WindowsPath toString=\\.\PhysicalDrive0\
+--- stderr ---
+note: the Oracle launcher on PATH (C:\ProgramData\Oracle\Java\javapath\java.exe, 1.8.0_31) was NOT run against this class: the class calls Path.of, a JDK 11+ API, so a 1.8 run would be an UnsupportedClassVersionError, not a measurement. The recorded cells ran on 17.0.17, which is the operative instrument for this answer.

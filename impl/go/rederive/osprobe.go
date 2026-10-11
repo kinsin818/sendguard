@@ -133,8 +133,18 @@ func legalityCreateProbe(dir string, name string, extended bool, corroborating i
 	}
 	full := dir + `\` + name
 	if extended {
-		full = `\?\` + full
+		// The prefix is four characters: two backslashes, a question mark, one backslash.
+		// A missing backslash here was measured to answer ERROR_INVALID_NAME for every
+		// extended cell, which this port then published as a false `illegal` verdict.
+		full = `\\?\` + full
 	}
+	// published so a reader can verify the ask without trusting this source: the head of
+	// the exact path handed to CreateFileW, in hex
+	head := full
+	if len(head) > 12 {
+		head = head[:12]
+	}
+	res["asked_path_head_hex"] = toHex(head)
 	res["attempted"] = true
 	ok, code, msg := rawCreateFileW(full)
 	res["created"] = ok

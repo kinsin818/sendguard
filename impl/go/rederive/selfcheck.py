@@ -288,6 +288,15 @@ def validate(cell, schema, cexp):
                     "ERROR_FILE_NOT_FOUND for a<b.txt, so it cannot decide legality" % vp)
     if "run_status" not in cell:
         errs.append("rev6 run_status absent (ran|blocked)")
+    # the legality probe must ask the form the cell claims: \\?\ for extended,
+    # a drive-absolute plain path otherwise. A mistyped prefix is otherwise invisible.
+    lp = cell.get("legality_create_probe") or {}
+    head = lp.get("asked_path_head_hex") or ""
+    if lp.get("attempted"):
+        want = "5c5c3f5c" if lp.get("path_form") == "extended" else "443a5c"
+        if not head.lower().startswith(want):
+            errs.append("legality probe asked %r which is not the %s form the cell records (expected head %s...)"
+                        % (head[:16], lp.get("path_form"), want))
     mc = cell.get("mechanism_class")
     if mc is not None and mc not in CLASSES:
         errs.append("mechanism_class=%r outside spec/canonical.md section 10" % mc)
@@ -465,6 +474,16 @@ def selftest():
     errs = validate(wrongbytes, ({}, {}), {})
     arms.append(("red: name_source that is not the pinned filler repeated is refused",
                  any("rule 1" in e for e in errs), errs))
+    good_head = dict(base)
+    good_head["legality_create_probe"] = {"attempted": True, "path_form": "plain",
+                                         "asked_path_head_hex": "443a5c73656e64"}
+    arms.append(("green: a plain cell whose probe asked a drive-absolute path passes",
+                 not any("legality probe asked" in e for e in validate(good_head, ({}, {}), {})), None))
+    bad_head = dict(good_head)
+    bad_head["legality_create_probe"] = {"attempted": True, "path_form": "extended",
+                                        "asked_path_head_hex": "5c3f5c443a5c73"}
+    arms.append(("red: an extended cell whose probe prefix is missing a backslash is caught",
+                 any("legality probe asked" in e for e in validate(bad_head, ({}, {}), {})), None))
     errs = validate(dict(base, enum_to_stat_agrees=False), ({}, {}), {})
     arms.append(("green: a recorded boolean verdict passes", not any("enum_to_stat_agrees" in e for e in errs), errs))
     arms.append(("identity: required-file row and published cell render alike",

@@ -65,71 +65,173 @@ def name_errors(name: str) -> list:
     return errs
 
 
-def check_tracked_names(repo_root: pathlib.Path) -> list:
+def check_names(repo_root: pathlib.Path):
+    """Names on the **tracked face and the working tree**, because the push this leg protects happens
+    after a commit: a forbidden name that is only untracked right now becomes published one command
+    later. Printed with a denominator - a scan that reports no count of what it looked at is VOID,
+    not clean.
+
+    Returns (errors, names_checked, sources)."""
     errs = []
+    seen = set()
+    sources = []
     try:
         out = subprocess.run(
             ["git", "-C", str(repo_root), "ls-files", "-z"],
-            capture_output=True, text=True, check=True,
-        ).stdout
-    except subprocess.CalledProcessError as e:
-        return [f"git ls-files failed: {e}"]
-    for name in out.split("\0"):
-        if not name:
-            continue
+            capture_output=True, text=True, shell=False,
+        )
+    except OSError as e:
+        return [f"git ls-files could not run: {e}"], 0, sources
+    if out.returncode != 0:
+        return ["git ls-files rc=%d: %s" % (out.returncode, (out.stderr or "")[:120])], 0, sources
+    tracked = [n for n in out.stdout.split("\0") if n]
+    sources.append("tracked=%d" % len(tracked))
+    seen.update(tracked)
+    # untracked faces, excluding anything git ignores
+    untracked = subprocess.run(
+        ["git", "-C", str(repo_root), "ls-files", "--others", "--exclude-standard", "-z"],
+        capture_output=True, text=True, shell=False)
+    extra = []
+    if untracked.returncode == 0:
+        extra = [n for n in untracked.stdout.split("\0") if n and n not in seen]
+        sources.append("untracked=%d" % len(extra))
+        seen.update(extra)
+    for name in tracked + extra:
         errs.extend(name_errors(name))
-    return errs
+    return errs, len(tracked) + len(extra), sources
 
 
-def check_bom(repo_root: pathlib.Path) -> list:
+def check_bom(repo_root: pathlib.Path):
+    """Every JSON in the tree, not just evidence/: the byte-shape rule is about what gets published, and
+    results/ and spec/ carry the corpus and the contract. Returns (errors, files_scanned)."""
     errs = []
-    for p in sorted((repo_root / "evidence").rglob("*.json")):
-        head = p.read_bytes()[:3]
-        if head[:3] == b"\xef\xbb\xbf":
-            errs.append(f"UTF-8 BOM found: {p.relative_to(repo_root)}")
-        elif head[:2] == b"\xff\xfe" or head[:2] == b"\xfe\xff":
-            errs.append(f"UTF-16 BOM found: {p.relative_to(repo_root)}")
-    return errs
+    scanned = 0
+    for sub in ("evidence", "results", "spec", "docs", "ci", "impl", "tool", ".github"):
+        base = repo_root / sub
+        if not base.is_dir():
+            continue
+        for p in sorted(base.rglob("*.json")):
+            scanned += 1
+            head = p.read_bytes()[:3]
+            rel = str(p.relative_to(repo_root))
+            if head == b"\xef\xbb\xbf":
+                errs.append("UTF-8 BOM found: %s" % rel)
+            elif head[:2] in (b"\xff\xfe", b"\xfe\xff"):
+                errs.append("UTF-16 BOM found: %s" % rel)
+    return errs, scanned
 
 
-def selftest() -> list:
-    """Red/green arms: a gate that only rejects is a dead gate."""
+def check_workflow_file(path: pathlib.Path):
+    """Lint a workflow's runner labels **after resolving the matrix**, because `runs-on: ${{ matrix.os }}`
+    is invisible to a text predicate: the first version of this leg printed OK on this repository while the
+    real labels sat in a matrix list it never read. A gate that cannot see the thing it guards is worse than
+    no gate, because it issues a pass.
+
+    Returns (errors, labels_checked)."""
+    text = path.read_text(encoding="utf-8")
     errs = []
+    matrices = {}
+    in_matrix = False
+    matrix_indent = None
+    for line in text.splitlines():
+        if re.match(r"^\s*matrix:\s*$", line):
+            in_matrix = True
+            matrix_indent = len(line) - len(line.lstrip())
+            continue
+        if in_matrix:
+            if line.strip() and (len(line) - len(line.lstrip())) <= matrix_indent:
+                in_matrix = False
+            else:
+                m = re.match(r"^\s*(\w+):\s*\[([^\]]*)\]", line)
+                if m:
+                    matrices[m.group(1)] = [v.strip().strip("'\"") for v in m.group(2).split(",") if v.strip()]
+                continue
+        m = re.match(r"^\s*(\w+):\s*\[([^\]]*)\]\s*$", line)
+        if m and m.group(1) not in matrices:
+            matrices.setdefault(m.group(1), [v.strip().strip("'\"") for v in m.group(2).split(",") if v.strip()])
+
+    checked = 0
+    for line in text.splitlines():
+        m = re.match(r"^\s*runs-on:\s*(.+?)\s*$", line)
+        if not m:
+            continue
+        value = m.group(1)
+        var = re.match(r"^\$\{\{\s*matrix\.(\w+)\s*\}\}$", value)
+        if var:
+            key = var.group(1)
+            if key not in matrices:
+                errs.append("runs-on uses '${{{{ matrix.{0} }}}}' but no matrix.{0} list is defined in this "
+                            "file - the label cannot be verified, which is not a pass".format(key))
+                continue
+            for label in matrices[key]:
+                checked += 1
+                errs.extend("matrix.%s entry %r: %s" % (key, label, e)
+                            for e in check_runs_on_text("runs-on: %s" % label))
+        else:
+            checked += 1
+            errs.extend(check_runs_on_text("runs-on: %s" % value))
+    return errs, checked
+
+
+def selftest():
+    """Red/green arms: a gate that only rejects is a dead gate. Returns (errors, arms_run, arms_passed)."""
+    errs = []
+    arms = 0
+    good = 0
+
+    def arm(label, condition):
+        nonlocal arms, good
+        arms += 1
+        if condition:
+            good += 1
+        else:
+            errs.append("selftest: %s" % label)
 
     # Piece 1 red/green
-    good_yml = "runs-on: ubuntu-24.04"
-    bad_yml = "runs-on: ubuntu-latest"
-    if check_runs_on_text(good_yml):
-        errs.append("selftest P1: green arm failed (ubuntu-24.04 flagged)")
-    if not check_runs_on_text(bad_yml):
-        errs.append("selftest P1: red arm failed (ubuntu-latest not flagged)")
+    arm("P1 green (ubuntu-24.04 must pass)", not check_runs_on_text("runs-on: ubuntu-24.04"))
+    arm("P1 red (ubuntu-latest must fail)", bool(check_runs_on_text("runs-on: ubuntu-latest")))
+    arm("P1 red (a macOS xl larger runner must fail)",
+        bool(check_runs_on_text("runs-on: [macos-15-xl]")[:1] or
+            check_runs_on_text("runs-on: macos-latest")))
+
+    # Piece 1b: matrix resolution, the case the first version silently passed
+    with tempfile.TemporaryDirectory() as td:
+        root = pathlib.Path(td)
+        ok_wf = root / "ok.yml"
+        ok_wf.write_text("jobs:\n  a:\n    strategy:\n      matrix:\n        os: [ubuntu-24.04, macos-15]\n"
+                         "    runs-on: ${{ matrix.os }}\n", encoding="utf-8")
+        bad_wf = root / "bad.yml"
+        bad_wf.write_text("jobs:\n  a:\n    strategy:\n      matrix:\n        os: [ubuntu-latest]\n"
+                          "    runs-on: ${{ matrix.os }}\n", encoding="utf-8")
+        unres_wf = root / "unres.yml"
+        unres_wf.write_text("jobs:\n  a:\n    runs-on: ${{ matrix.os }}\n", encoding="utf-8")
+        e_ok, n_ok = check_workflow_file(ok_wf)
+        e_bad, _n_bad = check_workflow_file(bad_wf)
+        e_un, _n_un = check_workflow_file(unres_wf)
+        arm("P1b green (resolved matrix labels must pass, 2 seen)", (not e_ok) and n_ok == 2)
+        arm("P1b red (a floating label inside the matrix must fail)", bool(e_bad))
+        arm("P1b red (an unresolvable matrix variable must fail, not pass)", bool(e_un))
 
     # Piece 2 red/green (string level, never materialized)
-    good_names = ["report-2026.txt", "readme.md", "impl/node/main.js"]
-    bad_names = ["CON.txt", "a<b.txt", "trail. ", "COM1.log", "data~1.txt"]
-    for n in good_names:
-        if name_errors(n):
-            errs.append(f"selftest P2: green arm failed ({n} flagged)")
-    for n in bad_names:
-        if not name_errors(n):
-            errs.append(f"selftest P2: red arm failed ({n} not flagged)")
+    for n in ["report-2026.txt", "readme.md", "impl/node/main.js"]:
+        arm("P2 green (%s must pass)" % n, not name_errors(n))
+    for n in ["CON.txt", "a<b.txt", "trail. ", "COM1.log", "data~1.txt"]:
+        arm("P2 red (%s must fail)" % n, bool(name_errors(n)))
 
     # Piece 3 red/green (temp files)
     with tempfile.TemporaryDirectory() as td:
         root = pathlib.Path(td)
         ev = root / "evidence"
         ev.mkdir(parents=True)
-        good = ev / "good.json"
-        good.write_bytes(b'{"ok":true}\n')  # no BOM
-        bad = ev / "bad.json"
-        bad.write_bytes(b"\xef\xbb\xbf{\"ok\":true}\n")  # UTF-8 BOM
-        r = check_bom(root)
-        if any("good.json" in str(x) for x in r):
-            errs.append("selftest P3: green arm failed (no-BOM flagged)")
-        if not any("bad.json" in str(x) for x in r):
-            errs.append("selftest P3: red arm failed (BOM not flagged)")
-
-    return errs
+        (ev / "good.json").write_bytes(b'{"ok":true}\n')  # no BOM
+        (ev / "bad.json").write_bytes(b"\xef\xbb\xbf{\"ok\":true}\n")  # UTF-8 BOM
+        (ev / "u16.json").write_bytes(b"\xff\xfe" + b"{" * 4)
+        r, scanned = check_bom(root)
+        arm("P3 denominator (3 json files seen)", scanned == 3)
+        arm("P3 green (no-BOM file must pass)", not any("good.json" in x for x in r))
+        arm("P3 red (UTF-8 BOM must fail)", any("bad.json" in x for x in r))
+        arm("P3 red (UTF-16 BOM must fail)", any("u16.json" in x for x in r))
+    return errs, arms, good
 
 
 def main() -> int:
@@ -139,21 +241,36 @@ def main() -> int:
     args = ap.parse_args()
 
     all_errs = []
+    stats = []
     if args.selftest:
-        all_errs.extend(selftest())
+        e, arms, good = selftest()
+        all_errs.extend(e)
+        stats.append("arms=%d passed=%d" % (arms, good))
     if args.repo_root:
         root = args.repo_root.resolve()
-        for wf in sorted((root / ".github" / "workflows").glob("*.yml")):
-            all_errs.extend(f"{wf.name}: {e}" for e in check_runs_on_text(wf.read_text(encoding="utf-8")))
-        all_errs.extend(check_tracked_names(root))
-        all_errs.extend(check_bom(root))
+        wfs = sorted((root / ".github" / "workflows").glob("*.yml"))
+        labels = 0
+        for wf in wfs:
+            e, n = check_workflow_file(wf)
+            labels += n
+            all_errs.extend("%s: %s" % (wf.name, x) for x in e)
+        nerrs, names_checked, sources = check_names(root)
+        all_errs.extend(nerrs)
+        berrs, json_scanned = check_bom(root)
+        all_errs.extend(berrs)
+        stats.append("workflows=%d runner_labels_checked=%d %s names_checked=%d json_scanned=%d"
+                     % (len(wfs), labels, ",".join(sources), names_checked, json_scanned))
 
+    if not stats:
+        # nothing was actually looked at: this is not a pass
+        print("lint: VOID - pass --repo-root and/or --selftest; a scan that ran nothing is not a clean result")
+        return 2
     if all_errs:
-        for e in all_errs:
-            print(f"LINT-FAIL: {e}")
-        print(f"lint: {len(all_errs)} violation(s)")
+        for e in all_errs[:40]:
+            print("LINT-FAIL: %s" % e)
+        print("lint: %d violation(s)  %s" % (len(all_errs), "  ".join(stats)))
         return 1
-    print("lint: OK")
+    print("lint: OK  %s" % "  ".join(stats))
     return 0
 
 

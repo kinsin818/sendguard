@@ -12,8 +12,6 @@ re-runnable and not a promise made here.
 > measured against contract rev5's output shape (folder-only, one field order, no verdict/probe split, no
 > `verdict_via`). The plant list, the safety method, the missed cases and the defect list still stand and were
 > not re-measured. The line shape, the exit-code table and the deliverables changed under rev6, and the faces
-> quoted below (`tool/check.py` at 42,985 bytes) are the earlier face, kept as history rather than rewritten.
-
 and this file; `git status` shows them untracked. I did not commit because the other five port
 seats are working in this same working tree and a path-scoped commit here moves their shared index.
 
@@ -306,3 +304,194 @@ python tool/check.py D:\sendguard-work\tool-selfcheck-68b75721b2ac --target wind
 python tool/check.py D:\sendguard-work\tool-selfcheck-68b75721b2ac\sub     # exit code 0
 python tool/check.py --selftest-spec
 ```
+
+---
+
+# rev6-addendum
+
+Measured 2026-10-11 05:10 → 06:0x +0800 on the same host (Windows 10.0.19041 / AMD64, Python 3.14.7).
+Nothing above this line was rewritten; it is the rev5-era record and it stays as filed.
+
+## Faces under test
+
+| face | sha256 | bytes | lines |
+|---|---|---|---|
+| `tool/check.py` | `47097d2d660d9db83a4268345bf63662ebea6c76f01e323c6af3f7093071b15b` | 81,759 | 1,611 |
+| `tool/sendguard.bat` | `41eb8b5ce1a18c0a985decb52a7e23a28600783f29a4fcfa8785e253a2e60fc9` | 74 | 2 |
+| `tool/USAGE.md` | new; documents the rev6 shape (docs/ was frozen for tonight) | 7,750 | - |
+
+HEAD at the last run: `e7a4d7f`. `spec/cases.yaml` sha256 `8650a1863578…`, which is what `spec/FROZEN.md`
+publishes, and the tool prints that comparison itself. That file moved under me twice during this work
+(`a7f9a57d…` → `b1eb629c…` → `8650a186…`); the header comparison is what caught each move, so the drift was
+never silently absorbed into a claim.
+
+**Not committed, again on purpose.** Six seats are working in this tree and a path-scoped commit moves the
+shared index. `git status` over my areas: `?? tool/check.py`, `?? tool/sendguard.bat`, `?? tool/USAGE.md`,
+`?? docs/tool-usage.md`, `?? evidence/S10/tool-selfcheck.md`.
+
+## Deliverable (a): one name in, verdict block out
+
+    python tool/check.py --name "trail."
+    python tool/check.py --name=--force.txt        (a leading dash needs the equals sign)
+    python tool/check.py --name-hex 6e622dc2a0     (the same name as UTF-8 hex, the way cases.yaml pins it)
+    python tool/check.py --name "trail." --extended
+
+It creates the name in a fresh scratch directory outside the repo, in a **child process behind an external
+5 s timeout** (spec/gate.md 10), enumerates, and prints two labelled blocks: `VERDICT` = `ci/equality.py`'s
+`VERDICT_FIELDS`, `PROBE` = its `PROBE_FIELDS`; then the frozen-rule answer computed beforehand, then every
+canonical-face cell asked about the same input bytes with `VERDICT-DISAGREE` lines where the ports disagree.
+Field spellings are the gate's: `canon_name` and `canon_triple` are mirrored in the tool and were checked
+against the gate's own functions - **12 names plus 6 triples in 4 spellings each = 36 comparisons, 0
+mismatches**.
+
+## Deliverable (b): one argument, routed
+
+`tool/sendguard.bat`, and the bare positional in `check.py`, take one argument:
+
+| given | result |
+|---|---|
+| a folder | the folder report (enumeration only, nothing written) |
+| a file | the verdict block for that file's **name** |
+| a path the plain form cannot address (an orphan `CON.txt`, `trail.`) | says the directory lists it and the path cannot address it, then the verdict for the name |
+| a bare token that is not a path | the verdict block for that name |
+
+## Run matrix (each row one child process, external timeout, stdout written then read back)
+
+| command | rc | stdout bytes | non-ASCII bytes |
+|---|---|---|---|
+| `--name report-2026.txt` | 0 | 4,251 | 0 |
+| `--name trail.` | 1 | 5,009 | 0 |
+| `--name CON.txt` | 1 | 5,802 | 0 |
+| `--name a<b.txt` | 1 | 4,600 | 0 |
+| `--name-hex 6e622dc2a0` (trailing U+00A0) | 1 | 2,859 | 0 |
+| `--name=--force.txt` | 1 | 3,880 | 0 |
+| `--name abcdef` | 0 | 2,312 | 0 |
+| `--name` 256 × `a` | 1 | 8,406 | 0 |
+| `--name trail. --extended` | 1 | 4,444 | 0 |
+| `<folder> --target all` | 1 | 18,036 | 0 |
+| `<folder>\sub` (clean) | 0 | 3,310 | 0 |
+| `<folder>\report-2026.txt` (file front) | 0 | 4,379 | 0 |
+| `<folder>\CON.txt` (unaddressable-path front) | 1 | 6,086 | 0 |
+| `--controls` | 0 | 3,881 | 0 |
+| `--selftest-spec` | 0 | 3,130 | 0 |
+| no arguments | 3 | usage on stderr | - |
+| `--force.txt` as a bare argument | 3 | usage + a hint how to pass it | - |
+| missing path | 2 | message on stderr | - |
+
+`--selftest-spec` still reports `traps_in_spec=20 samples_decoded=22 samples_not_decodable=2
+samples_flagged=14 samples_not_flagged=8`, with the misses listed instead of tuned away.
+
+## `--controls`: the five pinned samples against the sealed baseline
+
+`CONTROLS-OK`, rc=0, `controls_pinned_in_spec=5 controls_probed=5 controls_match_baseline=5
+controls_mismatch=0`. Compared only against `evidence/S00-ctrl-baseline.md`, the file FROZEN.md names as the
+only allowed source of control expectations; sample bytes come from `spec/cases.yaml` `control_samples`, so
+no name here is invented. Per-cell readings: ASCII `ok / 28 / 28 / roundtrip true / legal`; ILLEGAL-CHAR
+`err_at_syscall` → illegal; PARSE `err_at_parse` → **unknown** (the OS was never asked, so the verdict word
+says that instead of borrowing the language's refusal as an OS answer); NAMETOOLONG `err_at_syscall` →
+illegal; CANON `ok / 28 / 28 / roundtrip true`, payload digest `c9fe45b2…` as pinned.
+
+## The port-denominator defect, and the fix (caught by the owner, not by me)
+
+Reported before the fix: `measured_cells: target=windows cells=267 ports=csharp,go,java,node,python,rust,typescript`
+and `backed_by=T01,T02,T10,T11,T14 [68 cells, 7 ports]`. That counted `results/node` and the aggregate
+`results/python` tree, which `ci/equality.py` refuses to read (spec/cell-identity.md 9.5), so the deliverable
+was quoting a denominator the gate will not use: seven ports in this document, six in that one.
+
+Cause, named honestly: my reader walked `results/` with `os.walk` and derived a port name from the first path
+component. That is not the gate's rule. Fix: the gate's own pattern
+`^([a-z]+)\.(windows|macos|ubuntu)\.(x64|arm64)$` over directories only, `phantom.json` skipped by name as
+the gate skips it, and every other face counted **and named**, in the gate's wording.
+
+After the fix: `ports_counted=6 faces=csharp,go,java,python,rust,typescript (canonical faces only)`,
+`measured_cells: target=windows cells=174`, and each line's evidence shrank accordingly
+(`[40 cells, 6 ports]` for the reserved family, `[12 cells, 6 ports]` for T04/T05, `[5 cells, 6 ports]` for
+T03 and T20). The excluded block the tool now prints matches `equality.discover()`'s own `skipped` list name
+for name and count for count, verified by calling the gate's function rather than asserting agreement:
+
+    go.windows.go1.23.5              155 cell records
+    node                              40 cell records
+    node.windows.22.22.2.json          1 cell record
+    python                            119 cell records
+    python.windows.3.14.7.json          1 cell record
+    excluded_faces=5
+
+One adjacent trap found while checking: `equality.discover()` returns its ports dict with a `_extra_counts`
+sentinel still inside it (popped later at equality.py:401), so `len(ports)` on the raw return reads **7**. My
+6 is the number the gate itself uses after the pop. Anyone comparing `ports_counted=6` with a debug print of
+`len(ports)` is comparing a sentinel to a port count.
+
+## What the committed cells say when one name is asked across them
+
+Printed by `--name` itself, not assembled here.
+
+* **T01 / `CON.txt`**: every canonical cell asked about these bytes answers `os_legality_verdict=legal`, with
+  `bytes_on_disk=0` and `name_landed_as=null`; one csharp `T-API` cell carries `phantom=True` beside `legal`.
+  This tool answers `illegal` with its criterion printed (`the call reported success but no directory entry
+  exists`) and prints 15 `VERDICT-DISAGREE` lines against those cells. Against canonical.md section 6 -
+  `legal` means "OS says the name is legal (can exist)" - a name under which nothing can exist is the
+  definition of the wrong word, not a difference of opinion.
+* **T04 / `trail.`**: same name, same `path_form=plain`, same `verdict_via=win32`, and `go=illegal` while
+  `csharp`, `java` and `python` say `legal`. A verdict-class disagreement visible from one command on one
+  name. Averaging it is not this tool's job; printing it is.
+* `read_result=not_applicable` appears in those cells. canonical.md section 5 closes `read_result` at four
+  values (`ok`/`eof`/`err6`/`hang`); 49 occurrences showed up inside the cells my probes printed and an earlier
+  count over the canonical faces found 160. This tool prints `NOT-RECORDED` (section 9.1's word for an absence)
+  with a reason rather than adopting the fifth word.
+
+## Instrument behaviour measured tonight (each one a hazard for the next window)
+
+* `os.path.abspath(r"D:\...\CON.txt")` returns **`\\.\CON`** - Python hands the argument to the console-device
+  namespace. My first version derived parent/leaf through `abspath`, so a dragged `CON.txt` fell through to
+  "not a folder, or not reachable" (rc=2) although the directory plainly lists the file. The split is by hand
+  now, and the tool prints the rewrite when it happens.
+* `os.path.abspath` / `os.path.join` strip trailing dots and spaces (the same call ate `trail.` and `trailsp `
+  while planting). Anything generating those names must concatenate.
+* NTFS refuses `<` even behind `\\?\`, so a Windows-illegal character can never be present in a folder scanned
+  on Windows; only the name-level `--selftest-spec` can exercise that rule.
+* A colon name behind `\\?\` becomes an **alternate data stream**: `photo:front.jpg` lands as a file named
+  `photo`. No post-hoc folder scan can see the event.
+* A name that is itself a hex-digit string (`abcdef`, `deadbeef`, 256 × `a`) is read by the gate's `canon_name`
+  as a hex *encoding* of other bytes: `canon_name("abcdef")` returns `('r','abcdef')` while the name's own
+  UTF-8 bytes are `616263646566`. My first version sent that token back to the child as the name; the child
+  crashed on `bytes.fromhex(...).decode('utf-8')` and the pinned `T-CTRL-NAMETOOLONG` control read as a
+  baseline mismatch caused by my own instrument. The child is now always sent `true_hex()`, the block prints
+  both tokens with a SPELLING WARNING, and folder mode counts the affected names (`10 of the 51 enumerated
+  names ...` in the planted folder).
+* Scratch left behind, because there is no deletion logic (M19): **70 probe directories, 37 files inside**. The
+  difference is the probes that correctly produced nothing (reserved, illegal, too-long, embedded NUL). Root:
+  `%TEMP%\sendguard-tool\probe-<uuid>`, overridable with `SENDGUARD_TOOL_RUN_ROOT`.
+* `tool/__pycache__/` was removed by me - my own `py_compile` artifact; `.gitignore` does not cover
+  `__pycache__`, so it would otherwise have been offered to the next commit. Nothing else deleted, including
+  the rev5 planted folder and the probe folder named above. `cleanup_failed` does not apply: no cleanup was
+  attempted.
+* My own documentation edit ate its own anchor line, the same failure as the ledger appends (replace-by-anchor
+  silently drops the heading it matched). Noticed on re-read, restored in the same session; this addendum was
+  appended at end-of-file instead, with the anchor repeated rather than consumed.
+
+## What I think the contract still gets wrong
+
+1. `os_legality_verdict` carries no stated criterion, so `legal` currently means "the API I asked did not
+   raise" - which is how every canonical cell for `CON.txt` can say legal about a name that can hold nothing.
+   The word is only comparable if the criterion travels with it; the tool prints `criterion_for_that_word=` on
+   every verdict line.
+2. `verdict_via` is required by cell-identity §6 but is absent from canonical.md's closed sets, so no gate
+   checks it. The cells carry `win32`, `none` and absent - and `none` is not one of the four values §6 names
+   (61 records say it).
+3. `read_result=not_applicable` is a fifth value outside a closed set (above).
+4. `mechanism_class=unknown` is still paid work for two unrelated things (a name that is dangerous one layer
+   up, and width/case-folding collisions). FROZEN.md already says it must be resolved before the whitepaper.
+5. `cases.yaml` T17/T18 `sample_hex` fields hold prose, so an automated consumer either skips them silently or
+   crashes - contract-only fix, like rev3's.
+6. The `_extra_counts` sentinel inside `discover()`'s return makes `len(ports)` read one higher than the port
+   count the gate reports. Cosmetic inside `ci/`, but it is exactly the class of number two documents will
+   disagree about.
+
+## Reproduce
+
+    python tool/check.py --name "trail."
+    python tool/check.py --name "CON.txt"
+    python tool/check.py --name "a<b.txt"
+    python tool/check.py --controls
+    python tool/check.py D:\sendguard-work\tool-selfcheck-68b75721b2ac --target all
+    python tool/check.py D:\sendguard-work\tool-selfcheck-68b75721b2ac\sub

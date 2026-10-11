@@ -190,6 +190,27 @@ def main(argv):
     arm("alias-refuses-to-guess-member", 3, p,
         "bare T09 must not be folded into T09-m1", expect_contains="trap/T09-m1")
 
+    # 12. a port that reached its legality verdict through a different channel loses THAT field only.
+    # Measured reason: 11 of 13 excluded cells were excluded because one port records verdict_via='none',
+    # and the whole cell - bytes on disk, the enumerated name, everything - went with it.
+    p = base_two()
+    p["alpha"][0]["verdict_via"] = "win32"
+    p["beta"][0]["verdict_via"] = "none"
+    p["beta"][0]["os_legality_verdict"] = "legal"
+    arm("channel-difference-does-not-turn-the-run-red", 3, p,
+        "differing verdict_via must drop one field, not the cell, and must not be called a disagreement",
+        expect_contains="disagree=0")
+
+    # 13. ...and a real conflict on another field in that same cell is still RED: the field-level rule
+    # must not become a licence to ignore bytes on disk.
+    p = base_two()
+    p["alpha"][0]["verdict_via"] = "win32"
+    p["beta"][0]["verdict_via"] = "none"
+    p["beta"][0]["os_legality_verdict"] = "illegal"
+    p["beta"][0]["bytes_on_disk"] = 99
+    arm("channel-abstention-still-sees-other-fields", 1, p,
+        "with the legality field abstained, a one-byte conflict on the same cell must still be red")
+
     passed = failed = 0
     total = len(ARMS)
     for name, expect, ports, note, want in ARMS:

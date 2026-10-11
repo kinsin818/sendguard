@@ -799,7 +799,11 @@ function blockedCell(
     spec_sha256_basis: meta["spec_sha256_basis"],
     deps_direct: 0,
     deps_total: 0,
-    sub_identity: renderSubIdentity(plan.dims),
+    sub_identity: (() => {
+      const o: Record<string, string | number> = {};
+      for (const d of plan.dims) o[d.name] = d.value;
+      return o;
+    })(),
     env,
     meta,
     status: "blocked",
@@ -1299,6 +1303,13 @@ function loadRequiredSet(): RequiredSet {
   };
 }
 
+/** Ordered {name: value} map of the cell's varying dimensions. */
+function dimsToObject(dims: readonly Dim[]): Record<string, string | number> {
+  const out: Record<string, string | number> = {};
+  for (const d of dims) out[d.name] = d.value;
+  return out;
+}
+
 function needsBaseDir(plan: CellPlan): number | null {
   for (const d of plan.dims) if (d.name === "base_len") return typeof d.value === "number" ? d.value : Number(d.value);
   return null;
@@ -1325,7 +1336,10 @@ async function runPlan(
   for (const j of plan.jobs) outcomes.push(await runJob(j, scratch.cellRoot, stem));
 
   const cell = assembleCell(plan, env, meta, scratch, outcomes, controlsPassed);
-  cell["sub_identity"] = renderSubIdentity(plan.dims);
+  // ci/equality.py takes sub_identity as an OBJECT of the declared dimensions; the dotted
+  // string belongs to the filename only. A port that invents an identity shape makes two
+  // cells out of one question, so the shape is the contract's, not mine.
+  cell["sub_identity"] = dimsToObject(plan.dims);
   for (const [k, val] of Object.entries(plan.inCell ?? {})) {
     if (k in cell && cell[k] !== val) throw new Error(`in-cell dimension ${k} disagrees: ${String(cell[k])} vs ${String(val)}`);
     cell[k] = val;

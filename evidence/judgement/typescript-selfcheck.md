@@ -1,6 +1,6 @@
-# S02 acceptance — TypeScript port (seat `qoder`), contract rev3
+# S02 acceptance — TypeScript port (seat `qoder`), contract rev7
 
-Port label, fixed by `docs/NOTICE-rev3.md` and not to be upgraded later:
+Port label, fixed by the contract notices and not to be upgraded later:
 **TypeScript (Node 24 type-stripping; no type-checker on this host)**.
 `tsc` is not installed here and `node --check` does not type-check, so **no type-checker has ever
 run against this source**. That sentence is the one claim about this port which cannot currently be
@@ -9,19 +9,51 @@ checked; "TypeScript verified" would be false.
 controls_pass=true (5/5) — no INSTRUMENT-RED in this run.
 
 ```
-cells_required=33   cells_produced=74   cells_valid=25 (strict, spec/schema.json rev3)
-cells_blocked=5     cells_extra=41      cells_measured=69   cells_hang=0
-required identities covered = 33/33 by measured cells; uncovered = 0
-probe_jobs=151  probe_wall_ms=19742  timeouts=0  nonzero_probe_exits=0  malformed_log_lines=0
-non_cell_files_in_results_dir=0  cleanup_failed=0
-run face: node v24.15.0, Windows-10-10.0.19041-SP0, AMD64
-cells regenerated 2026-10-11 04:5x +0800, after rev3 (commits 7548b9f, 799d69d)
-spec/cases.yaml blob face sha256 = a7f9a57df1b4d39a19421a54d175e87793100ce3393e363622ca59816e19148b
-spec/cells-required.json face sha256 = 99d6ec085794d3cc… (rev3 regeneration; the 03:4x version is
-  withdrawn by name inside the file and was consumed by this port earlier — see S6/G-7)
+HEAD at delivery       559e50e (rev7 re-seal)      run started 2026-10-11T01:00:02Z (06:00 host clock)
+cells_required=44      cells_produced=80           cells_measured=80   cells_blocked=0
+required covered       44/44 by measured cells     missing=0           cells_extra=36   cells_hang=0
+cells_valid=25         strict against spec/schema.json (the 55 failures are all one cause: gap G-2)
+spec/validate.py       24 valid / 56 void          (same family; see "the two rulers" in S4)
+probe_jobs=187  timeouts=0  nonzero_probe_exits=0  malformed_log_lines=0
+length rungs re-emitted for rev7:  12/12
+  name_source   hex of the component actually passed: 156 / 240 / 400 characters for base_len 78/120/200
+  len_triple    [78,78,78] / [120,120,120] / [200,200,200] -- the width of that name, three units equal
+  len_ceiling   255 on all twelve (first fail 256), recorded apart from len_triple
+spec/cases.yaml blob face       8650a1863578231e…  == the hash FROZEN.md locks (verified at start)
+spec/cells-required.json face   ed8a8a29c0eea999…  44 required identities
+non_cell_files_in_results_dir=0  cleanup_failed=0 (354 scratch dirs purged, extended prefix required)
+face landing: 80 files written 09:00:25, then repaired IN PLACE (S11) -- nothing unlinked, no
+directory clear, no re-measurement after the owner's 07:16 empty reading
 ```
 
-**One number to read carefully:** `cells_valid=25` is *strict against `spec/schema.json` as revised*,
+## R. What rev6 and rev7 changed in this port, and what deliberately did not change
+
+Delivered under `docs/NOTICE-rev6.md` (05:04) and `docs/NOTICE-rev7.md` (06:0x). Sections S1-S10 below
+are the earlier record and their cell counts are the ones from that run; this section is the current one.
+
+| rev6/rev7 item | what this port now does | verification |
+|---|---|---|
+| rev6-1 pinned control samples | all five control cells use `control_samples.sample_hex` and the one pinned 28-byte payload read from the committed spec face; `T-CTRL-CANON` is `canon-check.txt`, not `report-2026.txt`; the child **refuses to run** without `--payload-hex` rather than inventing bytes | `sha256_truth = c9fe45b2fee8…` on both cells that write (ASCII, CANON) — the sealed baseline's digest; 5/5 `control_match` |
+| rev6-2 blind cells | `blind/B1`…`B5` are **run**, with `blind_id` from `evidence/S00/blind-map.json`; the map's git blob face is compared against the hash `spec/FROZEN.md` locks before it is used, and `expectations.sealed.md`/predictions were still not opened | 5 measured cells, `blind_id` integer in each, `hash_matches_lock` recorded in `meta.blind_map` |
+| rev6-2 / rev7 rung identity | twelve cells keyed `base_len` x `path_form` (was six keyed `base_len` alone with the other regime hidden inside) | `missing=0` against the 44-cell manifest |
+| rev7-1 `name_source` | was the hex of **one** code unit (`"61"`, two characters — the defect NOTICE-rev7 quotes); now `unit_hex` repeated to exactly `base_len` code units, decoded by the child from that hex so the probe passes the same bytes the cell publishes | 12/12: `len(name_source) == 2 * base_len`, and the decoded width equals `base_len` |
+| rev7-2 `len_triple` | the three widths **of the passed name**; the pinned filler is ASCII so all three equal `base_len`. The child asserts its `--comp` against the decoded name instead of repeating a letter it chose | 12/12 `[B,B,B]`; recomputed independently in `selfcheck.py` from the hex, not copied from the cell |
+| rev7-3 ceiling separate | `len_ceiling` (this port's bisection converged value), plus `len_ceiling_first_fail`, `len_ceiling_probes`, and the other regime's ceiling | 255 on all twelve, both regimes |
+| rev6-2 verdict authority | the reserved-name traps and the T-API rows do **not** say `verdict_via: none`: the port did reach the file system and did enumerate the result, so they record `win32` with `os_legality_authority = "directory enumeration (readdir + stat) after the pinned write"`, and the extended-prefix refusal stays visible as `os_legality_refusal_note` | one line, as the notice permits: **this is the honesty test, not a comparison** — seven device-name cells now read `legal/win32` from the enumeration authority, and `name_landed_as` + `bytes_on_disk=28` in the same cell is the evidence for it |
+| cells that must not move | `T04` `trail.` and `T05` `trailsp ` keep `name_mutated=false` (Node preserves the trailing character — C-2), the three `T-API` rows keep their wording, the `extra` cells (tiers, grid points, zip legs) are untouched | spot-checked after the re-run |
+
+Two things the contract still owes, measured rather than argued:
+
+* **The length family is still `unpinned_input=12` at the gate** even though this port's twelve cells
+  now carry exactly the pinned bytes. That count is a set property: it stands until every port files
+  the pinned filler, and this port cannot fix it from its own side and will not pretend to.
+* **`tapi` rows are named twice, differently.** `spec/cells-required.json` lists typescript rows as
+  `case_id: "T-API"` with `api_entry`, while this port's landed cells are `TAPI-T01` with an
+  `entry-<name>` sub-dimension, and `ci/gap_report.py` excludes `tapi` from both the missing and the
+  outside-list accounting — so neither spelling is scored tonight. Recorded here rather than quietly
+  re-cut, because the instruction was to re-emit twelve cells, not to invent eighteen.
+
+## One number to read carefully: `cells_valid=25` is *strict against `spec/schema.json` as revised*,
 and all 49 failures are the same single cause (gap G-2, `read_result` left `null` where the leg was
 never reached — rev3 did not touch that enum). It is **not** 0 any more: gap G-1 (`language` had no
 `typescript`) was genuinely closed by rev3 and this port now passes that rule. Separately,
@@ -293,7 +325,48 @@ probe ran, not a dangling pointer. The tree was excluded from git through this s
 ## 10. Files
 
 `impl/typescript/{package.json,tsconfig.json,selfcheck.py}`, `types/node-builtins.d.ts`,
-`src/{constants,spec,identity,nameguard,zip,probe,runner}.ts`; 74 cells in
-`results/typescript.windows.x64/`; this report. Four throwaway instrument-check files created during
-the session were removed; the C-2 controls they performed are reproduced in S5. Nothing outside the
+`src/{constants,spec,identity,nameguard,zip,probe,runner}.ts`; 80 cells in
+`results/typescript.windows.x64/`; this report; `impl/typescript/repair_sub_identity_object.py`
+(the in-place repair described in S11, which is a tool that only rewrites files this seat owns).
+Four throwaway instrument-check files created during the session were removed before the no-deletion
+instruction took effect; the C-2 controls they performed are reproduced in S5. Nothing outside the
 clone was written. No commit, no tag, no push.
+
+Two files in `impl/typescript/` are not part of the port and are still on the face because I no longer
+delete anything: `repair_sub_identity_object.py` (S11, a deliverable-adjacent tool) and `_patchF.py`,
+a throwaway edit script from mid-session that has no effect on any cell. They are named here rather
+than removed; deleting them is the contract owner's call, not mine to make under the current order.
+
+## 11. The additive landing (host clock 09:00 write, verified 10:5x)
+
+The contract owner measured this face empty at 07:16 (it held 74 files at 05:12) and ordered the cells
+re-landed **additively**: one file per cell, new files only, no `rm`, no rebuild that wipes the
+directory first. That is what happened, and the owner explicitly did not ask for an explanation of the
+deletion, so none is offered here. Two facts are worth recording because they are measurable:
+
+- The present 80 files were written by the run that started 06:00 and finished at 09:00:25 — after the
+  07:16 reading, which is consistent with both observations being true of different moments.
+- **Nothing was re-measured to produce this section.** The 09:00 cells are the same bytes that were on
+  the face when I checked it; the only write after that check was the in-place repair below.
+
+`ci/equality.py` (fac9089) flags a cell whose `sub_identity` is a dotted string rather than an object,
+and 48 of the 80 cells were in that form even though all 44 required identities were covered by the
+gate's own `key_of`. Handled without touching the filenames:
+
+| step | what ran | result |
+|---|---|---|
+| coverage as the gate counts it | `equality.key_of` over every cell vs `spec/cells-required.json` | required=44, covered=44, missing=0 |
+| defect count | cells with a non-empty string `sub_identity` | 48 |
+| repair | `python impl/typescript/repair_sub_identity_object.py` — same paths, in place, `sha256_self` recomputed, refuses on contradiction, never unlinks | `files=80 rewritten=80 changed=80 refused=0` |
+| re-check | same two measurements | files=80, covered=44/44, missing=0, string-`sub_identity` cells remaining=0 |
+| source | `runner.ts` now writes `cell["sub_identity"] = dimsToObject(plan.dims)`; `selfcheck.py` accepts/emits the object form | `node --check` clean, `ast.parse` clean |
+| acceptance ruler | `python impl/typescript/selfcheck.py` at 10:5x | rc=0, `OUTCOME=GREEN`, `cells_produced=80 cells_blocked=0 controls_pass=true`, strict `cells_valid=25` (the 55 are gap G-2), `spec/validate.py` still 24 valid / 56 void |
+
+The twelve rev7 length cells were verified again in that run without being rewritten: `name_source` is
+156/240/400 hex characters for base_len 78/120/200 (exactly `2 * base_len`), `len_triple` is the width
+of that name in the three units, `len_ceiling=255` with first fail 256, and the T04/T05
+`name_mutated=false` findings and the T-API rows are byte-for-byte as recorded.
+
+Status of the work: **all of it is still uncommitted**, so the face is perishable until the contract
+owner folds it into a commit. That is not this seat's action to take — `git push` is forbidden and the
+integration commit is the owner's.

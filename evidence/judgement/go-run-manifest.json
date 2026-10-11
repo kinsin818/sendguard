@@ -141,8 +141,8 @@
    "purpose": "green arm for manifestScan: this binary must show the token",
    "status": "scanned"
   },
-  "runner_exe_sha256_before": "8bd578a296a9da6c38015b8c9b332e328a52b4198fedeb5508ebefba4be647b5",
-  "runner_exe_sha256_after": "8bd578a296a9da6c38015b8c9b332e328a52b4198fedeb5508ebefba4be647b5",
+  "runner_exe_sha256_before": "916559034257452f511ee4efd4e601692170a5147f16b8e4408c2fc3cc434f11",
+  "runner_exe_sha256_after": "916559034257452f511ee4efd4e601692170a5147f16b8e4408c2fc3cc434f11",
   "longpaths_registry": {
    "command": [
     "reg",
@@ -174,17 +174,17 @@
   "spec_sha256": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261",
   "spec_sha256_worktree_face": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261",
   "freeze_revision": "2",
-  "run_started_at": "2026-10-11T00:02:47.3247396Z",
+  "run_started_at": "2026-10-11T02:53:03.1515087Z",
   "python_readback_arm_exe": "C:\\Python314\\python.exe",
   "sandbox_root": "D:\\sendguard-run"
  },
  "exe_face_stable": true,
- "run_finished_at": "2026-10-11T00:02:56.1411303Z",
- "run_started_at": "2026-10-11T00:02:47.3247396Z",
+ "run_finished_at": "2026-10-11T02:53:12.8502582Z",
+ "run_started_at": "2026-10-11T02:53:03.1515087Z",
  "sandbox_dirs_retained": 49,
  "sandbox_root": "D:\\sendguard-run",
- "sg_exe_sha256_after": "8bd578a296a9da6c38015b8c9b332e328a52b4198fedeb5508ebefba4be647b5",
- "sg_exe_sha256_before": "8bd578a296a9da6c38015b8c9b332e328a52b4198fedeb5508ebefba4be647b5",
+ "sg_exe_sha256_after": "916559034257452f511ee4efd4e601692170a5147f16b8e4408c2fc3cc434f11",
+ "sg_exe_sha256_before": "916559034257452f511ee4efd4e601692170a5147f16b8e4408c2fc3cc434f11",
  "timeout_enforced_ms": 5000,
- "wall_ms": 9069
+ "wall_ms": 9958
 }

@@ -183,3 +183,21 @@ and nothing else; the converged ceiling is `len_ceiling`, a separate field. `spe
 `len_fill` (one code unit `U+0061`, repeated to `base_len`) so the twelve required length cells ask one
 question. Multi-byte tiers (emoji, CJK) remain valid as `extra` cells - the width disagreement is the
 subject, it is just not this comparison.
+
+**9.8 Comparability is a property of a field, not of a cell - with one exception.** Measured in the rev7
+run: 11 of the 13 cells the gate excluded were excluded because ONE port records `verdict_via: none` while
+the other five asked Win32. The rule at the time dropped the whole cell, so five ports' `bytes_on_disk`,
+enumerated name, length triple and roundtrip answer disappeared because of a field they had never claimed.
+Now:
+
+- `path_form` differs -> the **cell** is excluded. A plain path and a Windows extended-length path (`\\?\`
+  prefix) are two questions about the namespace, and no field of them is comparable.
+- `verdict_via` differs -> only `os_legality_verdict` is dropped, and only for the ports whose channel is
+  the minority. With no majority channel at all the field is dropped for everybody on that cell, which is
+  printed as an abstention rather than silently compared against the first value seen.
+- An abstaining port is never counted as `NOT-RECORDED`: it recorded, it just asked somewhere else.
+
+Two arms hold this on both sides: `channel-difference-does-not-turn-the-run-red` (a channel difference
+alone cannot make the run RED, and cannot erase the other fields) and
+`channel-abstention-still-sees-other-fields` (with the legality field abstained, a one-byte conflict on
+the same cell is still RED). The field-level rule is not a licence to stop looking.

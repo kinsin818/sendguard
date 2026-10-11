@@ -228,3 +228,13 @@ generated it; it states its own basis and is the exception this file has carried
   re-read of the same code.
 - Still not established, unchanged: no port harness rebuilt from source, no macOS/Linux execution, CI never run
   because nothing has been pushed, and the interpreter line remains a host fact at the minute it was written.
+
+
+## One-line note appended at 15:16 +0800
+
+Two limits in this file said the instrument job "has never executed, because nothing has been pushed". They were
+true at the runs they record. At 15:14 the owner ordered the push and it went through (public `main`
+`7151f58` -> `28562e2`, fast-forward, 87 commits, no force, no tags), so the job has now been triggered; its
+conclusion is not readable from this seat without a token, and the accurate status word is *triggered, outcome
+unread here*. The full correction, with the disclosure scan that preceded the push, is in
+`evidence/S11/rehearsal-20261011.md`.

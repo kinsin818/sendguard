@@ -49,3 +49,29 @@ added to the list at 13:22) without anyone running the new sequence end to end.
   says nothing.
 - The Java lane's SG-F2 work was in flight while this ran (its tool files modified, nothing committed); it is
   not part of this reading, and nothing here accepts it on the lane's behalf.
+
+
+## Correction appended at 15:16 +0800, 2026-10-11: the push happened, and two sentences above are now false
+
+The line above this section reads "**it has never run**: nothing has been pushed". Both halves were written before
+the owner ordered the push and neither survives it:
+
+- **The push is done.** `git push github main:main` at 15:14 +0800 moved the public branch `main` from `7151f58`
+  to `28562e2` - a fast-forward, 87 commits, no `--force`, no tags. Before it, `git merge-base --is-ancestor
+  github/main HEAD` was verified true and `HEAD..github/main` was 0 commits, i.e. the public branch carried
+  nothing this tree lacked; `git ls-remote` after the push reads `28562e2`, and `ahead=0 behind=0` now.
+- **The workflow has been triggered.** I cannot read its conclusion from this seat: the GitHub API answers
+  `403 rate limit exceeded` without a token, and `gh` is not installed here, so the honest statement is *triggered,
+  outcome unread from this seat* - not "it passed" and not "it never ran". The Actions page visible without a
+  token also shows completed runs on earlier commits (`7151f58`, `eb5c0d8`), which means the sentence "nothing has
+  been pushed" was already wrong before today, written by a window that had not looked at the remote.
+
+What the disclosure scan said before the push, since publishing covers the whole ancestor set and not just these
+commits: **zero** credential-class strings anywhere in the 230,155 added lines of the unpushed range - no key-shaped
+token, no bearer string, no private-key block, no mail address, no cloud-access id. What is in the tree is host
+identity: **303 tracked faces contain a home-directory path carrying this machine's login name** (of which 37 were
+already on the public branch before this push), and **2 faces name the machine**. That was reported to the owner
+before pushing and he ordered the push anyway; it is stated here so a later reader knows the push was made with
+that known, and it is the reason a forward mask of those paths is queued as work rather than as a surprise.
+
+Nothing in this section is a rewrite: the sentence being corrected is left exactly where it is above.

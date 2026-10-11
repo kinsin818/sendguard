@@ -44,12 +44,15 @@ difference between "nobody contradicted" and "everybody answered"; the blanks an
 are in [`docs/coverage.md`](docs/coverage.md)).
 
 The reproducibility promise was checked from a stranger's tree, not asserted: `--no-local` clone, clean
-status, all 18 self-test arms green (the count is 21 now, and the same check was re-run against a fresh clone
-at 12:12 - [`evidence/S10/cold-clone-20261011b.md`](evidence/S10/cold-clone-20261011b.md), which also names
-the three numbers that do *not* reproduce yet, because one lane's faces are in the work tree and not in
-history), the eight published spec digests recomputed from the clone's own object
-store, and the gate's verdict byte-identical to the author's tree - recorded with its limits in
-[`evidence/S10/cold-clone-20261011.md`](evidence/S10/cold-clone-20261011.md).
+status, every leg green inside the clone (self-test 21 arms, lint 18, cell conformance 20, spec-drift 15 -
+the first recorded run had 18 because three legs did not exist yet), the eight published spec digests
+recomputed from the clone's own object store, and the gate's verdict identical to the author's tree. Ten
+generated docs were then compared with the lines that are allowed to differ declared first: nine identical,
+the tenth differing only in the commit it names - a self-reference lag a generated file cannot avoid, so the
+generator now says so in that line. Three runs, with their limits and the numbers that moved between them:
+[`evidence/S10/cold-clone-20261011.md`](evidence/S10/cold-clone-20261011.md),
+[`evidence/S10/cold-clone-20261011b.md`](evidence/S10/cold-clone-20261011b.md),
+[`evidence/S10/cold-clone-20261011c.md`](evidence/S10/cold-clone-20261011c.md).
 
 **Currently not evidenced, and therefore not claimed anywhere:** macOS and Linux rows (CI has not run yet),
 mobile storage and download layers, cloud-drive and mail-attachment renaming, exFAT/FAT32 volumes,

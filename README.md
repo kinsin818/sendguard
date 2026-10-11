@@ -62,6 +62,15 @@ limits and the numbers that moved between them:
 delivery form's four defects
 [`evidence/S10/cold-clone-20261011d.md`](evidence/S10/cold-clone-20261011d.md).
 
+That rehearsal is no longer a habit of one window: `python ci/clone_parity.py --scratch-root ../sg-parity` does it
+as a leg - `--no-local` clone, `ci/refresh_all.py` run inside the clone, then every generated face compared with
+the blob the clone checked out. It refuses a scratch root it did not get, refuses a drive root, refuses to nest a
+clone inside the repository, never deletes anything (an existing clone is adopted only if its HEAD equals the
+source's and its status is empty), and allows a difference only where the line shape was declared in advance. Its
+own arms are 8, both-sided; reading from this tree: `OUTCOME=CLEAN faces_compared=12 identical=11 declared=1
+differing=0 missing=0`, where the one declared face is `docs/evidence.md` naming the commit it was generated
+under.
+
 **Currently not evidenced, and therefore not claimed anywhere:** macOS and Linux rows - and the blocker is not `git push`. The sealed table already holds 22 macOS and 22 Ubuntu predictions, but no port harness can emit them: every runner writes `results/<port>.windows.x64/` by hard-coded path and probes Windows-only semantics (`docs/tickets/SG-F3-os-portability.md`). A new `instrument` job in `.github/workflows/matrix.yml` is written to re-verify the **instrument** on all three operating systems - **it has never run, because nothing has been pushed** - and the workflow file states in its own steps that it produces no result faces,
 mobile storage and download layers, cloud-drive and mail-attachment renaming, exFAT/FAT32 volumes,
 unsigned-executable launch behaviour, and any agreement between ports that the gate has not certified.

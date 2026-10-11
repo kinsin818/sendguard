@@ -48,3 +48,41 @@ instrument failure and not a smaller comparison (`A9`), output with no verdict b
 differences, one flipped field between the trees is named rather than counted as a match (`A10`), the hex handed
 to the checker must decode back to the name intended (`A11` - a wrong needle probes a different name and reports
 agreement), and the checker's own failure codes are never read as answers (`A12`). `arms=12 passed=12`.
+
+
+## Second reading, 14:34 +0800 - the checker's own spec self-test, in both trees
+
+Five names and eleven fields is this seat choosing what to ask. The deliverable has a self-test that asks what the
+*spec* says to ask: `python tool/check.py --selftest-spec` walks every frozen sample in `spec/cases.yaml` through
+the same rules. It was run in the working copy and in the cold clone `D:\sendguard-work\sg-parity\parity-5`
+(a `--no-local` clone of `2e67e84` produced by the parity leg seconds earlier; the leg had regenerated the
+generated faces inside it, which does not touch `tool/` or `spec/`):
+
+```
+seat  rc=0  bytes=3086   lines=44
+clone rc=0  bytes=3086   lines=44
+byte-identical output: True
+rc equal: True
+differing lines: 0 (+0 unpaired)
+  line| SENDGUARD spec self-test: every frozen sample in spec/cases.yaml, through the same rules,
+  line| rules: spec/cases.yaml freeze_revision=2 sha256=8650a1863578
+  line| traps_in_spec=20  samples_decoded=22  samples_not_decodable=2
+```
+
+Same bytes out, same exit code, from a tree that has never seen the author's working copy - and the spec
+fingerprint it reads is the committed one (`freeze_revision=2`, the same `8650a1863578…` that
+`docs/evidence.md` names), which is the frozen-spec claim being exercised by the product rather than by a
+generated document.
+
+The `samples_not_decodable=2` line is the self-test's own published denominator: `tool/check.py` adds to that
+count when a frozen case's sample hex cannot be decoded into a name, or when the case carries no sample at all,
+and it lists the misses instead of tuning them away - the same reading the morning's tool record already carries
+(`evidence/S10/tool-selfcheck.md`: `traps_in_spec=20 samples_decoded=22 samples_not_decodable=2
+samples_flagged=14 samples_not_flagged=8`). What is established here is not that the two are benign but that the
+number is a property of the committed spec: it is identical on both sides of the clone, and it is not being read
+as a pass.
+
+Limits, same as above: one host, one interpreter, this is the deliverable's rule table being exercised, not the
+six ports' recorded faces. Together the two readings cover the two things a buyer asks: does it run from the
+repository (yes, and its spec self-test is byte-identical), and does it answer the same way there (yes, over the
+five declared names and the eleven scored fields).

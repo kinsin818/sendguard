@@ -95,6 +95,24 @@ def main():
     header = "| cell | " + " | ".join(names) + " | agree | which field differs |"
     lines += [header, "|---" * (len(names) + 4) + "|"]
 
+    # The agree/differ column comes from the gate's own verdict artifact, not from a second implementation
+    # of the comparison rules. Measured reason: this table judged by plain string equality and disagreed
+    # with ci/equality.py about the same data (15 agree / 29 differ against the gate's 24 / 54) - the
+    # two-rulers defect this project has now caught in itself more than once.
+    vpath = os.path.join(REPO, "evidence", "S02", "equality-verdict.json")
+    if not os.path.isfile(vpath):
+        print("REFUSING: the gate's verdict artifact is missing. Run `python ci/equality.py` first; "
+              "re-judging with a second ruler is exactly what this file must not do")
+        return 3
+    verdict = json.load(io.open(vpath, encoding="utf-8"))
+    disagree_cells = {}
+    for key, field, ports in verdict["disagreements"]:
+        disagree_cells.setdefault(key, []).append(field)
+    abstain_cells = {c[0] for c in verdict["channel_abstentions"]}
+    crossform_cells = {c[0] for c in verdict["name_cross_form_agreements"]}
+    excluded_cells = set(verdict["unpinned_input"]) | set(verdict["cells_excluded"])
+    prefix_cells = {c[0] for c in verdict["prefix_shaped_records"]}
+
     agree_rows = differ_rows = 0
     for k in sorted(req):
         holders = [p for p in names if k in cells[p]]
@@ -122,24 +140,28 @@ def main():
                 continue
             bits = [fmt_value(f, equality.canon_value(f, cells[p][k])) for f, _ in SHOW]
             vals[p] = "/".join(bits)
-        comparable = [p for p in holders if p not in odd]
-        uniq = {vals[p] for p in comparable}
-        marks = []
-        if len(uniq) == 1 and not uniq:
-            marks = []
-        elif len(uniq) > 1:
+        key = equality.fmt(k)
+        marks = disagree_cells.get(key, [])
+        if key in excluded_cells:
+            word = "not comparable"
+        elif marks:
             differ_rows += 1
+            word = "NO"
         else:
             agree_rows += 1
-        for f, _lab in SHOW:
-            vs = {p: str(equality.canon_value(f, cells[p][k])) for p in comparable}
-            if len(set(vs.values())) > 1:
-                marks.append(_lab)
+            word = "yes"
+        extra = []
+        if key in abstain_cells:
+            extra.append("legality field abstained")
+        if key in crossform_cells:
+            extra.append("names matched across encodings")
+        if key in prefix_cells:
+            extra.append("prefix-shaped name record")
         lines.append("| %s | %s | %s | %s |" % (
-            equality.fmt(k),
+            key,
             " | ".join(vals[p].replace("|", "\\|")[:24] for p in names),
-            ("?all" if not comparable else ("yes" if len(uniq) <= 1 else "NO")),
-            ", ".join(marks) or ("-" if uniq else "-")))
+            word,
+            ", ".join(marks + extra) or "-"))
     lines += ["", "**rows: agree=%d differ=%d** (of %d required cells that at least one port answered)"
               % (agree_rows, differ_rows, agree_rows + differ_rows), ""]
     if unpinned:

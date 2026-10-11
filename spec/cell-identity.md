@@ -201,3 +201,19 @@ Two arms hold this on both sides: `channel-difference-does-not-turn-the-run-red`
 alone cannot make the run RED, and cannot erase the other fields) and
 `channel-abstention-still-sees-other-fields` (with the legality field abstained, a one-byte conflict on
 the same cell is still RED). The field-level rule is not a licence to stop looking.
+
+**9.9 A name is compared by what it could mean, not by one guessed spelling.** Measured in the rev7 run:
+the length cells' component is `a` repeated, and **a run of the letter `a` is itself valid hex**. A
+canonicaliser with the rule "if it looks like hex, decode it" therefore read the two ports that wrote the
+name as text as three bytes of 0xAA - not valid UTF-8 - kept them as raw bytes, and reported the same name
+as a disagreement against the four ports that wrote hex. That is the same class of defect as 9.1, found in
+the corner the first fix could not see.
+
+So `canonical_case_id`/`canon_name` still produce one token per record (used for printing and for digests),
+but **agreement on a name field is set intersection over the forms a value could have**: the literal
+string's UTF-8 hex, the hex decoded as UTF-8, the hex decoded as UTF-16LE, and the raw bytes. Two ports
+agree about a name when their form sets intersect. When that is what rescued a cell - i.e. the naive
+spelling comparison would have called it a disagreement - the gate prints
+`NAME-CROSS-FORM-AGREE` naming the ports, so the rescue is visible rather than a silent widening of the
+rule. Genuinely different names have disjoint sets and stay RED; two arms prove both edges
+(`same-name-two-encodings-agree`, `different-names-still-red`).

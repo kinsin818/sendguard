@@ -211,6 +211,24 @@ def main(argv):
     arm("channel-abstention-still-sees-other-fields", 1, p,
         "with the legality field abstained, a one-byte conflict on the same cell must still be red")
 
+    # 14. one name written two ways is one name. Measured in the rev7 run: a run of the letter 'a' is
+    # itself valid hex, so a canonicaliser that decodes anything hex-shaped read four ports' landed names
+    # as 39 bytes of 0xAA and called the length family a disagreement. Names now agree by shared meaning.
+    p = base_two()
+    p["alpha"][0]["name_landed_as"] = "616161616161"   # the hex of 'aaaaaa'
+    p["beta"][0]["name_landed_as"] = "aaaaaa"          # the same name, written as text
+    arm("same-name-two-encodings-agree", 0, p,
+        "hex and literal spellings of one name must be agreement, and must be printed as such",
+        expect_contains="NAME-CROSS-FORM-AGREE")
+
+    # 15. ...and two genuinely different names must not be rescued by that rule. 'aaaaab' is also valid
+    # hex characters, so a shared-meaning matcher that was too generous would call these the same name.
+    p = base_two()
+    p["alpha"][0]["name_landed_as"] = "616161616161"
+    p["beta"][0]["name_landed_as"] = "aaaaab"
+    arm("different-names-still-red", 1, p,
+        "shared-meaning matching must not turn a real name difference into agreement")
+
     passed = failed = 0
     total = len(ARMS)
     for name, expect, ports, note, want in ARMS:

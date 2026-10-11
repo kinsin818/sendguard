@@ -46,8 +46,8 @@ Per group: `trap 25, ctrl 5, tapi 88, len 28` = 146. Plus 5 blocked (blind, sect
 
 | face | path | bytes | sha256 (16) | `longPathAware` byte-hits |
 |---|---|---|---|---|
-| PATH `rustc` | `C:\Users\Administrator\.cargo\bin\rustc.EXE` | 12,814,336 | `86478e53f769379d` | 0 |
-| resolved toolchain binary | `C:\Users\Administrator\.rustup\toolchains\stable-x86_64-pc-windows-msvc\bin\rustc.exe` | 110,592 | `777119d5feeca3d9` | 2 |
+| PATH `rustc` | `<a user profile root>\.cargo\bin\rustc.EXE` | 12,814,336 | `86478e53f769379d` | 0 |
+| resolved toolchain binary | `<a user profile root>\.rustup\toolchains\stable-x86_64-pc-windows-msvc\bin\rustc.exe` | 110,592 | `777119d5feeca3d9` | 2 |
 
 - `rustup which rustc` -> the path above (rc=0); the two files are different binaries (`shim_and_resolved_differ=True`).
 - resolved `rustc -vV` (rc=0), first two lines verbatim: `rustc 1.98.0 (88d9e12ae 2026-08-18)` /

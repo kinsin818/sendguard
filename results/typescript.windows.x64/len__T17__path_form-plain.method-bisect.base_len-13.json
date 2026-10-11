@@ -23,7 +23,7 @@
   "create_result": "ok",
   "deps_direct": 0,
   "deps_total": 0,
-  "elapsed_ms": 127,
+  "elapsed_ms": 132,
   "entry_spread": [],
   "enum_listed": null,
   "enum_matched_by": null,
@@ -186,7 +186,7 @@
         "stderr_tail": null,
         "tag": "b",
         "timed_out": false,
-        "wall_ms": 127
+        "wall_ms": 132
       }
     ],
     "node_version": "v24.15.0"
@@ -195,16 +195,16 @@
   "read_skipped_reason": "bisection leg records a boundary, not one file's contents",
   "roundtrip_ok": null,
   "scratch": {
-    "cell_root": "S:\\a1c4ae9",
-    "cell_root_real": "D:\\sendguard-work\\seat-qoder\\.sgscratch\\a1c4ae9",
+    "cell_root": "S:\\8eabdfc",
+    "cell_root_real": "D:\\sendguard-work\\seat-qoder\\.sgscratch\\8eabdfc",
     "cleanup": "not attempted by the port (M19 forbids deletion logic in this port); the path is recorded for the operator",
     "verified_empty_before_use": true
   },
-  "sha256_self": "dbde11db3cbeba8d6c419b4440363ea58e665360ccdcd73d619073aa5ecd2781",
+  "sha256_self": "47d022a145df916bef653fa314be0127868ba6220a26a4f816c753e3d2562ec7",
   "sha256_truth": null,
   "spec_sha256": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261",
   "spec_sha256_basis": "git cat-file blob HEAD:spec/cases.yaml, hashed (committed blob face, not the disk file)",
-  "started_at": "2026-10-10T23:51:22.529Z",
+  "started_at": "2026-10-11T01:00:22.242Z",
   "status": "measured",
   "sub_identity": "path_form-plain.method-bisect.base_len-13",
   "total_path_at_first_fail": 270,

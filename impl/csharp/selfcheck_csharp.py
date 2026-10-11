@@ -645,7 +645,7 @@ def main():
               "len_ceiling=%-5s conclusive=%-5s code=%-13s tiers=%d extra=%s"
               % (c["case_id"], c["base_len"], c["path_form"], len(ns) // 2,
                  (ns == (c.get("len_fill_unit_hex") or "61") * (c["base_len"] or 0)) if ns else None,
-                 c.get("len_triple"), c.get("len_ceiling"),,
+                 c.get("len_triple"), c.get("len_ceiling"),
                  c.get("len_ceiling_conclusive"), c.get("len_ceiling_boundary_code"),
                  len(c.get("tier_point_attempts") or []), c.get("extra")))
     req_len = [c for c in lens if not c.get("extra")]

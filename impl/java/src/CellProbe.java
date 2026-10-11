@@ -14,6 +14,7 @@ import java.security.MessageDigest;
 import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -39,6 +40,13 @@ public final class CellProbe {
     static final Pattern RESERVED = Pattern.compile(
             "^(CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9]|CONIN\\$|CONOUT\\$)(\\..*)?$",
             Pattern.CASE_INSENSITIVE);
+
+    /** The entries of this port that go through java.io rather than java.nio. */
+    static final Set<String> IO_ENTRIES = new HashSet<String>(
+            Arrays.asList("File.createNewFile", "FileOutputStream.write", "File.renameTo"));
+    /** ... of those, the two that can be driven from a bare String with no Path involved. */
+    static final Set<String> IO_STRING_ENTRY = new HashSet<String>(
+            Arrays.asList("File.createNewFile", "FileOutputStream.write"));
 
     public static void main(String[] argv) throws Exception {
         Map<String, String> a = parseArgs(argv);
@@ -156,9 +164,28 @@ public final class CellProbe {
 
         List<Land> before = enumerate(scratch);
         long[] wr = new long[]{-1};
-        String[] v = target == null
-                ? new String[]{"err_at_parse", "parse", parseClass, parseMsg}
-                : createVia(target, payload, entry, wr);
+        // rev7 rule 4: java.io takes the raw path STRING and never passes through java.nio's path
+        // parser, so Paths.get throwing on the \\?\ form is NIO's answer, not java.io's. Asking
+        // java.io through a Path object attributed NIO's refusal to it.
+        boolean ioStringLeg = target == null && IO_STRING_ENTRY.contains(entry);
+        boolean refusedAtParse = target == null && !ioStringLeg;
+        m.put("instrument_face", ioStringLeg
+                ? entry + " called with the requested String exactly as this cell built it"
+                : (IO_ENTRIES.contains(entry)
+                   ? entry + " called with new File(Paths.get(requested).toString())"
+                   : entry + " called with a java.nio.file.Path"));
+        if (ioStringLeg) {
+            m.put("nio_parse_of_the_same_string",
+                  dict("attempted", true, "class", parseClass, "message", parseMsg));
+        }
+        String[] v;
+        if (ioStringLeg) {
+            v = createViaString(requested, payload, entry, wr);
+        } else if (refusedAtParse) {
+            v = new String[]{"err_at_parse", "parse", parseClass, parseMsg};
+        } else {
+            v = createVia(target, payload, entry, wr);
+        }
         List<Land> after = enumerate(scratch);
 
         m.put("create_result", v[0]);
@@ -212,7 +239,7 @@ public final class CellProbe {
         boolean phantom = "ok".equals(v[0]) && exact == 0 && appeared.isEmpty();
         m.put("phantom", phantom);
         m.put("hit_came_from_earlier_leg",
-                Boolean.valueOf(exact > 0 && ("err_at_parse".equals(v[0]) || target == null)));
+                Boolean.valueOf(exact > 0 && refusedAtParse));
 
         // ---- read side ---------------------------------------------------
         // rev4: a read that did not happen is not_applicable with read_skipped_reason. The four
@@ -238,7 +265,7 @@ public final class CellProbe {
             m.put("sha256_truth", null);
             m.put("bytes_on_disk", dirView);
             m.put("enum_to_stat_agrees", null);
-        } else if (target == null) {
+        } else if (refusedAtParse) {
             // the language refused the requested string, so this cell never held a handle:
             // a name that IS present can only have been created by an earlier member's OS leg
             m.put("read_result", "not_applicable");
@@ -253,7 +280,7 @@ public final class CellProbe {
             byte[] got = null;
             String rr = null, rc = null, rm = null;
             try {
-                got = Files.readAllBytes(target);
+                got = target != null ? Files.readAllBytes(target) : readViaIoString(requested);
                 rr = got.length == 0 ? "eof" : "ok";
             } catch (InvalidPathException e) {
                 rr = "err6"; rc = e.getClass().getName(); rm = e.getMessage();

@@ -21,7 +21,7 @@
   "create_result": "ok",
   "deps_direct": 0,
   "deps_total": 0,
-  "elapsed_ms": 132,
+  "elapsed_ms": 127,
   "entry_spread": [],
   "enum_listed": [
     "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
@@ -186,7 +186,7 @@
         "stderr_tail": null,
         "tag": "g",
         "timed_out": false,
-        "wall_ms": 132
+        "wall_ms": 127
       }
     ],
     "node_version": "v24.15.0"
@@ -195,16 +195,16 @@
   "read_skipped_reason": "length cell: the question is whether the create lands, not what the bytes say",
   "roundtrip_ok": null,
   "scratch": {
-    "cell_root": "S:\\d164fa2",
-    "cell_root_real": "D:\\sendguard-work\\seat-qoder\\.sgscratch\\d164fa2",
+    "cell_root": "S:\\8e1801a",
+    "cell_root_real": "D:\\sendguard-work\\seat-qoder\\.sgscratch\\8e1801a",
     "cleanup": "not attempted by the port (M19 forbids deletion logic in this port); the path is recorded for the operator",
     "verified_empty_before_use": true
   },
-  "sha256_self": "b01335a5e881ade62f3f172d2827e8bf458b1ec73cdb8f4b6fbc87e1be21e396",
+  "sha256_self": "303531c73920e07a6f96059792c0d4a156c7736ba311ce9c7b210379949dc64c",
   "sha256_truth": null,
   "spec_sha256": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261",
   "spec_sha256_basis": "git cat-file blob HEAD:spec/cases.yaml, hashed (committed blob face, not the disk file)",
-  "started_at": "2026-10-10T23:51:15.813Z",
+  "started_at": "2026-10-11T01:00:15.469Z",
   "status": "measured",
   "sub_identity": "path_form-extended.method-grid_point.base_len-120.comp_len-138",
   "tier": "G2",

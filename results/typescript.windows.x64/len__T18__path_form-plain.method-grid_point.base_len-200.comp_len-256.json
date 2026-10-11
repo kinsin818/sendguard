@@ -21,7 +21,7 @@
   "create_result": "err_at_syscall",
   "deps_direct": 0,
   "deps_total": 0,
-  "elapsed_ms": 122,
+  "elapsed_ms": 127,
   "entry_spread": [],
   "enum_listed": [],
   "enum_matched_by": "none",
@@ -54,7 +54,7 @@
   },
   "errno": -4058,
   "error_code": "ENOENT",
-  "error_message": "ENOENT: no such file or directory, open 'S:\\a7f10b7\\dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd\\dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd\\aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'",
+  "error_message": "ENOENT: no such file or directory, open 'S:\\f3d3616\\dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd\\dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd\\aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'",
   "error_stage": "syscall",
   "error_winerror": null,
   "extra": true,
@@ -184,7 +184,7 @@
         "stderr_tail": null,
         "tag": "g",
         "timed_out": false,
-        "wall_ms": 122
+        "wall_ms": 127
       }
     ],
     "node_version": "v24.15.0"
@@ -193,16 +193,16 @@
   "read_skipped_reason": "length cell: the question is whether the create lands, not what the bytes say",
   "roundtrip_ok": null,
   "scratch": {
-    "cell_root": "S:\\a7f10b7",
-    "cell_root_real": "D:\\sendguard-work\\seat-qoder\\.sgscratch\\a7f10b7",
+    "cell_root": "S:\\f3d3616",
+    "cell_root_real": "D:\\sendguard-work\\seat-qoder\\.sgscratch\\f3d3616",
     "cleanup": "not attempted by the port (M19 forbids deletion logic in this port); the path is recorded for the operator",
     "verified_empty_before_use": true
   },
-  "sha256_self": "e9ea020cc33222099864882f3f5c711c18ca71d66e9e03a5c5095552e9764bf7",
+  "sha256_self": "de728df6dd6fbdd7dc027990cd4ba8aa91bb1ae7e89444a27881ec8927e6ce87",
   "sha256_truth": null,
   "spec_sha256": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261",
   "spec_sha256_basis": "git cat-file blob HEAD:spec/cases.yaml, hashed (committed blob face, not the disk file)",
-  "started_at": "2026-10-10T23:51:17.537Z",
+  "started_at": "2026-10-11T01:00:17.149Z",
   "status": "measured",
   "sub_identity": "path_form-plain.method-grid_point.base_len-200.comp_len-256",
   "tier": "G4",

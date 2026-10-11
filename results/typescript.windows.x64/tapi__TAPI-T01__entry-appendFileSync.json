@@ -20,7 +20,7 @@
   "create_result": "ok",
   "deps_direct": 0,
   "deps_total": 0,
-  "elapsed_ms": 125,
+  "elapsed_ms": 138,
   "entry_spread": [],
   "enum_listed": [
     "CON.txt"
@@ -183,7 +183,7 @@
         "stderr_tail": null,
         "tag": "t2",
         "timed_out": false,
-        "wall_ms": 125
+        "wall_ms": 138
       }
     ],
     "node_version": "v24.15.0"
@@ -192,16 +192,16 @@
   "read_skipped_reason": "reserved device name: this port never opens one for reading",
   "roundtrip_ok": null,
   "scratch": {
-    "cell_root": "S:\\fdf3bf0",
-    "cell_root_real": "D:\\sendguard-work\\seat-qoder\\.sgscratch\\fdf3bf0",
+    "cell_root": "S:\\af0e246",
+    "cell_root_real": "D:\\sendguard-work\\seat-qoder\\.sgscratch\\af0e246",
     "cleanup": "not attempted by the port (M19 forbids deletion logic in this port); the path is recorded for the operator",
     "verified_empty_before_use": true
   },
-  "sha256_self": "561d46547018d86b46b6188250beffb889aaea0fed2415a132c8290f5b4c9a49",
+  "sha256_self": "2088b6cde18253e5667e668a59dbf8d7e745984f3a8101486e5e598b86916b58",
   "sha256_truth": null,
   "spec_sha256": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261",
   "spec_sha256_basis": "git cat-file blob HEAD:spec/cases.yaml, hashed (committed blob face, not the disk file)",
-  "started_at": "2026-10-10T23:51:23.305Z",
+  "started_at": "2026-10-11T01:00:23.075Z",
   "status": "measured",
   "sub_identity": "entry-appendFileSync",
   "verdict_via": "win32",

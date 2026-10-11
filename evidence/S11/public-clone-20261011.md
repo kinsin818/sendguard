@@ -93,3 +93,21 @@ on another machine (the field comparison cited in section 4 is seat-versus-clone
 
 `docs/tickets/SG-F4-clone-parity-source.md` is queued so this whole sequence becomes one command
 (`ci/clone_parity.py --source <url>`) instead of a script written beside the repository at 15:24.
+
+
+## Addendum, 15:29 +0800 - the records commit is not on the public branch yet
+
+The verification above ran against the public branch as pushed at 15:14 (`a2037c1`), and that commit **is** on
+GitHub: `git ls-remote` confirmed the tip before the network changed. The follow-up record commit (`b6f863c`, this
+file plus `docs/tickets/SG-F4-clone-parity-source.md`) could not be pushed at 15:26-15:29:
+
+```
+fatal: unable to access 'https://github.com/kinsin818/sendguard.git/': Recv failure: Connection was reset
+fatal: unable to access 'https://github.com/kinsin818/sendguard.git/': Failed to connect to github.com port 443 after 21072 ms: Could not connect to server
+```
+
+So the published deliverable and the local repository differ by one documentation commit, and the numbers in this
+file describe the branch that is actually public (`a2037c1`). Nothing was claimed about a push that had not
+happened; when the connection returns, `git push github main:main` is a fast-forward of that one commit and the
+divergence closes. Until then, anyone reading the public repository sees `a2037c1`, which is the tree that
+section 5 proved identical blob-for-blob.

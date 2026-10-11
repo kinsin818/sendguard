@@ -173,6 +173,42 @@ def check_workflow_file(path: pathlib.Path):
     return errs, checked
 
 
+INSTRUMENT_REQUIRED_SUBSTRINGS = (
+    "instrument:",
+    "ci/selftest.py --scratch-root",
+    "ci/lint.py --selftest",
+    "ci/validate_cells.py --selftest",
+    "ci/spec_drift.py --selftest",
+    "ci/equality.py",
+    "PORT-HARNESS: NOT-REACHED(reason=harness_is_windows_only)",
+    "if-no-files-found: error",
+)
+FROZEN_OS_LABELS = ("windows-2025", "macos-15", "ubuntu-24.04")
+
+
+def check_workflow_instrument(text):
+    """The workflow must state what it runs, what it cannot run here, and must publish its own denominator.
+
+    Why this is a lint arm and not a paragraph: `.github/workflows/matrix.yml` was an S00 probe skeleton while
+    README and the whitepaper said "macOS and Linux rows need CI to run", which a reader reasonably takes to
+    mean "pushing produces them". Measured 13:10 today, no step in that file runs a port harness - each
+    `impl/<port>/` runner writes `results/<port>.windows.x64/` by hard-coded path and probes Windows-only
+    semantics. Neither the file nor the prose lied on its own; the pair did. The absence is now a checked
+    property of the file, so the implication cannot come back.
+    """
+    errs = []
+    missing = [needle for needle in INSTRUMENT_REQUIRED_SUBSTRINGS if needle not in text]
+    if missing:
+        errs.append("instrument job missing required lines: %s" % ", ".join(repr(m) for m in missing))
+    for label in FROZEN_OS_LABELS:
+        if label not in text:
+            errs.append("instrument job does not run on the frozen label %r" % label)
+    for floating in ("ubuntu-latest", "macos-latest", "windows-latest"):
+        if floating in text:
+            errs.append("floating runner label present: %r (M20 forbids them)" % floating)
+    return errs
+
+
 def selftest():
     """Red/green arms: a gate that only rejects is a dead gate. Returns (errors, arms_run, arms_passed)."""
     errs = []
@@ -231,6 +267,19 @@ def selftest():
         arm("P3 green (no-BOM file must pass)", not any("good.json" in x for x in r))
         arm("P3 red (UTF-8 BOM must fail)", any("bad.json" in x for x in r))
         arm("P3 red (UTF-16 BOM must fail)", any("u16.json" in x for x in r))
+
+    # Piece 4: the workflow's promises are policed, not assumed. Green is a complete instrument job; each red
+    # arm removes one promise and requires the lint to notice.
+    good_wf = "instrument:\n" + "\n".join(s for s in INSTRUMENT_REQUIRED_SUBSTRINGS if s != "instrument:")
+    good_wf += "\n" + "\n".join(FROZEN_OS_LABELS)
+    arm("P4 green (a complete instrument job must pass)", not check_workflow_instrument(good_wf))
+    for mutation, why in ((good_wf.replace("ci/equality.py", ""), "a leg the job claims to run"),
+                          (good_wf.replace("PORT-HARNESS: NOT-REACHED(reason=harness_is_windows_only)", ""),
+                           "the honest absence declaration"),
+                          (good_wf.replace("if-no-files-found: error", ""), "the artifact denominator"),
+                          (good_wf.replace("ubuntu-24.04", "ubuntu-latest"), "a floating label"),
+                          (good_wf.replace("macos-15", ""), "an OS the job claims to cover")):
+        arm("P4 red (%s removed must be caught)" % why, bool(check_workflow_instrument(mutation)))
     return errs, arms, good
 
 
@@ -254,6 +303,8 @@ def main() -> int:
             e, n = check_workflow_file(wf)
             labels += n
             all_errs.extend("%s: %s" % (wf.name, x) for x in e)
+            all_errs.extend("%s: %s" % (wf.name, x)
+                            for x in check_workflow_instrument(wf.read_text(encoding="utf-8")))
         nerrs, names_checked, sources = check_names(root)
         all_errs.extend(nerrs)
         berrs, json_scanned = check_bom(root)

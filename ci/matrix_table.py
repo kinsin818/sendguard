@@ -105,6 +105,11 @@ def main():
               "re-judging with a second ruler is exactly what this file must not do")
         return 3
     verdict = json.load(io.open(vpath, encoding="utf-8"))
+    if verdict.get("source_results") != "results":
+        print("REFUSING: %s was written from %r, not from this repository's results/ face - a fixture "
+              "verdict must not drive the published matrix"
+              % (os.path.relpath(vpath, REPO).replace(chr(92), "/"), verdict.get("source_results")))
+        return 3
     disagree_cells = {}
     for key, field, ports in verdict["disagreements"]:
         disagree_cells.setdefault(key, []).append(field)

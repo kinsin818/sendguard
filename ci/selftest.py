@@ -105,10 +105,14 @@ def write_manifest(dir_, ports, extra_required=(), forbid_required=()):
     return p
 
 
-def run_gate(results_dir, manifest=None):
+def run_gate(results_dir, manifest=None, verdict_out=None):
     env = dict(os.environ)
     if manifest:
         env["SG_REQUIRED_CELLS"] = manifest
+    # a fixture run must not write into the real evidence face; the gate would otherwise overwrite
+    # evidence/S02/equality-verdict.json with a two-port toy verdict every time this file is run
+    if verdict_out:
+        env["SG_VERDICT_OUT"] = verdict_out
     r = subprocess.run([sys.executable, GATE, "--results-dir", results_dir],
                        capture_output=True, text=True, encoding="utf-8", errors="replace",
                        cwd=REPO, shell=False, env=env)
@@ -237,7 +241,7 @@ def main(argv):
         rd = write_results(adir, ports)
         man = write_manifest(adir, ports,
                              extra_required=(["trap/T09-m1"] if want == "trap/T09-m1" else []))
-        rc, out = run_gate(rd, man)
+        rc, out = run_gate(rd, man, os.path.join(adir, "verdict.json"))
         hit = (rc == expect) and (not want or want in out)
         passed += hit
         failed += (not hit)

@@ -50,6 +50,17 @@ NULLABLE_OK = {"error_code", "error_message", "bytes_written", "roundtrip_ok",
                "move_source_name", "target_dir_hex", "dir_view_error", "precondition_reason",
                "api_path_len", "landed_name_utf16_units", "read_reason", "child_elapsed_ms",
                "name_reserved", "packer", "extractor", "hang_leg", "verdict_via_method",
+               "len_ceiling_boundary_code", "len_ceiling_boundary_attempt",
+               "len_ceiling_at_boundary", "regime_expected_ceiling",
+               "regime_expected_boundary_code", "regime_observed_ceiling",
+               "regime_unresolved_reason", "len_measure_missing", "name_source_rule",
+               "api_path_len_recorded", "tier_point_attempts", "len_fill_rule",
+               "len_fill_unit_hex", "control_sample_pin", "control_payload_pin",
+               "control_payload_sha256", "control_payload_bytes", "control_pin_source",
+               "in_required_list", "required_identity", "hang_note", "name_hex_from_child",
+               "len_triple_widths_disagree", "type_II_note", "read_attempted",
+               "base_len_conflict", "precondition_ok", "instrument_conflict",
+
                "read_skipped_reason", "bisect_probes_run", "boundary_plus1_result",
                "boundary_plus1_error_code", "regime_expected_max_component",
                "regime_expected_boundary_code", "regime_observed_boundary_code",
@@ -151,11 +162,42 @@ def check_cell(cell, sets, schema, req_ids):
     if cell.get("os_legality_verdict") in ("legal", "illegal") and cell.get("verdict_via") in (None, "none"):
         errs.append("a legality verdict with no tool named (verdict_via=%r)" % cell.get("verdict_via"))
     if cell.get("case_group") == "len":
-        for f in ("base_len", "component_len", "total_path_len", "grid_point",
-                  "len_target_extra_units", "max_component_len"):
+        # rev7 rule 1: name_source is hex of the bytes handed to the API. The frozen spec kept prose
+        # in its sample_hex for T17/T18, and one port copied that prose as if it were a name it had
+        # created - so a length cell is only believed when the bytes say so.
+        for f in ("base_len", "component_len", "total_path_len", "len_triple", "len_ceiling",
+                  "len_ceiling_conclusive", "len_fill_unit_hex"):
             if cell.get(f) is None:
                 errs.append("len cell without %s (cell-identity s1: the varying dimension must be "
                             "a named field, not only a filename)" % f)
+        ns = str(cell.get("name_source") or "")
+        base = cell.get("base_len") or 0
+        unit = cell.get("len_fill_unit_hex") or LEN_FILL.get("unit_hex") or ""
+        is_hex = bool(re.match(r"^(?:[0-9a-f]{2})+$", ns))
+        if not ns:
+            errs.append("len cell without name_source")
+        elif not is_hex:
+            errs.append("len name_source=%r is not even-length hex: it is a label, not the bytes "
+                        "passed to the API (NOTICE-rev7 rule 1)" % ns[:48])
+        elif unit and ns != unit * base:
+            errs.append("len name_source is not the pinned filler repeated base_len times: expected "
+                        "%d x %r, got %r" % (base, unit, ns[:24]))
+        if is_hex and cell.get("name_hex_from_child") and ns != cell["name_hex_from_child"]:
+            errs.append("name_source does not equal the component the child reported passing (%r vs %r)"
+                        % (ns[:24], str(cell["name_hex_from_child"])[:24]))
+        trip = cell.get("len_triple")
+        if trip and is_hex:
+            name = bytes.fromhex(ns)
+            text = name.decode("utf-8")
+            want = [len(text), len(text.encode("utf-16-le")) // 2, len(name)]
+            if list(trip) != want:
+                errs.append("len_triple=%r but the three widths of the recorded name are %r "
+                            "(code points / UTF-16 units / UTF-8 bytes of THAT name)" % (trip, want))
+        if (trip and is_hex and len(set(trip)) == 1 and trip[0] != base
+                and cell.get("len_ceiling") in list(trip)):
+            errs.append("len_triple carries %r which equals the ceiling %r: the measured ceiling is a "
+                        "different quantity and belongs in len_ceiling only (rev7 rule 3)"
+                        % (trip, cell.get("len_ceiling")))
         if cell.get("base_len") != cell.get("base_len_measured"):
             errs.append("base_len=%s but the directory measured %s"
                         % (cell.get("base_len"), cell.get("base_len_measured")))
@@ -213,6 +255,7 @@ def check_cell(cell, sets, schema, req_ids):
 
 
 CTRL_PINS = {}          # populated in main() from spec/cases.yaml's rev6 control_samples
+LEN_FILL = {}           # populated in main() from spec/cases.yaml's rev7 len_fill block
 AUTHORITY_EXPECTED = "dir_view (Python enumerator, not the measured language)"
 
 
@@ -356,6 +399,46 @@ def arms(schema, sets, req_ids):
     arm("red: bytes_on_disk without the stated authority is refused (a disk truth from another "
         "language's tool must be disclosed, not buried)", bool(errs), errs)
 
+    # rev7: three quantities, three fields - and the pin parser must really read the pin block
+    lf = {"format_version": 1, "case_id": "T18", "case_group": "len", "language": "csharp",
+          "os": "windows", "api_entry": "File.WriteAllBytes", "attempt": 1,
+          "path_form": "plain", "longpath_mechanism": "prefix_rewrite", "create_result": "ok",
+          "error_stage": "null", "read_result": "ok", "os_legality_verdict": "legal",
+          "verdict_via": "win32", "length_unit": "utf16_code_units",
+          "name_encoding": "hex_raw_bytes", "harness_version": "csharp-s02-5-rev7",
+          "started_at": "x", "elapsed_ms": 10, "bytes_written": 28, "bytes_on_disk": 28,
+          "deps_direct": 0, "deps_total": 0, "extra": False, "spec_sha256": frozen_spec_sha(),
+          "bytes_on_disk_authority": "dir_view (Python enumerator, not the measured language)",
+          "base_len": 78, "base_len_measured": 78, "component_len": 78, "total_path_len": 157,
+          "len_fill_unit_hex": "61", "name_hex_from_child": "61" * 78,
+          "len_triple": [78, 78, 78], "len_ceiling": 255, "len_ceiling_conclusive": True,
+          "name_source": "61" * 78}
+    errs, _ = check_cell(dict(lf), sets, schema, {"len/T18[base_len=78][path_form=plain]"})
+    arm("green: a rev7 length cell (name_source = pinned filler x base_len, ceiling elsewhere) "
+        "is accepted", not errs, errs)
+    for label, patch in (
+            ("name_source is the frozen prose label", {"name_source": "T-LEN-COMP (length bisection)"}),
+            ("name_source is the two characters 6 and 1", {"name_source": "61"}),
+            ("name_source is not the pinned filler run", {"name_source": "62" * 78}),
+            ("len_triple holds the ceiling instead of the name width", {"len_triple": [255, 255, 255]}),
+            ("len_triple disagrees with the recorded name", {"len_triple": [48, 48, 48]}),
+            ("there is no len_ceiling field", {"len_ceiling": None}),
+            ("name_source is not the component the child passed", {"name_hex_from_child": "61" * 48})):
+        c = dict(lf)
+        c.update(patch)
+        errs, _ = check_cell(c, sets, schema, {"len/T18[base_len=78][path_form=plain]"})
+        arm("red: a length cell where %s is refused" % label, bool(errs), errs)
+    import importlib.util as _iu
+    _sp = _iu.spec_from_file_location("rc_pin", os.path.join(HERE, "run_csharp.py"))
+    _rc = _iu.module_from_spec(_sp)
+    _sp.loader.exec_module(_rc)
+    _pin = _rc.len_fill_pin()
+    arm("green: the pin parser reads every len_fill field, including the two lines that carry no "
+        "trailing comment", bool(_pin.get("rule")) and bool(_pin.get("applies_to"))
+        and _pin.get("unit_hex") == "61", _pin)
+    arm("red: a comment-free pin line would be silently dropped (the bug this round hit)",
+        "base_len" in (_pin.get("rule") or ""), _pin.get("rule"))
+
     # the required-list reproducibility arm: the gate must be able to re-derive the manifest
     r = subprocess.run([sys.executable, GEN_CHECK, "--check"], capture_output=True, text=True,
                        encoding="utf-8", errors="replace")
@@ -432,6 +515,7 @@ def main():
     manifest = rc.read_required()
     req_ids = rc.required_identities(manifest)
     CTRL_PINS.update(rc.ctrl_pins(rc.read_spec(), manifest))
+    LEN_FILL.update(rc.len_fill_pin())
 
     files = sorted(glob.glob(os.path.join(RESULTS_DIR, "*.json")))
     produced = {os.path.basename(p): p for p in files}
@@ -553,17 +637,26 @@ def main():
     for k, v in sorted(kind.items()):
         print("   %-34s %d cells" % (k, v))
     lens = sorted([c for c in cells.values() if c.get("case_group") == "len"],
-                  key=lambda c: (c["case_id"], c["base_len"]))
+                  key=lambda c: (c["case_id"], c["base_len"], c["path_form"]))
     print("t_len_cells=%d" % len(lens))
     for c in lens:
-        print("   %s base=%-4s boundary=%-5s conclusive=%-5s ceiling=%-5s comp=%-4s max_comp=%-4s "
-              "plus1=%-15s grid_pts=%d ext=%s"
-              % (c["case_id"], c["base_len"], c["bisect_boundary"], c["bisect_conclusive"],
-                 c.get("bisect_ceiling_is_instrument_not_filesystem"), c["component_len"],
-                 c.get("max_component_len"), c["boundary_plus1_result"],
-                 len(c.get("grid_point_attempts") or []),
-                 c["extended_corroboration"]["create_result"] if c.get("extended_corroboration") else None))
-    t18 = {c["base_len"]: c["bisect_boundary"] for c in lens if c["case_id"] == "T18"}
+        ns = str(c.get("name_source") or "")
+        print("   %s base=%-4s %-8s name_source=%3d chars all-61=%-5s len_triple=%-15s "
+              "len_ceiling=%-5s conclusive=%-5s code=%-13s tiers=%d extra=%s"
+              % (c["case_id"], c["base_len"], c["path_form"], len(ns) // 2,
+                 (ns == (c.get("len_fill_unit_hex") or "61") * (c["base_len"] or 0)) if ns else None,
+                 c.get("len_triple"), c.get("len_ceiling"),,
+                 c.get("len_ceiling_conclusive"), c.get("len_ceiling_boundary_code"),
+                 len(c.get("tier_point_attempts") or []), c.get("extra")))
+    req_len = [c for c in lens if not c.get("extra")]
+    print("   required_length_cells=%d of 12 name_source_is_the_passed_bytes=%s "
+          "len_triple_is_the_name=%s len_ceiling_on_all=%s"
+          % (len(req_len),
+             all(c.get("name_source") == (c.get("len_fill_unit_hex") or "61") * c["base_len"]
+                 for c in req_len),
+             all(list(c.get("len_triple") or []) == [c["base_len"]] * 3 for c in req_len),
+             all(isinstance(c.get("len_ceiling"), int) for c in req_len)))
+    t18 = {c["base_len"]: c["len_ceiling"] for c in lens if c["case_id"] == "T18"}
     print("   T18_component_boundary_by_base=%s all_255=%s" % (t18, all(v == 255 for v in t18.values())))
     if args.selftest:
         print("arms_run=%d arms_pass=%d"

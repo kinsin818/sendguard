@@ -1010,6 +1010,10 @@ fn main() {
                             pieces.push(format!("\"width_pinned_tier_roots\": [{}]", tiers.join(", ")));
                             pieces.push(format!("\"basis\": {}", js("the widest component this port could create, converged by bisection in the extra cell named by measured_by_case_id at the same path_form; it is NOT the width of the name in this cell, which is exactly base_len")));
                             put(&mut f, "len_ceiling", format!("{{{}}}", pieces.join(", ")));
+                        } else if !a.get("len-ceiling-missing").is_empty() {
+                            put(&mut f, "len_ceiling", format!(
+                                "{{\"status\": {}, \"reason\": {}}}",
+                                js("not-measured-before-this-cell"), js(&a.get("len-ceiling-missing"))));
                         }
                     }
                     mark(&markfile, "before-create");

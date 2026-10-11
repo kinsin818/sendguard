@@ -562,8 +562,29 @@ def build_cell(kind, spec, cases, blind, env, ctx):
                 for g in (lm.get("tier_points") or [])]
 
             # spec/gate.md s5 (rev4): the regime is keyed by longpath_mechanism, not path_form, and
-            # a port that fits neither model is reported `unresolved` rather than bucketed.
-            mech = cell["longpath_mechanism"]
+            # a port that fits neither model is reported `unresolved`. The mechanism that governs the
+            # CEILING is the one the ceiling probe ran under - a 255-unit component makes a path far
+            # past the legacy wall even though the recorded 78-unit name does not - so it is derived
+            # from the boundary attempt, not from the recorded name.
+            b_att = lm.get("boundary_attempt") or {}
+            ceil_path = b_att.get("path_len") or ((len(cdir) + 1 + (ceil or 0)) if ceil else None)
+            cell["len_ceiling_path_len"] = ceil_path
+            cell["recorded_attempt_longpath_mechanism"] = cell["longpath_mechanism"]
+            if spec["form"] == "extended":
+                cell["len_ceiling_mechanism"] = "prefix_rewrite"
+                cell["len_ceiling_prefix_source"] = "recipe-explicit"
+            elif ceil_path and ceil_path > 259 and b_att.get("create_result") == "ok":
+                cell["len_ceiling_mechanism"] = "prefix_rewrite"
+                cell["len_ceiling_prefix_source"] = "runtime-auto"
+                cell["len_ceiling_mechanism_note"] = (
+                    "the longest component that lands makes a %d-character path and succeeded on a "
+                    "plain path with LongPathsEnabled=%s; the published apphost carries no "
+                    "longPathAware token and behaves identically (impl/csharp/apphost_probe.py), so "
+                    "the runtime rewrote it, not the host manifest" % (ceil_path, env["LongPathsEnabled"]))
+            else:
+                cell["len_ceiling_mechanism"] = "none"
+                cell["len_ceiling_prefix_source"] = None
+            mech = cell["len_ceiling_mechanism"]
             obs_code = b1.get("error_code")
             cell["bisection_regime"] = mech
             cell["regime_observed_boundary_code"] = obs_code
@@ -849,7 +870,7 @@ def len_fill_pin():
     block = m.group(1)
 
     def field(name):
-        mm = re.search(r'(?m)^\s+%s:\s*"?([^"\n]*)"?\s*(?:#.*)$' % name, block)
+        mm = re.search(r'(?m)^\s+%s:\s*"?([^"\n]*)"?\s*(?:#.*)?$' % name, block)
         return mm.group(1).strip() if mm else None
 
     unit = field("unit_hex")

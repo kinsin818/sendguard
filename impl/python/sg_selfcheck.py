@@ -191,6 +191,25 @@ def check_order_terms(cell, spec_sha):
         if k not in cell:
             p.append("declared sub_identity dimension %r is not a top-level field, so "
                      "ci/equality.py cannot resolve it" % k)
+    # rev7: the twelve length cells must name the bytes they passed, report the
+    # three widths of THAT name, and keep the measured ceiling in its own field
+    if cell.get("case_group") == "len" and cell.get("extra") is not True:
+        b = (cell.get("sub_identity") or {}).get("base_len")
+        ns = cell.get("name_source") or ""
+        if isinstance(b, int):
+            if len(ns) != 2 * b:
+                p.append("rev7: name_source is %d hex chars, not the 2*base_len=%d of the "
+                         "component actually passed" % (len(ns), 2 * b))
+            lt = cell.get("len_triple")
+            if not isinstance(lt, dict) or set(lt) != {"code_points", "utf16_code_units",
+                                                       "utf8_bytes"}:
+                p.append("rev7: len_triple must be the flat three widths of the name, got %r"
+                         % (type(lt).__name__ if lt is not None else None))
+            elif any(v != b for v in lt.values()):
+                p.append("rev7: len_triple %r does not equal base_len %r for the pinned "
+                         "single-unit filler -- this port counted something else" % (lt, b))
+        if not isinstance(cell.get("len_ceiling"), int):
+            p.append("rev7: measured ceiling must be published in len_ceiling")
     return p
 
 

@@ -13,23 +13,15 @@ digest split VERDICT=["os_legality_verdict", "mechanism_class", "phantom", "roun
 live(after extra skipped)=48 gate_keys=45 colliding_keys=1 required_identity_involved=1 | colliding_if_extras_not_skipped=20
    GATE-COLLISION ('tapi', 'T-API', ()) holds 4 cells, 2 digests
 void_reason_histogram={}
-behavioural_fields_absent_from_some_cells={"enum_to_stat_agrees": 1, "name_mutated": 43, "phantom": 1, "roundtrip_ok": 43}
-order_term_problems=123
-   ORDER-TERM blind__B1.json ['spec_sha256 does not equal the recomputed blob face']
-   ORDER-TERM blind__B2.json ['spec_sha256 does not equal the recomputed blob face']
-   ORDER-TERM blind__B3.json ['spec_sha256 does not equal the recomputed blob face']
-   ORDER-TERM blind__B4.json ['spec_sha256 does not equal the recomputed blob face']
-   ORDER-TERM blind__B5.json ['spec_sha256 does not equal the recomputed blob face']
-   ORDER-TERM ctrl__T-CTRL-ASCII.json ['spec_sha256 does not equal the recomputed blob face']
-   ORDER-TERM ctrl__T-CTRL-CANON.json ['spec_sha256 does not equal the recomputed blob face']
-   ORDER-TERM ctrl__T-CTRL-ILLEGAL-CHAR.json ['spec_sha256 does not equal the recomputed blob face']
+behavioural_fields_absent_from_some_cells={"enum_to_stat_agrees": 1, "name_mutated": 45, "phantom": 1, "roundtrip_ok": 45}
+order_term_problems=0
 controls_checked=5 control_mismatched=0
    CONTROL T-CTRL-ASCII           PASS
    CONTROL T-CTRL-CANON           PASS
    CONTROL T-CTRL-ILLEGAL-CHAR    PASS
    CONTROL T-CTRL-NAMETOOLONG     PASS
    CONTROL T-CTRL-PARSE           PASS
-cells_with_hang=0 cells_blocked=43 could_not_run=0 migrated=73 superseded=11
+cells_with_hang=0 cells_blocked=45 could_not_run=0 migrated=106 superseded=11
 
 cells_required=44 cells_matched=44 blocked=0 extra=75 controls_pass=True
-detail: cells_produced=123 cells_valid=123 legs_blocked(read)=empty=43 cells_produced_incl_extra=75 python_tapi=4/4
+detail: cells_produced=123 cells_valid=123 legs_blocked(read)=empty=45 cells_produced_incl_extra=75 python_tapi=4/4

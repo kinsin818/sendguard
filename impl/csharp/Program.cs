@@ -599,6 +599,7 @@ namespace SendGuardProbe
                 return new Dictionary<string, object>
                 {
                     {"lo", lo}, {"hi", hi}, {"boundary", 0}, {"conclusive", false},
+                    {"probes_run", probes.Count},
                     {"reason", "smallest probe failed - no monotone interval"}, {"probes", probes}
                 };
             }
@@ -608,6 +609,7 @@ namespace SendGuardProbe
                 return new Dictionary<string, object>
                 {
                     {"lo", lo}, {"hi", hi}, {"boundary", hi}, {"conclusive", false},
+                    {"probes_run", probes.Count},
                     {"reason", "largest probe succeeded - boundary is at least hi, interval did not bracket it"},
                     {"probes", probes}
                 };

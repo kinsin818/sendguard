@@ -65,6 +65,7 @@ python ci/equality.py | grep VERDICT-DISAGREE
 | `T16` zip 打包回读 | 同一个名、同一份载荷：三门 28 字节、一门 296、一门 292 | 压缩库在"要不要置 UTF-8 标志位"上分三派，Mac 的包到 Windows 变形就是这里 |
 | 长度族六格（全部是 `\\?\` 扩展形式那一侧） | 三门 `roundtrip_ok=True`，一门 False（它在 parse 层就拒绝了这个前缀——**这个"拒绝"只对它实际跑过的那枚 JVM 成立**，见下一行）；一档上另一门 `enum_to_stat_agrees=False` | **普通路径下六个档六门全同，加了 `\\?\` 就分歧**：长路径不是"开一个注册表开关"，是每个可执行文件的清单 + 每种调用方式 |
 | `\\?\` 那一侧的门内分歧（Java，同一枚编译好的类） | 用 Temurin 17.0.17（也就是已录格子上跑的那枚 exe）启动：`Paths.get`/`Path.of` 抛 `InvalidPathException`（`Illegal character [?] at index 2`），同一次运行里 `new File(String)` 接受；换成 Temurin 21.0.6 拿同一个 class 再跑：`Paths.get` 接受并把前缀吃掉（`toString()` 已不含 `\\?\`） | **分歧可以落在同一门语言的两个运行时之间**——所以"用哪种语言写的"这个问题问得不完整，体检报告必须连 JVM 版本一起上报，否则客户端装的是哪一版没人知道 |
+| 控制格自检的出处 | 六门 30 个控制格全部盖了自检通过标记，**但没有一格写着"这个结论是哪条命令跑出来的"**——`spec/` 里没有这个字段，所以这不是某一门的疏忽，是契约的空位（量出来的：`python ci/validate_cells.py` 的控制格栏） | 校准格校准出来的不是 Windows，是各门愿不愿意对自己的结论负责；而"负责"目前最多只能写到 `true` 这一格字 |
 | 三个控制格（`T-CTRL-PARSE`、`-ILLEGAL-CHAR`、`-NAMETOOLONG`） | 机制分类上 Java 给 `unknown`，其余五门给同一个具体类；`T-CTRL-CANON` 上只有一门敢分类 | 校准格校准出来的不是 Windows，是各门愿不愿意对自己的结论负责 |
 
 这些行没有一行需要解释谁对。**它们就是产品**：任何一个用单一语言写成的"发件前体检器"，都会在同一台机器上
@@ -171,8 +172,10 @@ cat impl/java/tools/ext-path-of-repro.txt
 
 未做，且这份报告一律不提具体结论：**macOS 与 Linux 的行**（**卡住它的不是那一下推送**：规范里早就封存了 22 行 macOS、22 行 Ubuntu 的预测，可六门的采集器都把结果路径写死成 `results/<门>.windows.x64/`，探的又是 Windows 独有语义，所以现在任何 runner 都产不出这些面；要做的是六门各来一遍 OS 可移植化，活儿与前置的契约决定写在 `docs/tickets/SG-F3-os-portability.md`。CI 那边今天补上的任务是**在三个 OS 上重跑判据本身**，（这个任务**从没跑过**，因为还没有推送）；工作流文件里也自己写明它不产结果面——以前 README 与本节都写着“需要 CI 跑”，读者会理解成“一推就有”，那是我们表述的错，不是数据的错。本仓远端在
 `https://github.com/kinsin818/sendguard`，公开仓 + standard runner 的分钟数免费，但推送动作不在本座授权内）、
-**同一门语言内的运行时对照**（Java 的 `java.io` 那一族在长度各档上的展开：出数的窗口自己承认这半未做完，
-已录格子只覆盖它实际跑过的那枚 17.0.17，见 `docs/FINDINGS-rev6.md` M7）、
+**同一门语言内、同一 API 族内的对照**（Java 已经把 `FileOutputStream.write` 在 12 个长度档上各记成一格，**普通侧与
+`\\?\` 侧全部 `roundtrip_ok=true`**，而同样是 Java 的 `Files.write` 在扩展档记的是解析层拒绝——两套答案现在都在树里，
+不再只是一段话。仍未做完的是其余 `java.io` 入口的展开，以及把第二版运行时的答案也记成格（今天只有一份复现记录），
+见 `docs/FINDINGS-rev6.md` M7 与 `evidence/S11/SG-F2-acceptance.md`）、
 U 盘/SD 卡（FAT32/exFAT）、网络卷、网盘与邮件附件的文件名重写层、手机端下载层的字符清洗。
 
 还欠契约层两句拍板（本座不擅自改封存件，见 §5 最后两条）：一是给"哪枚可执行文件答的"一个跨门公共字段——

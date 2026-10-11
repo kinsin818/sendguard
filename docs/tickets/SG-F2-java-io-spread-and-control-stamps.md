@@ -68,3 +68,13 @@ claim, and `docs/whitepaper.md` §3 quotes the control cells today). Reply with 
 `BLOCKED | <item, exact command, one next human action>`. If Part 1 is genuinely blocked by the parse-layer
 refusal you reproduced, that is a legitimate `DONE` with Part 1 reported as `NOT-REACHED(reason=…)` and the
 command that shows why - a blocked leg that says so is worth more than a green one that hedges.
+
+## Amendment after acceptance (`evidence/S11/SG-F2-acceptance.md`)
+
+The lane met all five numbered criteria (`b56e9c4`). The one thing it did not carry is **this ticket's fault, not
+its own**: it asked for `control_pass_evidence`, a field that appears in no contract round - and the census added
+to `ci/validate_cells.py` at 13:34 shows 30 control cells stamped across six ports with **zero** carrying any
+source, in every lane alike. Putting an uncontracted requirement into one worker's criteria and then treating its
+absence as that worker's remaining piece is a dispatcher defect: an unenforceable clause in a ticket is not a
+standard, it is a trap. The requirement belongs to the contract question in
+`docs/NOTICE-rev9-proposal.md` (third item), which is where it now stands instead of in somebody's ticket.

@@ -2,7 +2,7 @@
 
 Run:  python ci/validate_cells.py            # prints and writes docs/cell-validation.md
       python ci/validate_cells.py --quiet     # only the summary lines
-      python ci/validate_cells.py --selftest  # 22 arms: it must refuse, and it must be able to say yes
+      python ci/validate_cells.py --selftest  # 24 arms: it must refuse, and it must be able to say yes
 
 This leg takes no output path on purpose: it always writes the repository's own face, and any other
 argument is refused (rc=3) rather than ignored. Measured on 2026-10-11 11:46: the seat passed
@@ -109,6 +109,30 @@ def dispatch(argv):
     if unknown:
         return "refuse", unknown
     return ("selftest",) if "--selftest" in argv else ("run", quiet)
+
+
+CONTROL_FIELD = "control_pass"
+CONTROL_EVIDENCE_FIELD = "control_pass_evidence"
+
+
+def stamp_census(cells):
+    """Control cells that carry a self-check result, and how many of them say where it came from.
+
+    A calibration stamp is a claim about the instrument, so the census separates three states and reports them
+    apart: stamped with an evidence pointer, stamped without one, and never stamped. `True` with no provenance
+    is the case a reviewer cannot re-check, which is why it is not folded into the first bucket.
+    """
+    out = {"stamped_with_evidence": 0, "stamped_no_evidence": 0, "unstamped": 0}
+    for c in cells:
+        if not isinstance(c, dict) or c.get("case_group") != "ctrl":
+            continue
+        if c.get(CONTROL_FIELD) is None:
+            out["unstamped"] += 1
+        elif c.get(CONTROL_EVIDENCE_FIELD):
+            out["stamped_with_evidence"] += 1
+        else:
+            out["stamped_no_evidence"] += 1
+    return out
 
 
 APPLICABILITY_FIELD = "spec_applicable_on_windows"
@@ -235,6 +259,17 @@ def selftest():
         "selftest A17 red: compared-but-optional fields must be named, got %r" % (gap_req,))
     chk("phantom" in gap_doc and "len_triple" in gap_doc,
         "selftest A18 red: a verdict field the schema never documents must be called out separately")
+    s = stamp_census([{"case_group": "ctrl", CONTROL_FIELD: True, CONTROL_EVIDENCE_FIELD: "python x.py"},
+                      {"case_group": "ctrl", CONTROL_FIELD: True},
+                      {"case_group": "ctrl", CONTROL_FIELD: False},
+                      {"case_group": "ctrl"},
+                      {"case_group": "trap", CONTROL_FIELD: True}])
+    chk(s == {"stamped_with_evidence": 1, "stamped_no_evidence": 2, "unstamped": 1},
+        "selftest A23 red: a control stamped without a source is its own bucket, never counted as verified "
+        "and never counted as unstamped, got %r" % (s,))
+    chk(stamp_census([{"case_group": "trap", CONTROL_FIELD: True}]) ==
+        {"stamped_with_evidence": 0, "stamped_no_evidence": 0, "unstamped": 0},
+        "selftest A24 green: non-control cells are not in a control census")
     a = applicability_counts([{APPLICABILITY_FIELD: True}, {APPLICABILITY_FIELD: False},
                               {"case_id": "T01"}, {APPLICABILITY_FIELD: None}])
     chk(a == {"true": 1, "false": 1, "absent": 2},
@@ -265,7 +300,7 @@ def main():
         errs = selftest()
         for e in errs:
             print("SELFTEST-FAIL: %s" % e)
-        print("arms=22 passed=%d" % (22 - len(errs)))
+        print("arms=24 passed=%d" % (24 - len(errs)))
         return 1 if errs else 0
     quiet = mode[1]
     if not os.path.isfile(SCHEMA):
@@ -290,6 +325,7 @@ def main():
     total_bad = 0
     missing_faces = []
     appl = {}
+    stamps = {}
     for port in PORTS:
         face = os.path.join(REPO, "results", "%s.windows.x64" % port)
         if not os.path.isdir(face):
@@ -325,9 +361,23 @@ def main():
                 rep = m.group(1)
         lines += port_lines(port, n, ok, rep, problems, quiet)
         appl[port] = applicability_counts(port_cells)
+        stamps[port] = stamp_census(port_cells)
     lines += ["", "**invalid cells across the six faces: %d**" % total_bad, ""]
     lines += omission_lines(omissions, [p for p in PORTS if os.path.isdir(
         os.path.join(REPO, "results", "%s.windows.x64" % p))], gap_fields)
+    lines += ["", "## Control-cell stamps and whether they say where they came from", "",
+              "| port | ctrl cells | stamped with an evidence pointer | stamped, no pointer | no stamp |",
+              "|---|---|---|---|---|"]
+    for p in PORTS:
+        s = stamps.get(p, {"stamped_with_evidence": 0, "stamped_no_evidence": 0, "unstamped": 0})
+        lines.append("| %s | %d | %d | %d | %d |"
+                     % (p, s["stamped_with_evidence"] + s["stamped_no_evidence"] + s["unstamped"],
+                        s["stamped_with_evidence"], s["stamped_no_evidence"], s["unstamped"]))
+    naked = [p for p in PORTS if stamps.get(p, {}).get("stamped_no_evidence", 0) > 0]
+    lines += ["", "**ports holding a control stamp with no recorded source: %s** (a stamp is a claim about the "
+              "instrument; without a pointer a reviewer cannot re-check it)"
+              % (", ".join("`%s`" % p for p in naked) or "none"), ""]
+
     declared = [p for p in PORTS if appl.get(p, {}).get("true", 0) + appl.get(p, {}).get("false", 0) > 0]
     lines += ["", "## Who declares whether a question applies on this OS", "",
               "`spec/schema.json` documents `spec_applicable_on_windows` and no leg reads it. The counts "

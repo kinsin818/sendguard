@@ -918,6 +918,14 @@ def main(argv):
                           for k, f, rec in vdis],
         "verdict_fields": VERDICT_FIELDS,
         "probe_fields": PROBE_FIELDS,
+        # The records the gate actually compared, with the spec fingerprint each was stamped with. Emitted
+        # here rather than recomputed by ci/spec_drift.py: a second implementation of "which record of this
+        # port's represents this cell" is the two-rulers defect this project has now caught in itself three
+        # times, and ci/spec_drift.py refused to guess (it counted 291 records against the gate's 264 cells).
+        "compared_records": sorted(
+            [n, fmt(k), str(flat[n][k].get("spec_sha256")
+                             or (flat[n][k].get("provenance") or {}).get("spec_sha256") or "ABSENT")]
+            for n in names for k in cells_live),
     }
     # The artifact path is an argument, not a constant. Measured reason: ci/selftest.py runs this gate
     # against small fixture trees, and with a hardcoded path each fixture run overwrote the real verdict

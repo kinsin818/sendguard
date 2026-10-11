@@ -150,6 +150,16 @@ cat impl/java/tools/ext-path-of-repro.txt
   python ci/validate_cells.py | tail -1 && sed -n '/does not require/,/^## What this/p' docs/cell-validation.md
   ```
 
+- **"一份冻结规范"这句话此前只在文件头里写着，没人拿去比过记录**。每一格其实都带着一枚规范指纹，但整条流水线
+  从来没把它和清单上的当前指纹对过一次。一查就查出：**被比较的 264 条记录里 27 条带着上一轮指纹**（全是同一门的
+  陷阱格／盲样本格／入口格，那门在 06:11 重封存之前没重跑）。新加的腿不给我圆场的空间：它先找出哪一次提交的
+  `spec/cases.yaml` 哈希等于那枚旧指纹，再把那一版与 HEAD 逐行求差、从差的行反查所属的 case（一个 case 是一整块，
+  只读改动那一行会漏），最后把差集与那 27 格的 case id 求交——**差集只碰 `T17`/`T18`，27 格里一个都没有**，
+  所以"问的是同一道题"这件事现在是量出来的，不是我说出来的。以后只要差集真碰到某个带旧指纹的格，这条腿直接退 1。
+  ```
+  python ci/spec_drift.py && sed -n '/Per older fingerprint/,/^## What/p' docs/spec-drift.md
+  ```
+
 ## 6. 现在做到哪一步，没做什么
 
 已做：六门全部在 Windows x64 本机出数，**44 个必交格六门全答、全部可比**；闸、自检、矩阵、缺口表、

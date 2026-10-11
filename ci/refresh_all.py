@@ -30,10 +30,12 @@ GEN = [("ci/gap_report.py", "docs/GAP.md", (0,)),
        ("ci/acceptance.py", "docs/acceptance-S02.md", (0,)),
        ("ci/status_brief.py", "docs/STATUS.md", (0,)),
        ("ci/coverage_report.py", "docs/coverage.md", (0,)),
+       ("ci/spec_drift.py", "docs/spec-drift.md", (0, 1)),
        ("ci/evidence_table.py", "docs/evidence.md", (0,))]
 JUDGE = [("ci/selftest.py", ["--scratch-root", os.path.join(REPO, "..", "sg-selftest-refresh")]),
          ("ci/lint.py", ["--repo-root", REPO, "--selftest"]),
          ("ci/validate_cells.py", ["--selftest"]),
+         ("ci/spec_drift.py", ["--selftest"]),
          ("ci/equality.py", []),
          ("ci/triangle.py", [])]
 

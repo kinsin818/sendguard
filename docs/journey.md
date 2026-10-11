@@ -372,6 +372,46 @@ the cleanest description of the discipline in this whole build: "It ran cleanly 
 the edit is in flight, not abandoned."
 
 
+### 2.17 "One frozen spec" was a line in a header, not a check on the records
+
+The equality claim depends on all six ports having answered *the same* specification. I had that in
+`spec/cells-required.json`'s header (`spec_blob_sha256`) and in every cell's `spec_sha256` field, and nothing
+in the pipeline ever compared the two - the fingerprint was decoration until I looked at it because the
+TypeScript lane's conformance fix made me check what the records were stamped with.
+
+```
+python ci/spec_drift.py
+wrote docs/spec-drift.md bytes=2491 compared=264 current=237 older=27 unstamped=0 older_unresolvable=0 affected_by_delta=0
+OUTCOME=CLEAN drift_reached_compared_cells=0 (older fingerprints disclosed above, 27 records)
+```
+
+**27 of the 264 compared records - all Python's trap, blind and T-API cells - are stamped with the fingerprint
+committed at 05:05, not the one from 06:11.** That is the round before `len_fill` existed, which is also the
+round the length family was unusable in. The leg does not let me hand-wave it: it locates the commit whose
+`spec/cases.yaml` blob hashes to that fingerprint, diffs that face against HEAD, and intersects the ids the
+delta touches with the ids of the cells carrying the older stamp. The delta touches `T17`/`T18` only; the 27
+records are none of those, so the answers were asked under text that has not moved. `docs/spec-drift.md`
+prints the whole chain, and if a future delta ever does reach a stale cell the leg exits 1 instead of writing
+a sentence about it.
+
+Two defects in the leg itself, caught by its own arms rather than by anyone else:
+
+- Reading ids only off the changed line is **under-inclusive**: a case is a block, so editing `- id: T01`'s
+  `name:` two lines below changes T01's question and names no id on that line. Arm A3 failed against the first
+  version; the fix walks back to the enclosing `id:`. My docstring had promised the opposite bias ("wide on
+  purpose") while the code was narrow - which is the worst kind of comment bug, because the comment is what a
+  later reader trusts.
+- `assess()` read the spec through git, so no fixture could reach the same code path the real run uses. A leg
+  whose arms test a different path than production is decorated, not tested; there is now a `reader=` seam and
+  A7/A8 exercise the real comparison through it. 15 arms, and the two red ones were shown to flip when the
+  enclosing-id walk is deleted.
+
+It also caught itself once on the way: my first hand count of "compared records" was 291 against the gate's
+264, because I re-implemented which of a port's duplicate representations stands for a cell. The gate now
+emits `compared_records` in its artifact and the drift leg reads that - the same fix as `matrix_table.py`
+learning to consume the gate instead of judging again.
+
+
 ## 3. What the six windows did that the plan did not expect
 
 Two things the committee's construction order never asked for and the ports delivered anyway: the

@@ -23,6 +23,7 @@ REPO = os.path.dirname(HERE)
 GEN = [("ci/gap_report.py", "docs/GAP.md"),
        ("ci/matrix_table.py", "docs/matrix.md"),
        ("ci/expected_summary.py", "docs/expected-summary.md"),
+       ("ci/status_brief.py", "docs/STATUS.md"),
        ("ci/evidence_table.py", "docs/evidence.md")]
 JUDGE = [("ci/selftest.py", ["--scratch-root", os.path.join(REPO, "..", "sg-selftest-refresh")]),
          ("ci/lint.py", ["--repo-root", REPO, "--selftest"]),

@@ -1,0 +1,59 @@
+# SENDGUARD java port - which probe source builds, and which one produced the recorded cells
+# run_local=2026-10-11 10:54:11 +0800
+# javac used: C:/Program Files/Eclipse Adoptium/jdk-17.0.17.10-hotspot/bin/javac
+## step A: git show HEAD:impl/java/src/CellProbe.java (commit e7a4d7f, 09:17:41) -> /d/s/sg-head-probe-check/CellProbe.java
+javac_rc=1
+javac_output:
+    D:\s\sg-head-probe-check\CellProbe.java:183: error: cannot find symbol
+                v = createViaString(requested, payload, entry, wr);
+                    ^
+      symbol:   method createViaString(String,byte[],String,long[])
+      location: class CellProbe
+    D:\s\sg-head-probe-check\CellProbe.java:283: error: cannot find symbol
+                    got = target != null ? Files.readAllBytes(target) : readViaIoString(requested);
+                                                                        ^
+      symbol:   method readViaIoString(String)
+      location: class CellProbe
+    Note: D:\s\sg-head-probe-check\CellProbe.java uses unchecked or unsafe operations.
+    Note: Recompile with -Xlint:unchecked for details.
+    2 errors
+  [head blob line 183:]             v = createViaString(requested, payload, entry, wr);
+  [head blob line 283:]                 got = target != null ? Files.readAllBytes(target) : readViaIoString(requested);
+## step B: worktree impl/java/src/CellProbe.java (has the 3 method definitions) -> impl/java/build-check
+javac_rc=1
+javac_output:
+    impl\java\src\CellProbe.java:624: 错误: 找不到符号
+            FileInputStream in = new FileInputStream(target);
+            ^
+      符号:   类 FileInputStream
+      位置: 类 CellProbe
+    impl\java\src\CellProbe.java:624: 错误: 找不到符号
+            FileInputStream in = new FileInputStream(target);
+                                     ^
+      符号:   类 FileInputStream
+      位置: 类 CellProbe
+    impl\java\src\CellProbe.java:626: 错误: 找不到符号
+                ByteArrayOutputStream buf = new ByteArrayOutputStream();
+                ^
+      符号:   类 ByteArrayOutputStream
+      位置: 类 CellProbe
+    impl\java\src\CellProbe.java:626: 错误: 找不到符号
+                ByteArrayOutputStream buf = new ByteArrayOutputStream();
+                                                ^
+      符号:   类 ByteArrayOutputStream
+      位置: 类 CellProbe
+    注: impl\java\src\CellProbe.java使用了未经检查或不安全的操作。
+    注: 有关详细信息, 请使用 -Xlint:unchecked 重新编译。
+    4 个错误
+(empty output above = compiled clean)
+grep_count_createViaString_definition_worktree=1
+grep_count_createViaString_definition_HEAD=0
+grep_count_createViaString_definition_79b2c71=0
+worktree_vs_HEAD_diffstat=54	1	impl/java/src/CellProbe.java
+## step C (same session, after adding the two missing java.io imports): worktree probe recompiled
+javac_rc=0
+javac_output:
+    Note: impl\java\src\CellProbe.java uses unchecked or unsafe operations.
+    Note: Recompile with -Xlint:unchecked for details.
+step_B_had_rc1_because=1 use-site(s) and the import was missing at that moment
+class_files_now_in_impl_java_build_check=CellProbe$Land.class CellProbe.class 

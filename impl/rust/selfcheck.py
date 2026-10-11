@@ -18,7 +18,8 @@ Exit codes:
   0 all cells valid, every required row answered, extras marked, arms pass
   1 at least one VOID cell
   2 an arm of this validator failed, or the controls failed (the ruler, not the measurement)
-  3 a required row is unanswered and not blocked, or an extra is unmarked
+  3 a required row is unanswered and not blocked, an extra is unmarked, or a length rung does not
+    record the bytes it passed (rev7)
   4 inputs unreadable / results dir missing
 """
 import glob
@@ -279,6 +280,107 @@ BASE_FACE = {
 }
 
 
+LEN_LADDER_FORMS = ("plain", "extended")
+GOOD_RUNG = {
+    "case_group": "len", "case_id": "T17", "base_len": 78, "path_form": "plain", "extra": False,
+    "name_source": "61" * 78, "name_is_pinned_fill_repeated": True, "name_len_equals_base_len": True,
+    "len_triple_equals_base_len": True, "name_len": 78,
+    "len_triple": {"code_points": 78, "utf16_code_units": 78, "utf8_bytes": 78},
+    "len_ceiling": {"max_ok_code_units": 32739, "first_failing_code_units": "32740",
+                    "first_failing_winerror": "206", "measured_by_case_id": "T17-CEILING-PLAIN",
+                    "width_pinned_tier_roots": ["13=D:\\sgdeadbeef"], "basis": "x"},
+}
+
+
+def read_len_fill(path):
+    """The pin is read from the frozen table; a rule this seat retypes is a rule this seat can drift."""
+    text = io.open(path, encoding="utf-8").read()
+    m = re.search(r"(?m)^len_fill:\s*$", text)
+    if not m:
+        return None
+    unit, applies, rule = "", [], ""
+    for line in text[m.end():].splitlines():
+        st = line.strip()
+        if st and not line.startswith((" ", "\t")):
+            break
+        if not st or st.startswith("#"):
+            continue
+        k, _, v = st.partition(":")
+        v = v.split("#")[0].strip().strip('"')
+        if k == "unit_hex":
+            unit = v
+        elif k == "rule":
+            rule = v
+        elif k == "applies_to":
+            applies = [x.strip() for x in v.strip("[]").split(",")]
+    return {"unit_hex": unit.lower(), "applies_to": applies, "rule": rule}
+
+
+def rung_face_problems(c, fill, base=None, ceiling_index=None):
+    """rev7's three recording rules, as one predicate the leg and the arms both use.
+
+    A rung face must describe the bytes it passed: name_source is the hex of the component, the
+    component is the pinned unit repeated to exactly base_len code units, len_triple is the three
+    widths OF THAT NAME, and the measured ceiling lives in len_ceiling and cites a cell that
+    measured it.
+    """
+    errs = []
+    unit = fill["unit_hex"]
+    if not unit:
+        return ["no parsable len_fill.unit_hex in spec/cases.yaml"]
+    want_char = chr(int(unit, 16))
+    bl = c.get("base_len")
+    if bl is None:
+        return ["base_len absent, so the pinned width the cell claims is unknown"]
+    ns = c.get("name_source") or ""
+    want_hex = unit * int(bl)
+    if ns != want_hex:
+        errs.append("name_source is %d hex characters, not the pinned filler (%d): %s"
+                    % (len(ns), len(want_hex), ns[:24] + ("..." if len(ns) > 24 else "")))
+    try:
+        landed = bytes.fromhex(ns).decode("utf-8") if ns else ""
+    except ValueError:
+        landed = "<undecodable hex>"
+    if landed and landed != want_char * int(bl):
+        errs.append("name_source decodes to %r, which is not %r repeated %d times"
+                    % (landed[:24], want_char, int(bl)))
+    if c.get("name_len") != bl:
+        errs.append("name_len=%r != base_len=%r" % (c.get("name_len"), bl))
+    if c.get("name_is_pinned_fill_repeated") is not True:
+        errs.append("name_is_pinned_fill_repeated is not true")
+    if c.get("name_len_equals_base_len") is not True:
+        errs.append("name_len_equals_base_len is not true")
+    if c.get("len_triple_equals_base_len") is not True:
+        errs.append("len_triple_equals_base_len is not true")
+    lt = c.get("len_triple")
+    if not isinstance(lt, dict):
+        errs.append("len_triple is not an object of the three widths")
+    else:
+        for k in ("code_points", "utf16_code_units", "utf8_bytes"):
+            if lt.get(k) != bl:
+                errs.append("len_triple.%s=%r != base_len=%r (the triple must be the width of the name this cell passed)"
+                            % (k, lt.get(k), bl))
+    lc = c.get("len_ceiling")
+    if not isinstance(lc, dict):
+        errs.append("len_ceiling absent: the ceiling has to be published somewhere other than len_triple")
+    else:
+        for k in ("max_ok_code_units", "measured_by_case_id"):
+            if lc.get(k) in (None, ""):
+                errs.append("len_ceiling.%s missing" % k)
+        if lc.get("max_ok_code_units") == bl:
+            errs.append("len_ceiling.max_ok_code_units equals base_len, which means the cell put the "
+                        "name width in the ceiling field instead of measuring a ceiling")
+        if ceiling_index is not None:
+            cited = lc.get("measured_by_case_id")
+            got = ceiling_index.get(str(cited))
+            if got is None:
+                errs.append("len_ceiling cites %r, which is not a face this port published" % cited)
+            elif got != lc.get("max_ok_code_units"):
+                errs.append("len_ceiling says max_ok=%r but the cited cell %r published %r"
+                            % (lc.get("max_ok_code_units"), cited, got))
+    return errs
+
+
 def arms(schema, sets, pinned):
     """Two-sided self-test. A red arm that does not fail is a dead rule."""
     base = dict(BASE_FACE)
@@ -354,6 +456,36 @@ def arms(schema, sets, pinned):
                     len([e for e in check_cell(good_w, schema, sets, pinned) if "read_result" in e]) == 0, None))
     res.append(("note: read_result word sets differ between the two rulers", True,
                 ["canonical=%s schema=%s" % (sorted(canon), sorted(sch)) if canon != sch else "identical"]))
+    # rev7: the length family's pin, both sides. The red arms are the readings the contract called out.
+    fill = read_len_fill(CASES) or {"unit_hex": "", "applies_to": [], "rule": ""}
+    idx = {"T17-CEILING-PLAIN": 32739}
+    res.append(("green: a rung face that passes the pinned filler and cites its ceiling passes",
+                rung_face_problems(dict(GOOD_RUNG), fill, 78, idx) == [],
+                rung_face_problems(dict(GOOD_RUNG), fill, 78, idx)))
+    label_face = dict(GOOD_RUNG, name_source="742e62696e", name_len=6,
+                      name_is_pinned_fill_repeated=False, name_len_equals_base_len=False,
+                      len_triple_equals_base_len=False,
+                      len_triple={"code_points": 32739, "utf16_code_units": 32739, "utf8_bytes": 32739})
+    errs_label = rung_face_problems(label_face, fill, 78, idx)
+    res.append(("red: a rung whose name_source is the label t.bin and whose len_triple is 32739 is refused",
+                len(errs_label) >= 4, errs_label[:2]))
+    same_as_base = dict(GOOD_RUNG)
+    same_as_base["len_ceiling"] = dict(GOOD_RUNG["len_ceiling"], max_ok_code_units=78)
+    res.append(("red: a ceiling field that just repeats base_len is refused",
+                len(rung_face_problems(same_as_base, fill, 78, idx)) > 0,
+                rung_face_problems(same_as_base, fill, 78, idx)[:1]))
+    no_ceil = dict(GOOD_RUNG)
+    no_ceil.pop("len_ceiling")
+    res.append(("red: a rung with no len_ceiling is refused",
+                len(rung_face_problems(no_ceil, fill, 78, idx)) > 0,
+                rung_face_problems(no_ceil, fill, 78, idx)[:1]))
+    wrong_cite = dict(GOOD_RUNG)
+    wrong_cite["len_ceiling"] = dict(GOOD_RUNG["len_ceiling"], measured_by_case_id="T17-CEILING-MADE-UP")
+    res.append(("red: a ceiling citation to a cell that was never published is refused",
+                len(rung_face_problems(wrong_cite, fill, 78, idx)) > 0,
+                rung_face_problems(wrong_cite, fill, 78, idx)[:1]))
+    res.append(("green: the pin is read from spec/cases.yaml, not retyped",
+                fill["unit_hex"] == "61" and fill["applies_to"] == ["T17", "T18"], fill))
     return res
 
 
@@ -465,6 +597,42 @@ def main():
         print("blocked rows live in %s, not in results/: cell-identity section 3 keeps non-cells out of that directory, and canonical.md has no closed word for a measurement that never ran" % os.path.relpath(blocked_path, REPO))
     print("extra=%d" % len(extras))
     print("cells_void=%d" % len(void))
+    # ---- rev7: the twelve required length rungs must describe the bytes they passed
+    fill = read_len_fill(CASES)
+    ladder = contract.get("base_len_ladder") or []
+    ceiling_index = {}
+    for name, c in faces.items():
+        if c.get("case_group") == "len" and str(c.get("case_id", "")).endswith(("-CEILING-PLAIN", "-CEILING-EXTENDED")) \
+                and isinstance(c.get("max_ok"), int):
+            ceiling_index[c["case_id"]] = c["max_ok"]
+    rung_rows, rung_problems = [], []
+    for cid in ("T17", "T18"):
+        for base in ladder:
+            for form in LEN_LADDER_FORMS:
+                hits = [(n, c) for n, c in faces.items()
+                        if c.get("case_group") == "len" and c.get("case_id") == cid
+                        and c.get("base_len") == base and c.get("path_form") == form
+                        and c.get("extra") is not True]
+                if len(hits) != 1:
+                    rung_problems.append("%s base_len=%s %s: %d required faces, expected exactly 1"
+                                         % (cid, base, form, len(hits)))
+                    continue
+                name, c = hits[0]
+                errs = rung_face_problems(c, fill or {"unit_hex": ""}, base, ceiling_index)
+                rung_rows.append("%s/%s[%d,%s]" % (c.get("case_group"), cid, base, form))
+                if errs:
+                    for e in errs:
+                        rung_problems.append("%s: %s" % (name, e))
+    print("rev7_pin: unit_hex=%s applies_to=%s rule=%s"
+          % ((fill or {}).get("unit_hex") or "-", ",".join((fill or {}).get("applies_to") or []) or "-",
+             (fill or {}).get("rule") or "-"))
+    print("rev7 base ladder read from the contract: %s   ceiling faces indexed: %s"
+          % (json.dumps(ladder), json.dumps({k: v for k, v in sorted(ceiling_index.items())})))
+    print("len_rungs: rows_checked=%d problems=%d" % (len(rung_rows), len(rung_problems)))
+    print("len_rungs: all cited ceilings resolve to a published face=%s"
+          % (not [p for p in rung_problems if "not a face this port published" in p],))
+    for p in rung_problems[:12]:
+        print("   LEN-RUNG-PROBLEM %s" % p)
     print("cells_hang=%d" % sum(1 for c in faces.values() if c.get("create_result") == "hang"))
     print("controls_pass=%s (control faces read=%d)" % (controls_pass, len(ctrl)))
     print("contract=%s sha256=%s generated_by=%s" % (os.path.relpath(REQUIRED_LIST, REPO), contract_sha[:16], contract.get("generated_by")))
@@ -523,6 +691,9 @@ def main():
         "unmarked_extra": sorted(unmarked_extra),
         "blind": {"rows_in_required_list": len(blind_rows_in_required), "plan_blind_exit": blind_rc,
                   "note": "the rev3 required list publishes no blind rows; the frozen table still publishes no blind sample hex"},
+        "len_rungs": {"rows_checked": len(rung_rows), "expected_rows": 4 * len(ladder),
+                      "problems": rung_problems, "pin_from_spec": fill,
+                      "ceiling_faces_indexed": sorted(ceiling_index)},
     }
     with open(os.path.join(HERE, "selfcheck-summary.json"), "wb") as fh:
         fh.write((json.dumps(summary, indent=2, ensure_ascii=True) + "\n").encode("utf-8"))
@@ -542,6 +713,9 @@ def main():
     if blocked_problems:
         print("INSTRUMENT-RED")
         return 2
+    if rung_problems or len(rung_rows) != 4 * len(ladder):
+        print("OUTCOME=NOT-COMPARABLE reason=len_rung_recording problems=%d rows=%d" % (len(rung_problems), len(rung_rows)))
+        return 3
     if unmarked_extra or dup_rows or marked_as_extra_but_required:
         print("OUTCOME=NOT-COMPARABLE reason=extra_or_duplicate_marking")
         return 3

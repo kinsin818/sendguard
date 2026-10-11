@@ -65,7 +65,8 @@ VERDICT_FIELDS = ["os_legality_verdict", "mechanism_class", "phantom", "roundtri
                   "bytes_written", "bytes_on_disk", "name_landed_as"]
 PROBE_FIELDS = [f for f in BEHAVIOUR if f not in VERDICT_FIELDS
                 and f not in ("case_group", "name_source", "path_form")]
-COMPARABILITY_FIELDS = ("path_form", "verdict_via")
+CELL_LEVEL_FIELDS = ("path_form",)                         # a different question entirely
+FIELD_LEVEL_FIELDS = {"verdict_via": "os_legality_verdict"}  # a different channel for one field only
 # `case_group` and `name_source` are identity, not answers: the group is in the cell key and the source
 # name is the pinned input. `path_form` and `verdict_via` name the question a port actually asked (plain
 # path vs `\\?\`, Win32 vs the .NET or POSIX layer), so a difference there does not make two ports
@@ -621,44 +622,68 @@ def main(argv):
         print("   calling the difference a port's behaviour would be the gate manufacturing a finding.")
 
     unpinned_keys = {k for k, _ in unpinned}
-    # ---- a port that asked a different layer, or addressed the path in a different form, answered a
-    # different question; that is named as a comparability gap, never judged as a disagreement.
+    # ---- a port that addressed the path in a different form asked a different question (the cell is out);
+    # a port that reached the legality verdict through a different *channel* loses only that field, because
+    # the rest of its record still describes the same bytes on the same disk.
     asked = {}
     for k in sorted(shared):
         if k in unpinned_keys:
             continue
         vs = {}
-        for f in COMPARABILITY_FIELDS:
+        for f in tuple(CELL_LEVEL_FIELDS) + tuple(FIELD_LEVEL_FIELDS):
             vs[f] = {n: recorded(f, cmp[n][k]) for n in names}
         asked[k] = vs
     incomparable = sorted(k for k in asked
                           if any(len({str(v) for v in vs.values() if v is not None}) > 1
-                                 for vs in asked[k].values()))
-    print("== cells where the ports did not ask the same layer the same way")
-    print("   cells=%d/%d (path_form or verdict_via differs -> answers about different things)"
-          % (len(incomparable), len(asked)))
-    for k in incomparable[:10]:
-        for f in COMPARABILITY_FIELDS:
+                                 for f, vs in asked[k].items() if f in CELL_LEVEL_FIELDS))
+    abstain = {}
+    for k in asked:
+        for src, gated in FIELD_LEVEL_FIELDS.items():
+            vals = {n: v for n, v in asked[k][src].items() if v is not None}
+            if len({str(v) for v in vals.values()}) <= 1:
+                continue
+            counts = {}
+            for v in vals.values():
+                counts[str(v)] = counts.get(str(v), 0) + 1
+            majority = max(counts, key=lambda x: counts[x])
+            if counts[majority] * 2 <= len(vals):
+                # no majority channel: the field is not comparable for anybody on this cell, and picking
+                # the first value as "the" channel would be the gate inventing a convention
+                abstain.setdefault(k, {}).setdefault(gated, set()).update(vals)
+            else:
+                abstain.setdefault(k, {}).setdefault(gated, set()).update(
+                    n for n, v in vals.items() if str(v) != majority)
+    print("== cells and fields the ports did not ask the same way")
+    print("   cells_excluded_whole(path_form differs)=%d/%d" % (len(incomparable), len(asked)))
+    for k in incomparable[:8]:
+        for f in CELL_LEVEL_FIELDS:
             vals = {n: v for n, v in asked[k][f].items() if v is not None}
             if len({str(v) for v in vals.values()}) > 1:
                 print("   %s %s -> %s" % (fmt(k), f,
                       " ".join("%s=%s" % (n, str(v)[1:-1])[:20] for n, v in sorted(vals.items()))))
+    print("   cells_with_a_field_dropped_for_some_ports(channel differs)=%d" % len(abstain))
+    for k in sorted(abstain)[:6]:
+        for gated, who in sorted(abstain[k].items()):
+            print("   %s %s not compared for %s (their other verdict fields still are)"
+                  % (fmt(k), gated, ",".join(sorted(who))))
 
     skip = unpinned_keys | set(incomparable)
     cells_live = [k for k in sorted(shared) if k not in skip]
 
     def truncation(k, f, rec):
-        """Which ports wrote a landed name that is a prefix of the pinned input, at a cut the record
-        itself does not explain. Printed as a note; never used to delete a value (see below).
+        """Which ports wrote a landed name that is a strict prefix of the pinned input.
 
-        A port that wrote the landed name cut short may be claiming either of two true things: that the OS
+        Printed as a note, never used to delete a value. Measured in the rev6 run: three ports recorded the
+        landed name of `report-2026.txt` as the hex of `report-2026`, and `invoice_FINAL_2026.xls` as the hex
+        of `invoice_FIN` - a fixed-width cut - while the same record said `name_mutated=false`. Two other
+        ports wrote the whole name as text.
 
-        Measured (rev6 run): three ports recorded the landed name of `report-2026.txt` as the hex of
-        `report-2026`, and `invoice_FINAL_2026.xls` as the hex of `invoice_FIN` - a fixed-width cut of the
-        hex string - while the same record said `name_mutated=false`. Two other ports wrote the whole name
-        as text. Scoring that as a disagreement about Windows would be the gate inventing a finding out of
-        a display width; scoring it as agreement would hide that three ports cannot currently show the name
-        they saw. It is reported as TRUNCATED, which is a defect against those records.
+        The same shape also occurs for a true reason: on `trail.` and `trailsp ` Windows really drops the
+        trailing character, so the honest landed name IS a prefix. From the recorded bytes the two cases are
+        indistinguishable, so this function no longer removes anything from the comparison - it names the
+        rows a reader should check against the port's own length fields, and the disagreement stands whether
+        or not the check clears it. A rule that cannot tell a finding from an artefact must not be allowed
+        to choose which one to delete.
         """
         if f not in NAMEISH:
             return set()
@@ -673,31 +698,39 @@ def main(argv):
         return bad
 
     def sweep(fields):
-        dis, nr, agree, trunc = [], [], 0, []
+        dis, nr, agree, trunc, absn = [], [], 0, [], []
         for k in cells_live:
             for f, rec in compare(fields, {n: cmp[n][k] for n in names}).items():
                 if not rec:
                     continue
+                drop = abstain.get(k, {}).get(f, set())
+                if drop:
+                    absn.append((k, f, sorted(drop)))
+                    rec = {n: v for n, v in rec.items() if n not in drop}
+                    if not rec:
+                        continue
                 cut = truncation(k, f, rec)
                 if cut:
                     trunc.append((k, f, sorted(cut)))
-                if not rec:
-                    continue
+                # an abstaining port is not a port that failed to record: it asked a different channel,
+                # and counting it in `not_recorded` would double-report the same fact under two words
+                expected = set(names) - abstain.get(k, {}).get(f, set())
                 if len({str(v) for v in rec.values()}) > 1:
                     dis.append((k, f, rec))
-                elif len(rec) == len(names):
+                elif len(rec) >= len(expected) or (expected and set(rec) >= expected):
                     agree += 1
                 else:
-                    nr.append((k, f, sorted(set(names) - set(rec))))
-        return dis, nr, agree, trunc
+                    nr.append((k, f, sorted(expected - set(rec))))
+        return dis, nr, agree, trunc, absn
 
-    vdis, vnr, vagree, vtrunc = sweep(VERDICT_FIELDS)
-    pdis, pnr, pagree, ptrunc = sweep(PROBE_FIELDS)
+    vdis, vnr, vagree, vtrunc, vabs = sweep(VERDICT_FIELDS)
+    pdis, pnr, pagree, ptrunc, pabs = sweep(PROBE_FIELDS)
 
     print("== verdict equality (the claim under test: six independent ports, same checker answer)")
-    print("   cells_compared=%d fields=%d fact_cells=%d agree=%d disagree=%d not_recorded=%d truncated_value=%d"
+    print("   cells_compared=%d fields=%d fact_cells=%d agree=%d disagree=%d not_recorded=%d "
+          "truncated_value=%d channel_abstentions=%d"
           % (len(cells_live), len(VERDICT_FIELDS), vagree + len(vdis) + len(vnr), vagree,
-             len(vdis), len(vnr), len(vtrunc)))
+             len(vdis), len(vnr), len(vtrunc), len(vabs)))
     for k, f, who in vtrunc[:8]:
         print("   PREFIX-SHAPED %s %s by %s - check each against that port's own length fields:"
               % (fmt(k), f, ",".join(who)))
@@ -727,16 +760,17 @@ def main(argv):
 
     if vdis:
         print("OUTCOME=RED verdict_disagreements=%d verdict_identical_cells=%d/%d "
-              "probe_cells_differing=%d unpinned_input=%d incomparable=%d truncated_values=%d "
-              "required_cells_missing=%d"
+              "probe_cells_differing=%d unpinned_input=%d cells_excluded=%d channel_abstentions=%d "
+              "truncated_values=%d required_cells_missing=%d"
               % (len(vdis), len(identical_cells), len(cells_live), len({k for k, _, _ in pdis}),
-                 len(unpinned), len(incomparable), len(vtrunc) + len(ptrunc), short_total))
+                 len(unpinned), len(incomparable), len(vabs) + len(pabs),
+                 len(vtrunc) + len(ptrunc), short_total))
         return 1
-    if short_total or vnr or unpinned or incomparable:
+    if short_total or vnr or unpinned or incomparable or vabs:
         print("OUTCOME=INCOMPLETE verdict_identical_cells=%d/%d required_cells_missing=%d unpinned_input=%d "
-              "incomparable=%d verdict_not_recorded=%d truncated_values=%d"
+              "cells_excluded=%d channel_abstentions=%d verdict_not_recorded=%d truncated_values=%d"
               % (len(identical_cells), len(cells_live), short_total, len(unpinned),
-                 len(incomparable), len(vnr), len(vtrunc) + len(ptrunc)))
+                 len(incomparable), len(vabs) + len(pabs), len(vnr), len(vtrunc) + len(ptrunc)))
         print("   No port disagrees with another on any checker verdict this gate could compare. What is")
         print("   missing is a cell, a pinned input, or a recorded verdict -- and a missing measurement is")
         print("   not agreement.")

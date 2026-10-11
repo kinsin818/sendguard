@@ -228,3 +228,56 @@ three names read back byte-equal.
 `results/go.windows.x64/` (49 cells), `evidence/S02/go-selfcheck.md` (this file),
 `evidence/S02/go-run-manifest.json`. Nothing under `spec/`, `ci/`, `harness/`, `docs/` or `D:\sendguard`
 was written by this seat, and no other port's face was touched.
+
+
+---
+
+## Addendum, 2026-10-11 08:3x host clock - one false verdict of mine, found and re-landed (rev7 re-send)
+
+Re-checking the twelve length cells against this repo's own recorded environment fact ("ordinary paths
+reach 259 units in total, only a prefixed form shows 255") contradicted what my cells said, so the ceiling
+was re-measured outside the repo with three faces over a directory of known length: plain
+`kernel32!CreateFileW` accepted a 255-unit component at a 285-unit total path and the entries really
+landed (the listing showed components of 10, 100 and 255 units), and 256 was refused with
+`ERROR_INVALID_NAME 123`. `len_ceiling = 255` is therefore this host's answer for this binary and stands,
+consistent with the manifest scan finding no `longPathAware` token in the runner.
+
+That re-measurement found a defect of mine instead. `legalityCreateProbe` built its extended-form path with
+a three-character prefix, one backslash short, so the six cells recording `path_form: extended` were asked
+
+    backslash  question  backslash  D : ...
+
+the OS answered 123, and my mapping published `os_legality_verdict = illegal`. **Six landed cells carried a
+false verdict.** A cell whose record says extended must be *asked* extended: the record was right and the
+ask was wrong, which is the mirror image of what rev6 item 1 warned about.
+
+Fixed and re-landed. The prefix is now the four bytes `\\?\`, and the probe publishes
+`asked_path_head_hex` - the head of the exact path handed to `CreateFileW` - so the claim can be checked
+from the record instead of from my source. `selfcheck.py` gained a leg for it (an extended cell must show
+head `5c5c3f5c`, a plain cell `443a5c`) plus one green and one red arm, the red arm being this exact typo:
+`selftest_arms=25 selftest_failed=0`.
+
+| the six `path_form: extended` len cells | verdict |
+|---|---|
+| before the fix (asked with a three-character prefix, winerror 123, nothing created) | `illegal` - false |
+| after the fix (asked with `\\?\`, created, the entry enumerated under the name asked) | `legal` |
+
+Verdict totals over the 49 cells moved from legal 29 / illegal 17 / unknown 3 to
+**legal 35 / illegal 11 / unknown 3**.
+
+Rev7 invariants re-checked on the re-landed face and unchanged: `name_source` is `61` repeated `base_len`
+times (156 / 240 / 400 hex characters), `len_triple` is that name's width (`78/78/78`, `120/120/120`,
+`200/200/200`), the ceiling is its own field `len_ceiling` (255 on all three faces at all three rungs,
+12 probes per face), all twelve `run_status: ran`, and the twelve identities are exactly `len/T17` and
+`len/T18` at `base_len` in {78, 120, 200} times `path_form` in {plain, extended}. Rulers after the
+re-land: this checker `OUTCOME=PASS`, 49 valid / 0 void under the frozen `spec/validate.py`,
+`ci/gap_report.py` `matched 44/44, missing 0, outside-list 0, extra-flagged 1`, controls 5/5.
+
+Still open, named not hidden: `trap/T14-m1` (`PRN`) and `trap/T14-m3` (`LPT9`) stay `unknown`, because the
+OS answered `winerror 2` to both the create attempt and the legality probe in those cells; `T14-m2`
+(`AUX.log`) is `illegal`.
+
+Clock, stated plainly: the rev7 re-send asked for 07:30 and this correction landed at 08:3x. The six
+wrongly-judged cells were on disk between the two runs, so anyone who read that face in the interval read
+six false verdicts. §2 and §4 above are the earlier record; this addendum supersedes them on those six
+cells and on nothing else.

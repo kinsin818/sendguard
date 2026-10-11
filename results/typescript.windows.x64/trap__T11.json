@@ -253,13 +253,14 @@
     "cleanup": "not attempted by the port (M19 forbids deletion logic in this port); the path is recorded for the operator",
     "verified_empty_before_use": true
   },
-  "sha256_self": "120ab50c6fe32ac1677634609d02b40ce5c20f6b62e14f71f0def18a9b4a1b2d",
+  "sha256_self": "06a87194c98a7602faa31936c2415b66ece5b58945ceb7a19e6a79e77e6c2c92",
   "sha256_truth": null,
   "spec_sha256": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261",
   "spec_sha256_basis": "git cat-file blob HEAD:spec/cases.yaml, hashed (committed blob face, not the disk file)",
   "started_at": "2026-10-11T01:00:07.912Z",
   "status": "measured",
-  "sub_identity": "",
+  "sub_identity": {},
+  "sub_identity_rendering": "object of the declared dimensions, in filename order; the dotted string in the file name is spec/cell-identity.md S3's naming rule, not the cell's identity",
   "verdict_via": "win32",
   "worker_id": "seat-qoder-typescript"
 }

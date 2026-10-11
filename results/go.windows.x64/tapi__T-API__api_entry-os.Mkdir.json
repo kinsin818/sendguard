@@ -14,12 +14,12 @@
   "case_id": "T-API",
   "case_id_frozen_base": "T-API",
   "case_locale": "en-US",
-  "cell_dir": "D:\\sendguard-run\\3174b3e3-61f6-4045-99e4-ced1151061b0\\t",
+  "cell_dir": "D:\\sendguard-run\\7a165fa3-1588-41aa-ba56-0f17258f845c\\t",
   "child_command": [
     "D:\\sendguard-work\\seat-qoder\\impl\\go\\rederive\\bin\\sg.exe",
     "cell",
     "--plan",
-    "D:\\sendguard-run\\3174b3e3-61f6-4045-99e4-ced1151061b0\\_plan.json"
+    "D:\\sendguard-run\\7a165fa3-1588-41aa-ba56-0f17258f845c\\_plan.json"
   ],
   "child_process": "one child process per cell, killed by the parent on deadline",
   "child_rc": 0,
@@ -43,7 +43,7 @@
     }
   ],
   "dir_view_count": 1,
-  "elapsed_ms": 20,
+  "elapsed_ms": 22,
   "entry_half": "directory entry: no content is transferred by this entry",
   "entry_spread": {},
   "enum_to_stat_agrees": true,
@@ -77,7 +77,7 @@
   "error_stage": "null",
   "extra": false,
   "format_version": 1,
-  "harness_version": "sg-go-rederive-1.0.0+8bd578a296a9",
+  "harness_version": "sg-go-rederive-1.0.0+916559034257",
   "independent_readback_arm": {
     "arm": "python open('rb') + hashlib.sha256",
     "attempted": true,
@@ -88,10 +88,10 @@
           "-c",
           "\u003c4-line readback script\u003e",
           "\u003clanded-name-hex\u003e",
-          "D:\\sendguard-run\\3174b3e3-61f6-4045-99e4-ced1151061b0\\t",
+          "D:\\sendguard-run\\7a165fa3-1588-41aa-ba56-0f17258f845c\\t",
           ""
         ],
-        "error": "exit status 1 | Traceback (most recent call last):  File \"\u003cstring\u003e\", line 3, in \u003cmodule\u003e    data=open(sys.argv[3]+sys.argv[2]+chr(92)+name,'rb').read()         ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^PermissionError: [Errno 13] Permission denied: 'D:\\\\sendguard-run\\\\3174b3e3-61f6-4045-99e4-ced1151061b0\\\\t\\\\report-2026.txt'",
+        "error": "exit status 1 | Traceback (most recent call last):  File \"\u003cstring\u003e\", line 3, in \u003cmodule\u003e    data=open(sys.argv[3]+sys.argv[2]+chr(92)+name,'rb').read()         ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^PermissionError: [Errno 13] Permission denied: 'D:\\\\sendguard-run\\\\7a165fa3-1588-41aa-ba56-0f17258f845c\\\\t\\\\report-2026.txt'",
         "face": "plain",
         "ok": false,
         "rc": 1
@@ -102,10 +102,10 @@
           "-c",
           "\u003c4-line readback script\u003e",
           "\u003clanded-name-hex\u003e",
-          "D:\\sendguard-run\\3174b3e3-61f6-4045-99e4-ced1151061b0\\t",
+          "D:\\sendguard-run\\7a165fa3-1588-41aa-ba56-0f17258f845c\\t",
           "\\\\?\\"
         ],
-        "error": "exit status 1 | Traceback (most recent call last):  File \"\u003cstring\u003e\", line 3, in \u003cmodule\u003e    data=open(sys.argv[3]+sys.argv[2]+chr(92)+name,'rb').read()         ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^PermissionError: [Errno 13] Permission denied: '\\\\\\\\?\\\\D:\\\\sendguard-run\\\\3174b3e3-61f6-4045-99e4-ced1151061b0\\\\t\\\\report-2026.txt'",
+        "error": "exit status 1 | Traceback (most recent call last):  File \"\u003cstring\u003e\", line 3, in \u003cmodule\u003e    data=open(sys.argv[3]+sys.argv[2]+chr(92)+name,'rb').read()         ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^PermissionError: [Errno 13] Permission denied: '\\\\\\\\?\\\\D:\\\\sendguard-run\\\\7a165fa3-1588-41aa-ba56-0f17258f845c\\\\t\\\\report-2026.txt'",
         "face": "extended",
         "ok": false,
         "rc": 1
@@ -119,10 +119,11 @@
   "instrument_red": false,
   "language": "go",
   "legality_create_probe": {
+    "asked_path_head_hex": "443a5c73656e646775617264",
     "attempted": true,
     "created": true,
     "deletes": false,
-    "dir": "D:\\sendguard-run\\3174b3e3-61f6-4045-99e4-ced1151061b0\\l",
+    "dir": "D:\\sendguard-run\\7a165fa3-1588-41aa-ba56-0f17258f845c\\l",
     "listing": [
       {
         "is_dir": false,
@@ -199,7 +200,7 @@
     "independence": "no file under results/ and no other language under impl/ was opened by this seat",
     "independent_enumerator": "harness/audit.go is the audit instrument; this port shares no code with it and never invoked it",
     "runner_exe": "D:\\sendguard-work\\seat-qoder\\impl\\go\\rederive\\bin\\sg.exe",
-    "sg_exe_sha256_before": "8bd578a296a9da6c38015b8c9b332e328a52b4198fedeb5508ebefba4be647b5",
+    "sg_exe_sha256_before": "916559034257452f511ee4efd4e601692170a5147f16b8e4408c2fc3cc434f11",
     "spec_sha256": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261",
     "spec_sha256_face": "git cat-file blob HEAD:spec/cases.yaml",
     "spec_sha256_worktree": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261"
@@ -213,12 +214,12 @@
   "roundtrip_leg_executed": false,
   "roundtrip_ok_basis": "not recorded: not executed: entry creates a directory, it has no file contents",
   "run_status": "ran",
-  "sandbox_dir": "D:\\sendguard-run\\3174b3e3-61f6-4045-99e4-ced1151061b0",
+  "sandbox_dir": "D:\\sendguard-run\\7a165fa3-1588-41aa-ba56-0f17258f845c",
   "sandbox_sharing": {
-    "extended_probe_dir": "D:\\sendguard-run\\3174b3e3-61f6-4045-99e4-ced1151061b0\\e",
+    "extended_probe_dir": "D:\\sendguard-run\\7a165fa3-1588-41aa-ba56-0f17258f845c\\e",
     "first_cell_in_group": false,
     "group_id": "T-API|os.Mkdir|tapi",
-    "measured_dir": "D:\\sendguard-run\\3174b3e3-61f6-4045-99e4-ced1151061b0\\t",
+    "measured_dir": "D:\\sendguard-run\\7a165fa3-1588-41aa-ba56-0f17258f845c\\t",
     "multi_member_case": false,
     "rule": "one fresh uuid sandbox per cell; the multi-member cases T09/T14/T19 share the directory of their (case x entry) group because coexistence in ONE directory is the frozen question, and the port own plan/phase/observation files sit in the sandbox root so they can never enter a dir_view"
   },
@@ -226,7 +227,7 @@
   "sha256_self": null,
   "sha256_truth": null,
   "spec_source": "T-API instrument self-check cell (spec/cells-required.json)",
-  "started_at": "2026-10-11T00:02:48.0181649Z",
+  "started_at": "2026-10-11T02:53:03.8586294Z",
   "sub_identity": {
     "api_entry": "os.Mkdir"
   },

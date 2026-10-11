@@ -8,11 +8,11 @@
   "extra": 126,
   "cells_void": [],
   "controls_pass": true,
-  "arms_total": 29,
+  "arms_total": 35,
   "arms_failed": [],
   "contract": {
     "path": "D:\\sendguard-work\\seat-qoder\\spec\\cells-required.json",
-    "sha256": "3742747dd412e8a9d799e6c7f215f561f4c14774466759de515335b76ee90ff6",
+    "sha256": "ed8a8a29c0eea99925659f6d0f2f63b94469654e1f793ab027b6e55a4a1a8cb8",
     "rows_for_rust": 48,
     "primary_entry": "std::fs::File::create",
     "base_len_ladder": [
@@ -22,7 +22,7 @@
     ],
     "generated_by": "ci/gen_cells_required.py - derived from the committed spec face; deterministic, no timestamp in the output so the file can be byte-compared against a re-run",
     "withdraws": "the first version of this file (generated 03:4x from a mis-parse that saw only the 20 traps) is void; any port that used it must re-derive from this one",
-    "spec_blob_sha256": "b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1"
+    "spec_blob_sha256": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261"
   },
   "gate_identity": {
     "identities": 174,
@@ -35,5 +35,24 @@
     "rows_in_required_list": 5,
     "plan_blind_exit": 0,
     "note": "the rev3 required list publishes no blind rows; the frozen table still publishes no blind sample hex"
+  },
+  "len_rungs": {
+    "rows_checked": 12,
+    "expected_rows": 12,
+    "problems": [],
+    "pin_from_spec": {
+      "unit_hex": "61",
+      "applies_to": [
+        "T17",
+        "T18"
+      ],
+      "rule": "repeat unit_hex until the component is exactly base_len code units, then append nothing"
+    },
+    "ceiling_faces_indexed": [
+      "T17-CEILING-EXTENDED",
+      "T17-CEILING-PLAIN",
+      "T18-CEILING-EXTENDED",
+      "T18-CEILING-PLAIN"
+    ]
   }
 }

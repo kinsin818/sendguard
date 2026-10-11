@@ -1,22 +1,20 @@
 {
-  "run_id": "7e65ccb45140",
+  "run_id": "faac2b29d425",
   "blocked_rows": [],
-  "runs_root": "D:\\sg-rust-scratch\\run-7e65ccb45140",
+  "runs_root": "D:\\sg-rust-scratch\\run-faac2b29d425",
   "tier_dirs": {
-    "(13, 'plain')": "D:\\sg7e65ccb4",
-    "(78, 'plain')": "D:\\xg7e65ccb4\\t78qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq",
-    "(120, 'plain')": "D:\\xg7e65ccb4\\t120qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq",
-    "(200, 'plain')": "D:\\xg7e65ccb4\\t200qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq",
-    "(240, 'plain')": "D:\\xg7e65ccb4\\t240qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq",
-    "(13, 'extended')": "D:\\yg7e65ccb4",
-    "(78, 'extended')": "D:\\zg7e65ccb4\\t78qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq",
-    "(120, 'extended')": "D:\\zg7e65ccb4\\t120qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq",
-    "(200, 'extended')": "D:\\zg7e65ccb4\\t200qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq",
-    "(240, 'extended')": "D:\\zg7e65ccb4\\t240qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq"
+    "(13, 'plain')": "D:\\sgfaac2b29",
+    "(120, 'plain')": "D:\\xgfaac2b29\\t120qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq",
+    "(200, 'plain')": "D:\\xgfaac2b29\\t200qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq",
+    "(240, 'plain')": "D:\\xgfaac2b29\\t240qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq",
+    "(13, 'extended')": "D:\\ygfaac2b29",
+    "(120, 'extended')": "D:\\zgfaac2b29\\t120qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq",
+    "(200, 'extended')": "D:\\zgfaac2b29\\t200qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq",
+    "(240, 'extended')": "D:\\zgfaac2b29\\t240qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq"
   },
   "contract": {
     "path": "D:\\sendguard-work\\seat-qoder\\spec\\cells-required.json",
-    "sha256": "3742747dd412e8a9d799e6c7f215f561f4c14774466759de515335b76ee90ff6",
+    "sha256": "ed8a8a29c0eea99925659f6d0f2f63b94469654e1f793ab027b6e55a4a1a8cb8",
     "rows_for_rust": 48,
     "primary_entry": "std::fs::File::create",
     "base_len_ladder": [
@@ -29,7 +27,7 @@
   },
   "cells_required_rows": 48,
   "retirement_ledger": {
-    "run_id": "7e65ccb45140",
+    "run_id": "faac2b29d425",
     "results_dir": "D:\\sendguard-work\\seat-qoder\\results\\rust.windows.x64",
     "retired": [],
     "skipped_not_mine": [],
@@ -85,16 +83,16 @@
     ]
   },
   "spec_faces": {
-    "head": "2ff39db34b8f1ae9229c2320dde462ec96800e27",
+    "head": "e7a4d7fa120d5c7975cbd28c9d65b0e76c7ead66",
     "git_rc": 0,
     "cat_file_rc": 0,
     "cat_file_stderr": "",
-    "blob_sha256": "b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1",
-    "blob_bytes": 10611,
-    "worktree_sha256": "b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1",
-    "worktree_bytes": 10611,
+    "blob_sha256": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261",
+    "blob_bytes": 11347,
+    "worktree_sha256": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261",
+    "worktree_bytes": 11347,
     "faces_identical": true,
-    "frozen_declared": "b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1",
+    "frozen_declared": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261",
     "frozen_declared_matches_blob": true,
     "frozen_declared_matches_worktree": true
   },
@@ -125,7 +123,7 @@
     "locale": "zh-CN console cp936; python default encoding cp936; see evidence/S00/env-facts-windows-local.json",
     "toolchain_line": "rustc 1.98.0 (88d9e12ae178fab0fb5cc050a94da85685d449ea) host=x86_64-pc-windows-msvc LLVM=22.1.8; PATH rustc is the rustup shim C:\\Users\\Administrator\\.cargo\\bin\\rustc.EXE, resolved toolchain binary C:\\Users\\Administrator\\.rustup\\toolchains\\stable-x86_64-pc-windows-msvc\\bin\\rustc.exe",
     "env_face_rc": 0,
-    "env_face_command": "D:\\sendguard-work\\seat-qoder\\impl\\rust\\target\\release\\sg_probe.exe --mode env --out D:\\sg-rust-scratch\\run-7e65ccb45140\\env-face.json --mark \"\" --volume-root D:\\ --dos-device-names CON,NUL,AUX,PRN,COM1,LPT9,CONIN$,trail.,a<b.txt",
+    "env_face_command": "D:\\sendguard-work\\seat-qoder\\impl\\rust\\target\\release\\sg_probe.exe --mode env --out D:\\sg-rust-scratch\\run-faac2b29d425\\env-face.json --mark \"\" --volume-root D:\\ --dos-device-names CON,NUL,AUX,PRN,COM1,LPT9,CONIN$,trail.,a<b.txt",
     "max_component": 255,
     "filesystem": "NTFS",
     "dos_devices": [
@@ -187,22 +185,22 @@
   },
   "deps": {
     "build_std_rc": 0,
-    "build_std_face": "   |     ^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_prior_claimed`\n     |\n     = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default\n\nwarning: `sendguard-rust-seat` (bin \"sg_probe\") generated 1 warning (run `cargo fix --bin \"sg_probe\" -p sendguard-rust-seat` to apply 1 suggestion)\n    Finished `release` profile [optimized] target(s) in 2.75s",
+    "build_std_face": "   |     ^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_prior_claimed`\n     |\n     = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default\n\nwarning: `sendguard-rust-seat` (bin \"sg_probe\") generated 1 warning (run `cargo fix --bin \"sg_probe\" -p sendguard-rust-seat` to apply 1 suggestion)\n    Finished `release` profile [optimized] target(s) in 2.25s",
     "build_norm_rc": 0,
-    "build_norm_face": "   |     ^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_prior_claimed`\n     |\n     = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default\n\nwarning: `sendguard-rust-seat` (bin \"sg_probe\") generated 1 warning (run `cargo fix --bin \"sg_probe\" -p sendguard-rust-seat` to apply 1 suggestion)\n    Finished `release` profile [optimized] target(s) in 2.38s",
+    "build_norm_face": "`) on by default\n\nwarning: `sendguard-rust-seat` (bin \"sg_probe_norm\") generated 1 warning (run `cargo fix --bin \"sg_probe_norm\" -p sendguard-rust-seat` to apply 1 suggestion)\n   Compiling sendguard-rust-seat v0.1.0 (D:\\sendguard-work\\seat-qoder\\impl\\rust)\nwarning: `sendguard-rust-seat` (bin \"sg_probe\") generated 1 warning (1 duplicate)\n    Finished `release` profile [optimized] target(s) in 2.20s",
     "sg_probe_path": "D:\\sendguard-work\\seat-qoder\\impl\\rust\\target\\release\\sg_probe.exe",
-    "sg_probe_sha256": "f5f3f4ac5e42ce198d4bf25eebae81adeeda0647b75d9db8ac5f3ff59b93d79d",
-    "sg_probe_bytes": 442880,
+    "sg_probe_sha256": "4117bfe6d1d9b027ed5c439e8d9ed2e28f83a977e476b83baca3766606072530",
+    "sg_probe_bytes": 450560,
     "sg_probe_longPathAware_hits": 0,
-    "sg_probe_mtime": "2026-10-11T05:11:56",
+    "sg_probe_mtime": "2026-10-11T10:57:31",
     "sg_probe_unchanged_by_this_build": false,
     "sg_probe_norm_path": "D:\\sendguard-work\\seat-qoder\\impl\\rust\\target\\release\\sg_probe_norm.exe",
-    "sg_probe_norm_sha256": "c52d0fee13b86cd893c7a8ad0ec052fa854961de4ddd171e769e2eedf98e4705",
-    "sg_probe_norm_bytes": 442880,
+    "sg_probe_norm_sha256": "b268e5cd42561149f22ad52282497dfa393d7ce7a3af2cfb917ea4b3c07db21d",
+    "sg_probe_norm_bytes": 450560,
     "sg_probe_norm_longPathAware_hits": 0,
-    "sg_probe_norm_mtime": "2026-10-11T05:10:56",
+    "sg_probe_norm_mtime": "2026-10-11T10:50:45",
     "sg_probe_norm_unchanged_by_this_build": true,
-    "source_mtime": "2026-10-11T05:10:51",
+    "source_mtime": "2026-10-11T10:50:31",
     "source_newer_than_exe": false,
     "cargo_lock_packages": [
       "tinyvec",
@@ -214,13 +212,6 @@
       "unicode-normalization"
     ]
   },
-  "blocked": [
-    {
-      "cells": "B1..B5",
-      "case_group": "blind",
-      "command": "python impl/rust/run_cells.py --plan-blind",
-      "exit_code": 3,
-      "attempted_fix": "python impl/rust/run_cells.py --plan-blind --allow-sealed-map -> exit 2, the driver refuses to open a sealed artifact (M17), so the rows stay blocked"
-    }
-  ]
+  "blocked": [],
+  "blocked_note": "the list is derived from the rows this run could not answer; a required row that has a face in results/ is not blocked. rev6 lifted the blind seal, so B1..B5 are faces now, not blocked rows."
 }

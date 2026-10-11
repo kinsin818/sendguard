@@ -67,7 +67,7 @@ def main():
         if len(forms) > 1:
             unpinned.add(k)
             continue
-        for f in equality.COMPARABILITY_FIELDS:
+        for f in equality.CELL_LEVEL_FIELDS:
             vals = {str(equality.canon_value(f, cells[p][k])) for p in holders}
             vals.discard(str(equality.ABSENT))
             if len(vals) > 1:
@@ -104,7 +104,7 @@ def main():
         # answers must stay visible, or one port's missing channel erases the other five's data.
         odd = set()
         if k in unpinned or k in incomparable:
-            for f in equality.COMPARABILITY_FIELDS:
+            for f in equality.CELL_LEVEL_FIELDS:
                 per = {p: str(equality.canon_value(f, cells[p][k])) for p in holders}
                 modes = {}
                 for p, v in per.items():

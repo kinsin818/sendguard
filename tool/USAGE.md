@@ -115,6 +115,31 @@ A bug in the tool must never read as a verdict about your folder.
   on this machine — Python hands your argument to the console device — so the tool splits the argument by
   hand and tells you when the canonicaliser disagreed with the path you typed.
 
+## Which ports a `backed_by=` count is allowed to include
+
+`EVIDENCE backed_by=T01,T02,T10,T11,T14 [40 cells, 6 ports]` counts **canonical faces only**: a directory
+named `<port>.<os>.<arch>`, the same naming rule `ci/equality.py` uses (spec/cell-identity.md 9.5). Faces
+that do not match are not folded into the number; the report names each one with its cell-record count, in
+the gate's wording:
+
+```
+ports_counted=6 faces=csharp,go,java,python,rust,typescript (canonical faces only)
+== non-canonical faces excluded (naming rule: <port>.<os>.<arch>)
+   go.windows.go1.23.5              155 cell records
+   node                              40 cell records
+   ...
+   excluded_faces=5
+```
+
+This matters because `results/` holds old contract revisions of the same ports: counting them produced
+`ports=7 / cells=267` in an earlier build of this tool while the gate reported six, which is two documents
+disagreeing about one denominator. `node` is excluded here by **naming rule**, not by judgement: its
+self-declared instrument failure is the health leg's call and is reported in `docs/evidence.md`.
+
+One caution when comparing this number with the gate's internals: `equality.discover()` returns its ports
+dict with a `_extra_counts` sentinel still inside, so `len(ports)` on the raw return reads 7. The gate pops
+it before counting; 6 is the number both documents mean.
+
 ## Reading the folder report
 
 One line per (name, target): `name_hex`, the verdict fields, then `EVIDENCE backed_by=…`, then the risk

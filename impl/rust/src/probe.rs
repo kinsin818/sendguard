@@ -981,11 +981,16 @@ fn main() {
                             let u = a.get("len-fill-unit-hex");
                             if u.is_empty() { "61".to_string() } else { u }
                         };
-                        let want: Vec<u16> = u32::from_str_radix(&unit_hex, 16)
+                        let want: Vec<u16> = match u32::from_str_radix(&unit_hex, 16)
                             .ok()
                             .and_then(char::from_u32)
-                            .map(|c| c.encode_utf16().collect())
-                            .unwrap_or_default();
+                        {
+                            Some(c) => {
+                                let s = c.to_string();
+                                s.encode_utf16().collect()
+                            }
+                            None => Vec::new(),
+                        };
                         let un = units_of(&name_os);
                         let repeated = !want.is_empty()
                             && un.iter().enumerate().all(|(i, u)| *u == want[i % want.len()]);
@@ -996,7 +1001,7 @@ fn main() {
                         putb(&mut f, "name_is_pinned_fill_repeated", repeated);
                         putb(&mut f, "name_len_equals_base_len", un.len() as i64 == bl);
                         putb(&mut f, "len_triple_equals_base_len", cp == bl && un.len() as i64 == bl && ub == bl);
-                        puti(&mut f, "len_parent_dir_code_units", wlen(scratch) as i64);
+                        puti(&mut f, "len_parent_dir_code_units", wlen(&scratch) as i64);
                         puts(&mut f, "len_input_basis", "rev7 pins this family: name_source is the hex of the code units actually handed to the API, made by repeating spec/cases.yaml len_fill.unit_hex until the component is exactly base_len code units with nothing appended; the ceiling this port converged to is a different quantity and is published in len_ceiling, and the width-pinned tier evidence stays in its own extra:true cells");
                         if !a.get("len-ceiling-max-ok").is_empty() {
                             let tiers: Vec<String> = a.csv("len-ceiling-tier-roots").iter().map(|s| js(s)).collect();

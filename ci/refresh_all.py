@@ -25,6 +25,7 @@ GEN = [("ci/gap_report.py", "docs/GAP.md"),
        ("ci/expected_summary.py", "docs/expected-summary.md"),
        ("ci/evidence_table.py", "docs/evidence.md")]
 JUDGE = [("ci/selftest.py", ["--scratch-root", os.path.join(REPO, "..", "sg-selftest-refresh")]),
+         ("ci/lint.py", ["--repo-root", REPO, "--selftest"]),
          ("ci/equality.py", []),
          ("ci/triangle.py", [])]
 

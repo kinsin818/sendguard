@@ -1,0 +1,141 @@
+
+---
+
+## rev7 follow-up: why the six extended rungs say `err_at_parse` (answered 2026-10-11 10:5x host clock, no matrix re-run)
+
+Question put to this window: `len/T17` and `len/T18` at `base_len` 78/120/200 with `path_form=extended`
+all record `create_result=err_at_parse`, `error_stage=parse`, while four other ports reach the
+filesystem on the same rungs. Is that Java refusing the name, or my harness refusing its own argument?
+
+Delivered late: the deadline on this question was 08:40 and the first answer reached the dispatcher at
+10:5x. The delay was this window working rev7 rule 4 (the `java.io` spread cells) instead of the
+question; that work is still unfinished and none of it is in the recorded cells.
+
+Artifacts written for this answer, all under `impl/java/`, all read-only w.r.t. the filesystem:
+
+- `impl/java/src/ExtPathOfRepro.java` - the minimal reproduction class;
+- `impl/java/tools/ext-path-of-repro.txt` - its compile and run capture (13,610 B, `javac_rc=0`,
+  `run_rc=0`, the printing JDK identified inside the file);
+- `impl/java/tools/ext-probe-source-compile-check.txt` - which probe source builds (3,091 B).
+
+### 1. Which call raised, verbatim
+
+The raising call is `java.nio.file.Paths.get(String)` - the JDK's own Windows path parser. It is
+literally this window's line `target = Paths.get(requested);` at `impl/java/src/CellProbe.java:144`
+(face `79b2c71`, the face that produced the recorded cells), and nothing between the cell's requested
+string and that call inspects or vetoes the string.
+
+Exception type and message as recorded in
+`results/java.windows.x64/len__T17__base_len-78__extended.json` (`error_class` / `error_message`):
+
+```
+java.nio.file.InvalidPathException
+Illegal character [?] in path at index 2: \\?\D:\s\9431b6\<48 hex>\a x78
+reason=Illegal character [?] in path
+index=2
+```
+
+Frames printed by the reproduction (same JDK, same message):
+
+```
+at java.base/sun.nio.fs.WindowsPathParser.nextSlash(WindowsPathParser.java:212)
+at java.base/sun.nio.fs.WindowsPathParser.parse(WindowsPathParser.java:111)
+at java.base/sun.nio.fs.WindowsPathParser.parse(WindowsPathParser.java:77)
+at java.base/sun.nio.fs.WindowsPath.parse(WindowsPath.java:92)
+at java.base/sun.nio.fs.WindowsFileSystem.getPath(WindowsFileSystem.java:232)
+```
+
+Every frame is in `java.base`. There is no `CellProbe` frame between the parser and the throw, so the
+rejection is not this window's argument check. One command, on this host, no filesystem mutation
+(`Path.of`, `Paths.get` and `new File(String)` do no I/O; the program creates, opens and lists nothing):
+
+```
+"C:/Program Files/Eclipse Adoptium/jdk-17.0.17.10-hotspot/bin/javac" -encoding US-ASCII \
+    -d impl/java/build-repro impl/java/src/ExtPathOfRepro.java        # javac_rc=0
+"C:/Program Files/Eclipse Adoptium/jdk-17.0.17.10-hotspot/bin/java" -cp impl/java/build-repro \
+    ExtPathOfRepro                                                    # run_rc=0
+```
+
+### 2. General rejection, not the harness's path shape
+
+`Paths.get` and `Path.of` gave the same answer for every input (`toString match=true`, or both threw).
+
+| input passed to the same call | chars | JDK 17.0.17 | what JDK 21.0.6 does with the same string |
+|---|---|---|---|
+| `D:\Qoder` | 8 | OK | OK |
+| the plain rung string, `base_len=78` | 141 | OK | OK |
+| the plain rung string, `base_len=200` (total 263 > 259) | 263 | OK | OK |
+| `\\?\D:\Qoder` | 12 | **InvalidPathException, index 2** | OK, prefix stripped -> `D:\Qoder` |
+| `\\?\C:\` | 7 | **index 2** | OK -> `C:\` |
+| the extended rung string, `base_len=78` | 145 | **index 2** | OK, prefix stripped |
+| the extended rung string, `base_len=200` | 267 | **index 2** | OK, prefix stripped |
+| `\\?\UNC\server\share\x.txt` | 26 | **index 2** | OK -> `\\server\share\x.txt` |
+| `//?/D:/Qoder` | 12 | index 2 | index 2 |
+| `\?\D:\Qoder` | 11 | `Illegal char <?> at index 1` | same |
+| `\\.\PhysicalDrive0` | 18 | OK | OK |
+
+So on 17.0.17 the answer is unconditional: every string whose third character is `?` in the server
+position is refused at index 2, whether it is 7 characters or 267, whether it is a drive root, an
+ordinary directory or this harness's rung. Length is irrelevant - the plain 263-character path parses
+fine. The parser reads `\\?\` as a UNC path and then finds `?` illegal as a server name; `\\.\` (a
+legal server name) passes, which is the shape of the same rule.
+
+New fact this reproduction produced, not previously recorded anywhere in this port: **on the other JDK
+installed on this host (Temurin 21.0.6, `java.class.version=65.0`) `Paths.get` ACCEPTS the `\\?\`
+prefix and returns the path with the prefix removed.** The recorded cells ran on 17.0.17 - the first
+`java` on PATH, which is the toolchain `run-facts.json` names - so their readings describe 17.0.17,
+and on that JDK the refusal is real. The same question asked of the same machine one JDK version later
+has a different answer, which belongs to the matrix as a JDK-version fact, not as a port defect.
+The Oracle launcher on PATH (`C:\ProgramData\Oracle\Java\javapath\java.exe`, 1.8.0_31) was not asked:
+the reproduction class calls `Path.of`, a JDK 11 API, so running it on 1.8 would measure the launcher,
+not the parser.
+
+`new File(String)` accepted all eleven strings, including every `\\?\` form, which is why this port's
+second leg could ask the OS at all.
+
+### 3. Which label this is, and what I am not changing
+
+**(a) an API-policy finding, and the recorded verdicts stay exactly as they are.** Neither word in
+`create_result` nor `error_stage` nor `os_legality_verdict` moves. The reasoning: the throw comes from
+`java.base`, it is unconditional on the prefix, and the extended rung's question is precisely "does
+this language express the Win32 extended form". `java.nio` on 17.0.17 answers no. The four ports that
+reached the filesystem handed the string straight to `CreateFileW`; that difference is the finding.
+
+The note the `(b)` reading would have required is already in the cells, so nothing needs adding for
+that half either: `error_stage=parse` is the word that says the OS was not asked *by that call*, and
+the cell separately records the OS's answer through a named second instrument -
+
+- `os_legality_probe.instrument` = `java.io.FileOutputStream(java.io.File(String)) with \\?\ prefix`
+- `os_legality_probe.create_result` = `ok`, `landed_by_enumeration` = `true`
+- `os_legality_verdict` = `legal`, `os_legality_basis` = "the OS created and enumerated the name once
+  the language path parser was bypassed"
+- `verdict_via` = `win32`, with `verdict_via_evidence` naming the bypass
+- `extended_leg_note` = "the second leg is java.io with the extended-prefix string (java.nio throws
+  InvalidPathException on that string); it isolates the component wall from the path wall"
+
+So the cell does not claim Windows refused the name. It claims `java.nio` refused the string, and that
+the OS accepted the name - both measured, both attributable to a named call.
+
+### 4. Two defects this reproduction exposed, reported and not patched
+
+1. **HEAD does not build.** `git show HEAD:impl/java/src/CellProbe.java` (commit `e7a4d7f`, stamped
+   2026-10-11 09:17:41) calls `createViaString` at its line 183 and `readViaIoString` at line 283, and
+   that blob contains no definition of either (definition count in the blob: `createViaString` 0, in
+   the worktree 1). Compiling that blob with the port's own JDK: `javac_rc=1`, 2 errors, both
+   `cannot find symbol`, captured in `impl/java/tools/ext-probe-source-compile-check.txt` step A. The
+   09:17 land swept this window's in-flight rev7-rule-4 edit at the moment the call sites existed and
+   the methods did not; the worktree now has the definitions and compiles (`javac_rc=0`, step C). A
+   cold checkout of HEAD cannot rebuild the java port until either my remaining 54 uncommitted lines
+   land or the file is reverted to `79b2c71`. I have not committed or reverted anything - both are
+   your call.
+2. **Six cells' attribution basis overclaims.** Each of the six extended rungs records
+   `attribution_layer=L3` with the sentence "java.nio rejected the path string before any syscall and
+   every entry of this port agrees" while its `entry_spread` array holds **0** entries: only
+   `Files.write` was run as an entry on those rows, and the one other instrument the cell did ask
+   (`java.io`) answered `ok` - i.e. the data inside the cell contradicts the precondition of the word
+   it uses. Under the locked tree's R1 ("switching a stdlib entry of the same language removes the
+   divergence -> L2") these six are L2 evidence. This is a driver defect, not a reinterpretation: the
+   tuple set in `impl/java/tools/run_cells.py:attribute()` never sees the second leg. I am not editing
+   the cells and I am not re-running the matrix on my own initiative, because the attribution tree is
+   frozen and re-labelling is your word, not mine. Say the word and the fix is one tuple plus a
+   re-emit of the six.

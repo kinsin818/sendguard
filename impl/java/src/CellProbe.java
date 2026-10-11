@@ -1,5 +1,7 @@
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -301,7 +303,7 @@ public final class CellProbe {
             m.put("roundtrip_ok", got != null && Arrays.equals(got, payload));
             m.put("sha256_self", sha(payload));
             m.put("sha256_truth", got == null ? null : sha(got));
-            Long direct = directSize(target);
+            Long direct = target != null ? directSize(target) : ioStringSize(requested);
             m.put("bytes_on_disk", got != null ? (long) got.length : dirView);
             m.put("bytes_on_disk_direct_stat", direct);
             m.put("enum_to_stat_agrees", (dirView != null && direct != null)
@@ -585,6 +587,59 @@ public final class CellProbe {
         } catch (RuntimeException e) {
             return new String[]{"err_at_syscall", "syscall", e.getClass().getName(),
                     String.valueOf(e.getMessage())};
+        }
+    }
+
+    // ----------------------------------------------------- create (String form)
+    /** rev7 rule 4: drive a java.io entry from the requested STRING, with no java.nio path parse in
+     *  between. This is the same call extendedProbe already makes by hand; publishing it as its own
+     *  cell is what lets the two entries of this port be compared as cells instead of as a footnote. */
+    static String[] createViaString(String target, byte[] payload, String entry, long[] wr) {
+        try {
+            if ("File.createNewFile".equals(entry)) {
+                boolean b = new File(target).createNewFile();
+                wr[0] = 0L;
+                if (!b) return new String[]{"err_at_syscall", "fs", "java.io.File",
+                        "createNewFile() returned false (the name already exists or the OS refused it)"};
+            } else if ("FileOutputStream.write".equals(entry)) {
+                FileOutputStream fo = new FileOutputStream(target);
+                try { fo.write(payload); fo.getFD().sync(); } finally { fo.close(); }
+                wr[0] = payload.length;
+            } else {
+                return new String[]{"err_at_syscall", "tool", "IllegalArgumentException",
+                        "no String-form driver for entry " + entry};
+            }
+            return new String[]{"ok", "null", null, null};
+        } catch (FileNotFoundException e) {
+            return new String[]{"err_at_syscall", "fs", e.getClass().getName(),
+                    String.valueOf(e.getMessage())};
+        } catch (IOException e) {
+            return new String[]{"err_at_syscall", "fs", e.getClass().getName(),
+                    String.valueOf(e.getMessage())};
+        } catch (RuntimeException e) {
+            return new String[]{"err_at_syscall", "syscall", e.getClass().getName(),
+                    String.valueOf(e.getMessage())};
+        }
+    }
+
+    static byte[] readViaIoString(String target) throws IOException {
+        FileInputStream in = new FileInputStream(target);
+        try {
+            ByteArrayOutputStream buf = new ByteArrayOutputStream();
+            byte[] chunk = new byte[8192];
+            int n;
+            while ((n = in.read(chunk)) > 0) buf.write(chunk, 0, n);
+            return buf.toByteArray();
+        } finally {
+            in.close();
+        }
+    }
+
+    static Long ioStringSize(String target) {
+        try {
+            return Long.valueOf(new File(target).length());
+        } catch (RuntimeException e) {
+            return null;
         }
     }
 

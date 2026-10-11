@@ -974,11 +974,22 @@ def emit_blocked_rows(runs, contract, answered_keys=None, blind_meta=None):
             "reason": "spec/cases.yaml publishes no blind sample hex and evidence/S00/blind-map.json is "
                       "sealed until after the S03 audit; opening it would prefill this port's own answer (M17)",
         })
-    if rows:
-        with open(os.path.join(runs, "blocked-rows.json"), "wb") as fh:
-            fh.write((json.dumps(rows, indent=2, ensure_ascii=True) + chr(10)).encode("utf-8"))
-        with open(os.path.join(IMPL, "blocked-rows.json"), "wb") as fh:
-            fh.write((json.dumps(rows, indent=2, ensure_ascii=True) + chr(10)).encode("utf-8"))
+    body = (json.dumps(rows, indent=2, ensure_ascii=True) + chr(10)).encode("utf-8")
+    impl_path = os.path.join(IMPL, "blocked-rows.json")
+    if not rows and os.path.isfile(impl_path):
+        earlier = open(impl_path, "rb").read()
+        if earlier.strip() not in ("", "[]"):
+            # A block list written by an earlier run would read as current coverage even though every
+            # row in it now has a face. Keep the old rows with their hash, then empty the live file.
+            dst = os.path.join(runs, "blocked-rows.from-earlier-run.json")
+            with open(dst, "wb") as fh:
+                fh.write(earlier)
+            print("blocked_rows_archived=%d bytes sha256=%s -> %s"
+                  % (len(earlier), sha_hex(open(dst, "rb").read()), dst))
+    with open(os.path.join(runs, "blocked-rows.json"), "wb") as fh:
+        fh.write(body)
+    with open(impl_path, "wb") as fh:
+        fh.write(body)
     return rows
 
 
@@ -1076,9 +1087,8 @@ def main():
               "the required list and the frozen table are not the same revision" % (contract.get("spec_blob_sha256"), faces_pre["blob_sha256"]))
         return 4
     if len_fill is None:
-        print("INSTRUMENT-RED: spec/cases.yaml carries no parsable len_fill pin, so the twelve length rungs
-"
-              "have no defined component to pass. Nothing is planned and nothing is measured.")
+        print("INSTRUMENT-RED: spec/cases.yaml carries no parsable len_fill pin, so the twelve length "
+              "rungs have no defined component to pass. Nothing is planned and nothing is measured.")
         return 4
     plan, identity_seen = build_plan(cases, api_rust, primary, ladder, required_keys, controls, blind_rows, len_fill)
     if not blind_rows:
@@ -1251,16 +1261,20 @@ def main():
         "controls_pass": controls_pass, "control_verdicts": [list(v) for v in verdicts],
         "tapi_disagreements": {k: [d[:200] for d in v] for k, v in sorted(disagree.items())},
         "spec_faces": faces, "env": env, "deps": deps,
-        "blocked": [{
-            "cells": "B1..B5", "case_group": "blind",
-            "command": "python impl/rust/run_cells.py --plan-blind",
-            "exit_code": 3,
-            "attempted_fix": "python impl/rust/run_cells.py --plan-blind --allow-sealed-map -> exit 2, the driver refuses to open a sealed artifact (M17), so the rows stay blocked",
-        }],
+        "blocked": blocked_rows,
+        "blocked_note": ("the list is derived from the rows this run could not answer; a required row "
+                         "that has a face in results/ is not blocked. rev6 lifted the blind seal, so "
+                         "B1..B5 are faces now, not blocked rows."),
     }
     spath = os.path.join(IMPL, "run-summary.json")
     with open(spath, "wb") as fh:
         fh.write((json.dumps(summary, indent=2, ensure_ascii=True) + "\n").encode("utf-8"))
+    # a second run used to overwrite the only summary face, so a retirement ledger existed only until
+    # the next run; keep one copy per run id outside the repo so every ledger stays hashable later.
+    rpath = os.path.join(runs, "run-summary.%s.json" % run_id)
+    with open(rpath, "wb") as fh:
+        fh.write((json.dumps(summary, indent=2, ensure_ascii=True) + "\n").encode("utf-8"))
+    print("run_summary_per_run=%s" % rpath)
     print("run_summary=%s" % spath)
     print("cells_produced=%d problems=%d" % (len(drv.produced), len(drv.problems)))
     for p in drv.problems[:20]:

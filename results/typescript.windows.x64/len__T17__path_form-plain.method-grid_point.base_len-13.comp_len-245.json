@@ -200,13 +200,19 @@
     "cleanup": "not attempted by the port (M19 forbids deletion logic in this port); the path is recorded for the operator",
     "verified_empty_before_use": true
   },
-  "sha256_self": "c5e8f26fcd394589bee291fdea1c5fb61bf18ce55e70ee71ea1525abb43f2538",
+  "sha256_self": "845ef436b3ca979e8f3e2f2005cece88bd3a2b3b9bdbe45c04d52412422349d3",
   "sha256_truth": null,
   "spec_sha256": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261",
   "spec_sha256_basis": "git cat-file blob HEAD:spec/cases.yaml, hashed (committed blob face, not the disk file)",
   "started_at": "2026-10-11T01:00:14.570Z",
   "status": "measured",
-  "sub_identity": "path_form-plain.method-grid_point.base_len-13.comp_len-245",
+  "sub_identity": {
+    "base_len": 13,
+    "comp_len": 245,
+    "method": "grid_point",
+    "path_form": "plain"
+  },
+  "sub_identity_rendering": "object of the declared dimensions, in filename order; the dotted string in the file name is spec/cell-identity.md S3's naming rule, not the cell's identity",
   "tier": "G1",
   "total_path_len": 259,
   "verdict_via": "none",

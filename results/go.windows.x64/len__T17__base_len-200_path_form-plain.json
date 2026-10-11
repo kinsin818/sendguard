@@ -24,7 +24,7 @@
           },
           {
             "abs_total_len": 316,
-            "error": "open D:\\sendguard-run\\c0a50cd5-4cd8-4355-9a22-c55102caa069\\x\\aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa...(truncated)",
+            "error": "open D:\\sendguard-run\\77e84aef-ac48-4c6c-a397-57bab594120a\\x\\aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa...(truncated)",
             "len": 260,
             "name_hex": "6161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161",
             "ok": false,
@@ -76,7 +76,7 @@
           },
           {
             "abs_total_len": 313,
-            "error": "open D:\\sendguard-run\\c0a50cd5-4cd8-4355-9a22-c55102caa069\\x\\aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa...(truncated)",
+            "error": "open D:\\sendguard-run\\77e84aef-ac48-4c6c-a397-57bab594120a\\x\\aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa...(truncated)",
             "len": 257,
             "name_hex": "6161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161",
             "ok": false,
@@ -86,7 +86,7 @@
           },
           {
             "abs_total_len": 312,
-            "error": "open D:\\sendguard-run\\c0a50cd5-4cd8-4355-9a22-c55102caa069\\x\\aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa...(truncated)",
+            "error": "open D:\\sendguard-run\\77e84aef-ac48-4c6c-a397-57bab594120a\\x\\aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa...(truncated)",
             "len": 256,
             "name_hex": "61616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161",
             "ok": false,
@@ -101,7 +101,7 @@
             "phase": "verify"
           },
           {
-            "error": "open D:\\sendguard-run\\c0a50cd5-4cd8-4355-9a22-c55102caa069\\x\\aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa...(truncated)",
+            "error": "open D:\\sendguard-run\\77e84aef-ac48-4c6c-a397-57bab594120a\\x\\aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa...(truncated)",
             "len": 256,
             "name_hex": "61616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161",
             "ok": false,
@@ -112,7 +112,7 @@
         ],
         "base_len_abs": 55,
         "boundary_len": 255,
-        "dir": "D:\\sendguard-run\\c0a50cd5-4cd8-4355-9a22-c55102caa069\\x",
+        "dir": "D:\\sendguard-run\\77e84aef-ac48-4c6c-a397-57bab594120a\\x",
         "face": "os.Create(plain)",
         "face_note": "plain path; subject to whatever this layer does with long paths",
         "high": 260,
@@ -128,7 +128,7 @@
             "phase": "verify"
           },
           {
-            "error": "open D:\\sendguard-run\\c0a50cd5-4cd8-4355-9a22-c55102caa069\\x\\aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa...(truncated)",
+            "error": "open D:\\sendguard-run\\77e84aef-ac48-4c6c-a397-57bab594120a\\x\\aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa...(truncated)",
             "len": 256,
             "name_hex": "61616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161",
             "ok": false,
@@ -238,7 +238,7 @@
         ],
         "base_len_abs": 55,
         "boundary_len": 255,
-        "dir": "D:\\sendguard-run\\c0a50cd5-4cd8-4355-9a22-c55102caa069\\y",
+        "dir": "D:\\sendguard-run\\77e84aef-ac48-4c6c-a397-57bab594120a\\y",
         "face": "kernel32.CreateFileW(raw)",
         "face_note": "plain path; subject to whatever this layer does with long paths",
         "high": 260,
@@ -364,7 +364,7 @@
         ],
         "base_len_abs": 55,
         "boundary_len": 255,
-        "dir": "D:\\sendguard-run\\c0a50cd5-4cd8-4355-9a22-c55102caa069\\z",
+        "dir": "D:\\sendguard-run\\77e84aef-ac48-4c6c-a397-57bab594120a\\z",
         "face": "explicit(\\\\?\\)",
         "face_note": "Win32 path parsing switched off; the 259-unit ceiling does not apply",
         "high": 260,
@@ -410,12 +410,12 @@
   "case_id": "T17",
   "case_id_frozen_base": "T17",
   "case_locale": "en-US",
-  "cell_dir": "D:\\sendguard-run\\c0a50cd5-4cd8-4355-9a22-c55102caa069\\t",
+  "cell_dir": "D:\\sendguard-run\\77e84aef-ac48-4c6c-a397-57bab594120a\\t",
   "child_command": [
     "D:\\sendguard-work\\seat-qoder\\impl\\go\\rederive\\bin\\sg.exe",
     "cell",
     "--plan",
-    "D:\\sendguard-run\\c0a50cd5-4cd8-4355-9a22-c55102caa069\\_plan.json"
+    "D:\\sendguard-run\\77e84aef-ac48-4c6c-a397-57bab594120a\\_plan.json"
   ],
   "child_process": "one child process per cell, killed by the parent on deadline",
   "child_rc": 0,
@@ -479,7 +479,7 @@
   },
   "extra": false,
   "format_version": 1,
-  "harness_version": "sg-go-rederive-1.0.0+8bd578a296a9",
+  "harness_version": "sg-go-rederive-1.0.0+916559034257",
   "independent_readback_arm": {
     "arm": "python open('rb') + hashlib.sha256",
     "attempted": true,
@@ -491,7 +491,7 @@
           "-c",
           "\u003c4-line readback script\u003e",
           "\u003clanded-name-hex\u003e",
-          "D:\\sendguard-run\\c0a50cd5-4cd8-4355-9a22-c55102caa069\\t",
+          "D:\\sendguard-run\\77e84aef-ac48-4c6c-a397-57bab594120a\\t",
           ""
         ],
         "face": "plain",
@@ -510,10 +510,11 @@
   "instrument_red": false,
   "language": "go",
   "legality_create_probe": {
+    "asked_path_head_hex": "443a5c73656e646775617264",
     "attempted": true,
     "created": true,
     "deletes": false,
-    "dir": "D:\\sendguard-run\\c0a50cd5-4cd8-4355-9a22-c55102caa069\\l",
+    "dir": "D:\\sendguard-run\\77e84aef-ac48-4c6c-a397-57bab594120a\\l",
     "listing": [
       {
         "is_dir": false,
@@ -625,7 +626,7 @@
     "independence": "no file under results/ and no other language under impl/ was opened by this seat",
     "independent_enumerator": "harness/audit.go is the audit instrument; this port shares no code with it and never invoked it",
     "runner_exe": "D:\\sendguard-work\\seat-qoder\\impl\\go\\rederive\\bin\\sg.exe",
-    "sg_exe_sha256_before": "8bd578a296a9da6c38015b8c9b332e328a52b4198fedeb5508ebefba4be647b5",
+    "sg_exe_sha256_before": "916559034257452f511ee4efd4e601692170a5147f16b8e4408c2fc3cc434f11",
     "spec_sha256": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261",
     "spec_sha256_face": "git cat-file blob HEAD:spec/cases.yaml",
     "spec_sha256_worktree": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261"
@@ -639,12 +640,12 @@
   "roundtrip_leg_executed": true,
   "roundtrip_ok": true,
   "run_status": "ran",
-  "sandbox_dir": "D:\\sendguard-run\\c0a50cd5-4cd8-4355-9a22-c55102caa069",
+  "sandbox_dir": "D:\\sendguard-run\\77e84aef-ac48-4c6c-a397-57bab594120a",
   "sandbox_sharing": {
-    "extended_probe_dir": "D:\\sendguard-run\\c0a50cd5-4cd8-4355-9a22-c55102caa069\\e",
+    "extended_probe_dir": "D:\\sendguard-run\\77e84aef-ac48-4c6c-a397-57bab594120a\\e",
     "first_cell_in_group": false,
     "group_id": "T17|os.Create|len",
-    "measured_dir": "D:\\sendguard-run\\c0a50cd5-4cd8-4355-9a22-c55102caa069\\t",
+    "measured_dir": "D:\\sendguard-run\\77e84aef-ac48-4c6c-a397-57bab594120a\\t",
     "multi_member_case": false,
     "rule": "one fresh uuid sandbox per cell; the multi-member cases T09/T14/T19 share the directory of their (case x entry) group because coexistence in ONE directory is the frozen question, and the port own plan/phase/observation files sit in the sandbox root so they can never enter a dir_view"
   },
@@ -652,7 +653,7 @@
   "sha256_self": "c9fe45b2fee8ea846f0cf4f2cacc2a891e7b082e7719923502d12a9813e21994",
   "sha256_truth": "c9fe45b2fee8ea846f0cf4f2cacc2a891e7b082e7719923502d12a9813e21994",
   "spec_source": "2nd-round arbitration 3 / Qoder 3-1/3-2: measure curve not points | base ladder and path forms from spec/cells-required.json",
-  "started_at": "2026-10-11T00:02:47.6830504Z",
+  "started_at": "2026-10-11T02:53:03.5187936Z",
   "sub_identity": {
     "base_len": 200,
     "path_form": "plain"

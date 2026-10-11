@@ -2,7 +2,7 @@
 
 Run:  python ci/validate_cells.py            # prints and writes docs/cell-validation.md
       python ci/validate_cells.py --quiet     # only the summary lines
-      python ci/validate_cells.py --selftest  # 15 arms: it must refuse, and it must be able to say yes
+      python ci/validate_cells.py --selftest  # 20 arms: it must refuse, and it must be able to say yes
 
 This leg takes no output path on purpose: it always writes the repository's own face, and any other
 argument is refused (rc=3) rather than ignored. Measured on 2026-10-11 11:46: the seat passed
@@ -19,6 +19,7 @@ Exit codes: 0 = every cell on every face validates (or all arms pass); 1 = at le
 self-test arm failed; 3 = a face is missing, unreadable, or the leg was called with an argument it does not
 implement (an instrument problem, never a measurement).
 """
+import collections
 import glob
 import io
 import json
@@ -34,6 +35,9 @@ SCHEMA = os.path.join(REPO, "spec", "schema.json")
 PORTS = ["csharp", "go", "java", "python", "rust", "typescript"]
 KNOWN_ARGS = ("--quiet", "--selftest")
 SAMPLE_LIMIT = 6
+
+sys.path.insert(0, HERE)
+import equality  # noqa: E402  - the gate's own VERDICT_FIELDS, so this ruler has no second copy
 
 
 def cells_in(face):
@@ -107,6 +111,41 @@ def dispatch(argv):
     return ("selftest",) if "--selftest" in argv else ("run", quiet)
 
 
+def verdict_field_gap(schema):
+    """Which verdict fields the gate compares that the frozen schema does not require, or never documents.
+
+    The two lists are the project's two rulers over one object, and they were allowed to drift: reading at
+    12:06, 9 of the 10 fields `ci/equality.py` calls a verdict are absent from `spec/schema.json`'s
+    `required`, and 4 of those are absent from its `properties` too. That is how a tree can be 0-invalid and
+    121-blank in the same minute, both numbers correct. Naming the gap is this ruler's job; closing it is a
+    contract change and the owner's word.
+    """
+    sys.path.insert(0, HERE)
+    import equality  # the same list the gate judges with - not a second copy of it
+    req = set(schema["required"])
+    props = set(schema["properties"])
+    return ([f for f in equality.VERDICT_FIELDS if f not in req],
+            [f for f in equality.VERDICT_FIELDS if f not in props])
+
+
+def omission_lines(omissions, ports_seen, gap_fields):
+    """Per-port count of cells that omit each verdict field the schema does not insist on."""
+    if not gap_fields:
+        return []
+    out = ["", "## Verdict fields the schema does not require", "",
+           "The gate compares the fields below as a port's *answer*; the schema lets a port leave them out, "
+           "so a",
+           "cell can be **conforming and silent** at the same time. Both readings in this file are true at "
+           "once.", "",
+           "| field | " + " | ".join(ports_seen) + " |", "|---" * (len(ports_seen) + 1) + "|"]
+    for f in gap_fields:
+        out.append("| `%s` | " % f + " | ".join(str(omissions.get((p, f), 0)) for p in ports_seen) + " |")
+    total = sum(omissions.get((p, f), 0) for p in ports_seen for f in gap_fields)
+    out += ["", "**cells omitting a compared verdict field: %d (across %d ports, %d fields)**"
+            % (total, len(ports_seen), len(gap_fields)), ""]
+    return out
+
+
 def selftest():
     """Red/green arms for this ruler, including the proof that refusing does not write."""
     errs = []
@@ -159,6 +198,21 @@ def selftest():
     chk(dispatch(["--selftest"]) == ("selftest",) and dispatch(["--quiet"]) == ("run", True)
         and dispatch([]) == ("run", False),
         "selftest A15 green: the three real modes must route correctly")
+
+    fake = {"required": ["os_legality_verdict"], "properties": {"mechanism_class": {}}}
+    gap_req, gap_doc = verdict_field_gap(fake)
+    chk("os_legality_verdict" not in gap_req,
+        "selftest A16 green: a verdict field the schema requires is not a gap")
+    chk("mechanism_class" in gap_req and "roundtrip_ok" in gap_req,
+        "selftest A17 red: compared-but-optional fields must be named, got %r" % (gap_req,))
+    chk("phantom" in gap_doc and "len_triple" in gap_doc,
+        "selftest A18 red: a verdict field the schema never documents must be called out separately")
+    ls = omission_lines({("go", "roundtrip_ok"): 3}, ["csharp", "go"], ["roundtrip_ok"])
+    chk(any("| `roundtrip_ok` | 0 | 3 |" in l for l in ls)
+        and any("cells omitting a compared verdict field: 3" in l for l in ls),
+        "selftest A19 red: an omission must be counted per port with its total, got %r" % (ls[-2:],))
+    chk(omission_lines({}, ["go"], []) == [],
+        "selftest A20 green: no gap means no table, not a table of nothing")
     return errs
 
 
@@ -174,7 +228,7 @@ def main():
         errs = selftest()
         for e in errs:
             print("SELFTEST-FAIL: %s" % e)
-        print("arms=15 passed=%d" % (15 - len(errs)))
+        print("arms=20 passed=%d" % (20 - len(errs)))
         return 1 if errs else 0
     quiet = mode[1]
     if not os.path.isfile(SCHEMA):
@@ -182,6 +236,9 @@ def main():
         return 3
     schema = json.load(io.open(SCHEMA, encoding="utf-8"))
     strict = schema.get("additionalProperties")
+    gap_required, gap_documented = verdict_field_gap(schema)
+    gap_fields = [f for f in equality.VERDICT_FIELDS if f in gap_required]
+    omissions = collections.defaultdict(int)
     lines = ["# Cell validation, by an outside ruler", "",
              "Generated by `ci/validate_cells.py` at %s against `spec/schema.json` "
              "(%d required fields, %d documented properties, additionalProperties=%s)."
@@ -209,6 +266,10 @@ def main():
                 n += 1
                 continue
             n += 1
+            if isinstance(cell, dict):
+                for gf in gap_fields:
+                    if gf not in cell:
+                        omissions[(port, gf)] += 1
             p = check(cell, schema)
             if p:
                 problems.append((os.path.basename(f), p))
@@ -224,6 +285,13 @@ def main():
                 rep = m.group(1)
         lines += port_lines(port, n, ok, rep, problems, quiet)
     lines += ["", "**invalid cells across the six faces: %d**" % total_bad, ""]
+    lines += omission_lines(omissions, [p for p in PORTS if os.path.isdir(
+        os.path.join(REPO, "results", "%s.windows.x64" % p))], gap_fields)
+    if gap_documented:
+        lines.append("Verdict fields the gate compares that `spec/schema.json` does not even document: %s. "
+                     "They are legal extras today and unverifiable requirements tomorrow."
+                     % ", ".join("`%s`" % f for f in gap_documented))
+        lines.append("")
     if missing_faces:
         lines.append("Faces not readable: %s" % ", ".join(missing_faces))
         lines.append("")
@@ -238,12 +306,25 @@ def main():
               "can reproduce, and the disagreement belongs in the acceptance sheet, not in a footnote.", ""]
     text = "\n".join(lines) + "\n"
     io.open(os.path.join(REPO, "docs", "cell-validation.md"), "w", encoding="utf-8", newline="\n").write(text)
-    print("wrote docs/cell-validation.md bytes=%d invalid=%d missing_faces=%d"
-          % (len(text.encode("utf-8")), total_bad, len(missing_faces)))
+    omit_total = sum(omissions.values())
+    print("wrote docs/cell-validation.md bytes=%d invalid=%d missing_faces=%d "
+          "verdict_fields_not_required=%d verdict_fields_undocumented=%d cells_omitting_a_compared_field=%d"
+          % (len(text.encode("utf-8")), total_bad, len(missing_faces), len(gap_fields),
+             len(gap_documented), omit_total))
     if missing_faces:
         return 3
     return 1 if total_bad else 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    try:
+        rc = main()
+    except Exception as e:
+        # rc=1 is this leg's word for "a cell does not conform". A crash must not be allowed to borrow it -
+        # measured 2026-10-11 12:09, when a KeyError in the omission counter exited 1 and ci/refresh_all.py
+        # lists 1 among the acceptable readings, so the tool failure would have been filed as a result.
+        import traceback
+        traceback.print_exc()
+        print("OUTCOME=INSTRUMENT-RED %s: a crash is not a measurement" % type(e).__name__)
+        sys.exit(3)
+    sys.exit(rc)

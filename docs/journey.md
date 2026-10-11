@@ -251,6 +251,114 @@ identity travels with the answer, and half the ports don't publish it. Giving th
 contract change and the current sealed round is the eighth, so the question goes up to the owner instead of
 landing in this tree as a decision.
 
+### 2.15 The headline I published was counting silence as agreement
+
+The morning's report line was `24 cells with no verdict disagreement / 44`, and I repeated it in the README,
+the claim boundary and the owner's one-pager. It was true. It was also the same mistake this project is
+supposed to be immune to: a cell where six ports recorded three of ten verdict fields and contradicted on
+none was being scored like a cell where six ports answered everything and matched.
+
+The count surfaced while I was measuring something else - the TypeScript lane's schema conformance. Read
+through the frozen manifest instead of the port's own claim, 25 of its 44 required cells are non-conforming,
+and every one of them is missing exactly the fields that make a verdict comparable (`read_result`,
+`roundtrip_ok`, `enum_to_stat_agrees`). That forced the question "what fraction of the verdict grid did
+anybody actually fill in?", and the answer is in `docs/coverage.md`:
+
+```
+python ci/equality.py | sed -n '/coverage (who answered what)/,$p'
+
+   verdict_pairs_recorded=2278/2640 (86.3%) cells_every_port_recorded_every_verdict_field=4/44
+   pairs_no_port_recorded=10
+   cells_with_no_verdict_disagreement=24/44  of_which_fully_recorded=4
+```
+
+So the strongest sentence the project can honestly say is narrower and better than the one I wrote: **on the
+4 cells where all six ports recorded all ten verdict fields, they recorded them identically** - and those 4
+are the plain-path length rungs (`len/T17` and `len/T18` at `base_len` 78 and 120). The 24 stays published,
+but never without the 4 next to it, and both now ride in the same `OUTCOME=` line so neither can be quoted
+alone.
+
+Two things came out of hardening it that are worth more than the fix:
+
+- **The gate had two rulers of its own.** `verdict["outcome"]` and the printed `OUTCOME=` word were separate
+  expressions. Sabotaging only the artifact's expression left the file saying `outcome=PASS` while the
+  process exited 3 - the exact two-rulers defect this project has caught in `matrix_table.py`, in
+  `validate_cells` vs `cells_valid`, and in two ports arguing over a fingerprint. One `outcome_word` now
+  feeds both.
+- **The new arms had to be shown to bite, not just to pass.** `silence-is-not-agreement` flips to `rc=0`
+  when the not-recorded tally is deleted; `nobody-answered-is-not-agreement` flips to `rc=0` when
+  `all_blank` leaves `outcome_word`. And the green arm (`coverage-green-still-passes`) is what stops the
+  rule from becoming a gate that can only complain. Writing them exposed a fixture of mine that had been
+  leaning on the hole all along: `sub-identity-separates` left `bytes_on_disk` blank in *both* ports, so it
+  had been passing on silence - it now records a value.
+
+A blank is still not the same thing as "not applicable", and the contract does not yet say which verdict
+fields apply to which case group (`len_triple` on a trap cell may be a legal blank; `roundtrip_ok` on a
+length rung is not). Until it does, the gate reports every blank and judges none of them, which is the same
+stance §2.9 took about prefix-shaped names: **a rule that cannot tell a finding from an artefact is not
+allowed to choose which one to delete.**
+
+
+### 2.16 "Conforming" and "answered" are different words, and my two rulers disagreed about which one they meant
+
+`docs/cell-validation.md` went to `invalid=0` at 12:05 - every one of 557 cells on six faces carries the
+fields `spec/schema.json` requires. In the same minute the gate reported 121 verdict field-cells blank. Both
+readings are correct, because the two lists in this repository are not the same list:
+
+```
+python ci/validate_cells.py
+wrote docs/cell-validation.md bytes=2536 invalid=0 missing_faces=0 verdict_fields_not_required=9 \
+verdict_fields_undocumented=4 cells_omitting_a_compared_field=371
+```
+
+**Nine of the ten fields `ci/equality.py` treats as a port's verdict are not in the schema's `required` list,
+and four of them (`phantom`, `name_mutated`, `len_triple`, `name_landed_as`) are not in its `properties`
+either.** So a port can satisfy the contract and still leave the compared answer empty, and the product claim
+- "six implementations, the same verdict" - rests on fields the contract never insisted anybody emit. That is
+my defect, not a port's: I wrote both lists at different hours and never compared them.
+
+How much of the emptiness is a gap and how much is a limit of the question was measurable, because six
+implementations answer the same field differently. Denominator: the 44 required cells on each face
+(`docs/coverage.md`):
+
+| verdict field the schema does not require | best port | ports answering all 44 |
+|---|---|---|
+| `mechanism_class` | 44/44 | 5 of 6 |
+| `phantom` | 44/44 | 5 of 6 |
+| `len_triple` | 44/44 | 4 of 6 |
+| `roundtrip_ok` | 44/44 | 2 of 6 |
+| `name_mutated` | 44/44 | 2 of 6 |
+| `bytes_on_disk` | 44/44 | 2 of 6 |
+| `enum_to_stat_agrees` | 44/44 | 1 of 6 |
+| `bytes_written` | **39/44** | none |
+| `name_landed_as` | **39/44** | none |
+
+For seven of the nine, at least one port answers every one of the 44 cells - so the blank is an
+implementation gap, not an unanswerable question. For `bytes_written` and `name_landed_as` nobody reaches 44,
+and 10 field-cells are blank in all six ports at once; those are where "this answer does not exist for this
+cell" is plausible. Across all 557 cells the six faces published, 371 of them omit at least one compared
+verdict field. The contract cannot tell a gap from a limit, which is the same wall §2.9 hit from the other
+side: **a rule that cannot distinguish a finding from an artefact must not get to choose which one to
+delete** - so the gate now publishes every blank and judges none of them.
+
+Two instrument consequences landed with it:
+
+- `ci/validate_cells.py` imports the gate's own `VERDICT_FIELDS` instead of keeping a second list, prints the
+  requiredness gap and the per-port omission table, and gained 20 arms of its own. Its crash wrapper exists
+  because a `KeyError` in the new counter exited **1** - which is this leg's word for "a cell does not
+  conform" and is in `ci/refresh_all.py`'s acceptable set, so the crash would have been filed as a result. The
+  wrapper is proven both ways: reintroducing the crash gives `OUTCOME=INSTRUMENT-RED` and rc=3, removing it
+  gives rc=0.
+- A `PASS` from the equality gate is now unreachable while a compared verdict field is blank, by one port or
+  by all six (`arms=21`, and both new red arms were shown to flip when the rule they name is deleted).
+
+The contract change this asks for is not mine to make unilaterally, and it is bigger than naming a field:
+declare which verdict fields apply to which case group, and give a boolean a documented way to say
+`not_applicable` (the closed set already does this for `read_result`, which is why `not_applicable` exists
+there). Cost if the owner says yes: six ports re-emit their faces, and every "0 invalid" in the tree starts
+carrying a second number.
+
+
 ## 3. What the six windows did that the plan did not expect
 
 Two things the committee's construction order never asked for and the ports delivered anyway: the

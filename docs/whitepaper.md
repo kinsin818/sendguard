@@ -115,12 +115,13 @@ cat impl/java/tools/ext-path-of-repro.txt
   就会把真正值得看的五行埋掉。修的是闸，不是门。
 - **发布过一份错的必交清单**：第一版 `spec/cells-required.json` 来自一次错解析，只看见 20 条陷阱、
   漏掉控制格与成员分裂。文件里按名字撤销了自己，下游一律以重新生成的版本为准。
-- **一把只会说"不"的闸**：`ci/selftest.py` 现在有 18 条臂，其中四条专门证明它会放行——
-  `green-identical`、`probe-difference-is-data`、`alias-folds-spelling-drift`、`same-name-two-encodings-agree`。
+- **一把只会说"不"的闸**：`ci/selftest.py` 现在有 21 条臂，其中六条专门证明它会放行——
+  `green-identical`、`probe-difference-is-data`、`sub-identity-separates`、`alias-folds-spelling-drift`、
+  `same-name-two-encodings-agree`、`coverage-green-still-passes`。
   ```
   python ci/selftest.py --scratch-root ../sg-st | grep -E "arms=|OUTCOME="
   ```
-  同一条命令还要换两块盘各跑一次（scratch 分别放 C: 与 D:），两次都得 18/18——理由见下一条。
+  同一条命令还要换两块盘各跑一次（scratch 分别放 C: 与 D:），两次都得 21/21——理由见下一条。
 - **后来又抓到三件自己的量具毛病**，都属于"看起来在尽职、实际在骗人"那一类，逐条原始输出与修法记在
   `docs/FINDINGS-rev6.md` 的 M6：
   1. 一长串字母 `a` 本身就是合法 hex，于是"像 hex 就解码"把两门写成的文本读成三个 `0xAA` 字节，
@@ -130,6 +131,24 @@ cat impl/java/tools/ext-path-of-repro.txt
      自己全绿**。现在假门只能写进自己的临时目录，出表的工具还要求结果文件的来源必须是本仓 `results/`。
   3. 临时目录落在另一块盘时 `os.path.relpath` 抛异常，闸崩在 rc=1——而 rc=1 正是本闸"六门冲突"的代码。
      同一套臂在 D: 全过、在 C: 假红 8 条。**量具崩掉会被下游读成测量结果，这是本项目最贵的一类错。**
+
+- **把"没人反对"当成"都答过"**：这份报告一上午都在引用"44 格里 24 格无判定冲突"。那句话是真的，但它把
+  **沉默算成了一致**。12:05 重测：24 格里只有 **4 格**是六门把十个判定字段全部填了的格子（恰好是普通路径的
+  `T17`/`T18` 两档），另有 121 个字段格是某一门没填、10 个字段格六门都没填。现在闸在同一行 `OUTCOME=` 里
+  同时印 `cells_fully_recorded_and_identical=4` 和 `verdict_not_recorded_pairs=121`，两个数不许单独引用，
+  逐门逐字的覆盖率表在 `docs/coverage.md`。
+  ```
+  python ci/equality.py | sed -n '/coverage (who answered what)/,$p'
+  ```
+- **我自己的两把尺子量的不是同一件事**：同一分钟里 `ci/validate_cells.py` 报"557 格全部合规"，闸报"121 格空白"，
+  两句都对。往下查不是门的问题，是规范的问题——`spec/schema.json` 必填的 17 项里**不含闸用来判定的 10 个字段中的
+  9 个**，其中 `phantom`、`name_mutated`、`len_triple`、`name_landed_as` 连"已文档化字段"都没进。
+  换句话说，"六门判定逐字节一致"这句话一直建立在"这些字段没人被要求回答"的前提上。修法是把差集公开印出来
+  （`docs/cell-validation.md` 现在有一张逐门省略计数表），并把"哪些空白是合法的"交回契约本身——
+  下一轮契约要拍的事，本座不擅自动封存件。
+  ```
+  python ci/validate_cells.py | tail -1 && sed -n '/does not require/,/^## What this/p' docs/cell-validation.md
+  ```
 
 ## 6. 现在做到哪一步，没做什么
 
@@ -145,5 +164,10 @@ cat impl/java/tools/ext-path-of-repro.txt
 **同一门语言内的运行时对照**（Java 的 `java.io` 那一族在长度各档上的展开：出数的窗口自己承认这半未做完，
 已录格子只覆盖它实际跑过的那枚 17.0.17，见 `docs/FINDINGS-rev6.md` M7）、
 U 盘/SD 卡（FAT32/exFAT）、网络卷、网盘与邮件附件的文件名重写层、手机端下载层的字符清洗。
+
+还欠契约层两句拍板（本座不擅自改封存件，见 §5 最后两条）：一是给"哪枚可执行文件答的"一个跨门公共字段——
+今早已实测六门里只有三门记录了自己的 exe，而且用了三个字段名、三种形状；二是写明十个判定字段里哪些在哪类格上是
+**合法空白**，并给布尔字段一个和 `read_result` 一样的 `not_applicable` 出路。这两条不改，"逐字节一致"就仍然建立在
+一半问题没人被要求回答的前提上。
 
 方法全部公开，数据可复现，欢迎来挑刺。

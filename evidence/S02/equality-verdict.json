@@ -1,9 +1,21 @@
 {
  "cells_compared": 44,
+ "cells_every_port_recorded_every_verdict_field": [
+  "len/T17[base_len=78,path_form=plain]",
+  "len/T17[base_len=120,path_form=plain]",
+  "len/T18[base_len=78,path_form=plain]",
+  "len/T18[base_len=120,path_form=plain]"
+ ],
  "cells_excluded": [],
  "cells_required": 44,
  "cells_run_by_every_port": 44,
  "cells_with_no_verdict_disagreement": 24,
+ "cells_with_no_verdict_disagreement_and_fully_recorded": [
+  "len/T17[base_len=78,path_form=plain]",
+  "len/T17[base_len=120,path_form=plain]",
+  "len/T18[base_len=78,path_form=plain]",
+  "len/T18[base_len=120,path_form=plain]"
+ ],
  "channel_abstentions": [
   [
    "ctrl/T-CTRL-PARSE",
@@ -153,7 +165,8 @@
     "go='b', True",
     "java='b', False",
     "python='b', True",
-    "rust='b', True"
+    "rust='b', True",
+    "typescript='b', True"
    ]
   ],
   [
@@ -164,7 +177,8 @@
     "go='b', True",
     "java='b', False",
     "python='b', True",
-    "rust='b', True"
+    "rust='b', True",
+    "typescript='b', True"
    ]
   ],
   [
@@ -187,7 +201,8 @@
     "go='b', True",
     "java='b', False",
     "python='b', True",
-    "rust='b', True"
+    "rust='b', True",
+    "typescript='b', True"
    ]
   ],
   [
@@ -209,7 +224,8 @@
     "go='b', True",
     "java='b', False",
     "python='b', True",
-    "rust='b', True"
+    "rust='b', True",
+    "typescript='b', True"
    ]
   ],
   [
@@ -220,7 +236,8 @@
     "go='b', True",
     "java='b', False",
     "python='b', True",
-    "rust='b', True"
+    "rust='b', True",
+    "typescript='b', True"
    ]
   ],
   [
@@ -243,7 +260,8 @@
     "go='b', True",
     "java='b', False",
     "python='b', True",
-    "rust='b', True"
+    "rust='b', True",
+    "typescript='b', True"
    ]
   ],
   [
@@ -838,6 +856,992 @@
    ]
   ]
  ],
+ "not_recorded_pairs": [
+  [
+   "blind/B1",
+   "len_triple",
+   [
+    "csharp"
+   ]
+  ],
+  [
+   "blind/B2",
+   "len_triple",
+   [
+    "csharp"
+   ]
+  ],
+  [
+   "blind/B3",
+   "len_triple",
+   [
+    "csharp"
+   ]
+  ],
+  [
+   "blind/B4",
+   "len_triple",
+   [
+    "csharp"
+   ]
+  ],
+  [
+   "blind/B5",
+   "len_triple",
+   [
+    "csharp"
+   ]
+  ],
+  [
+   "ctrl/T-CTRL-ASCII",
+   "mechanism_class",
+   [
+    "rust"
+   ]
+  ],
+  [
+   "ctrl/T-CTRL-ASCII",
+   "len_triple",
+   [
+    "csharp"
+   ]
+  ],
+  [
+   "ctrl/T-CTRL-CANON",
+   "len_triple",
+   [
+    "csharp"
+   ]
+  ],
+  [
+   "ctrl/T-CTRL-ILLEGAL-CHAR",
+   "roundtrip_ok",
+   [
+    "go",
+    "python",
+    "rust",
+    "typescript"
+   ]
+  ],
+  [
+   "ctrl/T-CTRL-ILLEGAL-CHAR",
+   "name_mutated",
+   [
+    "csharp",
+    "java",
+    "python"
+   ]
+  ],
+  [
+   "ctrl/T-CTRL-ILLEGAL-CHAR",
+   "enum_to_stat_agrees",
+   [
+    "java",
+    "rust",
+    "typescript"
+   ]
+  ],
+  [
+   "ctrl/T-CTRL-ILLEGAL-CHAR",
+   "len_triple",
+   [
+    "csharp"
+   ]
+  ],
+  [
+   "ctrl/T-CTRL-ILLEGAL-CHAR",
+   "bytes_on_disk",
+   [
+    "go",
+    "java",
+    "python",
+    "typescript"
+   ]
+  ],
+  [
+   "ctrl/T-CTRL-NAMETOOLONG",
+   "roundtrip_ok",
+   [
+    "go",
+    "python",
+    "rust",
+    "typescript"
+   ]
+  ],
+  [
+   "ctrl/T-CTRL-NAMETOOLONG",
+   "name_mutated",
+   [
+    "csharp",
+    "java",
+    "python"
+   ]
+  ],
+  [
+   "ctrl/T-CTRL-NAMETOOLONG",
+   "enum_to_stat_agrees",
+   [
+    "java",
+    "rust",
+    "typescript"
+   ]
+  ],
+  [
+   "ctrl/T-CTRL-NAMETOOLONG",
+   "len_triple",
+   [
+    "csharp"
+   ]
+  ],
+  [
+   "ctrl/T-CTRL-NAMETOOLONG",
+   "bytes_on_disk",
+   [
+    "go",
+    "java",
+    "python",
+    "typescript"
+   ]
+  ],
+  [
+   "ctrl/T-CTRL-PARSE",
+   "phantom",
+   [
+    "python"
+   ]
+  ],
+  [
+   "ctrl/T-CTRL-PARSE",
+   "roundtrip_ok",
+   [
+    "go",
+    "python",
+    "rust",
+    "typescript"
+   ]
+  ],
+  [
+   "ctrl/T-CTRL-PARSE",
+   "name_mutated",
+   [
+    "csharp",
+    "java",
+    "python"
+   ]
+  ],
+  [
+   "ctrl/T-CTRL-PARSE",
+   "enum_to_stat_agrees",
+   [
+    "go",
+    "java",
+    "python",
+    "rust",
+    "typescript"
+   ]
+  ],
+  [
+   "ctrl/T-CTRL-PARSE",
+   "len_triple",
+   [
+    "csharp"
+   ]
+  ],
+  [
+   "ctrl/T-CTRL-PARSE",
+   "bytes_on_disk",
+   [
+    "go",
+    "java",
+    "python",
+    "typescript"
+   ]
+  ],
+  [
+   "len/T17[base_len=78,path_form=extended]",
+   "name_mutated",
+   [
+    "java"
+   ]
+  ],
+  [
+   "len/T17[base_len=78,path_form=extended]",
+   "enum_to_stat_agrees",
+   [
+    "java"
+   ]
+  ],
+  [
+   "len/T17[base_len=78,path_form=extended]",
+   "bytes_written",
+   [
+    "java"
+   ]
+  ],
+  [
+   "len/T17[base_len=78,path_form=extended]",
+   "bytes_on_disk",
+   [
+    "java"
+   ]
+  ],
+  [
+   "len/T17[base_len=78,path_form=extended]",
+   "name_landed_as",
+   [
+    "java"
+   ]
+  ],
+  [
+   "len/T17[base_len=120,path_form=extended]",
+   "name_mutated",
+   [
+    "java"
+   ]
+  ],
+  [
+   "len/T17[base_len=120,path_form=extended]",
+   "enum_to_stat_agrees",
+   [
+    "java"
+   ]
+  ],
+  [
+   "len/T17[base_len=120,path_form=extended]",
+   "bytes_written",
+   [
+    "java"
+   ]
+  ],
+  [
+   "len/T17[base_len=120,path_form=extended]",
+   "bytes_on_disk",
+   [
+    "java"
+   ]
+  ],
+  [
+   "len/T17[base_len=120,path_form=extended]",
+   "name_landed_as",
+   [
+    "java"
+   ]
+  ],
+  [
+   "len/T17[base_len=200,path_form=extended]",
+   "name_mutated",
+   [
+    "java"
+   ]
+  ],
+  [
+   "len/T17[base_len=200,path_form=extended]",
+   "bytes_written",
+   [
+    "java"
+   ]
+  ],
+  [
+   "len/T17[base_len=200,path_form=extended]",
+   "bytes_on_disk",
+   [
+    "java"
+   ]
+  ],
+  [
+   "len/T17[base_len=200,path_form=extended]",
+   "name_landed_as",
+   [
+    "java"
+   ]
+  ],
+  [
+   "len/T17[base_len=200,path_form=plain]",
+   "roundtrip_ok",
+   [
+    "python"
+   ]
+  ],
+  [
+   "len/T17[base_len=200,path_form=plain]",
+   "name_mutated",
+   [
+    "python"
+   ]
+  ],
+  [
+   "len/T17[base_len=200,path_form=plain]",
+   "bytes_written",
+   [
+    "python"
+   ]
+  ],
+  [
+   "len/T17[base_len=200,path_form=plain]",
+   "bytes_on_disk",
+   [
+    "python"
+   ]
+  ],
+  [
+   "len/T17[base_len=200,path_form=plain]",
+   "name_landed_as",
+   [
+    "python"
+   ]
+  ],
+  [
+   "len/T18[base_len=78,path_form=extended]",
+   "name_mutated",
+   [
+    "java"
+   ]
+  ],
+  [
+   "len/T18[base_len=78,path_form=extended]",
+   "enum_to_stat_agrees",
+   [
+    "java"
+   ]
+  ],
+  [
+   "len/T18[base_len=78,path_form=extended]",
+   "bytes_written",
+   [
+    "java"
+   ]
+  ],
+  [
+   "len/T18[base_len=78,path_form=extended]",
+   "bytes_on_disk",
+   [
+    "java"
+   ]
+  ],
+  [
+   "len/T18[base_len=78,path_form=extended]",
+   "name_landed_as",
+   [
+    "java"
+   ]
+  ],
+  [
+   "len/T18[base_len=120,path_form=extended]",
+   "name_mutated",
+   [
+    "java"
+   ]
+  ],
+  [
+   "len/T18[base_len=120,path_form=extended]",
+   "enum_to_stat_agrees",
+   [
+    "java"
+   ]
+  ],
+  [
+   "len/T18[base_len=120,path_form=extended]",
+   "bytes_written",
+   [
+    "java"
+   ]
+  ],
+  [
+   "len/T18[base_len=120,path_form=extended]",
+   "bytes_on_disk",
+   [
+    "java"
+   ]
+  ],
+  [
+   "len/T18[base_len=120,path_form=extended]",
+   "name_landed_as",
+   [
+    "java"
+   ]
+  ],
+  [
+   "len/T18[base_len=200,path_form=extended]",
+   "name_mutated",
+   [
+    "java"
+   ]
+  ],
+  [
+   "len/T18[base_len=200,path_form=extended]",
+   "bytes_written",
+   [
+    "java"
+   ]
+  ],
+  [
+   "len/T18[base_len=200,path_form=extended]",
+   "bytes_on_disk",
+   [
+    "java"
+   ]
+  ],
+  [
+   "len/T18[base_len=200,path_form=extended]",
+   "name_landed_as",
+   [
+    "java"
+   ]
+  ],
+  [
+   "len/T18[base_len=200,path_form=plain]",
+   "roundtrip_ok",
+   [
+    "python"
+   ]
+  ],
+  [
+   "len/T18[base_len=200,path_form=plain]",
+   "name_mutated",
+   [
+    "python"
+   ]
+  ],
+  [
+   "len/T18[base_len=200,path_form=plain]",
+   "bytes_written",
+   [
+    "python"
+   ]
+  ],
+  [
+   "len/T18[base_len=200,path_form=plain]",
+   "bytes_on_disk",
+   [
+    "python"
+   ]
+  ],
+  [
+   "len/T18[base_len=200,path_form=plain]",
+   "name_landed_as",
+   [
+    "python"
+   ]
+  ],
+  [
+   "trap/T01",
+   "roundtrip_ok",
+   [
+    "go",
+    "python",
+    "rust",
+    "typescript"
+   ]
+  ],
+  [
+   "trap/T01",
+   "name_mutated",
+   [
+    "csharp",
+    "java",
+    "python"
+   ]
+  ],
+  [
+   "trap/T01",
+   "enum_to_stat_agrees",
+   [
+    "go",
+    "java",
+    "rust"
+   ]
+  ],
+  [
+   "trap/T01",
+   "len_triple",
+   [
+    "csharp"
+   ]
+  ],
+  [
+   "trap/T01",
+   "name_landed_as",
+   [
+    "csharp",
+    "go",
+    "java",
+    "python",
+    "rust"
+   ]
+  ],
+  [
+   "trap/T02",
+   "roundtrip_ok",
+   [
+    "go",
+    "python",
+    "rust",
+    "typescript"
+   ]
+  ],
+  [
+   "trap/T02",
+   "name_mutated",
+   [
+    "csharp",
+    "java",
+    "python"
+   ]
+  ],
+  [
+   "trap/T02",
+   "enum_to_stat_agrees",
+   [
+    "go",
+    "java",
+    "rust"
+   ]
+  ],
+  [
+   "trap/T02",
+   "len_triple",
+   [
+    "csharp"
+   ]
+  ],
+  [
+   "trap/T02",
+   "name_landed_as",
+   [
+    "csharp",
+    "go",
+    "java",
+    "python",
+    "rust"
+   ]
+  ],
+  [
+   "trap/T03",
+   "roundtrip_ok",
+   [
+    "go",
+    "python",
+    "rust",
+    "typescript"
+   ]
+  ],
+  [
+   "trap/T03",
+   "name_mutated",
+   [
+    "csharp",
+    "java",
+    "python"
+   ]
+  ],
+  [
+   "trap/T03",
+   "enum_to_stat_agrees",
+   [
+    "java",
+    "rust",
+    "typescript"
+   ]
+  ],
+  [
+   "trap/T03",
+   "len_triple",
+   [
+    "csharp"
+   ]
+  ],
+  [
+   "trap/T03",
+   "bytes_on_disk",
+   [
+    "go",
+    "java",
+    "python",
+    "typescript"
+   ]
+  ],
+  [
+   "trap/T05",
+   "bytes_written",
+   [
+    "java"
+   ]
+  ],
+  [
+   "trap/T06",
+   "len_triple",
+   [
+    "csharp"
+   ]
+  ],
+  [
+   "trap/T07",
+   "len_triple",
+   [
+    "csharp"
+   ]
+  ],
+  [
+   "trap/T08",
+   "len_triple",
+   [
+    "csharp"
+   ]
+  ],
+  [
+   "trap/T09-m1",
+   "len_triple",
+   [
+    "csharp"
+   ]
+  ],
+  [
+   "trap/T09-m2",
+   "len_triple",
+   [
+    "csharp"
+   ]
+  ],
+  [
+   "trap/T10",
+   "roundtrip_ok",
+   [
+    "go",
+    "python",
+    "rust",
+    "typescript"
+   ]
+  ],
+  [
+   "trap/T10",
+   "name_mutated",
+   [
+    "csharp",
+    "java",
+    "python"
+   ]
+  ],
+  [
+   "trap/T10",
+   "enum_to_stat_agrees",
+   [
+    "go",
+    "java",
+    "rust"
+   ]
+  ],
+  [
+   "trap/T10",
+   "len_triple",
+   [
+    "csharp"
+   ]
+  ],
+  [
+   "trap/T10",
+   "name_landed_as",
+   [
+    "csharp",
+    "go",
+    "java",
+    "python",
+    "rust"
+   ]
+  ],
+  [
+   "trap/T11",
+   "roundtrip_ok",
+   [
+    "go",
+    "python",
+    "rust",
+    "typescript"
+   ]
+  ],
+  [
+   "trap/T11",
+   "name_mutated",
+   [
+    "csharp",
+    "java",
+    "python"
+   ]
+  ],
+  [
+   "trap/T11",
+   "enum_to_stat_agrees",
+   [
+    "go",
+    "java",
+    "rust"
+   ]
+  ],
+  [
+   "trap/T11",
+   "len_triple",
+   [
+    "csharp"
+   ]
+  ],
+  [
+   "trap/T11",
+   "name_landed_as",
+   [
+    "csharp",
+    "go",
+    "java",
+    "python",
+    "rust"
+   ]
+  ],
+  [
+   "trap/T12",
+   "len_triple",
+   [
+    "csharp"
+   ]
+  ],
+  [
+   "trap/T13",
+   "len_triple",
+   [
+    "csharp"
+   ]
+  ],
+  [
+   "trap/T14-m1",
+   "roundtrip_ok",
+   [
+    "go",
+    "python",
+    "rust",
+    "typescript"
+   ]
+  ],
+  [
+   "trap/T14-m1",
+   "name_mutated",
+   [
+    "csharp",
+    "java",
+    "python"
+   ]
+  ],
+  [
+   "trap/T14-m1",
+   "enum_to_stat_agrees",
+   [
+    "go",
+    "java",
+    "rust"
+   ]
+  ],
+  [
+   "trap/T14-m1",
+   "len_triple",
+   [
+    "csharp"
+   ]
+  ],
+  [
+   "trap/T14-m1",
+   "bytes_written",
+   [
+    "csharp",
+    "go",
+    "java",
+    "python",
+    "rust"
+   ]
+  ],
+  [
+   "trap/T14-m1",
+   "name_landed_as",
+   [
+    "csharp",
+    "go",
+    "java",
+    "python",
+    "rust"
+   ]
+  ],
+  [
+   "trap/T14-m2",
+   "roundtrip_ok",
+   [
+    "go",
+    "python",
+    "rust",
+    "typescript"
+   ]
+  ],
+  [
+   "trap/T14-m2",
+   "name_mutated",
+   [
+    "csharp",
+    "java",
+    "python"
+   ]
+  ],
+  [
+   "trap/T14-m2",
+   "enum_to_stat_agrees",
+   [
+    "go",
+    "java",
+    "rust"
+   ]
+  ],
+  [
+   "trap/T14-m2",
+   "len_triple",
+   [
+    "csharp"
+   ]
+  ],
+  [
+   "trap/T14-m2",
+   "name_landed_as",
+   [
+    "csharp",
+    "go",
+    "java",
+    "python",
+    "rust"
+   ]
+  ],
+  [
+   "trap/T14-m3",
+   "roundtrip_ok",
+   [
+    "go",
+    "python",
+    "rust",
+    "typescript"
+   ]
+  ],
+  [
+   "trap/T14-m3",
+   "name_mutated",
+   [
+    "csharp",
+    "java",
+    "python"
+   ]
+  ],
+  [
+   "trap/T14-m3",
+   "enum_to_stat_agrees",
+   [
+    "go",
+    "java",
+    "rust"
+   ]
+  ],
+  [
+   "trap/T14-m3",
+   "len_triple",
+   [
+    "csharp"
+   ]
+  ],
+  [
+   "trap/T14-m3",
+   "bytes_written",
+   [
+    "csharp",
+    "go",
+    "java",
+    "python",
+    "rust"
+   ]
+  ],
+  [
+   "trap/T14-m3",
+   "name_landed_as",
+   [
+    "csharp",
+    "go",
+    "java",
+    "python",
+    "rust"
+   ]
+  ],
+  [
+   "trap/T15",
+   "roundtrip_ok",
+   [
+    "go",
+    "python",
+    "rust",
+    "typescript"
+   ]
+  ],
+  [
+   "trap/T15",
+   "name_mutated",
+   [
+    "csharp",
+    "java",
+    "python"
+   ]
+  ],
+  [
+   "trap/T15",
+   "enum_to_stat_agrees",
+   [
+    "java",
+    "rust",
+    "typescript"
+   ]
+  ],
+  [
+   "trap/T15",
+   "len_triple",
+   [
+    "csharp"
+   ]
+  ],
+  [
+   "trap/T15",
+   "bytes_on_disk",
+   [
+    "go",
+    "java",
+    "python",
+    "typescript"
+   ]
+  ],
+  [
+   "trap/T16",
+   "len_triple",
+   [
+    "csharp"
+   ]
+  ],
+  [
+   "trap/T19-m1",
+   "len_triple",
+   [
+    "csharp"
+   ]
+  ],
+  [
+   "trap/T19-m2",
+   "len_triple",
+   [
+    "csharp"
+   ]
+  ],
+  [
+   "trap/T20",
+   "len_triple",
+   [
+    "csharp"
+   ]
+  ]
+ ],
  "outcome": "RED",
  "prefix_shaped_records": [
   [
@@ -875,6 +1879,88 @@
  "source_results": "results",
  "unpinned_input": [],
  "verdict_disagreements": 54,
+ "verdict_field_coverage": {
+  "bytes_on_disk": {
+   "csharp": 44,
+   "go": 32,
+   "java": 24,
+   "python": 30,
+   "rust": 44,
+   "typescript": 39
+  },
+  "bytes_written": {
+   "csharp": 37,
+   "go": 32,
+   "java": 28,
+   "python": 35,
+   "rust": 37,
+   "typescript": 39
+  },
+  "enum_to_stat_agrees": {
+   "csharp": 44,
+   "go": 36,
+   "java": 24,
+   "python": 43,
+   "rust": 30,
+   "typescript": 39
+  },
+  "len_triple": {
+   "csharp": 12,
+   "go": 44,
+   "java": 44,
+   "python": 44,
+   "rust": 44,
+   "typescript": 44
+  },
+  "mechanism_class": {
+   "csharp": 44,
+   "go": 44,
+   "java": 44,
+   "python": 44,
+   "rust": 42,
+   "typescript": 44
+  },
+  "name_landed_as": {
+   "csharp": 32,
+   "go": 32,
+   "java": 25,
+   "python": 30,
+   "rust": 32,
+   "typescript": 39
+  },
+  "name_mutated": {
+   "csharp": 32,
+   "go": 44,
+   "java": 25,
+   "python": 30,
+   "rust": 44,
+   "typescript": 44
+  },
+  "os_legality_verdict": {
+   "csharp": 44,
+   "go": 44,
+   "java": 44,
+   "python": 44,
+   "rust": 44,
+   "typescript": 44
+  },
+  "phantom": {
+   "csharp": 44,
+   "go": 44,
+   "java": 44,
+   "python": 43,
+   "rust": 44,
+   "typescript": 44
+  },
+  "roundtrip_ok": {
+   "csharp": 44,
+   "go": 32,
+   "java": 44,
+   "python": 30,
+   "rust": 32,
+   "typescript": 32
+  }
+ },
  "verdict_fields": [
   "os_legality_verdict",
   "mechanism_class",
@@ -887,5 +1973,50 @@
   "bytes_on_disk",
   "name_landed_as"
  ],
- "written_at": "2026-10-11T11:34:03+0800"
+ "verdict_not_recorded_pairs": 121,
+ "verdict_pairs_no_port_recorded": [
+  [
+   "ctrl/T-CTRL-ILLEGAL-CHAR",
+   "bytes_written"
+  ],
+  [
+   "ctrl/T-CTRL-ILLEGAL-CHAR",
+   "name_landed_as"
+  ],
+  [
+   "ctrl/T-CTRL-NAMETOOLONG",
+   "bytes_written"
+  ],
+  [
+   "ctrl/T-CTRL-NAMETOOLONG",
+   "name_landed_as"
+  ],
+  [
+   "ctrl/T-CTRL-PARSE",
+   "bytes_written"
+  ],
+  [
+   "ctrl/T-CTRL-PARSE",
+   "name_landed_as"
+  ],
+  [
+   "trap/T03",
+   "bytes_written"
+  ],
+  [
+   "trap/T03",
+   "name_landed_as"
+  ],
+  [
+   "trap/T15",
+   "bytes_written"
+  ],
+  [
+   "trap/T15",
+   "name_landed_as"
+  ]
+ ],
+ "verdict_pairs_possible": 2640,
+ "verdict_pairs_recorded": 2281,
+ "written_at": "2026-10-11T12:18:44+0800"
 }

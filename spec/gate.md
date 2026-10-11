@@ -30,8 +30,12 @@ The old wording ("hits == 0 => instrument broken, batch void") is withdrawn: it 
 
 - T-API cells enter the matrix as data cells and become whitepaper page-3
   selling points; they do NOT gate Go/No-Go.
-- T-API hit count == 0 -> `instrument_failure`: harness rework, S02 batch
-  voided and re-run. Neither Go nor No-Go may be issued on void data.
+- ~~T-API hit count == 0 -> `instrument_failure`: harness rework, S02 batch
+  voided and re-run. Neither Go nor No-Go may be issued on void data.~~
+  **WITHDRAWN above, and withdrawn here rather than deleted, so the sentence that caused the problem stays
+  readable.** What survives is the narrower condition stated first: a port whose harness did not run **all
+  of its pinned entries** has an instrument gap and must say so (`NOT-RUN` per entry, or `blocked` with a
+  command and an attempted fix). Agreement between entries that were all run is a finding, never a failure.
 
 ## 3. Four-type divergence counting (locked pre-run)
 

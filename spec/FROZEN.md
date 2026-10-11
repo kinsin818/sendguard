@@ -19,7 +19,7 @@ hex (never hand-typed names).
 | file | sha256 |
 |---|---|
 | spec/cases.yaml | 8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261 |
-| spec/gate.md | 6a3894573214b49889965104ea44c863d73dc09b386b8d838362c5b19ac46a50 |
+| spec/gate.md | 725f09943f8b88a932edfc43e78d4e9f3964e33fe436bd4ea73bfc2701622807 |
 | spec/canonical.md | f3fe3122c131649d5df81d6c5331d0224dc270065f8ff46dd328d465324e6e69 |
 | spec/attribution-tree.md | 286f81914c73a73986e5de234121ce159fd1bdf39126dc9b22b5560988bde805 |
 | spec/validate.py | 66f8c0035981bf7c518378b96206309860057e215c08cad2f533dde26d87dfbe |

@@ -52,3 +52,15 @@ python ci/clone_parity.py --scratch-root ../sg-public \
 python tool/check.py --name "trail."                      # legal is not the same as intact
 python ci/claim_digest.py --scratch-root ../sg-claims     # the numbers in the prose, against their sources
 ```
+
+## Errata of this page, stated here rather than discovered by a reader
+
+- The commit that created this file (`e050cb0`) carries a literal `%s` where a timestamp was intended: the
+  message was built with a format placeholder and never substituted. Commit messages are permanent assertions in
+  this repository, so it is not edited - it is named here, and this commit is the forward correction.
+- `tracked faces=` on this page was counted before this file was committed, so the number is one lower than the
+  tree the same commit produces. That is the self-reference lag declared above, now demonstrated by the page that
+  declares it.
+- `faces_ahead_of_head=0` in the acceptance row is a statement about the six canonical result directories, not
+  about the whole tree; at the instant of this run one face elsewhere in the repository was untracked. The
+  instrument gap is ticketed rather than hidden, and the row above is not retracted - it is scoped.

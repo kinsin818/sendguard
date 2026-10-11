@@ -841,6 +841,41 @@ def main(argv):
 
     identical_cells = [k for k in cells_live if not any(dk == k for dk, _, _ in vdis)]
     clean_cells = [k for k in identical_cells if not any(nk == k for nk, _, _ in vnr)]
+
+    # ---- coverage, printed because a blank is not an agreement. Measured on the real tree at 11:54:
+    # 24 cells carried no verdict disagreement, but only 4 of them had every verdict field recorded by
+    # every port, and 123 of 430 field-cells were blank. A headline that counts the 24 without the 4 is a
+    # count of cells nobody contradicted, not of cells everybody answered.
+    field_cov = {f: {n: 0 for n in names} for f in VERDICT_FIELDS}
+    cells_all_recorded = []
+    cell_recs = {}
+    all_blank = []
+    for k in cells_live:
+        recs = cell_recs[k] = compare(VERDICT_FIELDS, {n: cmp[n][k] for n in names})
+        for f in VERDICT_FIELDS:
+            for n in recs.get(f, {}):
+                field_cov[f][n] += 1
+            if not recs.get(f):
+                all_blank.append((k, f))
+        if all(len(recs.get(f, {})) >= len(names) for f in VERDICT_FIELDS):
+            cells_all_recorded.append(k)
+    cov_pairs = sum(c for f in field_cov.values() for c in f.values())
+    cov_possible = len(VERDICT_FIELDS) * len(names) * len(cells_live)
+    print("== coverage (who answered what)")
+    print("   verdict_pairs_recorded=%d/%d (%.1f%%) cells_every_port_recorded_every_verdict_field=%d/%d "
+          "pairs_no_port_recorded=%d"
+          % (cov_pairs, cov_possible, 100.0 * cov_pairs / cov_possible if cov_possible else 0.0,
+             len(cells_all_recorded), len(cells_live), len(all_blank)))
+    print("   a blank is a different fact from a disagreement, and from 'not applicable': this contract does "
+          "not")
+    print("   yet say which verdict fields apply to which case group, so the gate reports every blank and "
+          "judges none")
+    print("   of them. `docs/coverage.md` is the table; filling a blank is a port's work, defining which "
+          "blanks")
+    print("   are legal is a contract change.")
+    for f in VERDICT_FIELDS:
+        print("     %-22s %s" % (f, "  ".join("%s=%d" % (n, field_cov[f][n]) for n in names)))
+
     for n in names:
         joined = "\n".join("%s %s" % (fmt(k), digest(cmp[n][k])[0]) for k in sorted(identical_cells))
         d = hashlib.sha256(joined.encode("utf-8")).hexdigest()
@@ -848,14 +883,29 @@ def main(argv):
     print("   cells_with_no_verdict_disagreement=%d/%d  of_which_fully_recorded=%d"
           % (len(identical_cells), len(cells_live), len(clean_cells)))
 
+    # One word, computed once, used by both the artifact and the exit branch. Found while sabotage-testing
+    # the coverage arms: these were two separate expressions, so editing only one left the artifact saying
+    # PASS while the process exited 3 - the two-rulers defect this project keeps catching in other people's
+    # tools, reproduced inside the gate itself.
+    outcome_word = ("RED" if vdis else
+                    "INCOMPLETE" if (short_total or vnr or unpinned or incomparable or vabs or all_blank)
+                    else "PASS")
+
     verdict = {
         "cells_required": len(req_keys),
         "cells_run_by_every_port": len(shared),
         "cells_compared": len(cells_live),
-        "outcome": ("RED" if vdis else ("INCOMPLETE" if (short_total or vnr or unpinned or incomparable
-                                                     or vabs) else "PASS")),
+        "outcome": outcome_word,
         "verdict_disagreements": len(vdis),
         "cells_with_no_verdict_disagreement": len(identical_cells),
+        "verdict_not_recorded_pairs": len(vnr),
+        "verdict_pairs_recorded": cov_pairs,
+        "verdict_pairs_possible": cov_possible,
+        "cells_every_port_recorded_every_verdict_field": [fmt(k) for k in cells_all_recorded],
+        "cells_with_no_verdict_disagreement_and_fully_recorded": [fmt(k) for k in clean_cells],
+        "verdict_field_coverage": {f: {n: field_cov[f][n] for n in names} for f in VERDICT_FIELDS},
+        "verdict_pairs_no_port_recorded": [[fmt(k), f] for k, f in all_blank],
+        "not_recorded_pairs": [[fmt(k), f, sorted(w)] for k, f, w in vnr],
         "probe_cells_differing": len({k for k, _, _ in pdis}),
         "unpinned_input": [fmt(k) for k, _ in unpinned],
         "cells_excluded": [fmt(k) for k in incomparable],
@@ -882,27 +932,33 @@ def main(argv):
         json.dumps(verdict, ensure_ascii=False, sort_keys=True, indent=1) + NL)
     print("wrote %s outcome=%s" % (rel(vpath), verdict["outcome"]))
 
-    if vdis:
+    if outcome_word == "RED":
         print("OUTCOME=RED verdict_disagreements=%d verdict_identical_cells=%d/%d "
+              "cells_fully_recorded_and_identical=%d verdict_not_recorded_pairs=%d "
+              "verdict_pairs_recorded=%d/%d "
               "probe_cells_differing=%d unpinned_input=%d cells_excluded=%d channel_abstentions=%d "
               "truncated_values=%d required_cells_missing=%d"
-              % (len(vdis), len(identical_cells), len(cells_live), len({k for k, _, _ in pdis}),
+              % (len(vdis), len(identical_cells), len(cells_live), len(clean_cells), len(vnr),
+                 cov_pairs, cov_possible,
+                 len({k for k, _, _ in pdis}),
                  len(unpinned), len(incomparable), len(vabs) + len(pabs),
                  len(vtrunc) + len(ptrunc), short_total))
         return 1
-    if short_total or vnr or unpinned or incomparable or vabs:
+    if outcome_word == "INCOMPLETE":
         print("OUTCOME=INCOMPLETE verdict_identical_cells=%d/%d required_cells_missing=%d unpinned_input=%d "
-              "cells_excluded=%d channel_abstentions=%d verdict_not_recorded=%d truncated_values=%d"
+              "cells_excluded=%d channel_abstentions=%d verdict_not_recorded=%d pairs_no_port_recorded=%d "
+              "cells_fully_recorded_and_identical=%d truncated_values=%d"
               % (len(identical_cells), len(cells_live), short_total, len(unpinned),
-                 len(incomparable), len(vabs) + len(pabs), len(vnr), len(vtrunc) + len(ptrunc)))
+                 len(incomparable), len(vabs) + len(pabs), len(vnr), len(all_blank), len(clean_cells),
+                 len(vtrunc) + len(ptrunc)))
         print("   No port disagrees with another on any checker verdict this gate could compare. What is")
         print("   missing is a cell, a pinned input, or a recorded verdict -- and a missing measurement is")
         print("   not agreement.")
         return 3
     print("OUTCOME=PASS digests_equal=%d/%d cells_compared=%d verdict_facts=%d "
-          "probe_cells_differing=%d required_cells=%d"
+          "probe_cells_differing=%d required_cells=%d verdict_pairs_recorded=%d/%d pairs_no_port_recorded=%d"
           % (len(names), len(names), len(cells_live), vagree,
-             len({k for k, _, _ in pdis}), len(req_keys)))
+             len({k for k, _, _ in pdis}), len(req_keys), cov_pairs, cov_possible, len(all_blank)))
     return 0
 
 

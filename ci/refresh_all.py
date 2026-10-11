@@ -39,6 +39,8 @@ JUDGE = [("ci/selftest.py", ["--scratch-root", os.path.join(REPO, "..", "sg-self
          ("ci/spec_drift.py", ["--selftest"]),
          ("ci/coverage_report.py", ["--selftest"]),
          ("ci/delivery_form.py", ["--selftest"]),
+         ("ci/claim_digest.py", ["--quick", "--scratch-root",
+                                    os.path.join(REPO, "..", "sg-claims-judge")]),
          ("ci/equality.py", []),
          ("ci/triangle.py", [])]
 

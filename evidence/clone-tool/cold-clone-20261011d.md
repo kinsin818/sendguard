@@ -129,3 +129,102 @@ description of the current file.
 - The run measured `2c9b89c`, whose published face still had the drop column. This file therefore proves the
   *finding*, not the fix: the face without the column is what a later clone has to reproduce, and if that reading
   is added here it will be added below this section with its own capture, not asserted from this one.
+
+
+## Third run, 14:11 +0800 — the drop numbers quoted above were themselves a defect
+
+Sections 1 and 2 of this file are genuine captures of what the tools printed. Two of those readings were wrong
+about the repository, because the classifier that produced them was wrong.
+
+`filter_tracked` compared `git ls-files` paths (normalised to pure backslashes) against `glob` results, and
+`glob` keeps whatever separator was typed inside the pattern:
+
+```
+G| 'D:\\sendguard-work\\seat-qoder\\impl/java/build\\CellProbe.class' in? False
+```
+
+So four committed `.class` files, the tracked `impl/python/sg_run.py` and seven tracked TypeScript sources were
+all counted as untracked. The `java:4` and `typescript:7` in section 2's side-by-side table are that bug
+reporting itself, and the sentence in section 2 that reads "the table counts tracked *build output*, and there is
+none" is superseded: there are 14 tracked artifact files.
+
+The defect was found by an independent witness added to the leg, not by re-reading the leg:
+`git_artifact_paths(port)` asks git's own pathspec matcher which tracked files live under the port's prefixes,
+and `self_check` refuses to publish when the two disagree. Its first message named the leg and the witness both:
+
+```
+OUTCOME=INSTRUMENT-RED the table above is not a measurement - 1 instrument problem(s), first: java: this leg's
+file classifier kept 6 tracked artifact(s) and git's own pathspec names 0; the two enumerate the same commit, so
+a difference is a bug in the leg (-)
+```
+
+`names 0` was the witness's own translator being wrong - it used `fnmatch` with `**` replaced by `*`, which turns
+`impl/java/build/**/*.class` into a two-segment pattern and matches none of the six real files. That is why the
+translator is explicit now (`pattern_to_regex`) and why arm A18 asserts both its sides: `**/` must accept the
+zero-directory and the nested case, a single `*` must not cross a separator, and one port's directory must not
+leak into another's pattern.
+
+Corrected readings, same command, this time with leg and witness in agreement
+(`instrument_problems=0`, `arms=18 passed=18`, generator rc=0):
+
+```
+seat  14:12  untracked_ignored=2 tracked_paths=1167 drops=csharp:0,go:0,java:0,python:0,rust:2,typescript:0
+```
+
+The artifact columns of the published table after the fix, which is what a buyer reads (the import-count and
+timing columns are elided here, not in the file):
+
+```
+| java | 86 | ... | 6 | class | 6 | 86,825 | `impl/java/build-check/CellProbe.class` |
+| python | 123 | ... | 1 | py | 0 | 81,900 | `impl/python/sg_run.py` |
+| typescript | 87 | ... | 7 | ts | 0 | 141,416 | `impl/typescript/src/runner.ts` |
+```
+
+`csharp`, `go` and `rust` are the three ports that commit no build output. The earlier "no port's build output is
+tracked" reading was this leg's third wrong answer in a day, and all three had the same shape: a count that
+agreed with itself across two machines because nothing in the leg could ask a second party whether the file set
+was right.
+
+## Fourth run, 14:13 +0800 — clone of `d6994fd`, the corrected table reproduces
+
+```
+seat HEAD| d6994fd9cf8fded589fcfc080b7750e558961b01
+clone HEAD| d6994fd9cf8fded589fcfc080b7750e558961b01  equals seat HEAD: True
+clone status rc=0 lines=0 (a cold clone must start clean)
+clone tracked paths| 1167 (git ls-files rc=0)
+```
+
+```
+LEG| selftest                 rc=0  OUTCOME=PASS
+LEG| lint                     rc=0  lint: OK  arms=24 passed=24  workflows=1 runner_labels_checked=7 tracked=1167,untracked=0 names_checked=1167 json_scanned=974
+LEG| validate_cells           rc=0  arms=24 passed=24
+LEG| spec_drift               rc=0  arms=15 passed=15
+LEG| delivery_form            rc=0  arms=18 passed=18
+LEG| equality                 rc=1  OUTCOME=RED verdict_disagreements=54 verdict_identical_cells=24/44 cells_fully_recorded_and_identical=4 verdict_not_recorded_pairs=121 verdict_pairs_recorded=2281/2640 probe_cells_differing=29 unpinned_input=0 cells_excluded=0 channel_abstentions=13 truncated_values=2 required_cells_missing=0
+LEG| triangle                 rc=0  OUTCOME=CLEAN
+LEG| gen ci/delivery_form.py  rc=0  wrote docs/delivery-form.md bytes=4798 ports=6 cells_total=569 installers_found=0 not_measured_cells=3 instrument_problems=0 untracked_ignored=0 installers_untracked=0 tracked_paths=1167 drops=csharp:0,go:0,java:0,python:0,rust:0,typescript:0
+```
+
+```
+SAME| docs/delivery-form.md            4798 bytes regenerated identically modulo timestamps
+DIFF| docs/evidence.md                 head=24 lines disk=24 lines differing=1
+parity| faces identical=11 differing=1 of 12
+```
+
+The face reads java 6, python 1, typescript 7 in the clone exactly as in the working copy, and the disk-only
+count is 0 there against 2 here - which is the point of moving it out of the face. The single remaining
+difference is `docs/evidence.md`'s line that names the HEAD and the uncommitted-face count of the tree that
+generated it; it states its own basis and is the exception this file has carried since the first run.
+
+## What this file now establishes
+
+- Every derived face reproduces from a clone of the same commit on this host, modulo timestamps, with one
+  self-describing exception that names its own basis.
+- The repository's tracked delivery content is measured, not asserted: 14 artifact files, 310,141 bytes,
+  concentrated in java/python/typescript, three ports with none, zero installers, and `tool/check.py` at 81,759
+  bytes as the one file that runs without a compiler.
+- The delivery leg has 18 arms, an independent git witness for its file classification, and a floor check that
+  refuses a parse it cannot trust. All four of its defects are caught by something other than the author's
+  re-read of the same code.
+- Still not established, unchanged: no port harness rebuilt from source, no macOS/Linux execution, CI never run
+  because nothing has been pushed, and the interpreter line remains a host fact at the minute it was written.

@@ -29,8 +29,7 @@ PORT_DIR = os.path.join("results", "typescript.windows.x64")
 SCHEMA_PATH = os.path.join(REPO, "spec", "schema.json")
 CANON_PATH = os.path.join(REPO, "spec", "canonical.md")
 CASES_PATH = os.path.join(REPO, "spec", "cases.yaml")
-CASES_MARKER = "
-cases:"
+CASES_MARKER = "\ncases:"
 # rev6 pins one 28-byte control payload; the sealed S00 baseline records the same digest for the
 # node and python instruments, so a port that hashes anything else is not measuring that control.
 CANON_PAYLOAD_SHA = "c9fe45b2fee8ea846f0cf4f2cacc2a891e7b082e7719923502d12a9813e21994"
@@ -50,6 +49,30 @@ NOT_REACHABLE = ("create_result", "error_stage", "read_result", "roundtrip_ok", 
 # while docs/NOTICE-rev3.md demands verdict_via on every cell. The notice is the stricter rule,
 # so it is enforced here instead of relaxing to match the schema array.
 REV3_NOTICE_REQUIRED = ("length_unit", "name_encoding", "verdict_via")
+
+# rev7: len_fill in spec/cases.yaml pins the component the length family must pass.
+# Parsed line by line: the block is flat, and a regex here would only add escaping risk.
+LEN_FILL = {"unit_hex": "", "char": "", "rule": "", "applies_to": []}
+try:
+    _cy_all = io.open(CASES_PATH, encoding="utf-8").read()
+    if "\nlen_fill:" not in _cy_all:
+        print("NOTE spec/cases.yaml has no len_fill block; the rev7 length rules will fail loudly")
+    else:
+        _lfblk = _cy_all.split("\nlen_fill:")[1].split("\ncases:")[0]
+        for _line in _lfblk.splitlines():
+            if ":" not in _line or not _line.startswith("  "):
+                continue
+            _k, _v = _line.strip().split(":", 1)
+            _v = _v.split("#")[0].strip().strip('"')
+            if _k == "unit_hex":
+                LEN_FILL["unit_hex"] = _v.lower()
+                LEN_FILL["char"] = chr(int(_v, 16))
+            elif _k == "rule":
+                LEN_FILL["rule"] = _v
+            elif _k == "applies_to":
+                LEN_FILL["applies_to"] = [x.strip() for x in _v.strip("[]").split(",") if x.strip()]
+except Exception as _e2:
+    print("NOTE could not read len_fill:", _e2)
 
 # rev6: control_samples in spec/cases.yaml pin one name and one payload per control cell.
 PINNED = {}
@@ -249,6 +272,34 @@ def check_cell_with_sha(cell, schema, sets, cases_blob_sha, name="<memory>"):
         missing_keys = []
     if missing_keys:
         v.append("digest fields absent from this cell: " + ",".join(missing_keys))
+
+    # rev7 rules for the length family, checked rather than promised:
+    #   name_source is the hex of the component actually passed (never a label, never one unit),
+    #   len_triple is that name's own three widths, and the converged ceiling is a separate field.
+    if cell.get("method") == "len_fill_point":
+        ns7 = str(cell.get("name_source") or "")
+        base7 = cell.get("base_len")
+        unit7 = LEN_FILL["unit_hex"]
+        if not ns7 or len(ns7) % 2:
+            v.append("rev7: length cell name_source is not even-length hex")
+        else:
+            nm7 = bytes.fromhex(ns7).decode("utf-8", "replace")
+            if ns7 != unit7 * len(nm7):
+                v.append("rev7: name_source is not the pinned unit repeated across the component that was passed")
+            # the three widths of the name itself, computed here rather than copied from the cell
+            widths = [len(nm7), len(nm7.encode("utf-16-le")) // 2, len(nm7.encode("utf-8"))]
+            trip = cell.get("len_triple")
+            if not isinstance(trip, list) or list(trip) != widths:
+                v.append("rev7: len_triple %r is not the width of the name passed %r" % (trip, widths))
+            if not isinstance(base7, int):
+                v.append("rev7: a length rung must record base_len as an integer")
+            elif len(nm7) != base7:
+                v.append("rev7: the component is %d code units wide but base_len says %d" % (len(nm7), base7))
+            ceil = cell.get("len_ceiling")
+            if not isinstance(ceil, int) or isinstance(ceil, bool):
+                v.append("rev7: the converged ceiling belongs in len_ceiling (integer), not in len_triple")
+            if ns7 == unit7 or not nm7:
+                v.append("rev7: name_source is one code unit on its own, not the component the cell passed")
 
     # rev6 item 2: the blind cells must carry the id they were sampled under
     if cell.get("case_group") == "blind" and not isinstance(cell.get("blind_id"), int):

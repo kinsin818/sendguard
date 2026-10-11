@@ -1,8 +1,90 @@
-# S02 python port -- self-check, contract rev6 (final tonight)
+# S02 python port -- self-check, contract rev7 (final tonight)
 
 ```
-cells_required=44 cells_matched=44 blocked=0 extra=75 controls_pass=true
+len_cells=12/12 name_source_is_the_passed_bytes=yes len_triple_is_the_name=yes
+ceiling_field=len_ceiling controls_pass=true
+cells_required=44 cells_matched=44 blocked=0 extra=75   (123 files, 123 valid / 0 void under both rulers)
 ```
+
+Rev7 is the last contract change tonight, and this section is the only one it
+invalidated: the twelve length cells. **Landed late -- the host clock read 07:57
+when the focused re-run started and ~08:10 when both rulers came back clean, so
+the 07:30 deadline was missed by this seat.** The prior rev6 state of the corpus
+was already published and is unchanged except for those twelve files plus the five
+controls, which were re-measured alongside them to keep `controls_pass` a fresh
+reading rather than a carried-over one.
+
+## 0rev7. The twelve length cells, re-recorded under the pin
+
+`len_fill` is read from `git cat-file blob HEAD:spec/cases.yaml` and the driver
+refuses to run if the unit is not exactly one code unit or `applies_to` is not
+`[T17, T18]`:
+
+```
+unit_hex=61  unit_codepoint=U+0061  applies_to=[T17, T18]
+name_source_rule="name_source is the hex of the component that was actually passed to the API, not a label"
+```
+
+What changed in my records, rule by rule:
+
+1. **`name_source` is now the bytes handed to the API.** The component is `a`
+   repeated `base_len` times, nothing appended, so the hex is `61` x `base_len` =
+   156 / 240 / 400 characters for 78 / 120 / 200. Before this round my cell
+   carried a uuid-seeded component (`f64c93203nnn...` in the notice's table) --
+   real bytes, but not a comparable input. Verified on the published files:
+   `name_source_is_pinned_filler=true` and `len(name_source) == 2*base_len` in
+   12/12.
+2. **`len_triple` is the three widths of that name and nothing else**: flat
+   `{code_points, utf16_code_units, utf8_bytes}`, and all three equal `base_len`
+   in 12/12, as the notice predicts for a single-unit filler. My earlier shape was
+   the nested `{requested, landed}` pair -- one of the three quantities the notice
+   found being called "length". The landed name's widths are still published, in
+   `name_landed_triple`.
+3. **The ceiling moved to its own field.** `len_ceiling` / `len_ceiling_rejected`
+   carry what the bisection converged to, measured at a recorded holder depth
+   (`holder_dir_len`, `bisect_holder_dir_len`) in a sibling fresh directory so no
+   step can collide with the pinned name.
+
+| base_len | plain: pinned component lands? | plain `len_ceiling` | extended: lands? | extended `len_ceiling` |
+|---|---|---|---|---|
+| 78 | yes | 194 (195 refused) | yes | 255 (256 refused) |
+| 120 | yes | 194 | yes | 255 |
+| 200 | **no** (`err_at_syscall`, `read_result: not_applicable`) | 194 | yes | 255 |
+
+Twelve cells, `run_status: measured`, no rung unreachable so no blocked cell was
+needed. In all twelve, `ceiling_agrees_with_pinned_probe` is true: the pinned
+component lands exactly when its length is at or below the converged ceiling. At
+holder depth 64 the plain-face ceiling is 194, so the 200-unit pinned component
+does **not** land on the plain face for either trap -- that is the honest answer to
+the question as pinned, not a failure of the cell.
+
+**One thing this pin does not settle, stated rather than worked around.** With
+`base_len` now naming the *component* length, the plain-face answer depends on the
+depth of the directory the port happened to create the file in (ceiling =
+`259 - holder - 1` = 194 at my holder depth 64; 180 at depth 78), and holder depth
+is not an identity dimension in the manifest. Two ports that both obey rev7
+exactly can therefore answer `ok` and `err_at_syscall` for the same cell -- and
+`bytes_written` / `bytes_on_disk` / `name_landed_as` are VERDICT fields under rev6,
+so that difference is judged, not excused. `len_ceiling` makes the difference
+*detectable*, which is an improvement, but if the length comparison is meant to
+close, the holder depth needs pinning too (or `len_ceiling - (259 - holder - 1)`
+compared instead of the create verdict). I did not change the identity shape to
+work around it.
+
+Also unchanged and still standing from the rev6 section: `run_status`'s
+`measured`/`blocked` words are in no closed set (canonical section 1 lists only
+valid/void/instrument_red); the T-API group remains the one live digest collision
+by design; and `len_triple` is compared byte-for-byte across ports while its
+*shape* is still unpinned (flat dict here, `[n,n,n]` or nested there), which is the
+same class of defect rev6 folded for `name_encoding`.
+
+Extras: 75 records stay `extra: true` exactly where they were -- the 48 grid cells
+of the frozen G1-G4 ladder (uuid-seeded components, `instrument_base_noncompliant`
+where they reached base 13 through a drive-root anchor) and the two old base-13
+bisections. My grid cells are *not* re-recorded under `len_fill`, so their
+`name_source`/`len_triple` describe what they measured, not the pinned family.
+
+## 0. The three rev6 actions, as measured
 
 detail: 123 cell files published, 123 valid / 0 void under **both** rulers (this
 seat's `sg_selfcheck.py`, and the shipped `spec/validate.py` at

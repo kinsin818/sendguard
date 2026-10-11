@@ -1190,6 +1190,22 @@ def run_item(it, meta, controls):
                                      "rather than being dropped" % cell["child_reruns"])
         else:
             fill_from_record(cell, prec, spec, True)
+        if it["type"] == "len_pinned":
+            # rev7 rule 2: len_triple is the three widths OF THAT NAME and nothing
+            # else. Applied after fill_from_record, which publishes the nested
+            # requested/landed pair used by the other groups.
+            nsrc = cell.get("name_source") or ""
+            nm = bytes.fromhex(nsrc).decode("utf-8")
+            cell["len_triple"] = {"code_points": len(nm),
+                                  "utf16_code_units": len(nm.encode("utf-16-le")) // 2,
+                                  "utf8_bytes": len(nm.encode("utf-8"))}
+            cell["len_triple_basis"] = ("widths of the single pinned component handed to the API; "
+                                        "the measured ceiling is in len_ceiling, not here")
+            cell["name_source_hex_chars"] = len(nsrc)
+            cell["name_source_is_pinned_filler"] = (
+                nsrc == len_name_hex(it["base_len"])
+                and len(nsrc) == 2 * it["base_len"])
+            cell["name_landed_triple"] = prec.get("landed_triple")
         cell["spec_provenance"] = {
             "category": it.get("category"), "applicable": it.get("applicable"),
             "case_locale": it.get("locale"), "spec_source": it.get("spec_source")}

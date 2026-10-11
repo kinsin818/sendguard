@@ -1439,7 +1439,20 @@ def parse_targets(value):
 
 
 def main(argv=None):
-    ap = argparse.ArgumentParser(prog="check.py", description=__doc__.splitlines()[2])
+    class CheckArgumentParser(argparse.ArgumentParser):
+        """argparse consumes a name beginning with a dash as an option, so
+        `check.py --force.txt` cannot work. Say what does instead of printing usage."""
+
+        def error(self, message):
+            if "--force" in " ".join(sys.argv[1:]) or message.startswith("unrecognized arguments: -"):
+                self.print_usage(sys.stderr)
+                sys.stderr.write(
+                    "hint: a file name that begins with a dash cannot be a bare argument. Pass it as "
+                    "--name=NAME (with the equals sign), after `--`, or as --name-hex <utf8hex>.\n")
+                sys.exit(EXIT_USAGE)
+            super(CheckArgumentParser, self).error(message)
+
+    ap = CheckArgumentParser(prog="check.py", description=__doc__.splitlines()[2])
     ap.add_argument("folder", nargs="?", help="folder to check (not read, only enumerated); a bare name "
                                               "that is not a path is probed as one file name")
     ap.add_argument("--name", help="one file name: ask this machine and print the verdict block")
@@ -1496,8 +1509,41 @@ def main(argv=None):
         sys.stderr.write("usage: python tool/check.py <folder|--name NAME|--name-hex HEX|--controls> "
                          "[--target windows|macos|ubuntu|all]\n")
         return EXIT_USAGE
+    if os.path.isfile(args.folder):
+        # one file dragged onto the launcher: its name is the question, its folder is not the subject
+        print("(the argument is a file, so this is the verdict on its name alone: %s; pass the folder to "
+              "check every name in it)" % escape_name(os.path.basename(args.folder)))
+        return print_verdict_block(os.path.basename(args.folder), engine, os.path.join(root, "results"),
+                                   args.extended, payload_hex, info)
     if not os.path.isdir(args.folder):
-        sys.stderr.write("not a folder, or not reachable: %s\n" % escape_name(str(args.folder)))
+        # A path the plain form cannot address (CON.txt, an orphan trailing-dot name) is not
+        # "unreachable": it is the finding.  Split the argument by hand -- os.path.abspath is
+        # NOT safe to use here: measured on this box, abspath('<dir>\\CON.txt') returns
+        # '\\\\.\\CON', i.e. it hands the argument to the console device namespace.
+        BS = chr(92)
+        raw = str(args.folder)
+        cut = max(raw.rfind(BS), raw.rfind("/"))
+        parent, leaf = (raw[:cut] or "."), raw[cut + 1:]
+        rewrote = os.path.abspath(raw)
+        note = ""
+        if rewrote != os.path.abspath(parent) + BS + leaf:
+            note = (" python's own path canonicalisation turned your argument into %s, which is the device "
+                    "namespace, not a file in that folder." % escape_path(rewrote))
+        listed, why = [], None
+        try:
+            with os.scandir(parent) as it:
+                listed = [e.name for e in it]
+        except OSError as exc:
+            why = errno_note(exc)
+        if leaf in listed:
+            print("(the directory lists %s, but the path you gave cannot address it through the plain form "
+                  "- that is itself the risk; below is the verdict on the name).%s" % (
+                      escape_name(leaf), note))
+            return print_verdict_block(leaf, engine, os.path.join(root, "results"),
+                                       args.extended, payload_hex, info)
+        if why:
+            print("could not enumerate the parent of the argument you gave: %s" % why)
+        sys.stderr.write("not a folder, or not reachable: %s\n" % escape_name(raw))
         return EXIT_SCAN_FAILED
 
     entries, errors = scan(args.folder, args.max_entries)

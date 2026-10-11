@@ -42,6 +42,7 @@ RESULTS = os.path.join(REPO, "results", "rust.windows.x64")
 CASES = os.path.join(REPO, "spec", "cases.yaml")
 FROZEN = os.path.join(REPO, "spec", "FROZEN.md")
 RUNS_ROOT = r"D:\sg-rust-scratch"
+SHALLOW_ROOT = r"D:\sgc"
 TIMEOUT_S = 5
 HARNESS = "S02-rust-seat-2"
 BLIND_MAP = os.path.join(REPO, "evidence", "S00", "blind-map.json")
@@ -594,12 +595,15 @@ def decode_or(h, cid):
         return "<undecodable frozen sample %s of %s: %s>" % (h, cid, e)
 # ----------------------------------------------------------------- run
 class Driver(object):
-    def __init__(self, env, deps, faces, tier_roots, contract_sha, required_keys, ledger, blind_meta=None):
+    def __init__(self, env, deps, faces, tier_roots, contract_sha, required_keys, ledger, blind_meta=None,
+                 len_fill=None):
         self.env, self.deps, self.faces, self.tier_roots = env, deps, faces, tier_roots
         self.blind_meta = blind_meta
+        self.len_fill = len_fill
         self.contract_sha, self.required_keys, self.ledger = contract_sha, required_keys, ledger
         self.runs_root = tier_roots["runs"]
         self.prior = {}          # scratch dir -> set of hex-encoded names already claimed there
+        self.ceilings = {}       # (case_id, path_form) -> the ceiling the bisection converged to, this run
         self.produced = []
         self.problems = []
         self.face_sha = {}
@@ -613,12 +617,26 @@ class Driver(object):
             if d is None:
                 raise RuntimeError("tier dir for base_len=%d/%s was not built" % (cell.tier, cell.path_form))
             return d
+        if cell.shallow:
+            return self.fresh_shallow(cell)
         if cell.case_id.startswith(("T09", "T19")):
             key = ("co", cell.group, cell.frozen_id, cell.entry)
             if key not in self.tier_roots:
                 self.tier_roots[key] = self.fresh("co-%s-%s" % (cell.group, cell.frozen_id))
             return self.tier_roots[key]
         return self.fresh(cell.group + "-" + cell.case_id)
+
+    def fresh_shallow(self, cell):
+        """A fresh uuid scratch that stays shallow. The len rungs pass a component up to 200 code
+        units through the plain form, and under D:\\sg-rust-scratch\\run-<id>\\scratch\\<label>\\<uuid>
+        the parent alone is ~70 code units, so the create would be refused by the 259-unit path rule
+        and the cell would report its own directory depth instead of the component rule. Uniqueness
+        still comes from a uuid4 per cell; the run tag is carried as the parent.
+        """
+        tag = os.path.basename(self.runs_root).replace("run-", "")[:8]
+        d = os.path.join(SHALLOW_ROOT, tag, uuid.uuid4().hex)
+        os.makedirs(d, exist_ok=True)
+        return d
 
     def fresh(self, label):
         d = os.path.join(self.runs_root, "scratch", re.sub(r"[^A-Za-z0-9._-]", "_", label), uuid.uuid4().hex)
@@ -690,8 +708,26 @@ class Driver(object):
         if cell.tier is not None:
             argv += ["--base-len", str(cell.tier)]
         elif cell.mode == "bisect":
-            # the ladder faces sit in a fresh uuid scratch; its width is still the cell's base_len
+            # the ceiling legs sit in a fresh uuid scratch; its width is still the cell's base_len
             argv += ["--base-len", str(wide_len(scratch))]
+        elif cell.base_len is not None:
+            argv += ["--base-len", str(cell.base_len)]
+        if cell.pinned_fill:
+            ceil = self.ceilings.get((cell.case_id, cell.path_form))
+            argv += ["--len-fill-unit-hex", self.len_fill["unit_hex"],
+                     "--len-fill-rule", self.len_fill["rule"],
+                     "--len-pinned-fill", "true"]
+            tiers = ["%d=%s" % (b, d) for (b, f), d in sorted(self.tier_roots["tiers"].items()) if f == cell.path_form]
+            argv += ["--len-ceiling-tier-roots", ",".join(tiers)]
+            if ceil is None:
+                argv += ["--len-ceiling-missing", "no ceiling cell for %s/%s completed before this rung ran"
+                                                      % (cell.case_id, cell.path_form)]
+            else:
+                argv += ["--len-ceiling-max-ok", str(ceil["max_ok"]),
+                         "--len-ceiling-first-failing", str(ceil["first_failing"]),
+                         "--len-ceiling-winerror", str(ceil["winerror"]),
+                         "--len-ceiling-measured-in", ceil["case_id"],
+                         "--len-ceiling-face-sha256", ceil["face_sha256"]]
         if cell.mode == "bisect":
             argv += ["--bisect", cell.bisect, "--bisect-lo", str(cell.bisect_range[0]), "--bisect-hi", str(cell.bisect_range[1]),
                      "--bisect-range-basis", cell.range_basis, "--bisect-note", cell.note]
@@ -717,6 +753,10 @@ class Driver(object):
         if cell.tier is not None:
             return ("tier directory pinned to exactly base_len=%d code units, shared by the three grid points of that tier; "
                     "a uuid directory cannot be 13 code units wide and still carry a uuid, so uniqueness comes from the run tag" % cell.tier)
+        if cell.shallow:
+            return ("fresh uuid scratch directory for this cell alone, under a deliberately shallow root: the len rung "
+                    "passes a component of up to 200 code units through the plain form, and the parent's own width would "
+                    "otherwise decide the answer instead of the component rule (see len_parent_dir_code_units)")
         if cell.case_id.startswith(("T09", "T19")):
             return "shared with the sibling member cells of this case and entry: the frozen case puts both members in one directory"
         return "fresh uuid scratch directory for this cell alone"
@@ -874,6 +914,14 @@ class Driver(object):
         self.face_sha[path] = sha_hex(back)
         self.face_bytes[path] = len(back)
         self.published[path] = verified
+        if cell.bisect in ("path", "component") and cell.case_id.startswith(("T17-CEILING", "T18-CEILING")):
+            # rev7: a rung may only carry a ceiling this run measured, so the bisect legs are planned
+            # before the rungs and their published numbers are read off the face that was just verified.
+            self.ceilings[(cell.variant_of, cell.path_form)] = {
+                "case_id": cell.case_id, "max_ok": rec.get("max_ok"),
+                "first_failing": rec.get("first_failing"),
+                "winerror": rec.get("first_failing_winerror"),
+                "face_sha256": self.face_sha[path]}
         if path not in [p for _c, p in self.produced]:
             self.produced.append((cell, path))
         return path, verified, rec
@@ -989,6 +1037,7 @@ def main():
     args = ap.parse_args()
 
     cases, api_rust, control_rows = parse_cases(CASES)
+    len_fill = parse_len_fill(CASES)
     controls = control_cells_from_table(control_rows) if control_rows else control_cells()
     blind_rows, blind_meta = load_blind(BLIND_MAP)
     non_null = [c["id"] for c in cases if c["expectation"] is not None]
@@ -1026,7 +1075,12 @@ def main():
         print("INSTRUMENT-RED: spec/cells-required.json was generated from blob %s but HEAD:spec/cases.yaml is %s; "
               "the required list and the frozen table are not the same revision" % (contract.get("spec_blob_sha256"), faces_pre["blob_sha256"]))
         return 4
-    plan, identity_seen = build_plan(cases, api_rust, primary, ladder, required_keys, controls, blind_rows)
+    if len_fill is None:
+        print("INSTRUMENT-RED: spec/cases.yaml carries no parsable len_fill pin, so the twelve length rungs
+"
+              "have no defined component to pass. Nothing is planned and nothing is measured.")
+        return 4
+    plan, identity_seen = build_plan(cases, api_rust, primary, ladder, required_keys, controls, blind_rows, len_fill)
     if not blind_rows:
         print("NOTE: %s yielded no blind samples; the five blind rows will be emitted as blocked" % BLIND_MAP)
     n_req = len([c for c in plan if c.required])
@@ -1043,6 +1097,10 @@ def main():
         print("contract %s: required_rows_for_rust=%d cells_required=%d cells_planned=%d cells_extra=%d"
               % (os.path.basename(REQUIRED_LIST), len(required_keys), len(required_keys), len(plan), n_extra))
         print("base ladder from the contract: %s   primary entry: %s" % (list(ladder), primary))
+        print("len_fill pin from spec/cases.yaml: unit_hex=%s applies_to=%s repeat_to_base_len_then_append_nothing=%s"
+              % (len_fill["unit_hex"], ",".join(len_fill["applies_to"]) or "-", len_fill["rule"]))
+        print("len rung name for base_len=%s: %d hex characters, all %s=%s"
+              % (list(ladder)[0], 2 * list(ladder)[0], len_fill["unit_hex"], len_fill["unit_char"] * 3))
         for c in plan:
             print("   %-6s %-22s %-22s %-26s %s" % (c.group, c.case_id, c.entry, c.sub or "-", "REQUIRED" if c.required else "extra"))
         return 0
@@ -1111,7 +1169,7 @@ def main():
     print("cells_expected=%d planned_by_group=%s" % (len(plan), json.dumps(by_group, sort_keys=True)))
 
     ledger = {"run_id": run_id, "results_dir": RESULTS, "retired": [], "skipped_not_mine": []}
-    drv = Driver(env, deps, faces, tier_roots, contract_sha, required_keys, ledger, blind_meta)
+    drv = Driver(env, deps, faces, tier_roots, contract_sha, required_keys, ledger, blind_meta, len_fill)
     exp = control_expectations()
     controls = [c for c in plan if c.group == "ctrl"]
     rest = [c for c in plan if c.group != "ctrl"]

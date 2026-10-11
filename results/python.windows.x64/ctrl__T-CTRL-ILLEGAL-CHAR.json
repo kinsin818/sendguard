@@ -49,7 +49,7 @@
  "deps_total": 0,
  "deps_basis": "imports are stdlib only (argparse ctypes hashlib json os pathlib stat sys time uuid zipfile shutil); third-party count = 0",
  "scratch_root": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\sendguard-run",
- "scratch_dir": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\sendguard-run\\1ece9e29",
+ "scratch_dir": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\sendguard-run\\b5b8c0b0",
  "scratch_verified_empty": true,
  "cleanup_attempted": false,
  "probe_timeout_s": 5.0,
@@ -65,7 +65,7 @@
  ],
  "primary_entry": "open_wb",
  "error_stage_rule": "non-OSError raised before the syscall -> parse; OSError carrying errno/winerror -> syscall (fs/tool unused, see selfcheck)",
- "leg_dir": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\sendguard-run\\1ece9e29\\L0",
+ "leg_dir": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\sendguard-run\\b5b8c0b0\\L0",
  "leg_pre_existing_entries": 0,
  "entry_spread": {
   "os.mkdir": {
@@ -122,7 +122,7 @@
    "os_legality_verdict": "illegal",
    "sha256_self": null,
    "sha256_truth": null,
-   "elapsed_ms_child": 2,
+   "elapsed_ms_child": 1,
    "phases_reached": [
     "start",
     "created",
@@ -228,7 +228,7 @@
  "verdict_via_detail": "kernel32.GetFileAttributesW via ctypes, extended prefix, parser bypassed",
  "win32_fullpath": {
   "ok": true,
-  "reported_hex": "433a5c55736572735c41646d696e6973747261746f725c417070446174615c4c6f63616c5c54656d705c73656e6467756172642d72756e5c31656365396532395c4c305c613c622e747874"
+  "reported_hex": "433a5c55736572735c41646d696e6973747261746f725c417070446174615c4c6f63616c5c54656d705c73656e6467756172642d72756e5c62356238633062305c4c305c613c622e747874"
  },
  "delivered_nothing": null,
  "create_result": "err_at_syscall",
@@ -256,8 +256,8 @@
  "attribution_layer": "L1",
  "attribution_layer_basis": "OS-level name policy; same for every entry of this language (entry_spread agrees); varies_across_OS pending",
  "control_pass": true,
- "elapsed_ms": 106,
- "started_at": "2026-10-11T07:57:41+0800",
+ "elapsed_ms": 103,
+ "started_at": "2026-10-11T08:26:00+0800",
  "spec_provenance": {
   "category": null,
   "applicable": "windows",

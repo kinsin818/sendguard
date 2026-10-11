@@ -1,0 +1,35 @@
+cells_expected=50 plan_items=49 parse_problems=0
+parse_notes={"comment_literal_confirmed": "10 of 22 members", "multi_member_cases": [{"id": "T09", "members": 2}, {"id": "T14", "members": 3}, {"id": "T19", "members": 2}], "prose_marker_cases": [{"id": "T17", "marker": "T-LEN-PATH (length bisection, G1-G4)"}, {"id": "T18", "marker": "T-LEN-COMP (component length bisection, G1-G4)"}], "trap_cases_with_hex": 18}
+   cells_by_group={"blind": 5, "ctrl": 5, "len": 12, "tapi": 4, "trap": 24}
+spec_sha256=8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261 blob_equals_disk=True
+frozen_claim cases=True blind=False
+payload len=28 matches_baseline=True
+ctrl_provenance={"all_five_present": true, "canon_name_is_pinned_not_transcribed": true, "cells_pinned": ["T-CTRL-ASCII", "T-CTRL-CANON", "T-CTRL-ILLEGAL-CHAR", "T-CTRL-NAMETOOLONG", "T-CTRL-PARSE"], "hex_decodes_losslessly": true, "nametoollong_component_len": 256, "one_payload_for_all_five": true, "parse_source": "control_samples in git cat-file blob HEAD:spec/cases.yaml", "payload_sha_matches_sealed_baseline": true}
+len_fill_pin={"applies_to": ["T17", "T18"], "name_source_rule": "name_source is the hex of the component that was actually passed to the API, not a label", "read_from": "git cat-file blob HEAD:spec/cases.yaml len_fill", "unit_codepoint": "U+0061", "unit_hex": "61"}
+LongPathsEnabled=0 max_component={'C:\\': 255, 'D:\\': 255} dot3={'C:': 'enabled', 'D:': 'disabled'} console=0 locale=('Chinese (Simplified)_China', '936') code_page=cp936 utf8_mode=0
+interpreter=C:\Python314\python.exe 3.14.7
+  ctrl  T-CTRL-NAMETOOLONG ctrl__T-CTRL-NAMETOOLONG.j entry=open_wb              create=err_at_syscall read=not_applicable w=None disk=None mut=None  legal=illegal via=win32  hits=0 spread=agree
+  ctrl  T-CTRL-ASCII       ctrl__T-CTRL-ASCII.json    entry=open_wb              create=ok             read=ok   w=28   disk=28   mut=False legal=legal   via=win32  hits=1 spread=DIFF:os.mkdir
+  ctrl  T-CTRL-ILLEGAL-CHAR ctrl__T-CTRL-ILLEGAL-CHAR. entry=open_wb              create=err_at_syscall read=not_applicable w=None disk=None mut=None  legal=illegal via=win32  hits=0 spread=agree
+  ctrl  T-CTRL-PARSE       ctrl__T-CTRL-PARSE.json    entry=open_wb              create=err_at_parse   read=not_applicable w=None disk=None mut=None  legal=unknown via=none   hits=0 spread=agree
+  ctrl  T-CTRL-CANON       ctrl__T-CTRL-CANON.json    entry=open_wb              create=ok             read=ok   w=28   disk=28   mut=False legal=legal   via=win32  hits=1 spread=DIFF:os.mkdir
+  len   T17                len__T17__base_len=78+path entry=open_wb              create=ok             read=ok   w=28   disk=28   mut=False legal=legal   via=win32  hits=1 spread=agree
+  len   T17                len__T17__base_len=78+path entry=open_wb              create=ok             read=ok   w=28   disk=28   mut=False legal=legal   via=win32  hits=1 spread=agree
+  len   T17                len__T17__base_len=120+pat entry=open_wb              create=ok             read=ok   w=28   disk=28   mut=False legal=legal   via=win32  hits=1 spread=agree
+  len   T17                len__T17__base_len=120+pat entry=open_wb              create=ok             read=ok   w=28   disk=28   mut=False legal=legal   via=win32  hits=1 spread=agree
+  len   T17                len__T17__base_len=200+pat entry=open_wb              create=err_at_syscall read=not_applicable w=None disk=None mut=None  legal=legal   via=win32  hits=0 spread=agree
+  len   T17                len__T17__base_len=200+pat entry=open_wb              create=ok             read=ok   w=28   disk=28   mut=False legal=legal   via=win32  hits=1 spread=agree
+  len   T18                len__T18__base_len=78+path entry=open_wb              create=ok             read=ok   w=28   disk=28   mut=False legal=legal   via=win32  hits=1 spread=agree
+  len   T18                len__T18__base_len=78+path entry=open_wb              create=ok             read=ok   w=28   disk=28   mut=False legal=legal   via=win32  hits=1 spread=agree
+  len   T18                len__T18__base_len=120+pat entry=open_wb              create=ok             read=ok   w=28   disk=28   mut=False legal=legal   via=win32  hits=1 spread=agree
+  len   T18                len__T18__base_len=120+pat entry=open_wb              create=ok             read=ok   w=28   disk=28   mut=False legal=legal   via=win32  hits=1 spread=agree
+  len   T18                len__T18__base_len=200+pat entry=open_wb              create=err_at_syscall read=not_applicable w=None disk=None mut=None  legal=legal   via=win32  hits=0 spread=agree
+  len   T18                len__T18__base_len=200+pat entry=open_wb              create=ok             read=ok   w=28   disk=28   mut=False legal=legal   via=win32  hits=1 spread=agree
+controls={"T-CTRL-ASCII": [], "T-CTRL-CANON": [], "T-CTRL-ILLEGAL-CHAR": [], "T-CTRL-NAMETOOLONG": [], "T-CTRL-PARSE": []}
+control_all_ok=True
+cells_required=48 (rows=44, tapi_python=4, blob_sha=ed8a8a29c0eea999 rc=0)
+cells_remeasured=17 cells_migrated_from_disk=106 cells_total=123
+records_superseded_by_rev3_rename=0
+cells_written=123 covered_required=48 extra=75 missing_required=0
+cells_blocked=45 of_which_could_not_run=0 cells_with_hang=0
+wall_seconds=19.0 scratch_root=C:\Users\Administrator\AppData\Local\Temp\sendguard-run (length cells need base_len [78, 120, 200])

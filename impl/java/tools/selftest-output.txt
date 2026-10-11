@@ -1,4 +1,3 @@
 rulers agree: canonical.md == schema.json == validate.py on attribution_layer, case_group, create_result, error_stage, language, length_unit, longpath_mechanism, name_encoding, os, os_legality_verdict, path_form, read_result
 FROZEN.md lock faces checked against the committed blob: 8, mismatches=0
-WARN_DIRTY_CHECKOUT spec/cells-required.json working tree 39fb768385ce3e63 != committed blob 779b6ce33b0db4f0; deriving from the committed face
-selftest arms_checked=32 problems=0
+selftest arms_checked=39 problems=0

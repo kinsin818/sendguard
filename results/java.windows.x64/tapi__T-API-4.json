@@ -20,10 +20,10 @@
  "longpath_mechanism": "none",
  "harness_version": "sg-java-S02-r4-rev6",
  "worker_id": "seat-qoder-java",
- "started_at": "2026-10-11T05:37:26.952211",
- "elapsed_ms": 215,
- "spec_sha256": "b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1",
- "required_cells_sha256": "3742747dd412e8a9d799e6c7f215f561f4c14774466759de515335b76ee90ff6",
+ "started_at": "2026-10-11T07:22:42.409894",
+ "elapsed_ms": 217,
+ "spec_sha256": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261",
+ "required_cells_sha256": "ed8a8a29c0eea99925659f6d0f2f63b94469654e1f793ab027b6e55a4a1a8cb8",
  "env": {
   "LongPathsEnabled": 0,
   "LongPathsEnabled_regexe": 0,
@@ -58,7 +58,7 @@
    "name_utf16_units": 15,
    "reserved_name": false,
    "requested_path_form": "plain",
-   "requested_path_string": "D:\\s\\a76253\\df79bdf2\\report-2026.txt",
+   "requested_path_string": "D:\\s\\32160c\\9d9f5587\\report-2026.txt",
    "requested_path_len": 36,
    "total_path_len_plain": 36,
    "total_path_utf8_bytes": 36,
@@ -103,10 +103,10 @@
    "bytes_on_disk_direct_stat": 28,
    "enum_to_stat_agrees": true,
    "extended_probe": {
-    "ext_string_form_hex": "5c5c3f5c443a5c735c6137363235335c64663739626466325c7265706f72742d323032362e747874",
+    "ext_string_form_hex": "5c5c3f5c443a5c735c3332313630635c39643966353538375c7265706f72742d323032362e747874",
     "ext_string_len": 40,
     "nio_accepts_ext_prefix": false,
-    "nio_reject_message": "Illegal character [?] in path at index 2: \\\\?\\D:\\s\\a76253\\df79bdf2\\report-2026.txt | reason=Illegal character [?] in path | index=2",
+    "nio_reject_message": "Illegal character [?] in path at index 2: \\\\?\\D:\\s\\32160c\\9d9f5587\\report-2026.txt | reason=Illegal character [?] in path | index=2",
     "nio_reject_class": "java.nio.file.InvalidPathException",
     "instrument": "java.io.FileOutputStream(java.io.File(String)) with \\\\?\\ prefix",
     "create_result": "ok",
@@ -130,15 +130,15 @@
    "name_utf16_units": 7,
    "reserved_name": true,
    "requested_path_form": "plain",
-   "requested_path_string": "D:\\s\\a76253\\df79bdf2\\CON.txt",
+   "requested_path_string": "D:\\s\\32160c\\9d9f5587\\CON.txt",
    "requested_path_len": 28,
    "total_path_len_plain": 28,
    "total_path_utf8_bytes": 28,
    "create_result": "err_at_syscall",
    "error_stage": "fs",
    "error_class": "java.nio.file.FileAlreadyExistsException",
-   "error_message": "D:\\s\\a76253\\df79bdf2\\sgsrc-125d89b4-682b-445f-95e6-e2aab797d908.tmp -> D:\\s\\a76253\\df79bdf2\\CON.txt | winerror=null(unavailable: java.lang.NoSuchMethodException: java.nio.file.FileAlreadyExistsException.getWinError()) | reason=null",
-   "error_message_hex": "443a5c735c6137363235335c64663739626466325c73677372632d31323564383962342d363832622d343435662d393565362d6532616162373937643930382e746d70202d3e20443a5c735c6137363235335c64663739626466325c434f4e2e747874207c2077696e6572726f723d6e756c6c28756e617661696c61626c653a206a6176612e6c616e672e4e6f537563684d6574686f64457863657074696f6e3a206a6176612e6e696f2e66696c652e46696c65416c7265616479457869737473457863657074696f6e2e67657457696e4572726f72282929207c20726561736f6e3d6e756c6c",
+   "error_message": "D:\\s\\32160c\\9d9f5587\\sgsrc-01120946-6ac2-4d31-a360-bdc30209c3b5.tmp -> D:\\s\\32160c\\9d9f5587\\CON.txt | winerror=null(unavailable: java.lang.NoSuchMethodException: java.nio.file.FileAlreadyExistsException.getWinError()) | reason=null",
+   "error_message_hex": "443a5c735c3332313630635c39643966353538375c73677372632d30313132303934362d366163322d346433312d613336302d6264633330323039633362352e746d70202d3e20443a5c735c3332313630635c39643966353538375c434f4e2e747874207c2077696e6572726f723d6e756c6c28756e617661696c61626c653a206a6176612e6c616e672e4e6f537563684d6574686f64457863657074696f6e3a206a6176612e6e696f2e66696c652e46696c65416c7265616479457869737473457863657074696f6e2e67657457696e4572726f72282929207c20726561736f6e3d6e756c6c",
    "bytes_written": null,
    "landed": [
     {
@@ -148,15 +148,15 @@
      "stat_status": "ok"
     },
     {
-     "name_hex": "73677372632d31323564383962342d363832622d343435662d393565362d6532616162373937643930382e746d70",
-     "name": "sgsrc-125d89b4-682b-445f-95e6-e2aab797d908.tmp",
+     "name_hex": "73677372632d30313132303934362d366163322d346433312d613336302d6264633330323039633362352e746d70",
+     "name": "sgsrc-01120946-6ac2-4d31-a360-bdc30209c3b5.tmp",
      "size": 28,
      "stat_status": "ok"
     }
    ],
    "appeared_names": [
     {
-     "name_hex": "73677372632d31323564383962342d363832622d343435662d393565362d6532616162373937643930382e746d70",
+     "name_hex": "73677372632d30313132303934362d366163322d346433312d613336302d6264633330323039633362352e746d70",
      "size": 28,
      "stat_status": "ok"
     }
@@ -179,10 +179,10 @@
    "bytes_on_disk": null,
    "enum_to_stat_agrees": null,
    "extended_probe": {
-    "ext_string_form_hex": "5c5c3f5c443a5c735c6137363235335c64663739626466325c434f4e2e747874",
+    "ext_string_form_hex": "5c5c3f5c443a5c735c3332313630635c39643966353538375c434f4e2e747874",
     "ext_string_len": 32,
     "nio_accepts_ext_prefix": false,
-    "nio_reject_message": "Illegal character [?] in path at index 2: \\\\?\\D:\\s\\a76253\\df79bdf2\\CON.txt | reason=Illegal character [?] in path | index=2",
+    "nio_reject_message": "Illegal character [?] in path at index 2: \\\\?\\D:\\s\\32160c\\9d9f5587\\CON.txt | reason=Illegal character [?] in path | index=2",
     "nio_reject_class": "java.nio.file.InvalidPathException",
     "instrument": "java.io.FileOutputStream(java.io.File(String)) with \\\\?\\ prefix",
     "create_result": "ok",
@@ -206,7 +206,7 @@
    "name_utf16_units": 6,
    "reserved_name": false,
    "requested_path_form": "plain",
-   "requested_path_string": "D:\\s\\a76253\\df79bdf2\\trail.",
+   "requested_path_string": "D:\\s\\32160c\\9d9f5587\\trail.",
    "requested_path_len": 27,
    "total_path_len_plain": 27,
    "total_path_utf8_bytes": 27,
@@ -230,8 +230,8 @@
      "stat_status": "ok"
     },
     {
-     "name_hex": "73677372632d31323564383962342d363832622d343435662d393565362d6532616162373937643930382e746d70",
-     "name": "sgsrc-125d89b4-682b-445f-95e6-e2aab797d908.tmp",
+     "name_hex": "73677372632d30313132303934362d366163322d346433312d613336302d6264633330323039633362352e746d70",
+     "name": "sgsrc-01120946-6ac2-4d31-a360-bdc30209c3b5.tmp",
      "size": 28,
      "stat_status": "ok"
     },
@@ -267,10 +267,10 @@
    "bytes_on_disk": null,
    "enum_to_stat_agrees": null,
    "extended_probe": {
-    "ext_string_form_hex": "5c5c3f5c443a5c735c6137363235335c64663739626466325c747261696c2e",
+    "ext_string_form_hex": "5c5c3f5c443a5c735c3332313630635c39643966353538375c747261696c2e",
     "ext_string_len": 31,
     "nio_accepts_ext_prefix": false,
-    "nio_reject_message": "Illegal character [?] in path at index 2: \\\\?\\D:\\s\\a76253\\df79bdf2\\trail. | reason=Illegal character [?] in path | index=2",
+    "nio_reject_message": "Illegal character [?] in path at index 2: \\\\?\\D:\\s\\32160c\\9d9f5587\\trail. | reason=Illegal character [?] in path | index=2",
     "nio_reject_class": "java.nio.file.InvalidPathException",
     "instrument": "java.io.FileOutputStream(java.io.File(String)) with \\\\?\\ prefix",
     "create_result": "ok",
@@ -294,15 +294,15 @@
    "name_utf16_units": 7,
    "reserved_name": false,
    "requested_path_form": "plain",
-   "requested_path_string": "D:\\s\\a76253\\df79bdf2\\a<b.txt",
+   "requested_path_string": "D:\\s\\32160c\\9d9f5587\\a<b.txt",
    "requested_path_len": 28,
    "total_path_len_plain": 28,
    "total_path_utf8_bytes": 28,
    "create_result": "err_at_parse",
    "error_stage": "parse",
    "error_class": "java.nio.file.InvalidPathException",
-   "error_message": "Illegal char <<> at index 22: D:\\s\\a76253\\df79bdf2\\a<b.txt | reason=Illegal char <<> | index=22",
-   "error_message_hex": "496c6c6567616c2063686172203c3c3e20617420696e6465782032323a20443a5c735c6137363235335c64663739626466325c613c622e747874207c20726561736f6e3d496c6c6567616c2063686172203c3c3e207c20696e6465783d3232",
+   "error_message": "Illegal char <<> at index 22: D:\\s\\32160c\\9d9f5587\\a<b.txt | reason=Illegal char <<> | index=22",
+   "error_message_hex": "496c6c6567616c2063686172203c3c3e20617420696e6465782032323a20443a5c735c3332313630635c39643966353538375c613c622e747874207c20726561736f6e3d496c6c6567616c2063686172203c3c3e207c20696e6465783d3232",
    "bytes_written": null,
    "landed": [
     {
@@ -318,8 +318,8 @@
      "stat_status": "ok"
     },
     {
-     "name_hex": "73677372632d31323564383962342d363832622d343435662d393565362d6532616162373937643930382e746d70",
-     "name": "sgsrc-125d89b4-682b-445f-95e6-e2aab797d908.tmp",
+     "name_hex": "73677372632d30313132303934362d366163322d346433312d613336302d6264633330323039633362352e746d70",
+     "name": "sgsrc-01120946-6ac2-4d31-a360-bdc30209c3b5.tmp",
      "size": 28,
      "stat_status": "ok"
     },
@@ -355,16 +355,16 @@
    "bytes_on_disk": null,
    "enum_to_stat_agrees": null,
    "extended_probe": {
-    "ext_string_form_hex": "5c5c3f5c443a5c735c6137363235335c64663739626466325c613c622e747874",
+    "ext_string_form_hex": "5c5c3f5c443a5c735c3332313630635c39643966353538375c613c622e747874",
     "ext_string_len": 32,
     "nio_accepts_ext_prefix": false,
-    "nio_reject_message": "Illegal character [?] in path at index 2: \\\\?\\D:\\s\\a76253\\df79bdf2\\a<b.txt | reason=Illegal character [?] in path | index=2",
+    "nio_reject_message": "Illegal character [?] in path at index 2: \\\\?\\D:\\s\\32160c\\9d9f5587\\a<b.txt | reason=Illegal character [?] in path | index=2",
     "nio_reject_class": "java.nio.file.InvalidPathException",
     "instrument": "java.io.FileOutputStream(java.io.File(String)) with \\\\?\\ prefix",
     "create_result": "err_at_syscall",
     "error_stage": "fs",
     "error_class": "java.io.FileNotFoundException",
-    "error_message": "\\\\?\\D:\\s\\a76253\\df79bdf2\\a<b.txt (\u6587\u4ef6\u540d\u3001\u76ee\u5f55\u540d\u6216\u5377\u6807\u8bed\u6cd5\u4e0d\u6b63\u786e\u3002)",
+    "error_message": "\\\\?\\D:\\s\\32160c\\9d9f5587\\a<b.txt (\u6587\u4ef6\u540d\u3001\u76ee\u5f55\u540d\u6216\u5377\u6807\u8bed\u6cd5\u4e0d\u6b63\u786e\u3002)",
     "io_file_exists": false,
     "io_file_length": 0,
     "io_file_length_status": "measured",
@@ -403,10 +403,10 @@
  "entry_spread_distinct_create_results": [],
  "os_legality_verdict": "legal",
  "os_legality_probe": {
-  "ext_string_form_hex": "5c5c3f5c443a5c735c6137363235335c64663739626466325c7265706f72742d323032362e747874",
+  "ext_string_form_hex": "5c5c3f5c443a5c735c3332313630635c39643966353538375c7265706f72742d323032362e747874",
   "ext_string_len": 40,
   "nio_accepts_ext_prefix": false,
-  "nio_reject_message": "Illegal character [?] in path at index 2: \\\\?\\D:\\s\\a76253\\df79bdf2\\report-2026.txt | reason=Illegal character [?] in path | index=2",
+  "nio_reject_message": "Illegal character [?] in path at index 2: \\\\?\\D:\\s\\32160c\\9d9f5587\\report-2026.txt | reason=Illegal character [?] in path | index=2",
   "nio_reject_class": "java.nio.file.InvalidPathException",
   "instrument": "java.io.FileOutputStream(java.io.File(String)) with \\\\?\\ prefix",
   "create_result": "ok",
@@ -437,9 +437,9 @@
   "os_version": "10.0",
   "file_encoding": "GBK",
   "sun_jnu_encoding": "GBK",
-  "pid": "5164"
+  "pid": "25952"
  },
- "scratch": "D:\\s\\a76253\\df79bdf2",
+ "scratch": "D:\\s\\32160c\\9d9f5587",
  "scratch_len": 20,
  "scratch_entry_count_before": 0,
  "scratch_entry_count_after": 5,

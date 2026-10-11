@@ -1,4 +1,5 @@
-required list: 44 cells + 4 java T-API rows (blob sha 3742747dd412e8a9)
+required list: 44 cells + 4 java T-API rows (blob sha ed8a8a29c0eea999)
+len_fill pinned unit=61 applies_to=['T17', 'T18']
 plan rows=52 cell_files=74 case_ids=B1,B2,B3,B4,B5,BLIND-1,BLIND-2,BLIND-3,BLIND-4,BLIND-5,T-API,T-API-1,T-API-2,T-API-3,T-API-4,T-CTRL-ASCII,T-CTRL-CANON,T-CTRL-ILLEGAL-CHAR,T-CTRL-NAMETOOLONG,T-CTRL-PARSE,T01,T02,T03,T04,T05,T06,T07,T08,T09,T09-m1,T09-m2,T10,T11,T12,T13,T14,T14-m1,T14-m2,T14-m3,T15,T16,T17,T18,T19,T19-m1,T19-m2,T20
 TOOLCHAIN javac=C:\Program Files\Eclipse Adoptium\jdk-17.0.17.10-hotspot\bin\javac.exe
 TOOLCHAIN java =C:\Program Files\Eclipse Adoptium\jdk-17.0.17.10-hotspot\bin\java.exe
@@ -24,28 +25,28 @@ CELL trap  T14-m3                 None           entry=Files.write              
 CELL trap  T14                    None           entry=Files.write              create=err_at_syscall read=not_applicable legality=legal    via=win32  spread=6 EXTRA
 CELL trap  T15                    None           entry=Files.write              create=err_at_parse   read=not_applicable legality=illegal  via=win32  spread=6
 CELL trap  T16                    None           entry=Files.write              create=ok             read=ok     legality=legal    via=win32  spread=6
-CELL len   T17                    None           entry=Files.write              create=err_at_syscall read=not_applicable legality=illegal  via=win32  spread=0
-CELL len   T17                    None           entry=Files.write              create=err_at_syscall read=not_applicable legality=illegal  via=win32  spread=0 EXTRA
-CELL len   T17                    None           entry=Files.write              create=err_at_parse   read=not_applicable legality=illegal  via=win32  spread=0
-CELL len   T17                    None           entry=Files.write              create=err_at_syscall read=not_applicable legality=illegal  via=win32  spread=0
-CELL len   T17                    None           entry=Files.write              create=err_at_syscall read=not_applicable legality=illegal  via=win32  spread=0 EXTRA
-CELL len   T17                    None           entry=Files.write              create=err_at_parse   read=not_applicable legality=illegal  via=win32  spread=0
-CELL len   T17                    None           entry=Files.write              create=err_at_syscall read=not_applicable legality=illegal  via=win32  spread=0
-CELL len   T17                    None           entry=Files.write              create=err_at_syscall read=not_applicable legality=illegal  via=win32  spread=0 EXTRA
-CELL len   T17                    None           entry=Files.write              create=err_at_parse   read=not_applicable legality=illegal  via=win32  spread=0
+CELL len   T17                    None           entry=Files.write              create=ok             read=ok     legality=legal    via=win32  spread=0
+CELL len   T17                    None           entry=Files.write              create=ok             read=ok     legality=legal    via=win32  spread=0 EXTRA
+CELL len   T17                    None           entry=Files.write              create=err_at_parse   read=not_applicable legality=legal    via=win32  spread=0
+CELL len   T17                    None           entry=Files.write              create=ok             read=ok     legality=legal    via=win32  spread=0
+CELL len   T17                    None           entry=Files.write              create=ok             read=ok     legality=legal    via=win32  spread=0 EXTRA
+CELL len   T17                    None           entry=Files.write              create=err_at_parse   read=not_applicable legality=legal    via=win32  spread=0
+CELL len   T17                    None           entry=Files.write              create=ok             read=ok     legality=legal    via=win32  spread=0
+CELL len   T17                    None           entry=Files.write              create=ok             read=ok     legality=legal    via=win32  spread=0 EXTRA
+CELL len   T17                    None           entry=Files.write              create=err_at_parse   read=not_applicable legality=legal    via=win32  spread=0
 CELL len   T17                    None           entry=Files.write              create=ok             read=ok     legality=legal    via=win32  spread=0 EXTRA
 CELL len   T17                    None           entry=Files.write              create=ok             read=ok     legality=legal    via=win32  spread=0 EXTRA
 CELL len   T17                    None           entry=Files.write              create=err_at_syscall read=not_applicable legality=illegal  via=win32  spread=0 EXTRA
 CELL len   T17                    None           entry=Files.write              create=err_at_syscall read=not_applicable legality=illegal  via=win32  spread=0 EXTRA
-CELL len   T18                    None           entry=Files.write              create=err_at_syscall read=not_applicable legality=illegal  via=win32  spread=0
-CELL len   T18                    None           entry=Files.write              create=err_at_syscall read=not_applicable legality=illegal  via=win32  spread=0 EXTRA
-CELL len   T18                    None           entry=Files.write              create=err_at_parse   read=not_applicable legality=illegal  via=win32  spread=0
-CELL len   T18                    None           entry=Files.write              create=err_at_syscall read=not_applicable legality=illegal  via=win32  spread=0
-CELL len   T18                    None           entry=Files.write              create=err_at_syscall read=not_applicable legality=illegal  via=win32  spread=0 EXTRA
-CELL len   T18                    None           entry=Files.write              create=err_at_parse   read=not_applicable legality=illegal  via=win32  spread=0
-CELL len   T18                    None           entry=Files.write              create=err_at_syscall read=not_applicable legality=illegal  via=win32  spread=0
-CELL len   T18                    None           entry=Files.write              create=err_at_syscall read=not_applicable legality=illegal  via=win32  spread=0 EXTRA
-CELL len   T18                    None           entry=Files.write              create=err_at_parse   read=not_applicable legality=illegal  via=win32  spread=0
+CELL len   T18                    None           entry=Files.write              create=ok             read=ok     legality=legal    via=win32  spread=0
+CELL len   T18                    None           entry=Files.write              create=ok             read=ok     legality=legal    via=win32  spread=0 EXTRA
+CELL len   T18                    None           entry=Files.write              create=err_at_parse   read=not_applicable legality=legal    via=win32  spread=0
+CELL len   T18                    None           entry=Files.write              create=ok             read=ok     legality=legal    via=win32  spread=0
+CELL len   T18                    None           entry=Files.write              create=ok             read=ok     legality=legal    via=win32  spread=0 EXTRA
+CELL len   T18                    None           entry=Files.write              create=err_at_parse   read=not_applicable legality=legal    via=win32  spread=0
+CELL len   T18                    None           entry=Files.write              create=ok             read=ok     legality=legal    via=win32  spread=0
+CELL len   T18                    None           entry=Files.write              create=ok             read=ok     legality=legal    via=win32  spread=0 EXTRA
+CELL len   T18                    None           entry=Files.write              create=err_at_parse   read=not_applicable legality=legal    via=win32  spread=0
 CELL len   T18                    None           entry=Files.write              create=ok             read=ok     legality=legal    via=win32  spread=0 EXTRA
 CELL len   T18                    None           entry=Files.write              create=ok             read=ok     legality=legal    via=win32  spread=0 EXTRA
 CELL len   T18                    None           entry=Files.write              create=err_at_syscall read=not_applicable legality=illegal  via=win32  spread=0 EXTRA

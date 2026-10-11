@@ -117,7 +117,7 @@ func legalityProbe(dir, name string) Legality {
 //
 // It never writes and never reads contents, so a reserved device name is created at most
 // (which is what the seat order allows) and nothing is ever transferred into it.
-func legalityCreateProbe(dir string, name string, extended bool) (map[string]any, Legality) {
+func legalityCreateProbe(dir string, name string, extended bool, corroborating int) (map[string]any, Legality) {
 	res := map[string]any{
 		"probe":     "kernel32!CreateFileW(CREATE_NEW) + directory listing",
 		"dir":       dir,
@@ -175,9 +175,21 @@ func legalityCreateProbe(dir string, name string, extended bool) (map[string]any
 		return res, Legality{Verdict: "illegal", Probe: "CreateFileW+listing", WinError: code,
 			WinErrorName: errnoName(uint32(code)), Note: "the file system refused the name itself"}
 	case !ok && code == errFileNotFound:
+		// CREATE_NEW answering "no such file" on a directory this cell verified empty is
+		// ambiguous on its own. The same cell's create attempt is a second answer from the
+		// same OS: when the file system refused the name itself (123/161/206/87), the two
+		// read together are what the OS said. Without that corroboration the port keeps
+		// the verdict unknown instead of guessing.
+		if corroborating == errInvalidName || corroborating == errBadPathname ||
+			corroborating == errEnvarLimit || corroborating == errInvalidParameter {
+			return res, Legality{Verdict: "illegal", Probe: "CreateFileW+listing + create leg", WinError: code,
+				WinErrorName: errnoName(uint32(code)),
+				Note: fmt.Sprintf("CREATE_NEW said no-such-file and this cell's own create attempt was refused by the name itself (winerror %d, %s); both answers come from the OS, so the name as written cannot exist here",
+					corroborating, errnoName(uint32(corroborating)))}
+		}
 		return res, Legality{Verdict: "unknown", Probe: "CreateFileW+listing", WinError: code,
 			WinErrorName: errnoName(uint32(code)),
-			Note:         "CREATE_NEW answered no-such-file, which is not a legality answer this port can read as either"}
+			Note:         "CREATE_NEW answered no-such-file with no name-level refusal beside it, which this port will not read either way"}
 	}
 	return res, Legality{Verdict: "unknown", Probe: "CreateFileW+listing", WinError: code,
 		WinErrorName: errnoName(uint32(code)), Note: "answer not mapped by this port; winerror stored verbatim"}

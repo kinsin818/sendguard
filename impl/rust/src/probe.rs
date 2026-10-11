@@ -973,6 +973,45 @@ fn main() {
                             name_bytes.len()
                         ),
                     );
+                    if a.flag("len-pinned-fill") {
+                        // rev7: the len family's component is pinned, so this face has to describe the
+                        // bytes it passed and keep the measured ceiling in a field of its own.
+                        let bl = a.num("base-len").unwrap_or(-1);
+                        let unit_hex = {
+                            let u = a.get("len-fill-unit-hex");
+                            if u.is_empty() { "61".to_string() } else { u }
+                        };
+                        let want: Vec<u16> = u32::from_str_radix(&unit_hex, 16)
+                            .ok()
+                            .and_then(char::from_u32)
+                            .map(|c| c.encode_utf16().collect())
+                            .unwrap_or_default();
+                        let un = units_of(&name_os);
+                        let repeated = !want.is_empty()
+                            && un.iter().enumerate().all(|(i, u)| *u == want[i % want.len()]);
+                        let cp = name_str.chars().count() as i64;
+                        let ub = name_bytes.len() as i64;
+                        puts(&mut f, "len_fill_unit_hex", &unit_hex);
+                        puts(&mut f, "len_fill_rule", &a.get("len-fill-rule"));
+                        putb(&mut f, "name_is_pinned_fill_repeated", repeated);
+                        putb(&mut f, "name_len_equals_base_len", un.len() as i64 == bl);
+                        putb(&mut f, "len_triple_equals_base_len", cp == bl && un.len() as i64 == bl && ub == bl);
+                        puti(&mut f, "len_parent_dir_code_units", wlen(scratch) as i64);
+                        puts(&mut f, "len_input_basis", "rev7 pins this family: name_source is the hex of the code units actually handed to the API, made by repeating spec/cases.yaml len_fill.unit_hex until the component is exactly base_len code units with nothing appended; the ceiling this port converged to is a different quantity and is published in len_ceiling, and the width-pinned tier evidence stays in its own extra:true cells");
+                        if !a.get("len-ceiling-max-ok").is_empty() {
+                            let tiers: Vec<String> = a.csv("len-ceiling-tier-roots").iter().map(|s| js(s)).collect();
+                            let mut pieces: Vec<String> = Vec::new();
+                            pieces.push(format!("\"max_ok_code_units\": {}", a.get("len-ceiling-max-ok")));
+                            pieces.push(format!("\"first_failing_code_units\": {}", js(&a.get("len-ceiling-first-failing"))));
+                            pieces.push(format!("\"first_failing_winerror\": {}", js(&a.get("len-ceiling-winerror"))));
+                            pieces.push(format!("\"measured_by_case_id\": {}", js(&a.get("len-ceiling-measured-in"))));
+                            pieces.push(format!("\"measured_by_path_form\": {}", js(&a.get("path-form"))));
+                            pieces.push(format!("\"measured_by_face_sha256\": {}", js(&a.get("len-ceiling-face-sha256"))));
+                            pieces.push(format!("\"width_pinned_tier_roots\": [{}]", tiers.join(", ")));
+                            pieces.push(format!("\"basis\": {}", js("the widest component this port could create, converged by bisection in the extra cell named by measured_by_case_id at the same path_form; it is NOT the width of the name in this cell, which is exactly base_len")));
+                            put(&mut f, "len_ceiling", format!("{{{}}}", pieces.join(", ")));
+                        }
+                    }
                     mark(&markfile, "before-create");
                     let src = if entry == "std::fs::rename" { Some(scratch.join(OsStr::new(&a.get("rename-src-name")))) } else { None };
                     let outcome = do_entry(&entry, &target, &write_bytes, src.as_deref());

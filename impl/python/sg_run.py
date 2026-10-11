@@ -268,12 +268,11 @@ def build_base(cell_dir, base_len):
 def parse_len_fill(cases_text):
     """rev7: read the pinned length filler from the committed spec face."""
     global LEN_FILL_UNIT, LEN_FILL_HEX
+    import re
     head = cases_text.split("\ncases:")[0]
     block = head.split("len_fill:")[-1] if "len_fill:" in head else ""
     unit = applies = nsr = None
-    for ln in block.split("\n"):
-        m = re.match(r"^\s+(unit_hex|rule|applies_to|name_source_rule):\s*(.+)$", ln) if False else None
-    # explicit, because the values contain spaces and a '#' comment
+    # explicit, because these values contain spaces and a '#' comment
     for ln in block.split("\n"):
         s = ln.strip()
         if s.startswith("unit_hex:"):
@@ -702,25 +701,31 @@ def plan_items(cases, blind):
                       "spec_source": "evidence/S00/blind-map.json",
                       "name_source_kind": "evidence/S00/blind-map.json name_utf8_hex"})
 
-    # rev6 required set: len/T17 and len/T18 at base_len {78,120,200} x path_form
-    # {plain,extended} = 12 cells, identity exactly {base_len, path_form} (the
-    # gate adds path_form to the key for the len group only). `limit`, `probe` and
-    # the face rationale stay as data fields, never as identity dimensions.
+    # rev7: the twelve required length cells. Identity is exactly
+    # {base_len, path_form}; the INPUT is the pinned component -- one code unit
+    # U+0061 repeated base_len times, nothing appended -- so name_source is
+    # 2*base_len hex characters and all three widths of that name are base_len.
+    # What the bisection converged to is a different quantity and goes in
+    # len_ceiling, never in len_triple. `limit`, `probe` and the holder depths
+    # stay data fields, not identity dimensions.
     for cid, limit in (("T17", "path"), ("T18", "component")):
         for b in REQUIRED_BASES:
             for face in ("plain", "extended"):
-                items.append({"type": "len_bisect", "kind": "len", "case_id": cid,
+                items.append({"type": "len_pinned", "kind": "len", "case_id": cid,
                               "base_len": b, "limit": limit, "path_form": face,
                               "lpm": "none" if face == "plain" else "prefix_rewrite",
                               "mech": "component_length_limit", "locale": "en-US",
                               "applicable": "windows",
-                              "spec_source": "spec/cells-required.json base_len_ladder x path_form",
-                              "name_source_kind": "computed by length (bisection steps; "
-                                                  "T17/T18 sample_hex is a length marker, not a name)",
-                              "subs": [{"base_len": b, "path_form": face}], "members": 1,
-                              "face_note": "both faces are required cells in rev6; the trap's own "
-                                           "limit is reachable only on one of them, so each face is "
-                                           "a separate question with a separate answer"})
+                              "name_hexes": [len_name_hex(b)], "members": 1,
+                              "spec_source": "spec/cases.yaml len_fill + "
+                                             "spec/cells-required.json base_len_ladder x path_form",
+                              "name_source_kind": "hex of the component actually handed to the API: "
+                                                  "len_fill unit U+0061 repeated base_len times, "
+                                                  "nothing appended (rev7 pin)",
+                              "subs": [{"base_len": b, "path_form": face}],
+                              "face_note": "the pinned component is the input of this cell; the "
+                                           "ceiling is measured by bisection at the same holder "
+                                           "depth in a sibling fresh directory"})
     return items
 
 
@@ -794,6 +799,7 @@ def build_run_meta(problems):
     import re as _re
     samples = parse_control_samples(cases_text)
     build_ctrl_names(samples)          # raises if the rev6 pin is missing or inconsistent
+    meta_len_fill = parse_len_fill(cases_text)   # rev7 pin; raises if absent or not one code unit
     payload = bytes.fromhex(CTRL_PAYLOAD_HEX)
     mjs_payload = _re.search(r'const PAYLOAD = Buffer\.from\("([^"]+)"\)', mjs)
     meta_pin = {"pinned_payload_equals_baseline_script_payload":
@@ -824,6 +830,7 @@ def build_run_meta(problems):
         "payload_matches_baseline": hashlib.sha256(payload).hexdigest() == CTRL_BASELINE_SHA,
         "payload_source": "control_samples payload_hex, pinned by contract rev6 in the committed spec/cases.yaml",
         "pin_cross_checks": meta_pin,
+        "len_fill_pin": meta_len_fill,
         "os": {"os_version": sys.platform, "arch": "x64"},
         "locale": "unknown",
         "env": {"LongPathsEnabled": lpe,
@@ -1002,7 +1009,7 @@ def run_zip_leg(it, leg_dir, io_dir, meta):
 
 # ---------------------------------------------------------------- item runner
 def run_item(it, meta, controls):
-    is_len = it["type"] in ("len_grid", "len_bisect")
+    is_len = it["type"] in ("len_grid", "len_bisect", "len_pinned")
     # rev3 (cell-identity.md section 6): an instrument may not create directories
     # at a drive root, so the length cells live under the documented %TEMP% root.
     # A short 8-hex cell component keeps base_len 78 reachable there.
@@ -1023,6 +1030,40 @@ def run_item(it, meta, controls):
         legs[PRIMARY_ENTRY] = {"recs": [rec], "status": status, "elapsed": elapsed,
                                "argv": argv, "leg_dir": leg_dir, "leg_pre_existing": pre}
         entries_run = [PRIMARY_ENTRY]
+    elif it["type"] == "len_pinned":
+        # the holder for the pinned component is the fresh cell directory itself;
+        # its depth is recorded because the plain-face ceiling depends on it
+        holder = cell_dir
+        if len(os.listdir(holder)) != 0:
+            raise SystemExit("FATAL length holder not empty: %s" % holder)
+        recs, status, elapsed, argv, phase, reruns = run_leg_retry_once(
+            it, PRIMARY_ENTRY, holder, io_dir, meta, 0)
+        legs[PRIMARY_ENTRY] = {"recs": recs, "status": status, "elapsed": elapsed,
+                               "argv": argv, "leg_dir": holder, "leg_pre_existing": 0}
+        entries_run = [PRIMARY_ENTRY]
+        extra["holder_dir"] = holder
+        extra["holder_dir_len"] = len(holder)
+        # the ceiling is a separate quantity: a bisection at the SAME holder depth
+        # in a sibling fresh directory, so no step can collide with the pinned name
+        bdir, _ = fresh_dir(prefix_len=8, root=root)
+        if len(bdir) != len(holder):
+            bdir, _be = build_base(bdir, len(holder))
+        bs = bisect(it, bdir, io_dir, meta, seed)
+        bs.pop("_final_leg", None)
+        extra.update(bs)
+        extra["bisect_holder_dir_len"] = len(bdir)
+        extra["len_ceiling"] = bs.get("bisection_boundary_comp_len")
+        extra["len_ceiling_rejected"] = bs.get("bisection_rejected_comp_len")
+        extra["ceiling_source"] = ("largest component that landed among the bisection steps, at "
+                                  "holder depth %d; the bracket lo/hi are taken from the steps "
+                                  "themselves, and the boundary re-probe is discarded because the "
+                                  "pinned filler makes two same-length names identical"
+                                  % len(bdir))
+        if recs:
+            landed = recs[0].get("create_result") == "ok"
+            ceil = bs.get("bisection_boundary_comp_len")
+            extra["ceiling_agrees_with_pinned_probe"] = (
+                None if ceil is None else (it["base_len"] <= ceil) == landed)
     elif is_len:
         base_dir, err = build_base(cell_dir, it["base_len"])
         if err:
@@ -1434,6 +1475,9 @@ def main():
     ap.add_argument("--plan", action="store_true")
     ap.add_argument("--cells", default=None)
     ap.add_argument("--no-write", action="store_true")
+    ap.add_argument("--len-only", action="store_true",
+                    help="rev7 focused re-run: measure the twelve length cells and the five "
+                         "controls, migrate every other record unchanged, then reconcile")
     a = ap.parse_args()
 
     global ZIP_ENTRY_HEX
@@ -1477,6 +1521,7 @@ def main():
     print("payload len=%d matches_baseline=%s" % (meta["payload_len"],
                                                  meta["payload_matches_baseline"]))
     print("ctrl_provenance=%s" % json.dumps(meta["ctrl_name_provenance"], sort_keys=True))
+    print("len_fill_pin=%s" % json.dumps(meta["len_fill_pin"], sort_keys=True))
     print("LongPathsEnabled=%s max_component=%s dot3=%s console=%s locale=%s" %
           (meta["env"]["LongPathsEnabled"], meta["env"]["max_component"],
            meta["env"]["dot3name"], meta["console_window_handle"], meta["locale"]))
@@ -1501,6 +1546,8 @@ def main():
     t0 = time.monotonic()
     for it in items:
         if only and it["case_id"] not in only:
+            continue
+        if a.len_only and it["kind"] not in ("len", "ctrl"):
             continue
         cs = run_item(it, meta, controls)
         built.extend(cs)

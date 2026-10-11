@@ -371,7 +371,11 @@ func runChild(planPath, outOverride string) error {
 	// `legal` where the file system refuses. The verdict is now taken from a create
 	// attempt made straight through kernel32!CreateFileW plus the listing of the
 	// directory it acted in. FindFirstFileW is still published, as a named second face.
-	o.LegalityRaw, o.Legality = legalityCreateProbe(p.DirLegal, name, p.PathForm == "extended")
+	corroborating := 0
+	if o.WinError != nil {
+		corroborating = *o.WinError
+	}
+	o.LegalityRaw, o.Legality = legalityCreateProbe(p.DirLegal, name, p.PathForm == "extended", corroborating)
 	o.LegalityExt = legalityProbe(p.Dir, name)
 
 	// ---- zip leg for the zip_roundtrip case ----

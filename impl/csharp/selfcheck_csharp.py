@@ -234,7 +234,7 @@ def arms(schema, sets, req_ids):
         "error_stage": "syscall", "read_result": "not_applicable",
         "read_skipped_reason": "create failed, nothing landed",
         "os_legality_verdict": "legal",
-        "harness_version": "csharp-s02-4-rev6", "started_at": "x", "elapsed_ms": 10,
+        "harness_version": "csharp-s02-5-rev7", "started_at": "x", "elapsed_ms": 10,
         "bytes_on_disk": 0, "deps_direct": 0, "deps_total": 0,
         "length_unit": "utf16_code_units", "name_encoding": "hex_raw_bytes", "verdict_via": "win32",
         "extra": False, "spec_sha256": frozen_spec_sha(),

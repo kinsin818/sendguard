@@ -4,7 +4,7 @@
  "covered_required": 48,
  "extra": 75,
  "missing_required": [],
- "cells_blocked": 43,
+ "cells_blocked": 45,
  "controls": {
   "T-CTRL-NAMETOOLONG": [],
   "T-CTRL-ASCII": [],
@@ -12,15 +12,15 @@
   "T-CTRL-PARSE": [],
   "T-CTRL-CANON": []
  },
- "required_blob_sha256": "3742747dd412e8a9d799e6c7f215f561f4c14774466759de515335b76ee90ff6",
+ "required_blob_sha256": "ed8a8a29c0eea99925659f6d0f2f63b94469654e1f793ab027b6e55a4a1a8cb8",
  "meta": {
-  "spec_sha256": "b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1",
-  "spec_face": "git cat-file blob HEAD:spec/cases.yaml rc=0 bytes=10611",
-  "spec_disk_sha256": "b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1",
+  "spec_sha256": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261",
+  "spec_face": "git cat-file blob HEAD:spec/cases.yaml rc=0 bytes=11347",
+  "spec_disk_sha256": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261",
   "spec_blob_equals_disk": true,
   "blind_map_sha256": "3617e75f4906544d3e763b138bbb14fe834b9536ac0b95639d6195aaa1053e58",
   "frozen_claims": {
-   "spec/cases.yaml": "b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1"
+   "spec/cases.yaml": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261"
   },
   "frozen_claim_matches_cases_blob": true,
   "frozen_claim_matches_blind_map": false,
@@ -31,6 +31,16 @@
   "payload_source": "control_samples payload_hex, pinned by contract rev6 in the committed spec/cases.yaml",
   "pin_cross_checks": {
    "pinned_payload_equals_baseline_script_payload": true
+  },
+  "len_fill_pin": {
+   "unit_hex": "61",
+   "unit_codepoint": "U+0061",
+   "applies_to": [
+    "T17",
+    "T18"
+   ],
+   "name_source_rule": "name_source is the hex of the component that was actually passed to the API, not a label",
+   "read_from": "git cat-file blob HEAD:spec/cases.yaml len_fill"
   },
   "os": {
    "os_version": "Windows-10-10.0.19041-SP0",

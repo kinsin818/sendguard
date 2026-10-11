@@ -1,5 +1,5 @@
 {
- "started_local": "2026-10-11T05:37:27.168790",
+ "started_local": "2026-10-11T07:22:42.628366",
  "clock_note": "host-local time, UTC+08:00, no offset in string",
  "toolchain": {
   "JAVA_HOME_env": "C:\\Program Files\\Eclipse Adoptium\\jdk-21.0.6.7-hotspot",
@@ -106,13 +106,13 @@
   "JAVA_HOME_is_chosen_home": false,
   "status": "ok"
  },
- "spec_sha256_blob": "b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1",
- "spec_sha256_disk": "b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1",
+ "spec_sha256_blob": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261",
+ "spec_sha256_disk": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261",
  "blob_equals_disk": true,
- "required_list_sha256_blob": "3742747dd412e8a9d799e6c7f215f561f4c14774466759de515335b76ee90ff6",
- "required_list_sha256_worktree": "3742747dd412e8a9d799e6c7f215f561f4c14774466759de515335b76ee90ff6",
+ "required_list_sha256_blob": "ed8a8a29c0eea99925659f6d0f2f63b94469654e1f793ab027b6e55a4a1a8cb8",
+ "required_list_sha256_worktree": "ed8a8a29c0eea99925659f6d0f2f63b94469654e1f793ab027b6e55a4a1a8cb8",
  "required_list_face_equal": true,
- "head_commit": "a829b1ce1e7d771f9bdd930112375cbf58caa6f8",
+ "head_commit": "79b2c71eacbeb88379d0ed87c03bed87cd76638c",
  "required_cells_declared": 48,
  "required_cells_produced": 48,
  "required_cells_missing": [],
@@ -166,8 +166,8 @@
  "cells_blocked": [],
  "scratch_root": "D:\\s\\",
  "scratch_parent": "D:\\s",
- "scratch_dirs_retained": 3711,
- "child_result_files_retained": 3709,
+ "scratch_dirs_retained": 4093,
+ "child_result_files_retained": 4091,
  "child_runs": 191,
  "payload_bytes": 28,
  "payload_sha256": "c9fe45b2fee8ea846f0cf4f2cacc2a891e7b082e7719923502d12a9813e21994",
@@ -226,8 +226,8 @@
   "verdict_basis": "legs B and C differ only in total path length; the dot-suffixed directory is reachable through name parsing only",
   "child_rc": 0,
   "child_timed_out": false,
-  "child_argv": "C:\\Program Files\\Eclipse Adoptium\\jdk-17.0.17.10-hotspot\\bin\\java.exe -cp D:\\sendguard-work\\seat-qoder\\impl\\java\\build CellProbe --entry Files.write --scratch D:\\s\\598489\\7a9d7b2b --payload 53454e4447554152442d43414e4f4e2d5041594c4f41442d32303236 --out D:\\s\\_out\\f3678ac2f3bd492ca3bf92735402aad5.json --extended off --mechanism on --mechanism2 on --members 707265666c696768742d626173652e747874",
-  "scratch": "D:\\s\\598489\\7a9d7b2b"
+  "child_argv": "C:\\Program Files\\Eclipse Adoptium\\jdk-17.0.17.10-hotspot\\bin\\java.exe -cp D:\\sendguard-work\\seat-qoder\\impl\\java\\build CellProbe --entry Files.write --scratch D:\\s\\2d2d46\\11389610 --payload 53454e4447554152442d43414e4f4e2d5041594c4f41442d32303236 --out D:\\s\\_out\\7f68ef7e525e41ba98604737ff98db81.json --extended off --mechanism on --mechanism2 on --members 707265666c696768742d626173652e747874",
+  "scratch": "D:\\s\\2d2d46\\11389610"
  },
  "device_namespace_preflight": {
   "attempted": true,

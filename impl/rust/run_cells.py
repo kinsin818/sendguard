@@ -149,6 +149,43 @@ def parse_cases(path):
     return cases, api_rust, controls
 
 
+def parse_len_fill(path):
+    """rev7 pins what the two length components are made of. Read the pin out of the frozen table
+    instead of retyping it, so a drift in the spec shows up as a changed cell and not as a comment.
+    """
+    text = io.open(path, encoding="utf-8").read()
+    m = re.search(r"(?m)^len_fill:\s*$", text)
+    if not m:
+        return None
+    tail = text[m.end():].splitlines()
+    out = {"unit_hex": "", "rule": "", "applies_to": [], "name_source_rule": ""}
+    for line in tail:
+        st = line.strip()
+        if st and not line.startswith((" ", "\t")):
+            break
+        if st.startswith("#") or not st:
+            continue
+        k, _, v = st.partition(":")
+        v = v.split("#")[0].strip().strip('"')
+        if k == "unit_hex":
+            out["unit_hex"] = v
+        elif k == "rule":
+            out["rule"] = v
+        elif k == "applies_to":
+            out["applies_to"] = [x.strip() for x in v.strip("[]").split(",")]
+        elif k == "name_source_rule":
+            out["name_source_rule"] = v
+    if not re.fullmatch(r"[0-9a-fA-F]{2,6}", out["unit_hex"]):
+        return None
+    out["unit_char"] = chr(int(out["unit_hex"], 16))
+    return out
+
+
+def len_fill_name(fill, base):
+    """The pinned component: one code unit repeated until it is exactly base_len code units."""
+    return fill["unit_char"] * base
+
+
 def control_cells_from_table(controls):
     """The five control samples as the frozen table pins them (rev6)."""
     out = []
@@ -340,11 +377,12 @@ class Cell(object):
                  name_text, tier=None, sub=None, norm=False, zipface=False, mode="create",
                  bisect=None, bisect_range=None, range_basis="", note="", member="",
                  variant_of="", superseded_by="", spec_sample="", tapi_sample="", base_len=None,
-                 answers=None, payload_hex=""):
+                 answers=None, payload_hex="", shallow=False, pinned_fill=False):
         self.group, self.case_id, self.entry, self.hexes = group, case_id, entry, hexes
         self.kind, self.mechanism, self.applicable, self.path_form = kind, mechanism, applicable, path_form
         self.name_text, self.tier, self.sub = name_text, tier, sub
         self.norm, self.zipface, self.mode = norm, zipface, mode
+        self.shallow, self.pinned_fill = shallow, pinned_fill
         self.bisect, self.bisect_range, self.range_basis, self.note = bisect, bisect_range, range_basis, note
         self.member, self.variant_of, self.superseded_by = member, variant_of, superseded_by
         self.spec_sample, self.tapi_sample, self.base_len = spec_sample, tapi_sample, base_len
@@ -412,7 +450,8 @@ def load_required(path):
     return keys, doc
 
 
-def build_plan(cases, api_rust, primary_entry, base_ladder, required_keys, controls=None, blind=None):
+def build_plan(cases, api_rust, primary_entry, base_ladder, required_keys, controls=None, blind=None,
+               len_fill=None):
     """Required rows first, then this seat's own extras, each with its own file and gate identity."""
     plan, seen = [], {}
 
@@ -453,18 +492,33 @@ def build_plan(cases, api_rust, primary_entry, base_ladder, required_keys, contr
         add(Cell("ctrl", cc["id"], primary_entry, [cc["hex"]], cc["basis"],
                  cc["mechanism"], "windows,macos,ubuntu", "plain", name, note=cc["basis"],
                  payload_hex=cc.get("payload")))
-    # ---- required len rows: one per (case, base_len, path_form) on the contract's ladder
+    # ---- the ceiling legs, planned BEFORE the required rungs: rev7 wants the converged ceiling in
+    # each rung's len_ceiling, and a rung may only carry a number this run actually measured.
+    for form in ("plain", "extended"):
+        for cid, kind in (("T17", "path"), ("T18", "component")):
+            add(Cell("len", "%s-CEILING-%s" % (cid, form.upper()), primary_entry, [],
+                     "generated-measured-name", "component_length_limit", "windows,macos,ubuntu", form,
+                     "widest created name", sub=sub_of("ceiling-%s" % form), mode="bisect", bisect=kind,
+                     bisect_range=(64, 33000) if kind == "path" else (64, 400), spec_sample=LEN_NAME[cid],
+                     variant_of=cid, range_basis="this seat's own pre-flight ladder, re-measured inside the cell",
+                     note="ceiling leg at the fresh uuid scratch, not on the contract ladder"))
+    # ---- required len rows: one per (case, base_len, path_form) on the contract's ladder.
+    # rev7 pins the component, so these are create cells now: the name is len_fill.unit_hex repeated to
+    # exactly base_len code units with nothing appended, name_source is the hex of those bytes, and
+    # len_triple is the three widths OF THAT NAME. The parent is a shallow fresh uuid directory so the
+    # cell measures the component rule and not this driver's directory depth; the path-rule regime is
+    # published by the tier/grid extras and summarised in len_ceiling.
     for base in base_ladder:
         for form in ("plain", "extended"):
             for cid, kind in (("T17", "path"), ("T18", "component")):
-                add(Cell("len", cid, primary_entry, [], "generated-measured-name", "component_length_limit",
-                         "windows,macos,ubuntu", form, "the widest name this cell could create",
-                         tier=base, sub=sub_of("bisect-base%d-%s" % (base, form)), mode="bisect", bisect=kind,
+                nm = len_fill_name(len_fill, base)
+                add(Cell("len", cid, primary_entry, [bhex(nm)], "pinned-len-fill", "component_length_limit",
+                         "windows,macos,ubuntu", form, nm, shallow=True, pinned_fill=True,
+                         sub=sub_of("lenfill-base%d-%s" % (base, form)), mode="create",
                          base_len=base, spec_sample=LEN_NAME[cid],
                          answers=("len", cid, (("base_len", base), ("path_form", form))),
-                         bisect_range=(64, 33000) if kind == "path" else (64, 400),
-                         range_basis="lower bound one component; upper bound above the 260 code unit face so the real ceiling falls inside the range",
-                         note="required row: %s width at base_len=%d, %s face, on the contract ladder" % (kind, base, form)))
+                         note="required row: the pinned len_fill component at exactly base_len=%d code "
+                              "units, %s face; the ceiling this port converged to is in len_ceiling" % (base, form)))
     # ---- required T-API rows: one per pinned rust entry
     for e in api_rust:
         add(Cell("tapi", "T-API", e, [T01_HEX], "frozen-sample-hex", "reserved_device_name",
@@ -530,14 +584,6 @@ def build_plan(cases, api_rust, primary_entry, base_ladder, required_keys, contr
                          "windows,macos,ubuntu", form, "c" * x, tier=base, base_len=base,
                          sub=sub_of("len%d" % x), spec_sample=LEN_NAME["T18"], variant_of="T18",
                          note="domain A tier base=%d; the extended face separates the component rule from the path rule" % base))
-    for form in ("plain", "extended"):
-        for cid, kind in (("T17", "path"), ("T18", "component")):
-            add(Cell("len", "%s-CEILING-%s" % (cid, form.upper()), primary_entry, [],
-                     "generated-measured-name", "component_length_limit", "windows,macos,ubuntu", form,
-                     "widest created name", sub=sub_of("ceiling-%s" % form), mode="bisect", bisect=kind,
-                     bisect_range=(64, 33000) if kind == "path" else (64, 400), spec_sample=LEN_NAME[cid],
-                     variant_of=cid, range_basis="this seat's own pre-flight ladder, re-measured inside the cell",
-                     note="ceiling leg at the fresh uuid scratch, not on the contract ladder"))
     return plan, seen
 
 

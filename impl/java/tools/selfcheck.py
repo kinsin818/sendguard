@@ -33,6 +33,10 @@ import subprocess
 import sys
 import tempfile
 
+
+def hx4(s):
+    return s.encode("utf-8").hex()
+
 # The console on this host is cp936: printing a combining mark or a localized Windows error
 # string would raise and hide the finding. The file faces are ASCII-safe already; this only
 # protects the terminal, and never changes what is written to disk.
@@ -132,6 +136,9 @@ def words_in(block):
     if rows:
         return set(rows)
     return set(re.findall(r"`([A-Za-z0-9_]+)`", block))
+
+
+CASES_TEXT = None
 
 
 def load_canonical():
@@ -537,6 +544,28 @@ def check_cell(path, sets, schema, exp, sha_blob, pins=None):
     if obj.get("verdict_via") == "none" and obj.get("os_legality_verdict") != "unknown":
         errs.append("verdict_via=none but os_legality_verdict=%r (no tool was asked, so no "
                     "verdict may be claimed)" % obj.get("os_legality_verdict"))
+    if obj.get("case_group") == "len" and not obj.get("extra"):
+        # rev7: the length family finally has bytes. The cell's name is the pinned filler
+        # unit repeated base_len times, its triple is THAT name's width, and the ceiling the
+        # bisection converged on is a separate quantity in its own field.
+        dims = obj.get("sub_identity") or {}
+        bl = dims.get("base_len")
+        pin = re.search(r'unit_hex: "([0-9a-f]+)"', CASES_TEXT or "")
+        if bl and pin:
+            want_hex = pin.group(1) * int(bl)
+            if obj.get("name_source") != want_hex:
+                errs.append("UNPINNED_INPUT len cell %s carries name_source=%r, not the rev7 "
+                            "pinned filler (%s units of unit_hex %s)"
+                            % (obj.get("case_id"), (obj.get("name_source") or "")[:24] + "...",
+                               bl, pin.group(1)))
+        tri = obj.get("len_triple") or {}
+        if bl and set(tri.values()) != {int(bl)}:
+            errs.append("len_triple=%r is not the pinned component's three widths (all %s) - "
+                        "rev7: if they differ you are counting something else, say so"
+                        % (tri, bl))
+        if not obj.get("len_ceiling"):
+            errs.append("len cell carries no len_ceiling (rev7 keeps the converged ceiling out of "
+                        "len_triple, in its own field)")
     if obj.get("case_group") == "len":
         sub_base = re.findall(r"base_len-(\d+)", fn)
         sid = obj.get("sub_identity") or {}
@@ -673,6 +702,40 @@ def selftest(sets, schema, exp, sha_blob, pins):
             arms += 1
             if not any(needle in e for e in errs):
                 problems.append("RED arm %s not caught: %s" % (name, errs[:3]))
+        # rev7 arms: a length cell that kept a label as its name_source, or that put the
+        # converged ceiling into len_triple, or that dropped len_ceiling, must be refused
+        rung = None
+        for cand in glob.glob(os.path.join(RESULTS, "len__T17__base_len-*__plain.json")):
+            rung = json.loads(io.open(cand, encoding="utf-8").read())
+            break
+        if rung is None:
+            problems.append("no rev7 rung cell on disk to test the length arms")
+        else:
+            bl = rung["sub_identity"]["base_len"]
+            for name, mut2, needle in (
+                    ("label instead of bytes", {"name_source": hx4("T-LEN-PATH")}, "UNPINNED_INPUT"),
+                    ("ceiling mixed into the triple", {"len_triple": {"code_points": 255,
+                                                                      "utf16_code_units": 255,
+                                                                      "utf8_bytes": 255}},
+                     "not the pinned component"),
+                    ("no ceiling recorded", {"len_ceiling": "__del__"}, "len_ceiling")):
+                c2 = json.loads(json.dumps(rung))
+                for k, v in mut2.items():
+                    if v == "__del__":
+                        c2.pop(k, None)
+                    else:
+                        c2[k] = v
+                nm = "len__T17__base_len-%s__plain.json" % bl
+                obj, errs, conf = check_cell(write(c2, name=nm), sets, schema, exp, sha_blob, pins)
+                arms += 1
+                if not any(needle in e for e in errs):
+                    problems.append("RED rev7 arm %s not caught: %s" % (name, errs[:2]))
+            good_tail = "61" * bl
+            obj, errs, conf = check_cell(write(rung, name="len__T17__base_len-%s__plain.json" % bl),
+                                        sets, schema, exp, sha_blob, pins)
+            arms += 1
+            if any("UNPINNED_INPUT" in e or "len_triple" in e or "len_ceiling" in e for e in errs):
+                problems.append("rev7 GREEN rung arm refused: %s" % errs[:3])
         # rev6 arms on their own bases: a control cell that ignored the pinned sample,
         # and a blind cell whose id does not carry the blind_id the map gives
         ctrl_base = None
@@ -755,6 +818,7 @@ def main():
     try:
         sets = load_canonical()
         pins = pinned_controls()
+        globals()["CASES_TEXT"] = io.open(os.path.join(SPEC, "cases.yaml"), encoding="utf-8").read()
         schema = load_schema()
         vsets = load_validate_sets()
         drift = rulers_agree(sets, schema, vsets)

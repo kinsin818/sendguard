@@ -261,7 +261,9 @@
   "case_locale": "en-US",
   "spec_source": "MS Learn naming-a-file (device table)"
  },
- "rev3_migrated": false,
+ "rev3_migrated": true,
  "rev3_migration_notes": [],
- "extra": false
+ "extra": false,
+ "migrated_under_spec_sha256": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261",
+ "migrated_under_spec_face": "git cat-file blob HEAD:spec/cases.yaml rc=0 bytes=11347"
 }

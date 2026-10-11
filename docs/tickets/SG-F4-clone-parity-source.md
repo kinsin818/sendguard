@@ -40,6 +40,27 @@ explicitly because Python evaluates the condition before the label can be regist
    identical/declared counts as `evidence/S11/public-clone-20261011.md` section 3;
 5. no face under `results/`, `spec/` or `impl/` moves, and nothing under `D:\sendguard` is touched at all.
 
+## Landed, 15:34 +0800
+
+All five acceptance criteria are met in `ci/clone_parity.py` (commit following this one): `--source` defaults to
+this repository, the tip is read from the source (`ls-remote` for a URL, `rev-parse` for a path, and a path that
+does not exist is refused with rc=3 before anything is cloned), a differing tip is refused rather than smoothed
+over, `--no-local` is passed only for a local source, and the arm count is now `SELFTEST_ARMS` with the
+self-counting guard that `ci/coverage_report.py` carries. `--selftest` reads `arms=14 passed=14`.
+
+Live run against the public repository, which is what the ticket was opened for:
+
+```
+clone| D:\sendguard-work\sg-public\parity-1 (created) source=https://github.com/kinsin818/sendguard head=02807a92edd2 status_before=0 pipeline_rc=1
+declared| docs/evidence.md - 1 line(s) inside the declared shape: - repository commit: `38446a01d551` (working tree carries 15 uncommitted faces at generation time). That is the HEAD thi
+tool| names=5 fields_compared=55 differing=0
+OUTCOME=CLEAN faces_compared=12 identical=11 declared=1 differing=0 missing=0 clone=D:\sendguard-work\sg-public\parity-1 source=https://github.com/kinsin818/sendguard
+```
+
+One consequence worth noting: because the deliverable comparison runs between this tree and the clone, pointing
+`--source` at the public URL strengthens it - the 55 fields are now seat-versus-public-clone, not
+seat-versus-clone-of-seat.
+
 ## Limits to state in the face, not only here
 
 A public-clone run proves the public bytes and this machine's answers. It does not prove CI's conclusion (unread

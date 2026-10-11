@@ -120,3 +120,18 @@ fetch `github/main` equals the local HEAD with `ahead=0`. The gap described abov
 now closed, so the public repository carries both the verified deliverable and the records of how it was verified.
 The retry is the only change here - the verification itself was performed against `a2037c1`, which was already the
 public branch at the time, so nothing measured above needed re-running.
+
+
+## 15:34 +0800 - the same verification is now one command, and it reads the public repository as its source
+
+`ci/clone_parity.py --source <url>` landed (ticket SG-F4), so this record's whole sequence is reproducible by
+anyone with one line:
+
+```
+python ci/clone_parity.py --scratch-root ../sg-public --source https://github.com/kinsin818/sendguard
+```
+
+whose output is the block in section 1 of the ticket: `OUTCOME=CLEAN faces_compared=12 identical=11 declared=1
+differing=0 missing=0`, `tool| names=5 fields_compared=55 differing=0`, and the source named on both lines. The
+arms of that leg are 14 and it refuses, before writing anything, a source path that does not exist or a source tip
+that differs from the tree doing the verifying.

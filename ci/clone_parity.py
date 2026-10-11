@@ -1,6 +1,6 @@
 """Reproduce the whole judgement in a cold clone and compare every generated face with the commit it came from.
 
-Run:  python ci/clone_parity.py --scratch-root ../sg-parity [--quiet]
+Run:  python ci/clone_parity.py --scratch-root ../sg-parity [--quiet] [--source <url-or-path>]
 
 Why this leg exists. The repository's central promise is that a stranger who clones it gets the same answers. That
 promise has been checked all afternoon by a script sitting outside the tree, run by hand, and each of the four
@@ -188,7 +188,29 @@ def compare_tool_fields(seat, clone_run):
     return compared, diffs
 
 
-def run_parity(root, quiet):
+def is_local(src):
+    return not (src.startswith(("http://", "https://", "git://", "ssh://")) or src.startswith("git@"))
+
+
+def remote_head(src):
+    """The tip of whatever source a stranger would clone, asked of that source directly.
+
+    For a URL that is `git ls-remote`. Reading it out of a cached remote-tracking ref is how two documents in this
+    repository came to assert "nothing has been pushed" while the public branch had already moved twice.
+    """
+    if is_local(src):
+        if not os.path.isdir(src):
+            return 3, "", "no such directory"
+        rc, out = git(["rev-parse", "HEAD"], src)
+        return rc, out.strip(), "rev-parse"
+    rc, out = git(["ls-remote", src, "HEAD"], REPO)
+    parts = out.split()
+    if rc != 0 or not parts:
+        return (rc or 3), out.strip(), "ls-remote"
+    return 0, parts[0], "ls-remote"
+
+
+def run_parity(root, quiet, source=REPO):
     scratch, why = validate_scratch_root(root)
     if not scratch:
         print("OUTCOME=INSTRUMENT-RED %s" % why)
@@ -197,13 +219,23 @@ def run_parity(root, quiet):
     if rc != 0:
         print("OUTCOME=INSTRUMENT-RED cannot read this tree's HEAD (git rc=%d): %s" % (rc, out.strip()[:160]))
         return 3
-    head = out.strip()
+    local_head = out.strip()
+    rc, head, how = remote_head(source)
+    if rc != 0:
+        print("OUTCOME=INSTRUMENT-RED cannot read the tip of %s via %s: %s" % (source, how, head[:140]))
+        return 3
+    if head != local_head:
+        print("OUTCOME=INSTRUMENT-RED the source tip is %s and this tree's HEAD is %s - the clone would verify a "
+              "different delivery than the one this seat built, so nothing is claimed"
+              % (head[:12], local_head[:12]))
+        return 3
     clone, state = pick_clone_dir(scratch, head)
     if state == "created":
         os.makedirs(scratch, exist_ok=True)
-        rc, out = git(["clone", "--no-local", REPO, clone], REPO)
+        cmd = ["clone"] + (["--no-local"] if is_local(source) else []) + [source, clone]
+        rc, out = git(cmd, REPO)
         if rc != 0:
-            print("OUTCOME=INSTRUMENT-RED `git clone --no-local` rc=%d: %s" % (rc, out.strip()[:200]))
+            print("OUTCOME=INSTRUMENT-RED `%s` rc=%d: %s" % (" ".join(cmd[:2]), rc, out.strip()[:200]))
             return 3
     rc, out = git(["rev-parse", "HEAD"], clone)
     if rc != 0 or out.strip() != head:
@@ -224,8 +256,8 @@ def run_parity(root, quiet):
         print("\n".join(out.strip().splitlines()[-8:]))
         return 3
     if not quiet:
-        print("clone| %s (%s) head=%s status_before=%d pipeline_rc=%d"
-              % (clone, state, head[:12], dirty_before, p.returncode))
+        print("clone| %s (%s) source=%s head=%s status_before=%d pipeline_rc=%d"
+              % (clone, state, source, head[:12], dirty_before, p.returncode))
 
     import refresh_all  # same commit, so its GEN list is the contract of what is generated
     faces = [doc for _s, doc, _ok in refresh_all.GEN] + ["evidence/S02/equality-verdict.json"]
@@ -279,9 +311,9 @@ def run_parity(root, quiet):
               "line is verified about it")
         return 3
 
-    line = ("OUTCOME=%s faces_compared=%d identical=%d declared=%d differing=%d missing=%d clone=%s"
+    line = ("OUTCOME=%s faces_compared=%d identical=%d declared=%d differing=%d missing=%d clone=%s source=%s"
             % ("CLEAN" if not problems else "RED", len(faces), counts["identical"], counts["declared"],
-               counts["differing"], counts["missing"], clone))
+               counts["differing"], counts["missing"], clone, source))
     for pr in problems:
         print("  face| %s" % pr)
     print(line)
@@ -292,10 +324,17 @@ def run_parity(root, quiet):
     return 0
 
 
+SELFTEST_ARMS = 14
+
+
 def selftest():
     errs = []
+    seen = set()
 
     def chk(cond, msg):
+        m = re.match(r"selftest (A\d+)", msg)
+        if m:
+            seen.add(m.group(1))
         if not cond:
             errs.append(msg)
 
@@ -398,6 +437,18 @@ def selftest():
     chk(all(rc in TOOL_RC_OK for rc in (0, 1)) and 2 not in TOOL_RC_OK
         and TOOL_RC_INSTRUMENT[2] == "scan failed",
         "selftest A12 red: the checker's own failure codes must be instrument failures, never answers")
+    chk(not is_local("https://github.com/kinsin818/sendguard") and not is_local("git@github.com:a/b.git")
+        and is_local(r"D:\sendguard-work\seat-qoder") and is_local("../somewhere"),
+        "selftest A13 green: a URL is recognised as remote and a path as local, so --no-local is claimed only "
+        "where it means something")
+    rc, got, how = remote_head(r"D:\sendguard-work\definitely-not-a-tree-xyz")
+    chk(rc != 0 and "no such directory" in (got + how),
+        "selftest A13 red: a source path that does not exist is refused before anything is cloned, got %r %r %r"
+        % (rc, got[:40], how))
+    chk(len(seen) + 1 == SELFTEST_ARMS,
+        "selftest A14 red: the published arm count must equal the labels that ran - %d exercised (%s) against "
+        "SELFTEST_ARMS=%d; the guard counts itself because Python evaluates the condition before the label can be "
+        "registered" % (len(seen), ",".join(sorted(seen)), SELFTEST_ARMS))
     return errs
 
 
@@ -407,17 +458,20 @@ def main(argv=None):
         errs = selftest()
         for e in errs:
             print("SELFTEST-FAIL: %s" % e)
-        print("arms=12 passed=%d" % (12 - len(errs)))
+        print("arms=%d passed=%d" % (SELFTEST_ARMS, SELFTEST_ARMS - len(errs)))
         return 1 if errs else 0
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--quiet", action="store_true")
     ap.add_argument("--scratch-root", default=None)
+    ap.add_argument("--source", default=REPO,
+                    help="the tree or URL to clone from - pass the public URL to verify the published repository "
+                         "rather than this working copy; the tip is always asked of the source itself")
     ns, unknown = ap.parse_known_args(argv)
     if unknown:
-        print("OUTCOME=INSTRUMENT-RED this leg takes --scratch-root and --quiet and was handed %r; it writes "
-              "nothing" % (unknown,))
+        print("OUTCOME=INSTRUMENT-RED this leg takes --scratch-root, --source and --quiet and was handed %r; it "
+              "writes nothing" % (unknown,))
         return 3
-    return run_parity(ns.scratch_root, ns.quiet)
+    return run_parity(ns.scratch_root, ns.quiet, ns.source)
 
 
 if __name__ == "__main__":

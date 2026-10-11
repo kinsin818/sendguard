@@ -224,6 +224,33 @@ Nothing was published between the first reading (29 of 29 cells failing) and the
 over 44 compared cells): every number that reached a document was regenerated from a tree that had been
 re-checked, and the two documents that went stale mid-morning say which reading they carry.
 
+### 2.14 A sentence of mine filed one JVM's answer under a language's name
+
+The whitepaper's §3 length row read "一门 False（它在 parse 层就拒绝了这个前缀）" - one port rejects this prefix at
+its parse layer. The java window then reproduced the refusal against both JDKs installed on this host
+(`impl/java/tools/ext-path-of-repro.txt`, one compiled class, both runs stamped `run_rc=0`), and the same class
+file answers differently depending on which launcher reads it:
+
+```
+TAG 3 extended, SHORT, ordinary drive path | len=12 | input=\\?\D:\Qoder      [Temurin 17.0.17 - the exe the recorded cells ran on]
+    Paths.get          -> THREW java.nio.file.InvalidPathException | Illegal character [?] in path at index 2
+    new File(String)   -> OK  isAbsolute=true
+TAG 3 extended, SHORT, ordinary drive path | len=12 | input=\\?\D:\Qoder      [Temurin 21.0.6 - same class file]
+    Paths.get          -> OK  impl=sun.nio.fs.WindowsPath toString=D:\Qoder
+```
+
+The refusal was never "Java's". It belongs to one binary - and the recorded face had said so all along: it
+carries a `toolchain` block, `jvm_self_report.java_version: 17.0.17`, and an `extended_leg_note` that names both
+APIs and says java.nio throws on that string. My summary threw that detail away to make a tidier sentence, which
+is the exact failure mode this project is supposed to be selling immunity against. The row is now qualified by
+executable, and the measurement that should have been in the plan came out of it: how many ports even record
+*which binary* answered (`docs/FINDINGS-rev6.md` M7 - java 74/74 faces, rust 174/174, python 123/125, under
+three different field names and three different shapes; typescript 0/87, go 0/203, csharp 0/50 record nothing).
+A promise of "byte-identical output" is only re-runnable on a machine that did not build it if the runtime
+identity travels with the answer, and half the ports don't publish it. Giving that quantity a shared name is a
+contract change and the current sealed round is the eighth, so the question goes up to the owner instead of
+landing in this tree as a decision.
+
 ## 3. What the six windows did that the plan did not expect
 
 Two things the committee's construction order never asked for and the ports delivered anyway: the

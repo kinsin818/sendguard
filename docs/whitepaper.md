@@ -63,7 +63,8 @@ python ci/equality.py | grep VERDICT-DISAGREE
 | `T04` 结尾点号、`T05` 结尾空格 | 四门"合法且落盘被改名"，两门"非法"；一门说名字没被改；一门报盘上 0 字节而四门报 28；一门同时记请求 6 与落盘 5 | 尾点/尾空格剥离不是 Windows 的属性，是你调的那个 API 的属性 |
 | `T14-m1` `PRN` | 五门各有说法，一门直接给 `unknown` | 保留名是否"存在"还取决于这台机器插了什么设备（本机实测：`PRN`/`LPT9` 无设备后盾，`CON`/`NUL` 有） |
 | `T16` zip 打包回读 | 同一个名、同一份载荷：三门 28 字节、一门 296、一门 292 | 压缩库在"要不要置 UTF-8 标志位"上分三派，Mac 的包到 Windows 变形就是这里 |
-| 长度族六格（全部是 `\\?\` 扩展形式那一侧） | 三门 `roundtrip_ok=True`，一门 False（它在 parse 层就拒绝了这个前缀）；一档上另一门 `enum_to_stat_agrees=False` | **普通路径下六个档六门全同，加了 `\\?\` 就分歧**：长路径不是"开一个注册表开关"，是每个可执行文件的清单 + 每种调用方式 |
+| 长度族六格（全部是 `\\?\` 扩展形式那一侧） | 三门 `roundtrip_ok=True`，一门 False（它在 parse 层就拒绝了这个前缀——**这个"拒绝"只对它实际跑过的那枚 JVM 成立**，见下一行）；一档上另一门 `enum_to_stat_agrees=False` | **普通路径下六个档六门全同，加了 `\\?\` 就分歧**：长路径不是"开一个注册表开关"，是每个可执行文件的清单 + 每种调用方式 |
+| `\\?\` 那一侧的门内分歧（Java，同一枚编译好的类） | 用 Temurin 17.0.17（也就是已录格子上跑的那枚 exe）启动：`Paths.get`/`Path.of` 抛 `InvalidPathException`（`Illegal character [?] at index 2`），同一次运行里 `new File(String)` 接受；换成 Temurin 21.0.6 拿同一个 class 再跑：`Paths.get` 接受并把前缀吃掉（`toString()` 已不含 `\\?\`） | **分歧可以落在同一门语言的两个运行时之间**——所以"用哪种语言写的"这个问题问得不完整，体检报告必须连 JVM 版本一起上报，否则客户端装的是哪一版没人知道 |
 | 三个控制格（`T-CTRL-PARSE`、`-ILLEGAL-CHAR`、`-NAMETOOLONG`） | 机制分类上 Java 给 `unknown`，其余五门给同一个具体类；`T-CTRL-CANON` 上只有一门敢分类 | 校准格校准出来的不是 Windows，是各门愿不愿意对自己的结论负责 |
 
 这些行没有一行需要解释谁对。**它们就是产品**：任何一个用单一语言写成的"发件前体检器"，都会在同一台机器上
@@ -89,6 +90,17 @@ OS 级合法性渠道），闸只把那一个字段摘掉，其余判定字段�
 
 ```
 python ci/length_report.py && cat docs/length-family.md
+```
+
+那一行的原始读数不靠复述：`impl/java/tools/ext-path-of-repro.txt` 里同一枚编译好的 class 用两版 JDK 各跑一趟
+（两次 `run_rc=0`、11 个 TAG）。17.0.17 那一趟（已录格子就是在它上面跑的）里 TAG 3 是三行彼此矛盾的读数——
+`Paths.get` 抛 `InvalidPathException`（`Illegal character [?] at index 2`）、`Path.of` 同抛、而同一趟里
+`new File(String)` 是 `OK`、`isAbsolute=true`；21.0.6 那一趟同一个 TAG 给 `Paths.get -> OK`，`toString()`
+已经把前缀吃掉。文件里还留着第三行对照：PATH 上那枚 Oracle 1.8.0_31 **没有**被拿来跑——这个 class 调的是
+`Path.of`（JDK 11 才有的 API），1.8 只会回 `UnsupportedClassVersionError`，那是启动器的事实，不是一次测量。
+
+```
+cat impl/java/tools/ext-path-of-repro.txt
 ```
 
 ## 5. 我们自己错在哪（原始输出照印）
@@ -130,6 +142,8 @@ python ci/length_report.py && cat docs/length-family.md
 
 未做，且这份报告一律不提具体结论：**macOS 与 Linux 的行**（需要 CI 跑；本仓远端在
 `https://github.com/kinsin818/sendguard`，公开仓 + standard runner 的分钟数免费，但推送动作不在本座授权内）、
+**同一门语言内的运行时对照**（Java 的 `java.io` 那一族在长度各档上的展开：出数的窗口自己承认这半未做完，
+已录格子只覆盖它实际跑过的那枚 17.0.17，见 `docs/FINDINGS-rev6.md` M7）、
 U 盘/SD 卡（FAT32/exFAT）、网络卷、网盘与邮件附件的文件名重写层、手机端下载层的字符清洗。
 
 方法全部公开，数据可复现，欢迎来挑刺。

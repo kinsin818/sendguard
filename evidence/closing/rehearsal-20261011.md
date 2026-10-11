@@ -41,8 +41,11 @@ added to the list at 13:22) without anyone running the new sequence end to end.
 - It ran on one host (Windows 10 19041 x64). The `instrument` job in `.github/workflows/matrix.yml` is meant
   to run this same list on three operating systems, and **it has never run**: nothing has been pushed, and no
   document claims otherwise.
-- No port harness was rebuilt here. The six faces are read as committed; compiling all six from source on a
-  clean machine is a different act and has its own gap (`docs/STATUS.md` and `docs/acceptance-S02.md` say what
-  each lane actually re-ran).
+- No port harness was rebuilt here. The six faces are read as committed; a clean-room build of all six from
+  source is a different act and is claimed nowhere in the repository. `docs/acceptance-S02.md` records what
+  each lane *said* and what its face holds, which is not the same statement - and the first version of this
+  paragraph credited `docs/STATUS.md` with carrying lane re-run facts, which it does not. Corrected at
+  13:24 rather than left, because a rehearsal record that points at the wrong sheet is worse than one that
+  says nothing.
 - The Java lane's SG-F2 work was in flight while this ran (its tool files modified, nothing committed); it is
   not part of this reading, and nothing here accepts it on the lane's behalf.

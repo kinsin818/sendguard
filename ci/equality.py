@@ -33,6 +33,11 @@ import sys
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RESULTS = os.path.join(REPO, "results")
+# written out rather than typed inline: a literal backslash in a source line has been the cause
+# of two broken instruments in this repository tonight
+NL = chr(10)
+BSLASH = chr(92)
+FWD = "/"
 CANON = os.path.join(REPO, "spec", "canonical.md")
 # a fixture may bring its own question set; the shipped default is the committed manifest
 REQUIRED = os.environ.get("SG_REQUIRED_CELLS") or os.path.join(REPO, "spec", "cells-required.json")
@@ -305,6 +310,41 @@ def canon_name(value):
     return ("r", raw.hex())
 
 
+def name_forms(value):
+    """Every meaning a recorded name could have, as a set of 'form:hex' tokens.
+
+    A port that writes `616161...` and a port that writes `aaaaaa...` are describing one name; a port that
+    writes `aaaaaa...` for a name that is really the bytes 0x61 0x61 has to be allowed to say so. The set is
+    the honest representation, and agreement is set intersection - not a guess about which spelling is
+    'the' canonical one.
+    """
+    if value is None or value == "":
+        return frozenset()
+    s = value if isinstance(value, str) else str(value)
+    forms = set()
+    try:
+        forms.add("lit:" + s.encode("utf-8", "surrogatepass").hex())
+    except Exception:
+        pass
+    if HEXISH.match(s) and len(s) >= 2 and len(s) % 2 == 0:
+        try:
+            raw = bytes.fromhex(s)
+        except ValueError:
+            raw = None
+        if raw is not None:
+            forms.add("raw:" + raw.hex())
+            for codec in ("utf-8", "utf-16-le", "gbk", "cp437"):
+                try:
+                    text = raw.decode(codec)
+                except (UnicodeDecodeError, ValueError, LookupError):
+                    continue
+                if codec in ("utf-8", "utf-16-le"):
+                    forms.add("lit:" + text.encode("utf-8", "surrogatepass").hex())
+                else:
+                    forms.add("%s:%s" % (codec.replace("-", "_"), raw.hex()))
+    return frozenset(forms)
+
+
 TRIPLE_KEYS = (("code_points", "cp", "codepoint", "code_points"),
                ("utf16_code_units", "utf16", "utf16_code_units", "u16"),
                ("utf8_bytes", "bytes", "utf8_bytes", "b"))
@@ -315,6 +355,16 @@ def _pick(d, names):
         if n in d:
             return d[n]
     return None
+
+
+def raw_name_value(field, cell):
+    """The value exactly as the port wrote it, following the four aliases one fact was filed under."""
+    if field == "name_landed_as":
+        for alt in LANDED_ALIASES:
+            if cell.get(alt) not in (None, ""):
+                return cell[alt]
+        return None
+    return cell.get(field)
 
 
 def canon_triple(value):
@@ -698,7 +748,7 @@ def main(argv):
         return bad
 
     def sweep(fields):
-        dis, nr, agree, trunc, absn = [], [], 0, [], []
+        dis, nr, agree, trunc, absn, multiform = [], [], 0, [], [], []
         for k in cells_live:
             for f, rec in compare(fields, {n: cmp[n][k] for n in names}).items():
                 if not rec:
@@ -715,22 +765,47 @@ def main(argv):
                 # an abstaining port is not a port that failed to record: it asked a different channel,
                 # and counting it in `not_recorded` would double-report the same fact under two words
                 expected = set(names) - abstain.get(k, {}).get(f, set())
+                if f in NAMEISH:
+                    # forms come from the RAW recorded value, not from canon_value's answer: the whole
+                    # point is that two ports' raw spellings can mean the same name even when the single
+                    # token each one canonicalises to differs
+                    sets = {n: name_forms(raw_name_value(f, cmp[n][k])) for n in rec}
+                    sets = {n: (s if s else frozenset({str(rec[n])})) for n, s in sets.items()}
+                    common = set.intersection(*[set(s) for s in sets.values()]) if sets else set()
+                    # only report a cross-form match when the naive spelling comparison would have called
+                    # it a disagreement: every hex-encoded value has several forms by construction, and
+                    # printing all of them would bury the cases this rule actually rescues
+                    naive_disagree = len({str(v) for v in rec.values()}) > 1
+                    if naive_disagree and common:
+                        multiform.append((k, f, sorted(rec)))
+                    if not common:
+                        dis.append((k, f, rec))
+                        continue
+                    if len(sets) >= len(expected):
+                        agree += 1
+                        continue
+                    nr.append((k, f, sorted(expected - set(sets))))
+                    continue
                 if len({str(v) for v in rec.values()}) > 1:
                     dis.append((k, f, rec))
                 elif len(rec) >= len(expected) or (expected and set(rec) >= expected):
                     agree += 1
                 else:
                     nr.append((k, f, sorted(expected - set(rec))))
-        return dis, nr, agree, trunc, absn
+        return dis, nr, agree, trunc, absn, multiform
 
-    vdis, vnr, vagree, vtrunc, vabs = sweep(VERDICT_FIELDS)
-    pdis, pnr, pagree, ptrunc, pabs = sweep(PROBE_FIELDS)
+    vdis, vnr, vagree, vtrunc, vabs, vmulti = sweep(VERDICT_FIELDS)
+    pdis, pnr, pagree, ptrunc, pabs, pmulti = sweep(PROBE_FIELDS)
 
     print("== verdict equality (the claim under test: six independent ports, same checker answer)")
     print("   cells_compared=%d fields=%d fact_cells=%d agree=%d disagree=%d not_recorded=%d "
-          "truncated_value=%d channel_abstentions=%d"
+          "truncated_value=%d channel_abstentions=%d name_cross_form_agreements=%d"
           % (len(cells_live), len(VERDICT_FIELDS), vagree + len(vdis) + len(vnr), vagree,
-             len(vdis), len(vnr), len(vtrunc), len(vabs)))
+             len(vdis), len(vnr), len(vtrunc), len(vabs), len(vmulti)))
+    for k, f, who in vmulti[:6]:
+        print("   NAME-CROSS-FORM-AGREE %s %s: these ports wrote the same name in different encodings "
+              "(hex vs literal); they agree by shared meaning, and the gate says so out loud: %s"
+              % (fmt(k), f, ",".join(who)))
     for k, f, who in vtrunc[:8]:
         print("   PREFIX-SHAPED %s %s by %s - check each against that port's own length fields:"
               % (fmt(k), f, ",".join(who)))
@@ -757,6 +832,32 @@ def main(argv):
         print("   %-11s digest_over_no-disagreement_cells=%s cells=%d" % (n, d[:16], len(identical_cells)))
     print("   cells_with_no_verdict_disagreement=%d/%d  of_which_fully_recorded=%d"
           % (len(identical_cells), len(cells_live), len(clean_cells)))
+
+    verdict = {
+        "cells_required": len(req_keys),
+        "cells_run_by_every_port": len(shared),
+        "cells_compared": len(cells_live),
+        "outcome": ("RED" if vdis else ("INCOMPLETE" if (short_total or vnr or unpinned or incomparable
+                                                     or vabs) else "PASS")),
+        "verdict_disagreements": len(vdis),
+        "cells_with_no_verdict_disagreement": len(identical_cells),
+        "probe_cells_differing": len({k for k, _, _ in pdis}),
+        "unpinned_input": [fmt(k) for k, _ in unpinned],
+        "cells_excluded": [fmt(k) for k in incomparable],
+        "channel_abstentions": [[fmt(k), f, sorted(w)] for k, fs in sorted(abstain.items())
+                                 for f, w in sorted(fs.items())],
+        "name_cross_form_agreements": [[fmt(k), f, sorted(w)] for k, f, w in vmulti],
+        "prefix_shaped_records": [[fmt(k), f, sorted(w)] for k, f, w in vtrunc],
+        "disagreements": [[fmt(k), f,
+                          sorted("%s=%s" % (n, str(v)[1:-1])[:40] for n, v in sorted(rec.items()))]
+                          for k, f, rec in vdis],
+        "verdict_fields": VERDICT_FIELDS,
+        "probe_fields": PROBE_FIELDS,
+    }
+    vpath = os.path.join(REPO, "evidence", "S02", "equality-verdict.json")
+    io.open(vpath, "w", encoding="utf-8", newline=NL).write(
+        json.dumps(verdict, ensure_ascii=False, sort_keys=True, indent=1) + NL)
+    print("wrote %s outcome=%s" % (os.path.relpath(vpath, REPO).replace(BSLASH, FWD), verdict["outcome"]))
 
     if vdis:
         print("OUTCOME=RED verdict_disagreements=%d verdict_identical_cells=%d/%d "

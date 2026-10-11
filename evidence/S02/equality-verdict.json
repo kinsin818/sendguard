@@ -1,0 +1,44 @@
+{
+ "cells_compared": 2,
+ "cells_excluded": [],
+ "cells_required": 2,
+ "cells_run_by_every_port": 2,
+ "cells_with_no_verdict_disagreement": 1,
+ "channel_abstentions": [],
+ "disagreements": [
+  [
+   "trap/T03",
+   "name_landed_as",
+   [
+    "alpha='h', '616161616161'",
+    "beta='r', 'aaaaab'"
+   ]
+  ]
+ ],
+ "name_cross_form_agreements": [],
+ "outcome": "RED",
+ "prefix_shaped_records": [],
+ "probe_cells_differing": 0,
+ "probe_fields": [
+  "create_result",
+  "error_stage",
+  "read_result",
+  "longpath_mechanism",
+  "deps_direct",
+  "deps_total"
+ ],
+ "unpinned_input": [],
+ "verdict_disagreements": 1,
+ "verdict_fields": [
+  "os_legality_verdict",
+  "mechanism_class",
+  "phantom",
+  "roundtrip_ok",
+  "name_mutated",
+  "enum_to_stat_agrees",
+  "len_triple",
+  "bytes_written",
+  "bytes_on_disk",
+  "name_landed_as"
+ ]
+}

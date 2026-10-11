@@ -740,3 +740,192 @@ Nothing else outside `impl/rust/`, `results/rust.windows.x64/` and `evidence/S02
 written; no `git add`, no commit, no push, and no other port's `impl/` or `results/` face was read at any
 point - the only cross-port numbers quoted above are the ones the contract seat published in its own notice
 and gap report.
+
+# Part 4 — rev7 (2026-10-11): the twelve length rungs now describe the bytes they passed
+
+Order: `docs/NOTICE-rev7.md`, HEAD `559e50e`, then the 10:57 pass of the same order with the gate's own
+reading quoted: five ports recorded `61616161616161616161…` for `len/T17[base_len=78]` and rust recorded
+`742e62696e`. `742e62696e` is the hex of `t.bin` — six bytes, the same value at base 78, 120 and 200 — and
+my `len_triple` next to it said `code_points 32739`. That is the second time tonight a field of mine was
+filled with a number that was never a name width, and the reading is exactly as bad as the notice says.
+This part records what the instrument does now, the twelve faces, and three defects I found in my own
+tools while doing it.
+
+## 25.1 What the instrument does now
+
+`spec/cases.yaml` now pins the component (`len_fill`, lines 72-76: `unit_hex: "61"`, "repeat unit_hex until
+the component is exactly base_len code units, then append nothing", `applies_to: [T17, T18]`). The driver
+**reads that block out of the committed table** (`run_cells.py::parse_len_fill`) instead of retyping the
+letter, so a drift in the spec changes the cells or stops the run: with no parsable pin
+`run_cells.py` prints INSTRUMENT-RED and measures nothing. The rung cells are no longer bisections at all.
+
+| part | before rev7 | now |
+|---|---|---|
+| mode | `bisect`, one cell per rung converging a ceiling | `create`, one pinned component per rung |
+| name passed | `"c" * best_ok` (T18) or the constant `"t.bin"` (T17) | `chr(0x61) * base_len`, nothing appended |
+| `name_source` | hex of that label/widest name | hex of the bytes handed to `std::fs::File::create` |
+| `len_triple` | `best_ok` in all three slots (32739 at every base) | the three widths **of that name**: 78/78/78, 120/120/120, 200/200/200 |
+| the ceiling | stuffed into `len_triple` | its own field `len_ceiling`, citing the cell that measured it |
+| `case_id` | `T17` / `T18` | unchanged, `T17` / `T18` |
+| `sub` | `bisect-base78-plain` | `lenfill-base78-plain` |
+
+Six fields were added to those faces, all computed inside the child from the bytes it passed:
+`len_fill_unit_hex`, `len_fill_rule` (the spec sentence, verbatim), `name_is_pinned_fill_repeated`,
+`name_len_equals_base_len`, `len_triple_equals_base_len`, `len_parent_dir_code_units`, plus `len_ceiling`.
+
+**Why the rungs get a shallow parent, and what that hides.** A contract-default scratch path
+(`D:\sg-rust-scratch\run-<id>\scratch\len-T17\<uuid>`) is 83 code units deep; a 200-unit component on top
+of it is a 284-unit plain path, which the 259-unit path rule refuses while `LongPathsEnabled=0`. The cell
+would then report my directory depth instead of the component rule. The twelve rungs therefore get
+`D:\sgc\<run8>\<uuid4-32hex>` — a fresh uuid scratch per cell, verified empty by the child, 48 code units
+deep — so the largest plain face is `total_path_len=249`, inside the path rule at all six rungs. That is a
+harness choice and it is visible in every face (`len_parent_dir_code_units`, `total_path_len`,
+`scratch_dir`, `scratch_scope`), and the path-rule regime is not lost: it is what the width-pinned tier
+grid measures (a tier dir at base 200 forces a 401-unit plain path, and `T17-GRID-B200-L57/58/59` put the
+plain-form hit at `259-base-1`).
+
+## 25.2 The twelve re-emitted rungs (run `faac2b29d425`, one child per cell, 5 s external timeout)
+
+| cell | `path_form` | `name_source` | decoded | `len_triple` | `create` | `disk` | verdict | `len_ceiling` |
+|---|---|---|---|---|---|---|---|---|
+| `len/T17[78]` | plain | 156 hex chars, every pair `61` | `a`×78 | 78/78/78 | ok | 28 | legal | 32739 → 32740, code 206 |
+| `len/T18[78]` | plain | 156 hex chars, every pair `61` | `a`×78 | 78/78/78 | ok | 28 | legal | 255 → 256, code 123 |
+| `len/T17[78]` | extended | 156 hex chars, every pair `61` | `a`×78 | 78/78/78 | ok | 28 | legal | 32739 → 32740, code 206 |
+| `len/T18[78]` | extended | 156 hex chars, every pair `61` | `a`×78 | 78/78/78 | ok | 28 | legal | 255 → 256, code 123 |
+| `len/T17[120]` | plain | 240 hex chars, every pair `61` | `a`×120 | 120/120/120 | ok | 28 | legal | 32739 → 32740, code 206 |
+| `len/T18[120]` | plain | 240 hex chars, every pair `61` | `a`×120 | 120/120/120 | ok | 28 | legal | 255 → 256, code 123 |
+| `len/T17[120]` | extended | 240 hex chars, every pair `61` | `a`×120 | 120/120/120 | ok | 28 | legal | 32739 → 32740, code 206 |
+| `len/T18[120]` | extended | 240 hex chars, every pair `61` | `a`×120 | 120/120/120 | ok | 28 | legal | 255 → 256, code 123 |
+| `len/T17[200]` | plain | 400 hex chars, every pair `61` | `a`×200 | 200/200/200 | ok | 28 | legal | 32739 → 32740, code 206 |
+| `len/T18[200]` | plain | 400 hex chars, every pair `61` | `a`×200 | 200/200/200 | ok | 28 | legal | 255 → 256, code 123 |
+| `len/T17[200]` | extended | 400 hex chars, every pair `61` | `a`×200 | 200/200/200 | ok | 28 | legal | 32739 → 32740, code 206 |
+| `len/T18[200]` | extended | 400 hex chars, every pair `61` | `a`×200 | 200/200/200 | ok | 28 | legal | 255 → 256, code 123 |
+
+All twelve carry `bytes_written=28`, `bytes_on_disk=28`, `read_result=ok`, `roundtrip_ok=true`,
+`error_stage=null`, `verdict_via=win32`, `contract_role=required`, `extra=false`,
+`name_source_kind=pinned-len-fill`, and `spec_sample_string` still holds the frozen prose
+(`T-LEN-PATH (length bisection, G1-G4)`) so the reader can see that the spec's own sample field is a
+sentence and that this port did **not** copy that sentence as a name. All three widths agree because the
+filler is U+0061: one code point, one UTF-16 code unit, one UTF-8 byte — if a port's three numbers ever
+split on this filler, that port is counting something other than the name.
+
+A `len_ceiling` face verbatim (`len__T18__lenfill-base200-plain.json`), with the citation cross-checked by
+`selfcheck.py` against the published face it names:
+
+```json
+"len_ceiling": {
+  "max_ok_code_units": 255, "first_failing_code_units": "256", "first_failing_winerror": "123",
+  "measured_by_case_id": "T18-CEILING-PLAIN", "measured_by_path_form": "plain",
+  "measured_by_face_sha256": "e5365139522aa55fb4e12583cf3eb7b364643afa1aae34f2d6eab411deab8c97",
+  "width_pinned_tier_roots": ["13=D:\\sgfaac2b29", "120=D:\\xgfaac2b29\\t120qq…(width 120)",
+                              "200=D:\\xgfaac2b29\\t200qq…(width 200)", "240=D:\\xgfaac2b29\\t240qq…(width 240)"],
+  "basis": "the widest component this port could create, converged by bisection in the extra cell named by
+            measured_by_case_id at the same path_form; it is NOT the width of the name in this cell,
+            which is exactly base_len"
+}
+```
+
+No rung is blocked: `run_status:blocked` was not needed, `cells_blocked=0`, `cells_hang=0`, `problems=0`.
+The ceiling numbers are not asserted from last night's memory — the four `*-CEILING-*` bisection cells are
+planned **before** the rungs, and the driver reads `max_ok` / `first_failing` / `first_failing_winerror`
+off the verified published face of this same run; a rung with no ceiling face finished yet gets
+`len_ceiling.status = not-measured-before-this-cell` instead of a number. `selfcheck.py` re-checks the
+citation both ways: the cited case_id must exist among my faces, and its `max_ok` must equal the number
+the rung claims.
+
+## 25.3 The grid and the ceiling rows stayed exactly where they were
+
+`extra=126` faces unchanged, including all 28 `T17-GRID-*` / `T18-GRID-*` points and the four
+`*-CEILING-*` bisections. One measurement about rev6 rule 4 ("a summary or ceiling row must not reuse a
+rung's `base_len`"), because it decides whether my grid can disturb the comparison:
+
+* `ci/equality.py:113` `RE_GRID = ^(T1[78])[-_](?:GRID[-_])?(?:PLAIN[-_]|EXTENDED[-_])?B(\d{1,3})[-_]L(\d{1,3})$`,
+  and line 141 folds it to `T17`/`T18` **only when** the base written in the id equals the cell's own
+  `base_len`. My `T17-GRID-B120-L137` (base 120, `base_len` 120) therefore **does** fold onto the required
+  rung identity `len/T17[base_len=120, path_form=plain]`, and `T18-GRID-*-B200-L*` folds onto the base-200
+  rung — a collision that was invisible while the len family was excluded as `unpinned_input`.
+* It is still harmless, and the reason is measured, not assumed: `ci/equality.py:234-236` —
+  `if c.get("extra") is True: … continue  # an extra cell is published, never compared` — runs **before**
+  any keying, so an extra never enters the identity map. `T17-CEILING-PLAIN` cannot fold at all (no
+  `B…-L…` in the id, so `RE_GRID` does not match).
+* My own audit keys the same way `equality.py` does and reports `gate_identity_audit: faces=174
+  identities=174 identities_with_more_than_one_face=0 of_which_digest_disagree=0`, so no two faces of mine
+  claim one identity, required or extra.
+
+The docstring in `run_cells.py::Cell` that said "the gate implements no 'extra' exclusion" was written
+against an older `equality.py`; the lines above are the current file, so that sentence is now stale and is
+left as a note here rather than edited into a claim about a tool I do not own.
+
+## 25.4 Additive writes, and the only removals
+
+The results directory was not cleared, deleted, recreated, or moved at any point. Measured:
+
+* run 1 (`b4dd92639295`): `cells_produced=174`, `retired_stale_faces=12` — the twelve `len__*__bisect-base*.json`
+  faces the contract re-ids. Each was copied to `D:\sg-rust-scratch\run-b4dd92639295\retired-from-results\`
+  and its sha256 recorded in `retirement_ledger`; a later re-hash of all twelve quarantine copies against
+  the recorded digests gives `quarantine_hash_mismatches=0` (8,168 / 8,146 / 8,248 / 8,226 / 8,118 / 8,096 /
+  7,994 / 7,972 / 8,074 / 8,052 / 7,945 / 7,923 bytes). `skipped_not_this_seat=0` — nothing that was not
+  mine was touched.
+* runs 2 and 3 (`5df0a44338b5`, `faac2b29d425`): `retired_stale_faces=0`, `files_in_results=174`,
+  `non_json=[]`. The file set is stable; each publish is a write-then-read-back-then-byte-compare, and a
+  face that does not read back identical is a recorded problem (`problems=0` in all three runs).
+* No `rm`, no `rmdir` on a non-empty directory, no deletion logic (M19): `cleanup_failed=true` on 129 faces
+  for exactly that reason, and `scratch_removed_empty` only where the directory this driver created was
+  provably empty.
+
+## 25.5 Three defects in my own tools, found while fixing theirs
+
+1. **A stale block list read as current coverage.** `impl/rust/blocked-rows.json` still held the five
+   `B1..B5` rows from the pre-rev6 run (4,723 bytes, mtime 05:07) even though those rows have faces now,
+   because `emit_blocked_rows()` only wrote the file when `rows` was non-empty — an empty result left the
+   old file standing. Fixed: the old rows are archived to the run tree (`sha256=290b4c2e3755d718…`) and the
+   live file is emptied (`[]`), so "blocked" can only mean "blocked by this run".
+2. **`run-summary.json` claimed B1..B5 were blocked.** The `blocked` field was a hardcoded literal from
+   the first run of this seat, not a derived value. It now carries `emit_blocked_rows()`'s actual rows
+   (`[]`) plus a one-line note that rev6 lifted the seal.
+3. **A run could erase the previous run's ledger.** `impl/rust/run-summary.json` is overwritten each run,
+   so the twelve-row retirement ledger quoted in 25.4 was gone after run 2. Fixed forward: every run now
+   also writes `run-summary.<run_id>.json` into its own tree outside the repo. The hashes in 25.4 are from
+   the surviving quarantine copies, re-hashed and re-printed, so the retirement stays checkable even though
+   its ledger row was transient.
+
+## 25.6 Validators
+
+* `python impl/rust/selfcheck.py` → `OUTCOME=OK`, exit 0. New leg: `rev7_pin: unit_hex=61 applies_to=T17,T18
+  rule=repeat unit_hex …`, `rev7 base ladder read from the contract: [78, 120, 200]`, `ceiling faces
+  indexed: {"T17-CEILING-EXTENDED": 32739, "T17-CEILING-PLAIN": 32739, "T18-CEILING-EXTENDED": 255,
+  "T18-CEILING-PLAIN": 255}`, **`len_rungs: rows_checked=12 problems=0`**, `all cited ceilings resolve to a
+  published face=True`.
+* Arms went from 29 to 35, all passing, and the four new red arms are the readings the notice named —
+  each one is proven to *refuse*, not just to be present: a rung whose `name_source` is `t.bin` and whose
+  `len_triple` is 32739 (the arm asserts at least four separate refusals on that face), a `len_ceiling`
+  that just repeats `base_len`, a rung with no `len_ceiling`, and a rung citing a ceiling cell that was
+  never published. A green arm passes a synthetic pinned rung, and one arm asserts the pin came from
+  `spec/cases.yaml` (`unit_hex == "61"`, `applies_to == ["T17","T18"]`).
+* A rung that misrecords now exits 3 (`OUTCOME=NOT-COMPARABLE reason=len_rung_recording`), which is now in
+  the exit-code map at the top of the file; `INSTRUMENT-RED` stays reserved for a control failure.
+* `python spec/validate.py results/rust.windows.x64` → `summary: 174 valid / 0 void (of 174)`.
+* Controls: `controls_pass=True`, five of five PASS at attempt 1, `T-CTRL-CANON` payload digest
+  `c9fe45b2fee8ea846f0cf4f2cacc2a891e7b082e7719923502d12a9813e21994` in memory, on disk, and from python
+  `hashlib` — the instrument was not red at any point tonight.
+* The gate's own report, regenerated by the contract seat at 10:57:51, reads for this port:
+  `## rust - matched 44/44, missing 0, outside-list 0, extra-flagged 126` — the twelve rungs now key onto
+  required identities instead of being excluded as `unpinned_input`.
+
+## 25.7 Boundaries
+
+Written this turn: `impl/rust/src/probe.rs`, `impl/rust/run_cells.py`, `impl/rust/selfcheck.py`,
+`impl/rust/blocked-rows.json`, `impl/rust/run-summary.json`, `impl/rust/selfcheck-summary.json`,
+`results/rust.windows.x64/` (my port's faces), `evidence/S02/rust-selfcheck.md` (append-only), plus scratch
+and log trees outside the repo under `D:\sg-rust-scratch\` and the new `D:\sgc\` rung-scratch root.
+
+Not written by me, and named here rather than left for someone else to find: `docs/GAP.md`,
+`docs/matrix.md`, `docs/expected-summary.md` and `docs/evidence.md` are modified in the shared worktree
+(all four at 10:57:51) and `ci/__pycache__/{equality,lint,triangle}.cpython-314.pyc` appeared at
+10:52-10:56. My tools write nothing under `docs/` or `ci/`, and neither `run_cells.py` nor `selfcheck.py`
+imports any `ci` module — they only quote `ci/equality.py`'s rules as copied constants, checked by
+`grep` over both files this turn (`no "import.*equality" hit`). Those faces are another window's
+regeneration, and I left them exactly as they are. `impl/rust/__pycache__/run_cells.cpython-314.pyc` is
+mine and is inside `impl/rust/.gitignore`. No `git add`, no commit, no tag, no push; no other port's
+`impl/` or `results/` face was read — the only cross-port numbers in this part are the ones the notice and
+the gap report printed for my own port.

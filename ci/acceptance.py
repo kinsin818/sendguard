@@ -12,6 +12,7 @@ import io
 import json
 import os
 import re
+import subprocess
 import sys
 import time
 
@@ -119,6 +120,41 @@ def main():
                          "self-declared INSTRUMENT-RED." % (e, n))
         lines.append("")
 
+    ahead = []
+    git_rc = {}
+    for port in sorted(ports):
+        face = "results/%s.windows.x64" % port
+        r = subprocess.run(["git", "status", "--porcelain=v1", "-uall", "--", face],
+                           cwd=REPO, capture_output=True, text=True, encoding="utf-8", errors="replace")
+        git_rc[port] = r.returncode
+        rows = [l for l in (r.stdout or "").splitlines() if l.strip()]
+        ahead.append((port, sum(1 for l in rows if l[:2] not in ("??",)), sum(1 for l in rows if
+                      l.startswith("??")), len(rows)))
+
+    lines += ["", "## Faces ahead of HEAD - what a stranger can actually reproduce", "",
+              "Every number above is a reading of **this work tree**. A reader who clones the repository gets "
+              "history,",
+              "so a face that is modified or untracked here is a number this sheet publishes that no stranger "
+              "can",
+              "reproduce yet. The count is taken with `git status --porcelain=v1 -uall` per canonical face: with "
+              "the default `-unormal` an entirely new directory folds into one line, so a port that added "
+              "seven faces could be reported as having added one. `-uall` still does not show *ignored* "
+              "files - those need `--ignored`, a different question this sheet does not claim to answer.", "",
+              "| port | faces differing from HEAD | modified | untracked | `git status` rc |",
+              "|---|---|---|---|---|"]
+    for port, mod, unt, tot in ahead:
+        lines.append("| %s | %d | %d | %d | %d |" % (port, tot, mod, unt, git_rc[port]))
+    total_ahead = sum(t for _, _, _, t in ahead)
+    lines += ["", "**faces ahead of HEAD across the six canonical faces: %d** (rc must be 0 for every row; a "
+              "non-zero rc" % total_ahead,
+              "means the measuring command failed, and is printed as a tool failure rather than as a clean "
+              "tree).",
+              "Until those land, the gate's reading - including `cells_fully_recorded_and_identical` and "
+              "`invalid` -",
+              "is a work-tree claim; the cold-clone record `evidence/S10/cold-clone-20261011b.md` names which "
+              "rows",
+              "change when history catches up, and the command that proves it.", ""]
+
     lines += ["## What acceptance here does not mean", "",
               "- `schema-invalid` counts cells that do not carry the fields `spec/schema.json` requires. It "
               "is computed by `ci/validate_cells.py`, the same ruler `docs/cell-validation.md` is written "
@@ -130,11 +166,21 @@ def main():
               "(`docs/expected-summary.md`), and agreement between ports is the gate's job "
               "(`docs/STATUS.md`). A port that ran one entry out of its pinned list shows ENTRY-GAP even "
               "with a full cell count, because an unexercised entry is a claim about the harness that the "
-              "harness did not test.", ""]
+              "harness did not test.", "",
+              "- `schema-invalid` says nothing about coverage. Nine of the ten fields the gate scores as a "
+              "verdict are not in `spec/schema.json`'s required list, so a port can be conforming and silent "
+              "in the same minute. The blanks are `docs/coverage.md`'s subject, and both numbers belong "
+              "beside any quotation of either.", ""]
     text = "\n".join(lines) + "\n"
     io.open(os.path.join(REPO, "docs", "acceptance-S02.md"), "w", encoding="utf-8", newline="\n").write(text)
-    print("wrote docs/acceptance-S02.md bytes=%d ports=%d faces_excluded=%d"
-          % (len(text.encode("utf-8")), len(ports), len(skipped)))
+    bad_rc = [p for p, rc in git_rc.items() if rc != 0]
+    print("wrote docs/acceptance-S02.md bytes=%d ports=%d faces_excluded=%d faces_ahead_of_head=%d "
+          "git_status_rc_nonzero=%d"
+          % (len(text.encode("utf-8")), len(ports), len(skipped), total_ahead, len(bad_rc)))
+    if bad_rc:
+        print("OUTCOME=INSTRUMENT-RED `git status` failed for %s - a failed measure is never a clean tree"
+              % ",".join(bad_rc))
+        return 3
     return 0
 
 

@@ -5,7 +5,13 @@ Every number in this file is a reading of `python ci/equality.py` on the canonic
 (TypeScript/Node, Python, Go, Java, C#, Rust), one frozen spec, one Windows 10 build 19041 x64 host,
 `LongPathsEnabled=0`, console code page 936.
 
-Current reading: 44 required cells, 29 answered by every port. Of those 29, 12 are set aside because the
+**Superseded in its counts by `docs/STATUS.md` at 10:20 host clock.** The comparison rules improved
+three times after this file was written: 17 compared cells became 44, 12 clean became 24, 19 conflicting
+facts became 54 - and the conflict count moving twice was each time a *stricter* instrument, not a softer
+one. Sections M1-M3 still describe measured data; M5 has a continuation in M6, and M6 is the section to
+read if you want to know what independent verification actually costs.
+
+Original reading at the time of writing: 44 required cells, 29 answered by every port. Of those 29, 12 are set aside because the
 ports did not ask the same question (5 with different input bytes, 7 with a different `verdict_via` or
 `path_form`), leaving **17 cells compared: 12 with no verdict disagreement, and 5 cells that carry 19
 conflicting verdict facts between them**. 51 required cells have not been run by at least one port.
@@ -134,3 +140,30 @@ python ci/triangle.py | tail -3
 
 No absolute claim appears in this file without a command above it. Unmeasured cells are in
 `docs/GAP.md` by name.
+
+## M6 — three more instrument defects, found after M5 and by the same method
+
+1. **A run of the letter `a` is valid hex.** The rev6 representation-fold decoded anything hex-shaped, so the
+   two ports that wrote the length component as text were read as three bytes of `0xAA` - not valid UTF-8 -
+   and one name became a disagreement against four ports that wrote it as hex. Names are now compared as the
+   *set of meanings* a value could have (literal UTF-8 hex, hex decoded as UTF-8, as UTF-16LE, raw bytes),
+   and the gate prints `NAME-CROSS-FORM-AGREE` when that intersection is what rescued a cell, so the rescue
+   is visible rather than a silent widening of the rule. Same data: 66 conflicting facts became 54, cells
+   with no conflict went 18 -> 24. Two arms hold both edges - `same-name-two-encodings-agree`, and
+   `different-names-still-red` (`aaaaab` is also valid hex characters, so a matcher one notch more generous
+   would have called a different name the same one).
+2. **The self-test wrote into the evidence face.** The gate emits a machine-readable verdict artifact; the
+   path was hardcoded in `evidence/S02/`, so every fixture arm overwrote the real verdict with a two-port
+   toy result - *while the self-test stayed green*, and `docs/matrix.md` read the toy as the project's
+   answer. Fixed by making the path an argument, sending each arm's verdict into its own scratch directory,
+   recording the source face inside the artifact, and refusing to publish a matrix built from a verdict that
+   did not come from this repository's `results/`.
+3. **A crash was wearing the mask of a measurement.** `os.path.relpath` raises when a scratch root sits on
+   another mount; the gate died with rc=1, and rc=1 is this gate's code for "the ports disagree". The same
+   18 arms passed on `D:` and reported 8 false failures on `C:` until the path handling was made total. The
+   self-test is now run against two scratch roots whenever anything about paths changes.
+
+Process note, kept deliberately: all three were found by re-reading the gate's own output after changing it,
+not by a port complaining. The rule this project keeps having to earn is that a change to a measuring
+instrument is not finished until the instrument has been shown to say yes, to say no, and to survive being
+run somewhere it has never been run before.

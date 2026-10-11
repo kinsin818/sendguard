@@ -72,7 +72,8 @@
       }
     },
     "harness_version": { "type": "string" },
-    "worker_id": { "type": "string" },
+    "implementation_id": { "type": "string", "pattern": "^[a-z][a-z0-9-]{0,15}-port$",
+      "_note_pattern": "SG-F8 (2026-10-12): renamed from worker_id. The producer field describes the artifact, not the studio: a value must name a lane, never a session, seat code or engine. Values that fail this pattern are a disclosure finding, and ci/process_leak_scan.py counts them. Old records keep validating - additionalProperties is true by design, so a port that recorded extra fields is not punished for it." },
     "started_at": { "type": "string" },
     "elapsed_ms": { "type": "integer", "minimum": 0 },
     "env": {

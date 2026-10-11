@@ -69,6 +69,10 @@ def check(cell, schema):
         enum = spec.get("enum")
         if enum is not None and v not in enum:
             out.append("%s=%r not in the frozen enum" % (f, v))
+        pat = spec.get("pattern")
+        if pat is not None and isinstance(v, str):
+            if not re.match(pat, v):
+                out.append("%s=%r does not match the frozen pattern %s" % (f, v, pat))
         t = spec.get("type")
         if t == "boolean" and not isinstance(v, bool):
             out.append("%s should be boolean, got %s" % (f, type(v).__name__))
@@ -201,8 +205,14 @@ def omission_lines(omissions, ports_seen, gap_fields):
 def selftest():
     """Red/green arms for this ruler, including the proof that refusing does not write."""
     errs = []
+    seen = set()
+    arms_run = [0]
 
     def chk(cond, msg):
+        arms_run[0] += 1
+        m = re.match(r"selftest (A\d+)", msg)
+        if m:
+            seen.add(m.group(1))
         if not cond:
             errs.append(msg)
 
@@ -285,7 +295,34 @@ def selftest():
         "selftest A19 red: an omission must be counted per port with its total, got %r" % (ls[-2:],))
     chk(omission_lines({}, ["go"], []) == [],
         "selftest A20 green: no gap means no table, not a table of nothing")
-    return errs
+    # SG-F8: what discloses the studio is the producer field's VALUE, not its name. These arms read the pattern
+    # from the real spec/schema.json instead of restating it, because a fixture that copies the rule is how a
+    # validator passes while the rule itself is wrong.
+    live = json.load(io.open(os.path.join(REPO, "spec", "schema.json"), encoding="utf-8"))
+    pat_spec = live.get("properties", {}).get("implementation_id", {})
+    chk(pat_spec.get("pattern") == r"^[a-z][a-z0-9-]{0,15}-port$",
+        "selftest A25 green: the frozen schema must carry the producer pattern, got %r" % (pat_spec.get("pattern"),))
+    chk("worker_id" not in live.get("properties", {}),
+        "selftest A26 red: the retired producer key must not come back into the schema")
+    p_bad = check({"case_id": "T01", "implementation_id": "seat-qoder-rust"},
+                  {"required": [], "properties": {"implementation_id": pat_spec}})
+    chk(any("does not match the frozen pattern" in x for x in p_bad),
+        "selftest A27 red: a session-shaped producer value must be refused, got %r" % (p_bad,))
+    p_ok = check({"case_id": "T01", "implementation_id": "rust-port"},
+                 {"required": [], "properties": {"implementation_id": pat_spec}})
+    chk(p_ok == [], "selftest A28 green: a lane-shaped producer value must pass, got %r" % (p_ok,))
+    p_old = check({"case_id": "T01", "worker_id": "W-GO/qianwen"},
+                  {"required": [], "properties": {"implementation_id": pat_spec}})
+    chk(p_old == [], "selftest A29 green: the rename must not invalidate an old record - additionalProperties is "
+                     "true by design, so a port that recorded extra fields is not punished for it; the disclosure "
+                     "leg is what counts those, got %r" % (p_old,))
+    # the count is what actually ran, not a literal someone has to remember to bump: this leg published
+    # arms=24 from a hard-coded 24 for a whole day while new arms were already executing silently
+    if len(seen) != arms_run[0]:
+        errs.append("selftest guard: %d arms executed but only %d distinct labels (%s) - one arm is sharing a "
+                    "label with another and its result would be invisible" % (arms_run[0], len(seen),
+                    ",".join(sorted(seen))))
+    return errs, arms_run[0]
 
 
 def main():
@@ -300,7 +337,8 @@ def main():
         errs = selftest()
         for e in errs:
             print("SELFTEST-FAIL: %s" % e)
-        print("arms=24 passed=%d" % (24 - len(errs)))
+        errs, arms = selftest()
+        print("arms=%d passed=%d" % (arms, arms - len(errs)))
         return 1 if errs else 0
     quiet = mode[1]
     if not os.path.isfile(SCHEMA):

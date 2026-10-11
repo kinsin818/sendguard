@@ -62,11 +62,41 @@ the stale window honestly rather than hide it.
 
 Ports may not edit `spec/`, `ci/`, or another lane's files.
 
-## The 11 faces and their line counts (measured at the published tip)
+## What the seal actually costs - and where this ticket's first version was wrong
+
+Measured at the tip after the rename landed: `spec/schema.json` sets `additionalProperties: true`, and a record's
+`spec_sha256` is the digest of `spec/cases.yaml`, which this change does not touch. So the claim in the first
+version of this ticket - that the rename "stales every cell's `spec_sha256` until all six ports re-emit" - **was
+wrong**, and the cost of the change is correspondingly smaller: no fingerprint breaks, no record is invalidated,
+and `python ci/equality.py` reads the same `54 / 24/44 / 4 / 121 / 2281` it read before. The six ports' re-emit is
+a **purge of a leaking key from the data faces**, not a rebuild under penalty, and that is the honest framing to
+send them.
+
+## The 11 faces and their line counts (measured, 18 lines - not 32)
+
 
 `spec/schema.json` 1 - `impl/python/sg_python.py` 5 - `impl/rust/run_cells.py` 3 - `impl/typescript/src/runner.ts` 2 -
 `impl/csharp/run_csharp.py` 1 - `impl/go/main.go` 1 - `impl/go/rederive/celljson.go` 1 - `impl/java/tools/run_cells.py` 1 -
 `impl/python/sg_run.py` 1 - `impl/python/sg_selfcheck.py` 1 - `impl/rust/src/probe.rs` 1.
+
+## Value mapping each port must apply (measured occurrences at the tip)
+
+| value published today | occurrences | becomes |
+|---|---|---|
+| `W-PY` | 241 | `python-port` |
+| `seat-qoder-rust` | 174 | `rust-port` |
+| `W-NODE` | 73 | `node-port` |
+| `W-GO/qianwen` | 154 | `go-port` |
+| `seat-qoder-python-port` | 123 | `python-port` |
+| `seat-qoder-typescript` | 87 | `typescript-port` |
+| `seat-qoder-java` | 86 | `java-port` |
+| `seat-qoder/csharp-port` | 50 | `csharp-port` |
+| `seat-qoder` | 49 | the port that wrote it, named as a lane |
+| `test` | 1 | a fixture value that reached a result face; that port must say whether the cell is a real record |
+
+Total `worker_id` occurrences: **1,150**. A port re-emitting with any value outside
+`^[a-z][a-z0-9-]{0,15}-port$` is refused by `ci/validate_cells.py`, whose arms A25-A29 cover both the schema
+pattern and the fact that old records are not invalidated by the rename.
 
 ## Acceptance criteria
 

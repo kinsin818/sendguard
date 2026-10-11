@@ -412,6 +412,66 @@ emits `compared_records` in its artifact and the drift leg reads that - the same
 learning to consume the gate instead of judging again.
 
 
+### 2.18 A filter that passes nothing looks exactly like a measurement of nothing
+
+`docs/delivery-form.md` exists because the repository answered "do the six implementations agree" and never
+answered "what does a customer actually get". Four times in one afternoon that leg published a confident table
+that was wrong, and all four failures had the same shape: a number that agreed with itself across two machines,
+because nothing in the leg could ask a second party whether its file set was right.
+
+1. It sized whatever was on the disk, so a lane's scratch build output was published as the size of the
+   deliverable and a cold clone read 3796 bytes where the working copy read 3834. Fixed by measuring
+   `git ls-files`.
+2. The fix did not work and looked like it did. The splitter read `split("SEP")` instead of `split(chr(0))`, so
+   the "set" was one element of 61,776 characters holding 1,166 NUL-separated paths, and the filter dropped every
+   file - producing exactly the table a clone produced, because the truth happened to be a zero. The clone
+   agreement I had written up as the vindication of the fix was the bug's own symptom.
+3. The column that counted dropped files was itself disk-dependent: a file must be present to be ignored, so the
+   seat read `untracked_ignored=14` and a clone of the same commit read `12`. Moved out of the published face into
+   the run line.
+4. `glob` keeps the separator typed inside the pattern, so its results came back as
+   `D:\repo\impl/java/build\CellProbe.class` while the tracked set was pure backslashes. Nothing ever matched:
+   four committed `.class` files, `impl/python/sg_run.py` and seven TypeScript sources were classified as
+   untracked, and the leg's headline became "no port's compiled output is tracked" - a sentence that reached a
+   commit message and a customer-facing table before anyone contradicted it.
+
+Defect 4 is the one I did not find. The leg was given an independent witness -
+`git_artifact_paths(port)` asks git's own pathspec matcher which tracked files live under that port's prefixes,
+and `self_check` refuses to publish a table where leg and witness disagree - and on its first run the witness
+said:
+
+```
+OUTCOME=INSTRUMENT-RED the table above is not a measurement - 1 instrument problem(s), first: java: this leg's
+file classifier kept 6 tracked artifact(s) and git's own pathspec names 0; the two enumerate the same commit, so
+a difference is a bug in the leg (-)
+```
+
+The witness was then wrong too, in the opposite direction, for the same class of reason: its translator was
+`fnmatch` with `**` replaced by `*`, which silently turns `build/**/*.class` into a two-segment pattern. So the
+translator is now written out (`pattern_to_regex`) and arm A18 asserts both its sides. That is the second time
+this project has had to test the thing it used to test the thing - the first being `matrix_table.py` consuming the
+gate rather than judging again.
+
+What the leg now says, with `arms=18 passed=18` and `instrument_problems=0`, and reproduced byte-identical in a
+cold clone of the commit that carries it (the import-count and timing columns are elided here, not in the file):
+
+```
+| java | 86 | 6 | class | 6 | 86,825 | `impl/java/build-check/CellProbe.class` |
+| python | 123 | 1 | py | 0 | 81,900 | `impl/python/sg_run.py` |
+| typescript | 87 | 7 | ts | 0 | 141,416 | `impl/typescript/src/runner.ts` |
+```
+
+14 tracked artifact files, 310,141 bytes, three ports (`csharp`, `go`, `rust`) committing no build output at all,
+zero installers of any format, and `tool/check.py` at 81,759 bytes as the only file here that runs without a
+compiler. The earlier retraction stands as a retraction: 8f04c39's last paragraph is false and was not rewritten.
+
+Two rules came out of it, and both are now mechanical rather than advice. A leg that classifies files must be
+checked against an enumeration it does not implement - a denominator proves how many it read, not which ones it
+was right about. And a filter must have a green arm proving it passes something: `A5` in this leg's suite is "a
+tracked artifact must survive the filter", because every other arm in the suite was satisfiable by a filter that
+dropped the world.
+
+
 ## 3. What the six windows did that the plan did not expect
 
 Two things the committee's construction order never asked for and the ports delivered anyway: the

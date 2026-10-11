@@ -29,6 +29,13 @@ every cell's `spec_sha256` becomes stale until each port re-emits - which is pre
 | ports that record *which executable* answered | 3 of 6, in 3 field names and 3 shapes (`java` 74/74 `toolchain`+`jvm_self_report`, `rust` 174/174 string, `python` 123/125 path) | `docs/FINDINGS-rev6.md` M7 |
 | ports that record nothing about it | 3 of 6 (`typescript` 0/87, `go` 0/203, `csharp` 0/50) | same |
 | control cells stamped with a calibration result | 5/5 in five ports, **1/5 in `java`** | `docs/acceptance-S02.md` |
+| ports that declare whether a Windows-shaped trap even applies on this OS | **1 of 6** (reading 13:26, work tree: `java` 81 records `true`, 5 `false`; the other five write the field nowhere) | `python ci/validate_cells.py` → "Who declares whether a question applies on this OS" |
+
+The last row is the one that makes the applicability question answerable rather than rhetorical: the field
+`spec_applicable_on_windows` exists in the schema and in the records, **is read by no leg**, and is written by
+one lane as a habit. A convention kept by one port is not a contract - either round 9 gives it a rule (who must
+write it, on which case groups, and what a `false` licenses to be blank) or the field should be deleted rather
+than left as a private dialect that flatters itself into being evidence.
 
 The precedent that makes this cheap rather than exotic: `read_result` already carries a fifth value
 `not_applicable`, added for exactly this problem (nothing landed, so there was no read to perform). The

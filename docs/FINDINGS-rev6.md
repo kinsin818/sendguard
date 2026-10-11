@@ -11,7 +11,9 @@ facts became 54 - and the conflict count moving twice was each time a *stricter*
 one. Sections M1-M3 still describe measured data; M5 has a continuation in M6, and M6 is the section to
 read if you want to know what independent verification actually costs. **M7 corrects a sentence in this
 project's own whitepaper** — a finding that was filed under "Java says no" turned out to be a fact about a
-specific JVM build.
+specific JVM build. **M8 corrects a claim about the contract itself**: the fields the gate scores as verdicts
+are largely not the fields the frozen schema requires, so "every cell conforms" and "many answers are missing"
+are both true at once.
 
 Original reading at the time of writing: 44 required cells, 29 answered by every port. Of those 29, 12 are set aside because the
 ports did not ask the same question (5 with different input bytes, 7 with a different `verdict_via` or
@@ -217,3 +219,27 @@ the delay was spent on and says plainly that it is **not** finished: the rev7 ru
 still open and "none of it is in the recorded cells". `docs/GAP.md` cannot carry that row - it is generated
 from cell coverage, and Java is 44/44 there - so the unfinished work is listed in `docs/whitepaper.md` §6's
 未做 list instead of being closed here.
+
+## M8 - the contract's required list and the gate's verdict list are different sets
+
+Reading at 12:05 host clock: `python ci/validate_cells.py` prints `invalid=0` for all 557 cells on the six
+canonical faces, and `python ci/equality.py` in the same minute prints `verdict_not_recorded_pairs=121`. Both
+are correct. `spec/schema.json` requires 17 fields; **nine of the ten fields the gate scores as a verdict are
+not among them**, and four (`phantom`, `name_mutated`, `len_triple`, `name_landed_as`) are not even listed in
+the schema's `properties`. The product promise is about those nine.
+
+This is worth recording as a finding rather than a bug because the six ports' own behaviour separates the two
+kinds of blank, which the contract cannot:
+
+- seven of the nine optional verdict fields are answered on all 44 required cells by at least one port
+  (`mechanism_class`, `phantom`, `len_triple`, `roundtrip_ok`, `name_mutated`, `bytes_on_disk`,
+  `enum_to_stat_agrees`) - so for those, a blank is that implementation's gap;
+- `bytes_written` and `name_landed_as` top out at 39/44 with **no** port at 44, and 10 field-cells are blank
+  in every port at once - the pattern a genuinely non-existent answer would leave.
+
+`docs/coverage.md` (field x port) and `docs/cell-validation.md` (omissions x port) publish the two views of
+the same cells side by side; `docs/journey.md` 2.16 records what changed in the instruments. The decision
+this needs from the owner is one contract round: say which verdict fields apply to which case group, and give
+the boolean fields the same `not_applicable` escape `read_result` already has. Tightening `required` without
+saying which blanks are legal would make every port fail on cells where the answer truly does not exist, and
+tightening it in neither direction leaves a tree that is simultaneously 0-invalid and 121-blank.

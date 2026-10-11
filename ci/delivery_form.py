@@ -154,10 +154,11 @@ def self_check(rows, ports_seen, tracked):
 # Arms for this leg. It needs no fixture directory, because the two things it can get wrong are both reachable
 # without touching the disk: the NUL split that decides what the tracked set is, and the filter that decides what
 # it reports. A1-A4 judge the parse, A5-A8 the filter, A9-A13 the checker that decides whether a table may be
-# published at all, A14 the argument refusal. Both sides of every predicate are asserted: an earlier revision of
-# this leg filtered everything out and still printed a table a cold clone agreed with, and a filter that passes
-# nothing is indistinguishable from an honest measurement of nothing.
-SELFTEST_ARMS = 14
+# published at all, A14 the argument refusal, A15 the shape of the face a clone is expected to reproduce byte for
+# byte. Both sides of every predicate are asserted: an earlier revision of this leg filtered everything out and
+# still printed a table a cold clone agreed with, and a filter that passes nothing is indistinguishable from an
+# honest measurement of nothing.
+SELFTEST_ARMS = 15
 
 
 def selftest():
@@ -226,6 +227,17 @@ def selftest():
     after = io.open(face, "rb").read() if os.path.isfile(face) else None
     chk(rc == 3, "selftest A14 red: an unknown argument must be refused with rc 3, got %d" % rc)
     chk(before == after, "selftest A14 red: the refusal must not rewrite the published face")
+
+    published = io.open(face, encoding="utf-8", newline="\n").read() if os.path.isfile(face) else ""
+    rows_out = [l for l in published.splitlines() if l.startswith("| ") and " | " in l]
+    table = [l for l in rows_out if "cells read" in l or l.split("|")[2].strip().isdigit()]
+    widths = sorted({len([c for c in l.split("|")]) - 2 for l in table})
+    chk(published and widths == [9],
+        "selftest A15 red: the published table must be the nine tracked columns and nothing disk-dependent, got "
+        "column counts %r over %d rows" % (widths, len(table)))
+    chk("untracked files ignored" not in published,
+        "selftest A15 red: a count of ignored files needs the files to be present, so it may not be published in "
+        "a face a clone is expected to reproduce byte for byte")
     return errs
 
 
@@ -267,33 +279,35 @@ def main(argv=None):
            "tracked file list, and the deliverable itself. Nothing in this file is typed by hand."
            % time.strftime("%Y-%m-%d %H:%M:%S %z"), "",
            "The columns from `tracked files matched` onward describe only files `git ls-files` lists under each "
-           "port's build/output globs, so a fresh clone and this working copy get the same numbers; the last "
-           "column counts what that filter threw away, which is what a lane left on this disk without committing "
-           "it. For `python` and `typescript` the globs also match source files, which is why the `kinds` column "
-           "is printed: a `.py` and a `.exe` are not the same kind of thing and the table will not pretend "
-           "otherwise.", "",
+           "port's build/output globs, so a fresh clone and this working copy get the same numbers from the same "
+           "commit. For `python` and `typescript` the globs also match source files, which is why the `kinds` "
+           "column is printed: a `.py` and a `.exe` are not the same kind of thing and the table will not pretend "
+           "otherwise. What this disk holds and the repository does not track is printed in the run line and is "
+           "deliberately not published in this face: a count of ignored files requires those files to be present, "
+           "so it describes a machine rather than a delivery. The two readings this leg was checked against - this "
+           "working copy and a cold clone of the same commit - are recorded in "
+           "`evidence/S10/cold-clone-20261011d.md`.", "",
            "| port | cells read | direct/total imports (max seen, n cells reporting) | per-cell time ms "
-           "min/med/max (n) | tracked files matched | extensions | executables | bytes | largest file | "
-           "untracked files ignored |",
-           "|---|---|---|---|---|---|---|---|---|---|"]
+           "min/med/max (n) | tracked files matched | extensions | executables | bytes | largest file |",
+           "|---|---|---|---|---|---|---|---|---|"]
     for r in rows:
         deps = "%s / %s (n=%d)" % r["deps"] if r["deps"] else "NOT-MEASURED(no numeric deps_* fields)"
         tim = "%g / %g / %g (n=%d)" % r["timing"] if r["timing"] else "NOT-MEASURED(no numeric elapsed_ms)"
-        out.append("| %s | %d | %s | %s | %d | %s | %d | %s | %s | %d |"
+        out.append("| %s | %d | %s | %s | %d | %s | %d | %s | %s |"
                    % (r["port"], r["cells_read"], deps, tim, r["artifacts"], r["kinds"],
                       r["executables"], "{:,}".format(r["bytes"]) if r["artifacts"] else "-",
-                      ("`%s`" % r["sample"]) if r["sample"] else "-", r["dropped_untracked"]))
+                      ("`%s`" % r["sample"]) if r["sample"] else "-"))
 
     zero = [r["port"] for r in rows if r["artifacts"] == 0]
     out += [""]
     if zero:
-        dropped = sum(r["dropped_untracked"] for r in rows)
         out += ["**Ports with no tracked build output (`%s`): the repository carries none of their build "
                 "product.**" % "`, `".join(zero),
-                "A customer who clones this tree gets their source and a toolchain command, not an artifact; the "
-                "`%d` files this column ignored are build output that exists on some working copies and in no "
-                "commit, so they are not part of what is delivered. That is a delivery-form fact, not a size of "
-                "zero, and it is the reason the byte column is `-` rather than a number." % dropped, ""]
+                "A customer who clones this tree gets their source and a toolchain command, not an artifact. "
+                "Build output that a lane left on its own machine is in no commit, so it is not part of what is "
+                "delivered, and it is counted in the run line rather than in this face because its size belongs "
+                "to the machine that produced it. That is a delivery-form fact, not a size of zero, and it is why "
+                "the byte column reads `-` instead of a number.", ""]
     out += ["## The three questions a buyer asks, and what can honestly be said", "",
             "1. **What must be installed to run the checker?** The shipped deliverable is one Python file - "
             "`tool/check.py`, %s bytes - and needs a Python 3 interpreter on `PATH` and nothing else: it "
@@ -338,11 +352,12 @@ def main(argv=None):
     io.open(os.path.join(REPO, "docs", "delivery-form.md"), "w", encoding="utf-8", newline="\n").write(text)
     print("wrote docs/delivery-form.md bytes=%d ports=%d cells_total=%d installers_found=%d "
           "not_measured_cells=%d instrument_problems=%d untracked_ignored=%d installers_untracked=%d "
-          "tracked_paths=%s"
+          "tracked_paths=%s drops=%s"
           % (len(text.encode("utf-8")), len(rows), sum(r["cells_read"] for r in rows), len(installers),
              text.count("NOT-MEASURED("), len(problems),
              sum(r["dropped_untracked"] for r in rows), inst_drop,
-             "None" if tracked is None else len(tracked)))
+             "None" if tracked is None else len(tracked),
+             ",".join("%s:%d" % (r["port"], r["dropped_untracked"]) for r in rows)))
     if problems:
         print("OUTCOME=INSTRUMENT-RED the table above is not a measurement - %d instrument problem(s), first: %s"
               % (len(problems), problems[0]))

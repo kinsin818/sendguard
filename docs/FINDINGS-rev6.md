@@ -317,3 +317,33 @@ Two rules came out of it and both are now mechanical, not advice:
 `evidence/S10/cold-clone-20261011d.md` carries all four clone runs, including the two whose numbers this section
 supersedes.
 
+## M10 - the reproducibility leg could only be green on the author's machine, and four reviewers proved it
+
+Before this section, `ci/clone_parity.py` compared every generated face against the blob the clone checked
+out, and tolerated differences only through a pattern list covering one line of `docs/evidence.md`. One of the
+compared faces, `docs/delivery-form.md`, also carried the interpreter version of the machine that regenerated
+it. The consequence is the worst kind for a leg whose entire job is "a stranger reproduces this": it does not
+fail loudly on a foreign host, it reports a **result difference** where there is only a machine difference, and
+the reader is trained to distrust the next genuine red.
+
+Readings, from the packets in `evidence/audit-in/` and from this seat's own re-run:
+
+| who | interpreter | reading |
+|---|---|---|
+| this seat, before the fix | 3.14.7 | `OUTCOME=CLEAN faces_compared=12 identical=11 declared=1 differing=0 rc=0` |
+| auditor-1, own clone | 3.13.13 | `RED differing=1`, the differing line being the interpreter stamp |
+| auditor-3, own clone | 3.13.13 | same, characterised as "a foregone false positive on any interpreter other than the author's" |
+| auditor-4, own clone | not the stamped one | same, aimed at the `docs/claim-boundary.md` sentence about what a stranger gets |
+| WorkBuddy cross-check | 3.13.12 | reached the same divergence independently while confirming the headline numbers |
+| this seat, after the fix | 3.14.7 | `OUTCOME=CLEAN faces_compared=13 identical=11 declared=1 differing=0 missing=0 host_bound=1(docs/host-stamp.md) rc=0` |
+
+What fixed it, and what did not: adding a line pattern to the exception list would have "fixed" the reading while
+widening the blind spot, because a pattern tolerance inside a compared face admits **any** change on that line.
+The fix moves the machine facts into their own generated face, `docs/host-stamp.md`, which the leg excludes by
+name and counts in the run line. Four arms cover the exclusion in both directions, one of which asserts the
+excluded set stays exactly one face - a tolerance that can grow without a ticket is not a tolerance, it is an
+exit.
+
+The lesson is not "declare your exceptions". It is that **an instrument whose pass condition depends on the host
+is not an instrument**, and the cheapest way to find out is to let someone else run it. Four of them did,
+unprompted, in one night; that is the strongest argument in this project for the outside-audit step.

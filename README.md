@@ -67,9 +67,9 @@ as a leg - `--no-local` clone, `ci/refresh_all.py` run inside the clone, then ev
 the blob the clone checked out. It refuses a scratch root it did not get, refuses a drive root, refuses to nest a
 clone inside the repository, never deletes anything (an existing clone is adopted only if its HEAD equals the
 source's and its status is empty), and allows a difference only where the line shape was declared in advance. Its
-own arms are 14, both-sided, and `--source` lets it verify the published repository instead of this working
+own arms are 18, both-sided, and `--source` lets it verify the published repository instead of this working
    copy - `python ci/clone_parity.py --scratch-root ../sg-public --source https://github.com/kinsin818/sendguard` reads
-   `OUTCOME=CLEAN faces_compared=12 identical=11 declared=1 differing=0 missing=0` with that URL as the source; reading from this tree: `OUTCOME=CLEAN faces_compared=12 identical=11 declared=1
+   `OUTCOME=CLEAN faces_compared=13 identical=11 declared=1 differing=0 missing=0 host_bound=1` with that URL as the source; reading from this tree: `OUTCOME=CLEAN faces_compared=13 identical=11 declared=1
 differing=0 missing=0`, where the one declared face is `docs/evidence.md` naming the commit it was generated
 under.
 Its red side was probed on a tampered generated face held in an unreachable probe commit, and it refused:

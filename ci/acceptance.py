@@ -19,6 +19,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 import equality  # noqa: E402
+import validate_cells  # noqa: E402
 
 GROUPS = ("trap", "ctrl", "blind", "len")
 
@@ -40,8 +41,8 @@ def main():
              "self-check file states; 'on disk' columns are read from the canonical face. They are printed "
              "side by side on purpose." % time.strftime("%Y-%m-%d %H:%M:%S %z"), "",
              "| port | cells on disk | required matched | missing | blocked | extra | pinned entries seen | "
-             "controls | verdict | self-check file |",
-             "|---|---|---|---|---|---|---|---|---|---|"]
+             "controls | schema-invalid (outside ruler) | self-reported valid | verdict | self-check file |",
+             "|---|---|---|---|---|---|---|---|---|---|---|---|"]
     for port in sorted(set(ports) | {"typescript"}):
         face = os.path.join(REPO, "results", "%s.windows.x64" % port)
         files = glob.glob(os.path.join(face, "**", "*.json"), recursive=True) if os.path.isdir(face) else []
@@ -72,16 +73,30 @@ def main():
             screl = "evidence/S02/%s-selfcheck.md" % port
         else:
             screl = "(missing)"
+        schema = json.load(io.open(validate_cells.SCHEMA, encoding="utf-8"))
+        bad = 0
+        for f, cell, err in validate_cells.cells_in(face):
+            if err or validate_cells.check(cell, schema):
+                bad += 1
+        selfrep = "-"
+        sc0 = os.path.join(REPO, "evidence", "S02", "%s-selfcheck.md" % port)
+        if os.path.isfile(sc0):
+            m0 = re.search(r"cells_valid[= ]+(\d+)", io.open(sc0, encoding="utf-8",
+                                                               errors="replace").read())
+            if m0:
+                selfrep = m0.group(1)
         word = "OK"
+        if bad and word == "OK":
+            word = "OK (schema-invalid %d)" % bad
         if not files:
             word = "FACE-MISSING"
         elif missing:
             word = "INCOMPLETE (%d cells)" % missing
         elif want and len(seen) < len(want):
             word = "ENTRY-GAP (%d/%d)" % (len(seen), len(want))
-        lines.append("| %s | %d | %d/%d | %d | %d | %d | %d/%d | %s | %s | `%s` (%s) |"
+        lines.append("| %s | %d | %d/%d | %d | %d | %d | %d/%d | %s | %d | %s | %s | `%s` (%s) |"
                      % (port, len(files), matched, len(req), missing, blocked,
-                        extras.get(port, 0), len(seen), len(want), controls, word, rep, screl))
+                        extras.get(port, 0), len(seen), len(want), controls, bad, selfrep, word, rep, screl))
 
     lines += ["", "## Gate reading for the same tree", ""]
     if verdict:
@@ -105,6 +120,11 @@ def main():
         lines.append("")
 
     lines += ["## What acceptance here does not mean", "",
+              "- `schema-invalid` counts cells that do not carry the fields `spec/schema.json` requires. It "
+              "is computed by `ci/validate_cells.py`, the same ruler `docs/cell-validation.md` is written "
+              "from, and it is printed beside each port's own self-reported count because a window grading "
+              "its own homework is the failure this leg exists to catch.",
+              "",
               "A row is 'OK' when the required cells exist on the canonical face, not when the port's "
               "answers are correct - correctness against the spec is the sealed expectation table's job "
               "(`docs/expected-summary.md`), and agreement between ports is the gate's job "

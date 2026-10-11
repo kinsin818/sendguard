@@ -118,6 +118,76 @@ def pick_clone_dir(root, source_head, probe=None, exists=None):
         n += 1
 
 
+# The deliverable itself, run from both trees. The faces under results/ are evidence that some port answered a
+# question once; nothing in ci/ had ever re-run `tool/check.py` from a cold clone and asked whether it gives the
+# same answer there. That is the sentence a buyer actually means by "reproducible", so this leg now measures it:
+# the same names, probed in the working copy and in the clone, compared field by field over the gate's own
+# VERDICT_FIELDS (imported, not copied - two field lists in one repository is a defect this project has already
+# paid for once).
+TOOL_NAMES = ["report-2026.txt", "trail.", "CON.txt", "COM1.log", ("a" * 200) + ".txt"]
+TOOL_RC_OK = (0, 1)          # the checker's documented name-mode codes: risk or no risk
+TOOL_RC_INSTRUMENT = {2: "scan failed", 3: "usage", 4: "internal"}
+VERDICT_BLOCK_START = "VERDICT  (the answer about this name"
+
+
+def tool_field_names():
+    import equality
+    return list(equality.VERDICT_FIELDS) + ["verdict_via"]
+
+
+def run_tool(tree, name):
+    """Ask this tree's checker about one name, through the hex route the spec pins samples with."""
+    hx = name.encode("utf-8").hex()
+    p = subprocess.run([sys.executable, os.path.join(tree, "tool", "check.py"), "--name-hex", hx],
+                       cwd=tree, capture_output=True, text=True, encoding="utf-8",
+                       errors="replace", shell=False)
+    return p.returncode, (p.stdout or "") + (p.stderr or "")
+
+
+def parse_verdict(text):
+    """Pull the verdict block's fields out. An unparseable block is an instrument failure, never agreement."""
+    lines = text.splitlines()
+    start = None
+    for i, l in enumerate(lines):
+        if l.startswith(VERDICT_BLOCK_START):
+            start = i + 1
+            break
+    if start is None:
+        return None, "no VERDICT block in the output at all"
+    block = []
+    for l in lines[start:]:
+        if l.strip() and not l.startswith("  "):
+            break
+        block.append(l)
+    fields = tool_field_names()
+    got = {}
+    missing = []
+    for f in fields:
+        m = None
+        for l in block:
+            m = re.search(r"(?<![A-Za-z_])" + f + r"=(\S+)", l)
+            if m:
+                got[f] = m.group(1)
+                break
+        if not m:
+            missing.append(f)
+    if missing:
+        return None, "verdict block parsed %d of %d fields, missing %s" % (
+            len(got), len(fields), ",".join(missing))
+    return got, ""
+
+
+def compare_tool_fields(seat, clone_run):
+    """Field-by-field between the two trees. Returns (compared, list of (name, field, seat, clone))."""
+    diffs = []
+    compared = 0
+    for f in tool_field_names():
+        compared += 1
+        if seat[f] != clone_run[f]:
+            diffs.append((f, seat[f], clone_run[f]))
+    return compared, diffs
+
+
 def run_parity(root, quiet):
     scratch, why = validate_scratch_root(root)
     if not scratch:
@@ -175,6 +245,40 @@ def run_parity(root, quiet):
             problems.append("%s: %s" % (doc, detail))
         elif verdict == "declared" and not quiet:
             print("declared| %s - %s" % (doc, detail))
+    instrument = []
+    tool_compared = tool_diffs = 0
+    for name in TOOL_NAMES:
+        rc_s, out_s = run_tool(REPO, name)
+        rc_c, out_c = run_tool(clone, name)
+        label = name if len(name) < 24 else "%s...(%d chars)" % (name[:12], len(name))
+        bad = [(rc_c, "clone"), (rc_s, "seat")]
+        if any(rc not in TOOL_RC_OK for rc, _ in bad):
+            who = [w for rc, w in bad if rc not in TOOL_RC_OK]
+            why = [TOOL_RC_INSTRUMENT.get(rc, "unexpected code") for rc, _ in bad if rc not in TOOL_RC_OK]
+            instrument.append("%s: the checker did not answer in %s (rc=%s -> %s)" % (
+                label, ",".join(who), ",".join(str(rc) for rc, _ in bad if rc not in TOOL_RC_OK),
+                ",".join(why)))
+            continue
+        ps, why_s = parse_verdict(out_s)
+        pc, why_c = parse_verdict(out_c)
+        if ps is None or pc is None:
+            instrument.append("%s: unparseable verdict block (%s | %s)" % (label, why_s, why_c))
+            continue
+        n, diffs = compare_tool_fields(ps, pc)
+        tool_compared += n
+        for f, a, b in diffs:
+            tool_diffs += 1
+            problems.append("%s: this tree answered %s=%s and the cold clone answered %s=%s - the deliverable "
+                            "does not give the same answer from history" % (label, f, a, f, b))
+    if not quiet:
+        print("tool| names=%d fields_compared=%d differing=%d" % (len(TOOL_NAMES), tool_compared, tool_diffs))
+    if instrument:
+        for m in instrument:
+            print("  instrument| %s" % m)
+        print("OUTCOME=INSTRUMENT-RED the deliverable could not be asked in both trees, so nothing above this "
+              "line is verified about it")
+        return 3
+
     line = ("OUTCOME=%s faces_compared=%d identical=%d declared=%d differing=%d missing=%d clone=%s"
             % ("CLEAN" if not problems else "RED", len(faces), counts["identical"], counts["declared"],
                counts["differing"], counts["missing"], clone))
@@ -255,6 +359,45 @@ def selftest():
     ap.add_argument("--scratch-root", default=None)
     ns, unknown = ap.parse_known_args(["--not-an-option"])
     chk(unknown == ["--not-an-option"], "selftest A8 red: unknown arguments must be visible before the refusal")
+    block = ("VERDICT  (the answer about this name; these are ci/equality.py's VERDICT_FIELDS)\n"
+             "  os_legality_verdict=illegal  mechanism_class=win32_filesystem  verdict_via=win32\n"
+             "  criterion_for_that_word=a directory entry with this exact name exists after the attempt\n"
+             "  phantom=true  name_mutated=false  enum_to_stat_agrees=false  roundtrip_ok=false\n"
+             "  len_triple=8/8/0  bytes_written=28  bytes_on_disk=NOT-RECORDED  "
+             "name_landed_as=434f4e2e747874\n"
+             "SCRATCH left behind: x\n")
+    got, why = parse_verdict(block)
+    chk(got is not None and got["os_legality_verdict"] == "illegal" and got["name_landed_as"] == "434f4e2e747874",
+        "selftest A9 green: a real-shaped verdict block must parse every scored field, got %r %r" % (got, why))
+    chk(len(tool_field_names()) == 11,
+        "selftest A9 green: the compared set is the gate's ten verdict fields plus verdict_via, got %d"
+        % len(tool_field_names()))
+    truncated = block.replace("  len_triple=8/8/0  ", "  ")
+    got2, why2 = parse_verdict(truncated)
+    chk(got2 is None and "len_triple" in why2,
+        "selftest A9 red: a block missing one scored field is an instrument failure, not a smaller comparison, "
+        "got %r %r" % (got2, why2))
+    chk(parse_verdict("no verdict here\n") == (None, "no VERDICT block in the output at all"),
+        "selftest A9 red: output with no VERDICT block must not parse into zero differences")
+    if got:
+        other = dict(got)
+        other["phantom"] = "false"
+        n, diffs = compare_tool_fields(got, other)
+        chk(n == 11 and len(diffs) == 1 and diffs[0][0] == "phantom",
+            "selftest A10 red: one field flipped between the trees must be named, not counted as a match, got %r"
+            % (diffs,))
+        n0, d0 = compare_tool_fields(got, dict(got))
+        chk(n0 == 11 and d0 == [], "selftest A10 green: identical answers over 11 fields produce no difference")
+    enc = [(n.encode("utf-8").hex().decode("latin-1") if False else bytes.fromhex(n.encode("utf-8").hex()), n)
+           for n in TOOL_NAMES]
+    chk(all(b == n.encode("utf-8") for b, n in enc),
+        "selftest A11 green: the hex the leg hands the checker must decode back to the name it means to ask "
+        "about - a wrong needle probes a different name and reports agreement")
+    chk(len(set(TOOL_NAMES)) == len(TOOL_NAMES),
+        "selftest A11 red: the declared name list must be distinct, or two names are one probe")
+    chk(all(rc in TOOL_RC_OK for rc in (0, 1)) and 2 not in TOOL_RC_OK
+        and TOOL_RC_INSTRUMENT[2] == "scan failed",
+        "selftest A12 red: the checker's own failure codes must be instrument failures, never answers")
     return errs
 
 
@@ -264,7 +407,7 @@ def main(argv=None):
         errs = selftest()
         for e in errs:
             print("SELFTEST-FAIL: %s" % e)
-        print("arms=8 passed=%d" % (8 - len(errs)))
+        print("arms=12 passed=%d" % (12 - len(errs)))
         return 1 if errs else 0
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--quiet", action="store_true")

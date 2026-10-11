@@ -1,0 +1,12 @@
+  arm green-canon-rederived-not-circular holds=True OK | sha256_primary=c9fe45b2fee8... second_instrument=c9fe45b2fee8... payload=c9fe45b2fee8... instruments_identical=True equals_sealed_s00_baseline=True
+  arm red-canon-sha-mismatch-pre-stamp rc=1 want=1  OK refused=FAIL
+  arm red-failing-criterion-pre-stamp  rc=1 want=1  OK refused=FAIL
+  arm red-stamped-cell-whose-data-moved rc=3 want=3  OK refused=REFUSED
+  arm red-stamp-contradicts-recording  rc=3 want=3  OK refused=STAMP_CONTRADICTS_RECORDING
+  arm red-stale-cell                   rc=3 want=3  OK refused=STALE_CELL
+  arm red-non-control-cell             rc=3 want=3  OK refused=NOT_CONTROL
+  arm red-unpinned-input               rc=3 want=3  OK refused=UNPINNED_INPUT
+  arm red-hand-formatted-face          rc=3 want=3  OK refused=NON_CANONICAL_FACE
+  arm green-stamp-unstamped            rc=0 control_pass=True stamped_at=True OK
+  arm green-apply-idempotent           rc=0/0 bytes_equal=True control_pass=True moved=0 OK
+arms_checked=10 problems=0 fixtures=D:\s\366f93\stamp-selftest-3f75b0fb

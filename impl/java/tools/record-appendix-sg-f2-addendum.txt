@@ -1,0 +1,35 @@
+
+
+### SG-F2 addendum - the stamper's own arms went false, and one number above is now stale
+
+The section above prints `stamp_controls.py --selftest` as **8 arms / 0 problems**. That was the true
+reading of a real run when it was captured. It then went false on its own ticket, for a reason worth
+recording: two of those eight arms built their fixtures out of the live control cells, and part 2 of
+this ticket **stamps those cells**. Once a live cell carried `control_pass`, tampering with the
+fixture's data made the tool answer `STAMP_CONTRADICTS_RECORDING` or `FIELD_MOVED` (exit 3) where the
+arm expected `rc=1` - the tool behaving correctly and the arm measuring the wrong thing. Fixed in the
+tool, not in the number:
+
+- `red-canon-sha-mismatch-pre-stamp` and `red-failing-criterion-pre-stamp` rebuild the pre-ticket
+  state first, by dropping the whole `control_pass*` family, so what they test is "a failing criterion
+  cannot buy a true stamp";
+- two arms were added for the state the ticket created: `red-stamped-cell-whose-data-moved` (a
+  already-stamped cell whose underlying shas are changed must be refused, never silently rewritten)
+  and `red-stamp-contradicts-recording`;
+- `green-stamp-unstamped` keeps the pass path tested now that no live cell on the face is unstamped.
+
+Reading after that fix, in the same capture as this addendum:
+`python impl/java/tools/stamp_controls.py --selftest` -> `arms_checked=10 problems=0`, rc=0.
+`python impl/java/tools/selfcheck.py --selftest` -> `arms_checked=49 problems=0`, rc=0.
+`python impl/java/tools/verify_sg_f2.py` -> `mode=post-commit spread_committed=12/12
+cells=86 identical_to_HEAD=86 stamped_ctrl=0 rewritten=[] moved=0`, rc=0 - which is the commit-level
+proof that `b56e9c4` carried exactly this lane: after the commit every cell on the disk equals its
+own committed face.
+
+The generator was changed for the same reason: it now reads its own arm counts and rc's out of the
+runs it starts (`arms_checked=(/d+)` parsed from the child's stdout) instead of carrying them as
+prose, so a stale count cannot be landed by that tool a second time.
+
+Why this is appended rather than edited in place: the paragraph above was a true reading at its own
+clock, and the rule this project runs on is that a record is repaired by adding the later reading,
+not by rewriting the earlier one so it matches the clock.

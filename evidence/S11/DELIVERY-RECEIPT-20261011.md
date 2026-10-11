@@ -64,3 +64,10 @@ python ci/claim_digest.py --scratch-root ../sg-claims     # the numbers in the p
 - `faces_ahead_of_head=0` in the acceptance row is a statement about the six canonical result directories, not
   about the whole tree; at the instant of this run one face elsewhere in the repository was untracked. The
   instrument gap is ticketed rather than hidden, and the row above is not retracted - it is scoped.
+- The message of `4f144de` (the audit kit) says its `lint` reading's tracked count is **one** behind the tree
+  that commit produces. It was **three** behind: the reading printed `tracked=1177,untracked=4` - three new faces
+  plus one other window's note - and `4f144de` lands three of them, so the same tree afterwards reads
+  `tracked=1180,untracked=1` at the unchanged denominator `names_checked=1181`. The word "one" was copied from
+  the shape of the bullet above, where one file is the case; the erratum class is the same one, and that is the
+  finding. Corrected here, not in history. The denominator that decides whether a name was checked at all did
+  not move.

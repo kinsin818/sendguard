@@ -2,7 +2,7 @@
 
 Run:  python ci/validate_cells.py            # prints and writes docs/cell-validation.md
       python ci/validate_cells.py --quiet     # only the summary lines
-      python ci/validate_cells.py --selftest  # 20 arms: it must refuse, and it must be able to say yes
+      python ci/validate_cells.py --selftest  # 22 arms: it must refuse, and it must be able to say yes
 
 This leg takes no output path on purpose: it always writes the repository's own face, and any other
 argument is refused (rc=3) rather than ignored. Measured on 2026-10-11 11:46: the seat passed
@@ -111,6 +111,34 @@ def dispatch(argv):
     return ("selftest",) if "--selftest" in argv else ("run", quiet)
 
 
+APPLICABILITY_FIELD = "spec_applicable_on_windows"
+
+
+def applicability_counts(cells):
+    """How many cells *declare* whether this Windows-shaped question applies on this OS, per port.
+
+    The field exists in the frozen schema and is read by no leg; measuring who writes it is the precondition
+    for the round-9 applicability decision (`docs/NOTICE-rev9-proposal.md`). A `None`/absent value is
+    **absence of a claim**, which is a different thing from `False` - the same distinction this project keeps
+    making about blanks.
+    """
+    out = {"true": 0, "false": 0, "absent": 0}
+    for c in cells:
+        if not isinstance(c, dict) or APPLICABILITY_FIELD not in c:
+            out["absent"] += 1
+            continue
+        v = c.get(APPLICABILITY_FIELD)
+        if v is None:
+            out["absent"] += 1
+        elif v is True:
+            out["true"] += 1
+        elif v is False:
+            out["false"] += 1
+        else:
+            out["absent"] += 1
+    return out
+
+
 def verdict_field_gap(schema):
     """Which verdict fields the gate compares that the frozen schema does not require, or never documents.
 
@@ -207,6 +235,15 @@ def selftest():
         "selftest A17 red: compared-but-optional fields must be named, got %r" % (gap_req,))
     chk("phantom" in gap_doc and "len_triple" in gap_doc,
         "selftest A18 red: a verdict field the schema never documents must be called out separately")
+    a = applicability_counts([{APPLICABILITY_FIELD: True}, {APPLICABILITY_FIELD: False},
+                              {"case_id": "T01"}, {APPLICABILITY_FIELD: None}])
+    chk(a == {"true": 1, "false": 1, "absent": 2},
+        "selftest A21 green: true, false, absent and null are four different facts and must count apart, "
+        "got %r" % (a,))
+    chk(applicability_counts([{"case_id": "T01"}])["false"] == 0
+        and applicability_counts([{APPLICABILITY_FIELD: "yes"}])["absent"] == 1,
+        "selftest A22 red: an undeclared or non-boolean value must never be read as a declaration, got %r"
+        % (applicability_counts([{APPLICABILITY_FIELD: "yes"}]),))
     ls = omission_lines({("go", "roundtrip_ok"): 3}, ["csharp", "go"], ["roundtrip_ok"])
     chk(any("| `roundtrip_ok` | 0 | 3 |" in l for l in ls)
         and any("cells omitting a compared verdict field: 3" in l for l in ls),
@@ -228,7 +265,7 @@ def main():
         errs = selftest()
         for e in errs:
             print("SELFTEST-FAIL: %s" % e)
-        print("arms=20 passed=%d" % (20 - len(errs)))
+        print("arms=22 passed=%d" % (22 - len(errs)))
         return 1 if errs else 0
     quiet = mode[1]
     if not os.path.isfile(SCHEMA):
@@ -252,6 +289,7 @@ def main():
              "|---|---|---|---|---|"]
     total_bad = 0
     missing_faces = []
+    appl = {}
     for port in PORTS:
         face = os.path.join(REPO, "results", "%s.windows.x64" % port)
         if not os.path.isdir(face):
@@ -260,6 +298,7 @@ def main():
             continue
         n = ok = 0
         problems = []
+        port_cells = []
         for f, cell, err in cells_in(face):
             if err:
                 problems.append((os.path.basename(f), [err]))
@@ -267,6 +306,7 @@ def main():
                 continue
             n += 1
             if isinstance(cell, dict):
+                port_cells.append(cell)
                 for gf in gap_fields:
                     if gf not in cell:
                         omissions[(port, gf)] += 1
@@ -284,9 +324,24 @@ def main():
             if m:
                 rep = m.group(1)
         lines += port_lines(port, n, ok, rep, problems, quiet)
+        appl[port] = applicability_counts(port_cells)
     lines += ["", "**invalid cells across the six faces: %d**" % total_bad, ""]
     lines += omission_lines(omissions, [p for p in PORTS if os.path.isdir(
         os.path.join(REPO, "results", "%s.windows.x64" % p))], gap_fields)
+    declared = [p for p in PORTS if appl.get(p, {}).get("true", 0) + appl.get(p, {}).get("false", 0) > 0]
+    lines += ["", "## Who declares whether a question applies on this OS", "",
+              "`spec/schema.json` documents `spec_applicable_on_windows` and no leg reads it. The counts "
+              "below are what a contract round has to work from: a `false` is a port saying \"this trap is "
+              "Windows semantics, the POSIX answer is a different question\", while `absent` is silence "
+              "about it - not a denial.", "",
+              "| port | true | false | absent (no claim made) |", "|---|---|---|---|"]
+    for p in PORTS:
+        a = appl.get(p, {"true": 0, "false": 0, "absent": 0})
+        lines.append("| %s | %d | %d | %d |" % (p, a["true"], a["false"], a["absent"]))
+    lines += ["", "**ports that ever declare applicability: %s** (of %d)"
+              % (", ".join("`%s`" % p for p in declared) or "none", len(PORTS)),
+              "A convention kept by one port is not a contract. Either the field gains a rule (who must write "
+              "it, on which case groups) or it should be dropped rather than left as one lane's habit.", ""]
     if gap_documented:
         lines.append("Verdict fields the gate compares that `spec/schema.json` does not even document: %s. "
                      "They are legal extras today and unverifiable requirements tomorrow."

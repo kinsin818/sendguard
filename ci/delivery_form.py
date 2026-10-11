@@ -18,6 +18,7 @@ import io
 import json
 import os
 import statistics
+import subprocess
 import sys
 import time
 
@@ -27,6 +28,22 @@ sys.path.insert(0, HERE)
 import equality  # noqa: E402
 
 PORTS = ["csharp", "go", "java", "python", "rust", "typescript"]
+def tracked_files():
+    """The set of paths git says the repository carries.
+
+    The first version of this leg sized whatever was on this disk, which made the published byte counts
+    irreproducible: a lane's scratch build output, present in a working copy and absent in a clone, changed the
+    numbers by ~38 bytes of text and several hundred kilobytes of bytes. The check that found it is
+    `evidence/S10/cold-clone-20261011d.md`. A delivery form has to describe the artifact a customer receives
+    from the repository, so it measures the tracked file set and prints what it dropped.
+    """
+    r = subprocess.run(["git", "ls-files", "-z"], cwd=REPO, capture_output=True, text=True,
+                       encoding="utf-8", errors="replace")
+    if r.returncode != 0:
+        return None
+    return {p.replace("/", os.sep) for p in (x for x in r.stdout.split("SEP") if x)}
+
+
 BUILD_GLOBS = {
     "csharp": ["impl/csharp/bin/**/SendGuardProbe*.exe", "impl/csharp/*.exe"],
     "go": ["impl/go/*.exe", "impl/go/go-sendguard*.exe", "harness/audit.exe", "harness/audit.bin"],
@@ -53,7 +70,7 @@ def read_cells(port):
     return out
 
 
-def measure_port(port, cells):
+def measure_port(port, cells, tracked):
     deps = [(c.get("deps_direct"), c.get("deps_total")) for c in cells
             if isinstance(c.get("deps_direct"), int) and isinstance(c.get("deps_total"), int)]
     times = [c["elapsed_ms"] for c in cells if isinstance(c.get("elapsed_ms"), (int, float))]
@@ -62,7 +79,12 @@ def measure_port(port, cells):
         for p in glob.glob(os.path.join(REPO, pat), recursive=True):
             if os.path.isfile(p):
                 arts.append(p)
-    uniq = sorted(set(arts))
+    allm = sorted(set(arts))
+    if tracked is None:
+        uniq, dropped = allm, []
+    else:
+        uniq = [p for p in allm if p in tracked]
+        dropped = [p for p in allm if p not in tracked]
     total = sum(os.path.getsize(p) for p in uniq)
     biggest = max(uniq, key=os.path.getsize) if uniq else None
     executable = [p for p in uniq if p.lower().endswith((".exe", ".bin", ".class"))]
@@ -76,6 +98,7 @@ def measure_port(port, cells):
         "sample": (os.path.relpath(biggest, REPO).replace("\\", "/") if uniq else None),
         "kinds": ",".join(sorted({os.path.splitext(p)[1].lstrip(".") or "noext" for p in uniq})) or "-",
         "executables": len(executable),
+        "dropped_untracked": len(dropped),
     }
 
 
@@ -96,6 +119,7 @@ def self_check(rows, ports_seen):
 
 
 def main():
+    tracked = tracked_files()
     rows, ports_seen, unreadable = [], [], 0
     for port in PORTS:
         cells = read_cells(port)
@@ -104,11 +128,13 @@ def main():
                   "six ports that exist, it does not invent one" % port)
             return 3
         ports_seen.append(port)
-        rows.append(measure_port(port, cells))
+        rows.append(measure_port(port, cells, tracked))
         unreadable += 0
 
-    installers = [os.path.relpath(p, REPO).replace("\\", "/")
-                  for pat in INSTALLER_GLOBS for p in glob.glob(os.path.join(REPO, pat), recursive=True)]
+    inst_all = [p for pat in INSTALLER_GLOBS for p in glob.glob(os.path.join(REPO, pat), recursive=True)]
+    inst_keep = inst_all if tracked is None else [p for p in inst_all if p in tracked]
+    inst_drop = len(inst_all) - len(inst_keep)
+    installers = [os.path.relpath(p, REPO).replace("\\", "/") for p in inst_keep]
     tool_py = os.path.join(REPO, "tool", "check.py")
     tool_bytes = os.path.getsize(tool_py) if os.path.isfile(tool_py) else 0
     problems = self_check(rows, ports_seen)
@@ -122,15 +148,16 @@ def main():
            "printed: a `.py` and a `.exe` are not the same kind of thing and the table will not pretend "
            "otherwise.", "",
            "| port | cells read | direct/total imports (max seen, n cells reporting) | per-cell time ms "
-           "min/med/max (n) | files matched | extensions | executables | bytes | largest file |",
-           "|---|---|---|---|---|---|---|---|---|"]
+           "min/med/max (n) | tracked files matched | extensions | executables | bytes | largest file | "
+           "untracked files ignored |",
+           "|---|---|---|---|---|---|---|---|---|---|"]
     for r in rows:
         deps = "%s / %s (n=%d)" % r["deps"] if r["deps"] else "NOT-MEASURED(no numeric deps_* fields)"
         tim = "%g / %g / %g (n=%d)" % r["timing"] if r["timing"] else "NOT-MEASURED(no numeric elapsed_ms)"
-        out.append("| %s | %d | %s | %s | %d | %s | %d | %s | %s |"
+        out.append("| %s | %d | %s | %s | %d | %s | %d | %s | %s | %d |"
                    % (r["port"], r["cells_read"], deps, tim, r["artifacts"], r["kinds"],
                       r["executables"], "{:,}".format(r["bytes"]) if r["artifacts"] else "-",
-                      ("`%s`" % r["sample"]) if r["sample"] else "-"))
+                      ("`%s`" % r["sample"]) if r["sample"] else "-", r["dropped_untracked"]))
 
     zero = [r["port"] for r in rows if r["artifacts"] == 0]
     out += [""]
@@ -180,9 +207,10 @@ def main():
     text = "\n".join(out) + "\n"
     io.open(os.path.join(REPO, "docs", "delivery-form.md"), "w", encoding="utf-8", newline="\n").write(text)
     print("wrote docs/delivery-form.md bytes=%d ports=%d cells_total=%d installers_found=%d "
-          "not_measured_cells=%d instrument_problems=%d"
+          "not_measured_cells=%d instrument_problems=%d untracked_ignored=%d installers_untracked=%d"
           % (len(text.encode("utf-8")), len(rows), sum(r["cells_read"] for r in rows), len(installers),
-             text.count("NOT-MEASURED("), len(problems)))
+             text.count("NOT-MEASURED("), len(problems),
+             sum(r["dropped_untracked"] for r in rows), inst_drop))
     if problems:
         print("OUTCOME=INSTRUMENT-RED a port row was produced with nothing behind it - see the file")
         return 3

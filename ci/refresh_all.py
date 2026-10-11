@@ -20,13 +20,16 @@ REPO = os.path.dirname(HERE)
 
 # evidence_table runs the other legs internally to quote their verdict, so it goes last: a doc that
 # records a verdict must be regenerated after every other doc has been brought up to date.
-GEN = [("ci/gap_report.py", "docs/GAP.md"),
-       ("ci/matrix_table.py", "docs/matrix.md"),
-       ("ci/expected_summary.py", "docs/expected-summary.md"),
-       ("ci/tapi_report.py", "docs/tapi.md"),
-       ("ci/acceptance.py", "docs/acceptance-S02.md"),
-       ("ci/status_brief.py", "docs/STATUS.md"),
-       ("ci/evidence_table.py", "docs/evidence.md")]
+# (script, doc, acceptable non-zero readings). ci/validate_cells.py exits 1 when a cell does not
+# conform, and that is the result it exists to publish - treating it as a tool failure would hide it.
+GEN = [("ci/gap_report.py", "docs/GAP.md", (0,)),
+       ("ci/matrix_table.py", "docs/matrix.md", (0,)),
+       ("ci/expected_summary.py", "docs/expected-summary.md", (0,)),
+       ("ci/validate_cells.py", "docs/cell-validation.md", (0, 1)),
+       ("ci/tapi_report.py", "docs/tapi.md", (0,)),
+       ("ci/acceptance.py", "docs/acceptance-S02.md", (0,)),
+       ("ci/status_brief.py", "docs/STATUS.md", (0,)),
+       ("ci/evidence_table.py", "docs/evidence.md", (0,))]
 JUDGE = [("ci/selftest.py", ["--scratch-root", os.path.join(REPO, "..", "sg-selftest-refresh")]),
          ("ci/lint.py", ["--repo-root", REPO, "--selftest"]),
          ("ci/equality.py", []),
@@ -52,7 +55,7 @@ def main():
     refusals = tool_failures = 0
     before = {}
     if a.check:
-        for _s, doc in GEN:
+        for _s, doc, _ok in GEN:
             p = os.path.join(REPO, doc)
             before[doc] = io.open(p, "rb").read() if os.path.isfile(p) else None
 
@@ -68,15 +71,15 @@ def main():
             refusals += 1
 
     print("== generating docs")
-    for script, doc in GEN:
+    for script, doc, okay in GEN:
         rc, verdict, out = run(script, [])
-        if rc != 0:
-            print("   %-22s rc=%-2s %s  <- TOOL FAILURE, doc not regenerated" % (script, rc, verdict))
+        if rc not in okay:
+            print("   %-28s rc=%-2s %s  <- TOOL FAILURE, doc not regenerated" % (script, rc, verdict))
             print("        " + "\n        ".join(out.strip().splitlines()[-4:]))
             tool_failures += 1
             continue
         line = [l for l in out.splitlines() if l.startswith("wrote")]
-        print("   %-22s rc=0  %s" % (script, line[0] if line else out.strip().splitlines()[-1]))
+        print("   %-28s rc=%-2s  %s" % (script, rc, line[0] if line else out.strip().splitlines()[-1]))
         if a.check and before.get(doc) is not None:
             now = io.open(os.path.join(REPO, doc), "rb").read()
             if now != before[doc]:

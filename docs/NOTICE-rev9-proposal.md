@@ -94,3 +94,38 @@ property for every port. Do **not** add the nine fields to `required` yet.
 Until one of those three words arrives, `spec/` stays at round 8, the legs keep printing the blanks, and the
 outward documents keep the pair-of-numbers rule (`cells_fully_recorded_and_identical` quoted beside
 `cells_with_no_verdict_disagreement`) so nobody can quote the flattering half.
+
+
+## Added 2026-10-12: a fourth item rides this same seal, and no round opens for it alone
+
+The owner ruled this morning that this repository is **not** rewritten. The measured blast radius of the disclosure
+fix is 11 non-data faces and 17 lines (1 in `spec/schema.json`, 16 across the six ports' emit sites), and nothing
+in the judging apparatus reads the field - `ci/`, `tool/` and the generated `docs/` faces score 0 hits. See
+`docs/tickets/SG-F8-public-interface-process-metadata.md` for the change and
+`docs/tickets/SG-F9-narrative-faces-production-metadata.md` for its narrative half.
+
+Why it belongs in this round rather than a tenth: renaming a schema property changes `spec/schema.json`'s digest,
+which re-seals the contract and stales every record's `spec_sha256` until all six ports re-emit. Two seals would
+make six ports rebuild twice for what one rebuild delivers, and `ci/spec_drift.py` would show two stale windows
+where one is the honest count.
+
+What the seal must carry in one act:
+
+1. `worker_id` removed from `spec/schema.json`; `implementation_id` added with value shape
+   `^[a-z][a-z0-9-]{0,15}-port$`, enforced by `ci/validate_cells.py` in both directions - a planted session value
+   refused, `python-port` accepted;
+2. `spec/FROZEN.md`'s seal line re-worded in product-side terms, its digest table re-pinned in the same commit;
+3. the two rulers (`spec/schema.json` and `ci/validate_cells.py`) reading one closed field dictionary, since they
+   were once caught disagreeing;
+4. `docs/claim-boundary.md` gaining a row that separates **product provenance** - runtime, toolchain, harness
+   version, kept because verdicts demonstrably flip with the executable - from **production metadata**, which
+   lane was staffed by whom, not part of any cell's correctness and not published from here on.
+
+What a seal cannot undo, stated rather than implied: the field and its values are already in the published
+history - 1,150 occurrences over 880 result faces and 63 evidence faces - plus the narrative faces. History is not
+rewritten on the owner's ruling, so the forward correction is paired with an errata row naming what was public,
+and no face may read as though it always was clean. `python ci/process_leak_scan.py --repo-root .` is the standing
+leg; at the time of writing it reports
+`OUTCOME=RED ... fatal_by_class=HOSTROOT:14,IDENTITY:1134,LOGIN:17,RETIRED:1141` against this tree and
+`OUTCOME=CLEAN files_scanned=5 FATAL=0` against a sibling repository, so a future `CLEAN` is a reachable state and
+not a hope.

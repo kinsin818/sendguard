@@ -39,6 +39,20 @@ RESULTS = os.path.join(REPO, "results")
 NL = chr(10)
 BSLASH = chr(92)
 FWD = "/"
+
+
+def rel(path):
+    r"""A path relative to the repository, or the absolute path if it is not under it.
+
+    Measured: the fixtures live wherever the caller put the scratch root, which was `C:\Users\...\Temp`
+    while the repository is on `D:`. `os.path.relpath` raises across drives, and a gate that crashes is
+    reported by the harness as rc=1 - which reads exactly like the gate refusing a bad run. The instrument
+    has to survive a foreign scratch root or it turns a tool failure into a fake measurement.
+    """
+    try:
+        return os.path.relpath(path, REPO).replace(BSLASH, FWD)
+    except ValueError:
+        return str(path)
 CANON = os.path.join(REPO, "spec", "canonical.md")
 # a fixture may bring its own question set; the shipped default is the committed manifest
 REQUIRED = os.environ.get("SG_REQUIRED_CELLS") or os.path.join(REPO, "spec", "cells-required.json")
@@ -861,12 +875,12 @@ def main(argv):
     # A test that writes into the evidence face is a defect even when the test itself passes.
     vpath = os.environ.get("SG_VERDICT_OUT") or os.path.join(
         REPO, "evidence", "S02", "equality-verdict.json")
-    verdict["source_results"] = os.path.relpath(RESULTS, REPO).replace(BSLASH, FWD)
-    verdict["source_required_list"] = os.path.relpath(REQUIRED, REPO).replace(BSLASH, FWD)
+    verdict["source_results"] = rel(RESULTS)
+    verdict["source_required_list"] = rel(REQUIRED)
     verdict["written_at"] = time.strftime("%Y-%m-%dT%H:%M:%S%z")
     io.open(vpath, "w", encoding="utf-8", newline=NL).write(
         json.dumps(verdict, ensure_ascii=False, sort_keys=True, indent=1) + NL)
-    print("wrote %s outcome=%s" % (os.path.relpath(vpath, REPO).replace(BSLASH, FWD), verdict["outcome"]))
+    print("wrote %s outcome=%s" % (rel(vpath), verdict["outcome"]))
 
     if vdis:
         print("OUTCOME=RED verdict_disagreements=%d verdict_identical_cells=%d/%d "

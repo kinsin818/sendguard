@@ -1,7 +1,7 @@
 # SENDGUARD FROZEN (S01 freeze declaration)
 
-Freeze date: 2026-10-10. Frozen by: main agent (doubao seat) per 军令 S01,
-after S00 DoD 10/10 PASS. THIS FILE IS THE LOCK. S01 and later may not add,
+Freeze date: 2026-10-10. Sealed by the contract owner seat under order S01,
+after the S00 definition-of-done reached 10/10 PASS. THIS FILE IS THE LOCK. S01 and later may not add,
 remove, or rename cases; additions go to backlog and require a new freeze.
 
 **FREEZE REVISION 3 (contract-only; the 20 traps and their hex are unchanged) (2026-10-10, P0 defect fix)**:
@@ -14,6 +14,26 @@ yaml. Old sha256 of cases.yaml: `2708ae44f61f448db5ef9abcdb91e1a7a81484626b7edf8
 All seats must read the new freeze; affected cells must be re-run with the new
 hex (never hand-typed names).
 
+**FREEZE REVISION 4 (contract-only; the 20 traps, their hex and `spec/cases.yaml` are unchanged) (2026-10-12,
+SG-F8)**: `spec/schema.json` renamed the producer field `worker_id` to `implementation_id` and gave it the value
+pattern `^[a-z][a-z0-9-]{0,15}-port$`. Reason: the published values named sessions, seat codes and engines
+(1,150 occurrences across 880 result faces), which is production metadata about who staffed a lane, not a property
+of any cell. Old sha256 of schema.json:
+`52abbc86c8899f41e1889e71d35cdf73bd363204274e862bf6bcb2ab9f761435` (superseded, still in the published history).
+
+What did **not** change, and why that is the whole cost of this revision: the per-record fingerprint
+`spec_sha256` is the digest of `spec/cases.yaml`, which this revision does not touch - measured, not asserted:
+`sha256(git show HEAD:spec/cases.yaml)` = `8650a1863578...` before and after. And `additionalProperties` is true
+by design, so no record already written becomes invalid: a port that recorded extra fields is not punished for
+it. The six ports therefore re-emit to **purge a leaking key from the data faces**, not to re-answer anything;
+`python ci/equality.py` reads `54 / 24/44 / 4 / 121 / 2281` on the old faces and will read the same numbers on
+the re-emitted ones. If those readings ever move because of this rename, it is not the rename that moved them.
+
+The seal line above used to name a persona and an internal order word for the act of sealing. That wording is
+itself published (it is in `1b4abc6`), so it is corrected forward rather than erased: the authority for a seal is
+the contract-owner role, and who personally held it at S01 is in the history and is not a fact about the
+contract.
+
 ## Locked artifacts (SHA-256, public)
 
 | file | sha256 |
@@ -23,7 +43,7 @@ hex (never hand-typed names).
 | spec/canonical.md | f3fe3122c131649d5df81d6c5331d0224dc270065f8ff46dd328d465324e6e69 |
 | spec/attribution-tree.md | 286f81914c73a73986e5de234121ce159fd1bdf39126dc9b22b5560988bde805 |
 | spec/validate.py | 66f8c0035981bf7c518378b96206309860057e215c08cad2f533dde26d87dfbe |
-| spec/schema.json | 52abbc86c8899f41e1889e71d35cdf73bd363204274e862bf6bcb2ab9f761435 |
+| spec/schema.json | c1a5097ce4a7e63c21aa1e24e7c89d0c20824cf6f1b814eba2482d06a7c419f7 |
 | spec/cell-identity.md | 5c87c7c66cfe828ea304a6aa16d28d492cf36bf77d520bde293ba213955b10b7 |
 | spec/cells-required.json | ed8a8a29c0eea99925659f6d0f2f63b94469654e1f793ab027b6e55a4a1a8cb8 |
 

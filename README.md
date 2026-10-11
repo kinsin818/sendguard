@@ -15,11 +15,16 @@ git clone <this repo> && cd sendguard
 python ci/selftest.py --scratch-root ../sg-selftest   # proves every gate can pass AND can fail
 python ci/equality.py                                 # six ports, one frozen spec, same verdict bytes -
 python ci/coverage_report.py                          # and who actually answered (a blank is not agreement)
+python ci/validate_cells.py --selftest                # the outside ruler for cell conformance, both edges
+python ci/spec_drift.py                               # which spec fingerprint each compared cell carries
 python ci/gap_report.py                               # which required cells each port has not answered
 python ci/matrix_table.py                             # the (cell x port) grid, and which field differs
-python ci/expected_summary.py                         # sealed expectation vs measured, row by row
+python ci/expected_summary.py                         # sealed expectation vs measured, row by row -
+                                                      #   including the macOS/Ubuntu rows nobody has run
 python ci/triangle.py                                 # ports vs expectation vs the machine's own tools
+python ci/acceptance.py                               # what each lane claims vs what the tree holds
 python ci/evidence_table.py                           # regenerates docs/evidence.md from the committed data
+python ci/status_brief.py                             # the one screen of numbers everything else quotes
 python tool/check.py --name "trail."                   # the deliverable: one name, asked on this machine
 ```
 

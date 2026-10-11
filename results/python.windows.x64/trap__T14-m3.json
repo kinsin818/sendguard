@@ -26,8 +26,8 @@
  "run_status_basis": "measured = both legs ran, or ran and produced an OS answer; blocked = the cell could not be run, with command+exit code+fix",
  "contract_rev_seen": "rev4 (298d6e4: rulers aligned, read_result not_applicable, gate honours declared sub_identity and excludes extra cells)",
  "worker_id": "seat-qoder-python-port",
- "spec_sha256": "b1eb629c4ff760a5bd392c748b52cf4da8693ea7b4c6a15b3e6549fa41100ad1",
- "spec_face": "git cat-file blob HEAD:spec/cases.yaml rc=0 bytes=10611",
+ "spec_sha256": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261",
+ "spec_face": "git cat-file blob HEAD:spec/cases.yaml rc=0 bytes=11347",
  "env": {
   "LongPathsEnabled": 0,
   "LongPathsEnabled_source": "winreg HKLM ...\\FileSystem\\LongPathsEnabled",
@@ -49,7 +49,7 @@
  "deps_total": 0,
  "deps_basis": "imports are stdlib only (argparse ctypes hashlib json os pathlib stat sys time uuid zipfile shutil); third-party count = 0",
  "scratch_root": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\sendguard-run",
- "scratch_dir": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\sendguard-run\\f32569e4",
+ "scratch_dir": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\sendguard-run\\95e90d14",
  "scratch_verified_empty": true,
  "cleanup_attempted": false,
  "probe_timeout_s": 5.0,
@@ -67,7 +67,7 @@
  "error_stage_rule": "non-OSError raised before the syscall -> parse; OSError carrying errno/winerror -> syscall (fs/tool unused, see selfcheck)",
  "member_index": "2",
  "member_identity_note": "rev3 lists members in the case_id (T09-m1); member_index here is the 0-based position in the frozen sample_hex_list, kept as data, not identity",
- "leg_dir": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\sendguard-run\\f32569e4\\L0",
+ "leg_dir": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\sendguard-run\\95e90d14\\L0",
  "leg_pre_existing_entries": 0,
  "entry_spread": {
   "os.mkdir": {
@@ -253,17 +253,15 @@
  "attribution_layer": "L1",
  "attribution_layer_basis": "OS-level name policy; same for every entry of this language (entry_spread agrees); varies_across_OS pending",
  "control_pass": true,
- "elapsed_ms": 103,
- "started_at": "2026-10-11T05:28:23+0800",
+ "elapsed_ms": 109,
+ "started_at": "2026-10-11T13:07:43+0800",
  "spec_provenance": {
   "category": "reserved_device_name",
   "applicable": "[windows, macos, ubuntu]",
   "case_locale": "en-US",
   "spec_source": "MS Learn naming-a-file (device table)"
  },
- "rev3_migrated": true,
+ "rev3_migrated": false,
  "rev3_migration_notes": [],
- "extra": false,
- "migrated_under_spec_sha256": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261",
- "migrated_under_spec_face": "git cat-file blob HEAD:spec/cases.yaml rc=0 bytes=11347"
+ "extra": false
 }

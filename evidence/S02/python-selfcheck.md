@@ -1,5 +1,70 @@
 # S02 python port -- self-check, contract rev7 (final tonight)
 
+## SG-F1 re-stamp (ticket `docs/tickets/SG-F1-python-restamp.md`, executed 13:0x-13:2x +0800)
+
+Race guard ran first and passed: `git status --porcelain -uall --
+results/python.windows.x64` was empty, and the newest mtime in the directory was
+08:26:18 -- before the 13:0x dispatch -- so no other writer held the surface.
+
+What was done is a re-stamp by re-emission: the same cells, emitted again by the
+same harness, which already reads `spec/cases.yaml` from the committed blob face
+(`git cat-file blob HEAD:spec/cases.yaml` = `8650a1863578`, 11347 bytes, equal to
+`spec/cells-required.json`'s `spec_blob_sha256`). No recording logic was changed
+and `impl/python/` was not edited at all for this ticket.
+
+Proof it is a re-stamp and not a re-answer, computed per cell against the
+pre-ticket commit rather than asserted:
+
+* **verdict fields changed: 0** across all 123 records, comparing
+  `os_legality_verdict, mechanism_class, phantom, roundtrip_ok, name_mutated,
+  enum_to_stat_agrees, len_triple, bytes_written, bytes_on_disk, name_landed_as,
+  create_result, error_stage, read_result, same_name_hits, delivered_nothing,
+  name_source, len_ceiling, run_status, extra` old vs new;
+* the only differences outside the stamp fields are `scratch_dir` / `leg_dir` (a
+  fresh uuid directory per cell, as the contract requires), `win32_fullpath`
+  (which embeds that path), and one `entry_spread.elapsed_ms_child` of 3 ms
+  becoming 2 ms;
+* **records gone: 0** -- 123 before, 123 after, and every one of the 123 resolved
+  in the pre-ticket commit, so nothing was wiped rebuilding in place;
+* fingerprints now: 50 records carry the current `8650a186…`, 73 carry
+  `a7f9a57df1…` (the extra cells -- the 48 frozen-grid points, the two base-13
+  bisections and the 11 superseded renames -- which the gate does not compare, so
+  they are outside criterion 1 by the leg's own definition); zero records now
+  carry the stale `b1eb629c…`.
+
+Criteria as run, with the line each command printed and its real exit code
+(`rc` taken from the process, not from a pipeline):
+
+| # | command | rc | line |
+|---|---|---|---|
+| 2 | `python ci/equality.py` | 1 | `OUTCOME=RED verdict_disagreements=54 ... unpinned_input=0 cells_excluded=0 required_cells_missing=0` |
+| 1 | `python ci/spec_drift.py` | 0 | `wrote docs/spec-drift.md bytes=1761 compared=264 current=264 older=0 unstamped=0 older_unresolvable=0 affected_by_delta=0` / `OUTCOME=CLEAN drift_reached_compared_cells=0 (older fingerprints disclosed above, 0 records)` |
+| 3 | `python ci/validate_cells.py` | 0 | `wrote docs/cell-validation.md bytes=2536 invalid=0 missing_faces=0 ...` |
+| 4 | `python ci/gap_report.py` | 0 | `wrote docs/GAP.md bytes=1354 ports=6 total_missing=0` and `## python - matched 44/44, missing 0, outside-list 0, extra-flagged 75` |
+| 5 | `git status --porcelain -uall -- results/python.windows.x64` | 0 | (empty) |
+
+Criterion 2 held exactly at 54 -- it did not move in either direction, so there is
+no finding to escalate: the re-stamp changed no answer, which is the same
+conclusion `ci/spec_drift.py` reaches from the other side (the delta between
+`b1eb629c` and HEAD touches only `T17`/`T18`, and `affected_by_delta=0`).
+
+Two readings worth recording rather than smoothing: `ci/gap_report.py` prints
+`total_missing=0` and then the line
+`**total missing cells across ports with a face = 0**; declared ports without a
+face = 1 (node)`, so criterion 4's "all six ports" is five ports with a face plus
+node with none; and `ci/validate_cells.py` reports
+`verdict_fields_not_required=9 verdict_fields_undocumented=4
+cells_omitting_a_compared_field=371` alongside its `invalid=0` -- those are the
+round-9 proposal items, out of scope here and untouched.
+
+Scope of this ticket's writes: `results/python.windows.x64/` (50 cells rewritten,
+0 deleted) and this file. The derived faces `docs/spec-drift.md`,
+`docs/cell-validation.md`, `docs/GAP.md` and
+`evidence/S02/equality-verdict.json` moved only because the criteria commands
+regenerated them; none was edited by hand, and none is staged in my commit.
+
+## Rev7 headline (unchanged by the re-stamp)
+
 ```
 len_cells=12/12 name_source_is_the_passed_bytes=yes len_triple_is_the_name=yes
 ceiling_field=len_ceiling controls_pass=true

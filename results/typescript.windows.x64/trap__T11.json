@@ -244,16 +244,17 @@
     ],
     "node_version": "v24.15.0"
   },
-  "read_result": null,
+  "read_result": "not_applicable",
+  "read_result_basis": "no read was attempted, so this is spec/canonical.md section 5's fifth word rather than a reading: reserved device name: this port never opens one for reading",
   "read_skipped_reason": "reserved device name: this port never opens one for reading",
-  "roundtrip_ok": null,
+  "roundtrip_ok_not_observable_reason": "no bytes came back to compare with the bytes written (reserved device name: this port never opens one for reading); spec/schema.json types this field boolean, so the honest record is an absent key, not true or false",
   "scratch": {
     "cell_root": "S:\\09325d7",
     "cell_root_real": "D:\\sendguard-work\\seat-qoder\\.sgscratch\\09325d7",
     "cleanup": "not attempted by the port (M19 forbids deletion logic in this port); the path is recorded for the operator",
     "verified_empty_before_use": true
   },
-  "sha256_self": "06a87194c98a7602faa31936c2415b66ece5b58945ceb7a19e6a79e77e6c2c92",
+  "sha256_self": "adabc9912f18877ecca586798f547110f3c4bf207608added3204739ee92fa0b",
   "sha256_truth": null,
   "spec_sha256": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261",
   "spec_sha256_basis": "git cat-file blob HEAD:spec/cases.yaml, hashed (committed blob face, not the disk file)",
@@ -261,6 +262,10 @@
   "status": "measured",
   "sub_identity": {},
   "sub_identity_rendering": "object of the declared dimensions, in filename order; the dotted string in the file name is spec/cell-identity.md S3's naming rule, not the cell's identity",
+  "unrun_leg_fields": [
+    "read_result->not_applicable",
+    "roundtrip_ok->absent with reason"
+  ],
   "verdict_via": "win32",
   "worker_id": "seat-qoder-typescript"
 }

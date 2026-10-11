@@ -501,7 +501,7 @@ function assembleCell(
     mechanism_class: plan.mechanismClass,
     spec_sha256: meta["spec_sha256"],
     spec_sha256_basis: meta["spec_sha256_basis"],
-    len_triple: createEv?.["name_len_triple"] ?? null,
+    len_triple: createEv?.["name_len_triple"] ?? canonEv?.["name_len_triple"] ?? null,
     deps_direct: 0,
     deps_total: 0,
     env,
@@ -625,8 +625,10 @@ function assembleCell(
     cell["name_landed_as"] = null;
     cell["len_triple"] = [lenEv["comp_len"], lenEv["comp_len"], lenEv["comp_len"]];
     cell["len_triple_basis"] = "the width of the pinned component this cell passed: code points / UTF-16 code units / UTF-8 bytes, all equal for the ASCII filler";
-    cell["read_result"] = null;
-    cell["read_skipped_reason"] = "length cell: the question is whether the create lands, not what the bytes say";
+    if (readEv === null) {
+      cell["read_result"] = null;
+      cell["read_skipped_reason"] = "length cell: the question is whether the create lands, not what the bytes say";
+    }
     cell["method"] = lenEv["tier"] === "len_fill" ? "len_fill_point" : "grid_point";
     const sameForm = outcomes.find((o) => o.job.form === cell["path_form"] && eventOf(o, "bisect") !== null) ?? null;
     const otherForm = outcomes.find((o) => o.job.form !== cell["path_form"] && eventOf(o, "bisect") !== null) ?? null;
@@ -682,8 +684,10 @@ function assembleCell(
     const lastOk = num(bisectEv["last_ok_comp"]) ?? 0;
     cell["len_triple"] = [lastOk, lastOk, lastOk];
     cell["len_triple_basis"] = "code units of the component at last_ok_comp (ASCII probe)";
-    cell["read_result"] = null;
-    cell["read_skipped_reason"] = "bisection leg records a boundary, not one file's contents";
+    if (readEv === null) {
+      cell["read_result"] = null;
+      cell["read_skipped_reason"] = "bisection leg records a boundary, not one file's contents";
+    }
   }
 
   if (cell["verdict_via"] === undefined) cell["verdict_via"] = "none";
@@ -1129,22 +1133,82 @@ function ctrlPlans(spec: FrozenSpec): CellPlan[] {
   });
 }
 
-function tapiPlans(spec: FrozenSpec): CellPlan[] {
+/**
+ * The T-API instrument, filed under the identity `spec/cells-required.json` pins for this port
+ * (`case_group=tapi`, `case_id=T-API`, one row per pinned entry). `entry` is a filename dimension
+ * only: ci/equality.py excludes `api_entry` from cell identity, so these are one question asked
+ * three ways, which is what docs/tapi.md counts. The spelling `TAPI-T01` this port used first is
+ * not the pinned one, and a row the leg cannot match is a row the leg reports as never run.
+ */
+function tapiPlans(spec: FrozenSpec, required: RequiredSet): CellPlan[] {
   const t01 = spec.cases.find((c) => c.id === "T01");
   if (t01 === undefined) throw new Error("frozen table lost T01");
   const hex = t01.samplesHex[0] as string;
-  return PINNED.map((entry, i) => ({
-    group: "tapi" as CaseGroup,
-    caseId: "TAPI-T01",
-    dims: [{ name: "entry", value: entry }] as Dim[],
+  if (required.present) {
+    const unknown = required.tapiForPort.filter((e) => !PINNED.includes(e));
+    if (unknown.length > 0) {
+      throw new Error(`the manifest pins entries this port has no driver for: ${unknown.join(", ")}`);
+    }
+  }
+  const rows = required.tapiRows.length > 0
+    ? required.tapiRows
+    : PINNED.map((entry) => ({ group: "tapi", caseId: "T-API", apiEntry: entry }));
+  return rows.map((row, i) => ({
+    group: row.group as CaseGroup,
+    caseId: row.caseId,
+    dims: [{ name: "entry", value: row.apiEntry }] as Dim[],
     mechanismClass: "reserved_device_name" as MechanismClass,
     nameSourceHex: hex,
     nameSourceBasis: "spec/cases.yaml T01 sample_hex; the T-API instrument runs the frozen trap once per pinned entry",
-    jobs: [job({ tag: `t${i}`, role: "primary", mode: "cell", dirRel: `t${i}`, nameHex: hex, entry, form: "plain" })],
+    jobs: [job({ tag: `t${i}`, role: "primary", mode: "cell", dirRel: `t${i}`, nameHex: hex, entry: row.apiEntry, form: "plain" })],
     controlExpectation: null,
     frozenCase: t01,
-    note: "instrument self-check cell: one pinned entry, same trap; disagreement between these three is the finding (spec/cell-identity.md S2)",
+    note: "instrument self-check cell: one pinned entry, same trap; agreement between these three is a published finding, not a failure (spec/gate.md S2, corrected by rev4)",
   }));
+}
+
+/**
+ * docs/tapi.md's "Does an entry change the answer?" only sees a cell that was answered by more than
+ * one record. Every trap plan here already drives all three entries as three separate children, but
+ * folds the two non-primary readings into one record's `entry_spread`, so the leg read "answered
+ * once". These cells publish the same two readings as their own records, for the two traps the
+ * contract owner named. The primary leg is deliberately NOT duplicated: `trap__T01.json` /
+ * `trap__T04.json` already are it, and two files claiming one (identity, api_entry) would make
+ * ci/equality.py cross-check its own digest and call a re-run a disagreement.
+ */
+function entrySpreadPlans(spec: FrozenSpec): CellPlan[] {
+  const out: CellPlan[] = [];
+  for (const id of ["T01", "T04"]) {
+    const c = spec.cases.find((x) => x.id === id);
+    if (c === undefined) throw new Error(`frozen table lost ${id}`);
+    const hex = c.samplesHex[0] as string;
+    const refusal = extendedProbeRefusal(decodeSample(hex));
+    PINNED.filter((e) => e !== PRIMARY_ENTRY).forEach((entry, k) => {
+      const jobs = [
+        job({ tag: `s${k}`, role: "primary", mode: "cell", dirRel: `s${k}`, nameHex: hex, entry, form: "plain" }),
+      ];
+      // the same extended leg the primary trap plan runs, with this leg's own entry: without it the
+      // record would answer the legality question through a different channel than its sibling, and
+      // the published entry spread would be an artefact of my plan's shape instead of the entry's
+      // behaviour. `os_legality_verdict` is a verdict field, so that difference would be a fake finding.
+      if (refusal === null) {
+        jobs.push(job({ tag: `s${k}z`, role: "osprobe", mode: "cell", dirRel: `s${k}z`, nameHex: hex, entry, form: "extended" }));
+      }
+      out.push({
+        group: "trap" as CaseGroup,
+        caseId: c.id,
+        dims: [{ name: "entry", value: entry }] as Dim[],
+        mechanismClass: c.category as MechanismClass,
+        nameSourceHex: hex,
+        nameSourceBasis: `spec/cases.yaml ${c.id} sample_hex, member 1 of ${c.samplesHex.length}; entry-spread leg`,
+        jobs,
+        controlExpectation: null,
+        frozenCase: c,
+        note: `entry-spread leg: the same frozen name as trap/${c.id}, driven through ${entry} instead of this port's primary entry`,
+      });
+    });
+  }
+  return out;
 }
 
 interface BlindEntry {
@@ -1242,6 +1306,9 @@ interface RequiredSet {
   readonly sha256: string | null;
   readonly face: string;
   readonly tapiForPort: readonly string[];
+  // the manifest pins the T-API rows' own case_group/case_id; the port must file them under the
+  // spelling the leg reads, not under one it invents (that is how an entry got "never seen").
+  readonly tapiRows: readonly { group: string; caseId: string; apiEntry: string }[];
   readonly withdrawn: string | null;
 }
 
@@ -1256,7 +1323,7 @@ function loadRequiredSet(): RequiredSet {
   const abs = resolve(REPO_ROOT, "spec", "cells-required.json");
   const empty: RequiredSet = {
     present: false, identities: [], byKey: new Map(), ladder: [], sha256: null,
-    face: "absent", tapiForPort: [], withdrawn: null,
+    face: "absent", tapiForPort: [], tapiRows: [], withdrawn: null,
   };
   let text = "";
   try {
@@ -1268,7 +1335,7 @@ function loadRequiredSet(): RequiredSet {
     required_cells?: { case_group: string; case_id: string; sub_identity?: Record<string, unknown> }[];
     base_len_ladder?: number[];
     withdraws?: string;
-    tapi_cells_per_language?: { language: string; api_entry: string }[];
+    tapi_cells_per_language?: { language: string; case_group?: string; case_id?: string; api_entry: string }[];
   };
   const identities: RequiredIdentity[] = (doc.required_cells ?? []).map((c) => ({
     group: c.case_group,
@@ -1299,12 +1366,55 @@ function loadRequiredSet(): RequiredSet {
     sha256: createHash("sha256").update(text, "utf8").digest("hex"),
     face: isTracked ? "tracked working-tree file" : "untracked working-tree file (not in HEAD)",
     tapiForPort: (doc.tapi_cells_per_language ?? []).filter((t) => t.language === PORT_NAME).map((t) => t.api_entry),
+    tapiRows: (doc.tapi_cells_per_language ?? [])
+      .filter((t) => t.language === PORT_NAME)
+      .map((t) => ({ group: t.case_group ?? "tapi", caseId: t.case_id ?? "T-API", apiEntry: t.api_entry })),
     withdrawn: doc.withdraws ?? null,
   };
 }
 
-/** Ordered {name: value} map of the cell's varying dimensions. */
-function dimsToObject(dims: readonly Dim[]): Record<string, string | number> {
+/**
+ * One pass over every cell before it is written, for the three fields the outside ruler
+ * (`ci/validate_cells.py`) scores this port's face on.
+ *
+ * `read_result` is a REQUIRED field and its closed set already has the honest word for a leg that did
+ * not run -- `not_applicable`, added by rev4 for exactly "creation failed, or the name is a device this
+ * project refuses to open", and it requires `read_skipped_reason`, which this port already records. A
+ * null there is not caution, it is an omitted required field.
+ *
+ * `roundtrip_ok` and `enum_to_stat_agrees` are `{"type": "boolean"}` in spec/schema.json: no null
+ * branch, no `not_applicable` word. For those two a leg that never ran leaves nothing observable, and
+ * stamping true or false would state a measurement that was not taken. The key is therefore dropped
+ * and the reason is written in its place -- the absence becomes a stated fact in the cell instead of a
+ * value invented to satisfy a ruler. Dropping is not hiding: neither key is in schema.json's `required`
+ * list, and `<key>_not_observable_reason` names the leg that would have produced it.
+ */
+function conformUnrunLegFields(cell: Record<string, unknown>): string[] {
+  const moved: string[] = [];
+  const reason = cell["read_skipped_reason"];
+  if (cell["read_result"] === null || cell["read_result"] === undefined) {
+    if (typeof reason === "string" && reason !== "") {
+      cell["read_result"] = "not_applicable";
+      cell["read_result_basis"] =
+        "no read was attempted, so this is spec/canonical.md section 5's fifth word rather than a reading: " + reason;
+      moved.push("read_result->not_applicable");
+    } else {
+      moved.push("read_result_left_absent: no skip reason was recorded, so no word would be honest");
+      cell["read_result_unrecorded"] = "the read leg produced neither a result nor a refusal reason";
+    }
+  }
+  for (const f of ["roundtrip_ok", "enum_to_stat_agrees"]) {
+    if (cell[f] !== null && cell[f] !== undefined) continue;
+    delete cell[f];
+    cell[f + "_not_observable_reason"] = f === "roundtrip_ok"
+      ? "no bytes came back to compare with the bytes written (" + String(reason ?? "the read leg did not run") + "); spec/schema.json types this field boolean, so the honest record is an absent key, not true or false"
+      : "there was no enumerated entry to compare a stat against (" + String(cell["create_result"] ?? "no create result") + "); spec/schema.json types this field boolean, so the honest record is an absent key, not true or false";
+    moved.push(f + "->absent with reason");
+  }
+  return moved;
+}
+
+/** Ordered {name: value} map of the cell's varying dimensions. */function dimsToObject(dims: readonly Dim[]): Record<string, string | number> {
   const out: Record<string, string | number> = {};
   for (const d of dims) out[d.name] = d.value;
   return out;
@@ -1387,6 +1497,7 @@ interface Flags {
   readonly dry: boolean;
   readonly limit: number | null;
   readonly selftestProvenance: boolean;
+  readonly conformFace: boolean;
 }
 
 function parseFlags(argv: readonly string[]): Flags {
@@ -1394,14 +1505,16 @@ function parseFlags(argv: readonly string[]): Flags {
   let dry = false;
   let limit: number | null = null;
   let selftestProvenance = false;
+  let conformFace = false;
   for (const a of argv) {
     if (a.startsWith("--only=")) only = a.slice(7);
     else if (a === "--dry") dry = true;
     else if (a === "--selftest-provenance") selftestProvenance = true;
+    else if (a === "--conform-face") conformFace = true;
     else if (a.startsWith("--limit=")) limit = Number(a.slice(8));
     else throw new Error(`unknown flag ${a}`);
   }
-  return { only, dry, limit, selftestProvenance };
+  return { only, dry, limit, selftestProvenance, conformFace };
 }
 
 /**
@@ -1449,8 +1562,52 @@ function selftestProvenance(): number {
   return failures === 0 ? 0 : 1;
 }
 
+/**
+ * Apply `conformUnrunLegFields` to the cells already on the face, in place, through this port's own
+ * serialiser -- so a repair of published cells and a freshly measured cell cannot drift apart.
+ *
+ * It rewrites files, it never creates or removes one, and it takes no measurement: the recorded
+ * `spec_sha256`, timings, scratch paths and probe events stay exactly as the run that produced them
+ * wrote them, and only the three unrun-leg fields move. `changed` counts the files whose bytes moved;
+ * a file that could not be parsed is refused, not rewritten.
+ */
+function conformFaceOnDisk(): number {
+  const dir = resolve(REPO_ROOT, RESULT_DIR);
+  const names = readdirSync(dir).filter((n) => n.endsWith(".json")).sort();
+  let changed = 0;
+  let refused = 0;
+  const tally: Record<string, number> = {};
+  for (const name of names) {
+    const full = resolve(dir, name);
+    let cell: Record<string, unknown>;
+    try {
+      const parsed = JSON.parse(readFileSync(full, "utf8")) as unknown;
+      if (parsed === null || typeof parsed !== "object" || Array.isArray(parsed)) throw new Error("not an object");
+      cell = parsed as Record<string, unknown>;
+    } catch (err) {
+      process.stdout.write(`REFUSE ${name}: ${(err as Error).message}\n`);
+      refused += 1;
+      continue;
+    }
+    const moved = conformUnrunLegFields(cell);
+    if (moved.length === 0) continue;
+    cell["unrun_leg_fields"] = moved;
+    for (const m of moved) tally[m] = (tally[m] ?? 0) + 1;
+    const text = serialiseCell(cell);
+    writeFileSync(full, text);
+    changed += 1;
+    process.stdout.write(`CONFORM ${name} ${moved.join(", ")}\n`);
+  }
+  process.stdout.write(
+    `face=${RESULT_DIR} files=${String(names.length)} changed=${String(changed)} refused=${String(refused)} ` +
+      `moved=${JSON.stringify(tally)}\n`,
+  );
+  return refused === 0 ? 0 : 1;
+}
+
 async function main(): Promise<number> {
   const flags = parseFlags(process.argv.slice(2));
+  if (flags.conformFace) return conformFaceOnDisk();
   if (flags.selftestProvenance) return selftestProvenance();
   // rev6 pins the payload in the spec face; spec.ts already refuses a pin that is not 28 bytes.
   const spec = loadFrozenSpec();
@@ -1502,7 +1659,8 @@ async function main(): Promise<number> {
     ...trapPlans(spec),
     ...zipPlans(spec),
     ...lenPlans(),
-    ...tapiPlans(spec),
+    ...tapiPlans(spec, required),
+    ...entrySpreadPlans(spec),
     ...blindPlans(blindMap),
   ];
 
@@ -1513,6 +1671,8 @@ async function main(): Promise<number> {
   let selected = plans;
   if (flags.only !== null) selected = plans.filter((p, i) => stems[i]?.includes(flags.only as string) || p.caseId === flags.only);
   if (flags.limit !== null) selected = selected.slice(0, flags.limit);
+  // a subset run must not behave as though it owned the whole face
+  const subset = flags.only !== null || flags.limit !== null;
 
   const outDir = resolve(REPO_ROOT, RESULT_DIR);
   mkdirSync(outDir, { recursive: true });
@@ -1529,18 +1689,24 @@ async function main(): Promise<number> {
   const planIndex = new Map<CellPlan, number>(plans.map((p, i) => [p, i]));
 
   // ---- phase 1: controls. spec/gate.md S8: the controls verify the ruler. ----
+  // They are run on every invocation, including a subset run: a selection that contains no control
+  // cell would otherwise reach `controls_pass=true` having verified nothing, which is the loudest way
+  // an instrument can lie. Only the cells this selection owns are written to the face.
   const ctrlSelected = selected.filter((p) => p.group === "ctrl");
+  const ctrlForRuler = plans.filter((p) => p.group === "ctrl");
   const ctrlCells: Record<string, unknown>[] = [];
-  for (const plan of ctrlSelected) {
+  for (const plan of ctrlForRuler) {
     const cell = await runPlan(plan, planIndex.get(plan) ?? 0, env, meta, null);
     ctrlCells.push(cell);
-    written.push({ stem: cellFileName(plan.group, plan.caseId, plan.dims), cell });
+    const stem = cellFileName(plan.group, plan.caseId, plan.dims);
+    if (ctrlSelected.includes(plan)) written.push({ stem, cell });
+    else process.stdout.write(`CTRL ${stem} ran as ruler only; not written (subset run)\n`);
   }
 
   const mismatched = ctrlCells.filter((c) => c["control_match"] === false);
   const canon = ctrlCells.find((c) => c["case_id"] === "T-CTRL-CANON") ?? null;
   const canonAgree = (canon?.["canon_instruments"] as Record<string, unknown> | undefined)?.["agree"] ?? null;
-  const canonRequired = ctrlSelected.some((p) => p.caseId === "T-CTRL-CANON");
+  const canonRequired = ctrlForRuler.some((p) => p.caseId === "T-CTRL-CANON");
   const controlsPassed = mismatched.length === 0 && (!canonRequired || canonAgree === true);
 
   for (const c of ctrlCells) {
@@ -1581,8 +1747,18 @@ async function main(): Promise<number> {
   }
 
   // ---- standing reconciliation: a required identity with no cell is emitted blocked ----
+  // Only for a full run. On a subset run the identities it did not select are on the face already,
+  // and emitting blocked cells for them would overwrite measured rows -- which is exactly how this
+  // port's face was damaged once before.
   const writtenStems = new Set(written.map((w) => w.stem));
-  const missingIdentities = [...required.byKey.keys()].filter((stem) => !writtenStems.has(stem));
+  const missingIdentities = subset
+    ? []
+    : [...required.byKey.keys()].filter((stem) => !writtenStems.has(stem));
+  if (subset) {
+    process.stdout.write(
+      `RECONCILE skipped: subset run (selected=${String(selected.length)} of ${String(plans.length)} plans); the required identities not in this selection are left exactly as the face holds them\n`,
+    );
+  }
   for (const stem of missingIdentities) {
     const id = required.byKey.get(stem);
     if (id === undefined) continue;
@@ -1629,10 +1805,24 @@ async function main(): Promise<number> {
 `);
 
   // stamp the run-level control verdict onto every measured cell (gate.md S10)
+  //
+  // `extra` used to mean "this filename is not one of the 44 required stems". That read too narrowly
+  // and cost this port its T-API coverage: ci/equality.py drops every `extra` cell in discover(), so
+  // the three rows this port really drove became invisible and docs/tapi.md reported 1/3 entries. The
+  // word has to mean "outside every list the manifest pins", and two lists are pinned besides
+  // `required_cells`: `tapi_cells_per_language`, and the non-primary entry legs of a required
+  // identity (api_entry is explicitly not part of cell identity, so those legs answer one of the 44
+  // questions through a different door -- they are entry_spread data, not surplus).
   for (const w of written) {
     const isRequired = required.present && required.byKey.has(w.stem);
+    const baseStem = w.stem.replace(/__entry-[^.]+\.json$/, ".json");
+    const isSpreadLeg = baseStem !== w.stem && required.byKey.has(baseStem);
+    const isTapiRow = String(w.cell["case_group"] ?? "") === "tapi" &&
+      required.tapiForPort.includes(String(w.cell["api_entry"] ?? ""));
     w.cell["in_cells_required"] = isRequired;
-    if (required.present && !isRequired) w.cell["extra"] = true;
+    if (isTapiRow) w.cell["tapi_pinned_in_manifest"] = true;
+    if (isSpreadLeg) w.cell["published_as_leg_of"] = baseStem;
+    if (required.present && !isRequired && !isTapiRow && !isSpreadLeg) w.cell["extra"] = true;
     if (required.present) {
       w.cell["cells_required_face"] = {
         sha256: required.sha256,
@@ -1642,6 +1832,11 @@ async function main(): Promise<number> {
       };
     }
     if (w.cell["control_pass"] === null || w.cell["control_pass"] === undefined) w.cell["control_pass"] = controlsPassed;
+    const moved = conformUnrunLegFields(w.cell);
+    if (moved.length > 0) {
+      w.cell["unrun_leg_fields"] = moved;
+      process.stdout.write(`CONFORM ${w.stem} ${moved.join(", ")}\n`);
+    }
     if (!controlsPassed && w.cell["status"] === "measured") {
       w.cell["instrument_red"] = true;
       w.cell["control_pass"] = false;

@@ -50,7 +50,7 @@
   ],
   "enum_listed": [],
   "enum_matched_by": "none",
-  "enum_to_stat_agrees": null,
+  "enum_to_stat_agrees_not_observable_reason": "there was no enumerated entry to compare a stat against (err_at_syscall); spec/schema.json types this field boolean, so the honest record is an absent key, not true or false",
   "enum_unclaimed": [],
   "env": {
     "LongPathsEnabled": 0,
@@ -225,16 +225,17 @@
     ],
     "node_version": "v24.15.0"
   },
-  "read_result": null,
+  "read_result": "not_applicable",
+  "read_result_basis": "no read was attempted, so this is spec/canonical.md section 5's fifth word rather than a reading: nothing landed, so no read was attempted",
   "read_skipped_reason": "nothing landed, so no read was attempted",
-  "roundtrip_ok": null,
+  "roundtrip_ok_not_observable_reason": "no bytes came back to compare with the bytes written (nothing landed, so no read was attempted); spec/schema.json types this field boolean, so the honest record is an absent key, not true or false",
   "scratch": {
     "cell_root": "S:\\eec4554",
     "cell_root_real": "D:\\sendguard-work\\seat-qoder\\.sgscratch\\eec4554",
     "cleanup": "not attempted by the port (M19 forbids deletion logic in this port); the path is recorded for the operator",
     "verified_empty_before_use": true
   },
-  "sha256_self": "8d590be85bf342d72dbfb0530976649c44fc9329255dbcea5adc45bca5dff5c1",
+  "sha256_self": "899bf6508a845d000d38ccda9c82ab35646990ec07c2f66ccdd1db55b52d6418",
   "sha256_truth": null,
   "spec_sha256": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261",
   "spec_sha256_basis": "git cat-file blob HEAD:spec/cases.yaml, hashed (committed blob face, not the disk file)",
@@ -242,6 +243,11 @@
   "status": "measured",
   "sub_identity": {},
   "sub_identity_rendering": "object of the declared dimensions, in filename order; the dotted string in the file name is spec/cell-identity.md S3's naming rule, not the cell's identity",
+  "unrun_leg_fields": [
+    "read_result->not_applicable",
+    "roundtrip_ok->absent with reason",
+    "enum_to_stat_agrees->absent with reason"
+  ],
   "verdict_via": "win32",
   "worker_id": "seat-qoder-typescript"
 }

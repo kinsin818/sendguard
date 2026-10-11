@@ -346,6 +346,10 @@ async function modeCanon(a: Args): Promise<void> {
     payload_sha256: shaMemory,
     name_len_triple: lengthTriple(name),
   });
+
+  // the enumeration authority the other cells record, so this cell can say whether the directory list
+  // and the stat of the same name agree -- it writes and reads the file, it just never listed it
+  emit(a.log, enumEvent(enumerate(a.dir, name), name));
 }
 
 async function modeLen(a: Args): Promise<void> {
@@ -365,6 +369,39 @@ async function modeLen(a: Args): Promise<void> {
   // the same enumeration authority the trap probes record, so a length cell says what the
   // directory lists rather than only what the write returned
   emit(a.log, enumEvent(report, name));
+
+  // The read-back leg. A length cell used to stop at "did it land", which left read_result,
+  // roundtrip_ok and enum_to_stat_agrees unrecorded on 36 cells that had a real file sitting in the
+  // scratch directory: the omission was my cell's question, not an unobservable fact. Reading the
+  // pinned payload back is allowed here (the name is filler, never a device name), so the cell now
+  // answers the round trip instead of declining it. Reserved names still stop the leg: this port does
+  // not open the contents of a device name for any mode.
+  if (report.landed === null) {
+    emit(a.log, { ev: "read", result: null, skipped_reason: "nothing landed, so no read was attempted" });
+  } else if (isReservedDeviceName(report.landed)) {
+    emit(a.log, { ev: "read", result: null, skipped_reason: "reserved device name: this port never opens one for reading" });
+  } else {
+    try {
+      const back = readFileSync(fullPath(a.dir, report.landed, a.form));
+      emit(a.log, {
+        ev: "read",
+        result: back.length === 0 ? "eof" : "ok",
+        bytes: back.length,
+        sha256: sha256Of(back),
+        roundtrip_ok: back.equals(data),
+      });
+    } catch (err) {
+      const e = describeError(err);
+      const invalidHandle = /invalid handle/i.test(e.message);
+      emit(a.log, {
+        ev: "read",
+        result: invalidHandle ? "err6" : null,
+        error_code: e.code,
+        error_message: e.message,
+        skipped_reason: invalidHandle ? null : "read failed with an outcome the closed read_result set does not name",
+      });
+    }
+  }
 
   emit(a.log, {
     ev: "len",
@@ -425,6 +462,40 @@ async function modeBisect(a: Args): Promise<void> {
     confirmFailure = describeError(err);
   }
   const confirmReport = confirmFailure === null ? enumerate(a.dir, confirmName) : null;
+
+  // The confirm file is a real entry with the pinned payload, so the boundary cell can answer the
+  // same three fields every other cell answers: what the directory lists, whether stat agrees with
+  // it, and whether the bytes come back. Before this the bisect cells published `null` for all three,
+  // which read as an unobservable fact when it was only a leg this mode never ran.
+  if (confirmReport !== null) {
+    emit(a.log, enumEvent(confirmReport, confirmName));
+    if (confirmReport.landed === null) {
+      emit(a.log, { ev: "read", result: null, skipped_reason: "nothing landed, so no read was attempted" });
+    } else if (isReservedDeviceName(confirmReport.landed)) {
+      emit(a.log, { ev: "read", result: null, skipped_reason: "reserved device name: this port never opens one for reading" });
+    } else {
+      try {
+        const back = readFileSync(fullPath(a.dir, confirmReport.landed, a.form));
+        emit(a.log, {
+          ev: "read",
+          result: back.length === 0 ? "eof" : "ok",
+          bytes: back.length,
+          sha256: sha256Of(back),
+          roundtrip_ok: back.equals(data),
+        });
+      } catch (err) {
+        const e = describeError(err);
+        const invalidHandle = /invalid handle/i.test(e.message);
+        emit(a.log, {
+          ev: "read",
+          result: invalidHandle ? "err6" : null,
+          error_code: e.code,
+          error_message: e.message,
+          skipped_reason: invalidHandle ? null : "read failed with an outcome the closed read_result set does not name",
+        });
+      }
+    }
+  }
 
   emit(a.log, {
     ev: "bisect",

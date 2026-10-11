@@ -21,7 +21,7 @@
   "create_result": "ok",
   "deps_direct": 0,
   "deps_total": 0,
-  "elapsed_ms": 123,
+  "elapsed_ms": 189,
   "entry_spread": [],
   "enum_listed": [
     "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
@@ -153,7 +153,7 @@
     "spec_sha256_set": {
       "spec/canonical.md": "f3fe3122c131649d5df81d6c5331d0224dc270065f8ff46dd328d465324e6e69",
       "spec/cases.yaml": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261",
-      "spec/cell-identity.md": "0b436a8fc24f1ec6855e6cc8e547d5ecbf3cc544467595d1f31ebfa39a6e59a2",
+      "spec/cell-identity.md": "5c87c7c66cfe828ea304a6aa16d28d492cf36bf77d520bde293ba213955b10b7",
       "spec/schema.json": "52abbc86c8899f41e1889e71d35cdf73bd363204274e862bf6bcb2ab9f761435"
     },
     "volume_component_limit": 255
@@ -187,25 +187,25 @@
         "stderr_tail": null,
         "tag": "g",
         "timed_out": false,
-        "wall_ms": 123
+        "wall_ms": 189
       }
     ],
     "node_version": "v24.15.0"
   },
-  "read_result": null,
-  "read_skipped_reason": "length cell: the question is whether the create lands, not what the bytes say",
-  "roundtrip_ok": null,
+  "read_result": "ok",
+  "read_skipped_reason": null,
+  "roundtrip_ok": true,
   "scratch": {
-    "cell_root": "S:\\1c1a436",
-    "cell_root_real": "D:\\sendguard-work\\seat-qoder\\.sgscratch\\1c1a436",
+    "cell_root": "S:\\d85f1fb",
+    "cell_root_real": "D:\\sendguard-work\\seat-qoder\\.sgscratch\\d85f1fb",
     "cleanup": "not attempted by the port (M19 forbids deletion logic in this port); the path is recorded for the operator",
     "verified_empty_before_use": true
   },
-  "sha256_self": "f849cc457fc51fab816d37fa8b7071fbbdd9b45b2e52162a30cbb14db736731b",
-  "sha256_truth": null,
+  "sha256_self": "53a55117deea4004aa1e71b6199c78b1ce39a5a08a5ddaa70f682a7d8f278624",
+  "sha256_truth": "c9fe45b2fee8ea846f0cf4f2cacc2a891e7b082e7719923502d12a9813e21994",
   "spec_sha256": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261",
   "spec_sha256_basis": "git cat-file blob HEAD:spec/cases.yaml, hashed (committed blob face, not the disk file)",
-  "started_at": "2026-10-11T01:00:15.594Z",
+  "started_at": "2026-10-11T03:53:21.475Z",
   "status": "measured",
   "sub_identity": {
     "base_len": 120,
@@ -213,7 +213,6 @@
     "method": "grid_point",
     "path_form": "plain"
   },
-  "sub_identity_rendering": "object of the declared dimensions, in filename order; the dotted string in the file name is spec/cell-identity.md S3's naming rule, not the cell's identity",
   "tier": "G2",
   "total_path_len": 260,
   "verdict_via": "none",

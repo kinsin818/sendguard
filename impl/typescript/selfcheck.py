@@ -139,8 +139,12 @@ def frozen_expectation():
         # rev6 requires a rung per base_len x path_form, so the ladder is 3 x 2 x 2 cases
         "len_rungs": 2 * len(req["ladder"]) * 2 if req["present"] else 0,
         "ctrl": 5,
-        "tapi": 3,                # pinned entry list; rev6 requires no T-API identity of typescript
+        # the entry list the manifest pins for this port, not a number chosen here: 3 for typescript
+        "tapi": len(req["tapi_rows"]) if req["present"] else 3,
         "blind": 5,               # rev6 item 2: run them, with blind_id from the sealed map
+        # docs/tapi.md asks whether an entry changes the answer, which needs one record per entry.
+        # Two traps x the two non-primary pinned entries; declared in the port, like the zip legs.
+        "entry_spread_legs": 4,
     }
     expected["total_frozen"] = sum(v for k, v in expected.items() if k != "len_rungs")
     expected["total"] = expected["total_frozen"] + expected["len_rungs"]
@@ -280,6 +284,15 @@ def check_cell_with_sha(cell, schema, sets, cases_blob_sha, name="<memory>"):
     missing_keys = [b for b in behaviour if b not in cell]
     if blocked and set(missing_keys) <= set(NOT_REACHABLE) | {"name_landed_as", "name_mutated", "len_triple"}:
         missing_keys = []
+    # `roundtrip_ok` and `enum_to_stat_agrees` are typed {"type": "boolean"} in the frozen schema: there
+    # is no null branch and no not_applicable word, so a leg that never ran leaves nothing that could
+    # honestly go in the key. An ABSENT key that the cell explains is therefore the open contract gap
+    # (G-2's family), not this cell hiding evidence -- but an unexplained absence stays a violation, or
+    # this rule would become a licence to drop fields whenever a ruler gets too close.
+    required_fields = set(schema.get("required", []))
+    explained = [k for k in missing_keys
+                 if k not in required_fields and cell.get(k + "_not_observable_reason")]
+    missing_keys = [k for k in missing_keys if k not in explained]
     if missing_keys:
         v.append("digest fields absent from this cell: " + ",".join(missing_keys))
 
@@ -380,8 +393,91 @@ def selftest_rules():
     bv, _, _ = check_cell_with_sha(bad, schema, sets, "0" * 64)
     fired = any("canonical definition" in x for x in bv)
     clean_ok = not any("canonical definition" in x for x in gv)
-    print(f"selftest_rules green_arm_clean={clean_ok} red_arm_caught={fired}")
+
+    # arms for classify_extra_claims: the same function main() runs, on purpose-built faces.
+    req_stems = {"trap__T01.json", "trap__T04.json"}
+    pin = {("tapi", "T-API", e) for e in ("writeFileSync", "createWriteStream", "appendFileSync")}
+    green = {
+        "tapi__T-API__entry-createWriteStream.json":
+            {"case_group": "tapi", "case_id": "T-API", "api_entry": "createWriteStream",
+             "tapi_pinned_in_manifest": True},
+        "trap__T04__entry-appendFileSync.json":
+            {"case_group": "trap", "case_id": "T04", "api_entry": "appendFileSync",
+             "published_as_leg_of": "trap__T04.json"},
+        "trap__T04.json": {"case_group": "trap", "case_id": "T04", "api_entry": "writeFileSync"},
+        "trap__T99.json": {"case_group": "trap", "case_id": "T99", "extra": True},
+    }
+    red = {
+        # surplus that cites nothing; a pinned row that does not say so; a required stem marked extra;
+        # a leg that names a stem that is not required
+        "trap__T98.json": {"case_group": "trap", "case_id": "T98", "api_entry": "writeFileSync"},
+        "tapi__T-API__entry-appendFileSync.json":
+            {"case_group": "tapi", "case_id": "T-API", "api_entry": "appendFileSync"},
+        "trap__T01.json": {"case_group": "trap", "case_id": "T01", "api_entry": "writeFileSync",
+                           "extra": True},
+        "trap__T02__entry-createWriteStream.json":
+            {"case_group": "trap", "case_id": "T02", "api_entry": "createWriteStream",
+             "published_as_leg_of": "trap__T02.json"},
+        # a leg whose citation does not match its own filename: the cite has to be the stem it splits
+        "trap__T04__entry-appendFileSync.json":
+            {"case_group": "trap", "case_id": "T04", "api_entry": "appendFileSync",
+             "published_as_leg_of": "trap__T01.json"},
+    }
+    gu, gp, gb = classify_extra_claims(green, req_stems, pin)
+    ru, rp, rb = classify_extra_claims(red, req_stems, pin)
+    extra_green_ok = len(gp) == 2 and not gu and not gb
+    extra_red_caught = len(ru) == 3 and len(rb) == 2 and not rp
+
+    # arms for the unobservable-digest-field rule: an absent boolean must be a violation when the cell
+    # says nothing, and must not be one when the cell names the leg that would have produced it.
+    no_reason = dict(base)
+    no_reason.pop("roundtrip_ok")
+    with_reason = dict(no_reason)
+    with_reason["roundtrip_ok_not_observable_reason"] = "no bytes came back to compare with the bytes written"
+    v_no = check_cell_with_sha(no_reason, schema, sets, "0" * 64)[0]
+    v_yes = check_cell_with_sha(with_reason, schema, sets, "0" * 64)[0]
+    unobs_red = any("digest fields absent" in x and "roundtrip_ok" in x for x in v_no)
+    unobs_green = not any("digest fields absent" in x for x in v_yes)
+    print(f"selftest_rules unobservable_rule[red_unexplained_absence_caught={unobs_red},"
+          f"green_explained_absence_allowed={unobs_green}]")
+    print(f"selftest_rules green_arm_clean={clean_ok} red_arm_caught={fired} "
+          f"extra_rule[green_passes={extra_green_ok},red_caught={extra_red_caught},"
+          f"red_unflagged={ru},red_bad={len(rb)}]")
+    if not (extra_green_ok and extra_red_caught and unobs_red and unobs_green):
+        return 1
     return 0 if (fired and clean_ok) else 1
+
+
+def classify_extra_claims(cells, req_stems, tapi_pin):
+    """Split the face into marked-extra / pinned-outside-required / unexplained, and catch lying claims.
+
+    `extra` means "outside every list the manifest pins", not "not one of the 44 required stems":
+    ci/equality.py drops every extra cell inside discover(), so a T-API row marked extra is invisible to
+    docs/tapi.md and reads as an entry the harness never ran (measured: that is exactly how this port
+    came to show 1/3). An exemption is only accepted when the cell CITES the list that pins it, so the
+    port cannot exempt itself by assertion. Extracted from main() so both arms are testable.
+    """
+    unflagged, pinned_outside, bad_claim = [], [], []
+    for s, c in cells.items():
+        if s in req_stems:
+            if c.get("extra") is True:
+                bad_claim.append(f"{s}: marked extra although it is a required identity")
+            continue
+        if c.get("extra") is True:
+            continue
+        claim = (str(c.get("case_group")), str(c.get("case_id")), str(c.get("api_entry")))
+        if claim in tapi_pin:
+            if c.get("tapi_pinned_in_manifest") is not True:
+                bad_claim.append(f"{s}: a pinned T-API row that does not say so")
+            else:
+                pinned_outside.append(s)
+            continue
+        base = re.sub(r"__entry-[^.]+\.json$", ".json", s)
+        if base != s and base in req_stems and str(c.get("published_as_leg_of")) == base:
+            pinned_outside.append(s)
+            continue
+        unflagged.append(s)
+    return unflagged, pinned_outside, bad_claim
 
 
 def stem_of(group, case_id, sub):
@@ -406,7 +502,8 @@ def load_required():
     stems = {}
     for c in doc.get("required_cells", []):
         stems[stem_of(c["case_group"], c["case_id"], c.get("sub_identity") or {})] = c
-    tapi = [t["api_entry"] for t in doc.get("tapi_cells_per_language", []) if t.get("language") == "typescript"]
+    tapi_rows = [t for t in doc.get("tapi_cells_per_language", []) if t.get("language") == "typescript"]
+    tapi = [t["api_entry"] for t in tapi_rows]
     return {
         "present": True,
         "stems": stems,
@@ -414,6 +511,7 @@ def load_required():
         "sha256": hashlib.sha256(raw).hexdigest(),
         "count": len(stems),
         "tapi": tapi,
+        "tapi_rows": tapi_rows,
         "withdraws": doc.get("withdraws"),
     }
 
@@ -483,14 +581,23 @@ def main():
         )
         unexplained = [k for k in missing if k not in blocked_missing]
         extras = [s for s, c in cells.items() if c.get("extra") is True]
-        unflagged = [s for s, c in cells.items() if s not in req_stems and c.get("extra") is not True]
+        # `extra` means "outside every pinned list", not "not one of the 44 stems" -- see
+        # classify_extra_claims, which holds the rule and its two test arms.
+        tapi_pin = {
+            (str(r.get("case_group")), str(r.get("case_id")), str(r.get("api_entry")))
+            for r in req.get("tapi_rows", [])
+        }
+        unflagged, pinned_outside, bad_claim = classify_extra_claims(cells, req_stems, tapi_pin)
         print(f"  required_cells={req['count']} sha256={str(req['sha256'])[:16]}... base_len_ladder={req['ladder']}")
         print(f"  withdraws={str(req['withdraws'])[:100]}")
         print(f"  tapi_rows_required_of_typescript={req['tapi']}")
         print(f"  required_matched_by_a_measured_cell={len(matched)}/{len(req_stems)}")
         print(f"  required_not_producible_as_one_identity_less_cell={len(missing)} "
               f"emitted_blocked_with_command_rc_and_attempted_fix={len(blocked_missing)} unexplained={len(unexplained)} {unexplained[:4]}")
-        print(f"  cells_marked_extra={len(extras)} (outside the required list, marked, excluded from the digest)")
+        print(f"  cells_marked_extra={len(extras)} (outside every pinned list, marked, excluded from the digest)")
+        print(f"  cells_pinned_outside_required_cells={len(pinned_outside)} "
+              f"(T-API rows + entry legs; these must NOT be extra or ci/equality.py drops them)")
+        print(f"  unexplained_cells_outside_every_pinned_list={len(unflagged)}")
         for stem, c in sorted(cells.items()):
             if stem in req["stems"] and c.get("status") == "blocked":
                 print(f"  REQUIRED_CELL_BLOCKED {stem}: {str(c.get('blocked_reason'))[:90]}")
@@ -499,7 +606,9 @@ def main():
                 "required cells neither produced nor blocked: " + ",".join("/".join(k) for k in unexplained))
         if unflagged:
             problems.setdefault("<reconciliation>", []).append(
-                f"{len(unflagged)} cells outside required_cells are not marked extra: {unflagged[:4]}")
+                f"{len(unflagged)} cells outside required_cells are not marked extra and cite no pinned list: {unflagged[:4]}")
+        for line in bad_claim:
+            problems.setdefault("<reconciliation>", []).append(line)
 
     print(f"\n== control cells (source: evidence/S00-ctrl-baseline.md)")
     ctrl_fail = []
@@ -569,6 +678,19 @@ def main():
     print(f"cells_valid_modulo_the_language_enum={cells_valid_modulo_language}  (rev3 accepts typescript)")
     print(f"cells_valid_modulo_the_two_contract_gaps={cells_valid_modulo_gaps}")
     print(f"cells_with_not_reached_null_gap_G2={len(not_reached)}")
+    # the sibling of G-2: a digest field the frozen schema cannot express an answer for. These cells are
+    # counted, named, and NOT violations -- but only because each one says why in its own body.
+    unobservable = sorted(s for s, c in cells.items()
+                          if any(c.get(f + "_not_observable_reason")
+                                 for f in ("roundtrip_ok", "enum_to_stat_agrees")))
+    print(f"cells_with_an_unobservable_digest_field_explained={len(unobservable)} "
+          f"(roundtrip_ok / enum_to_stat_agrees are typed boolean with no not_applicable word: "
+          f"gap G-2's family, named per cell by *_not_observable_reason)")
+    unexplained_absent = sorted(
+        s for s, c in cells.items()
+        if any(k not in c and not c.get(k + "_not_observable_reason")
+               for k in ("roundtrip_ok", "enum_to_stat_agrees")))
+    print(f"cells_with_an_UNEXPLAINED_absent_digest_field={len(unexplained_absent)} {unexplained_absent[:5]}")
     print(f"cells_invalid_on_rules_other_than_the_two_gaps={len(other_problems)}")
     print(f"phantom_cells={len(phantoms)} {phantoms[:8]}")
     print(f"type_ii_bytes_mismatch_cells={len(typeii)} {typeii[:6]}")
@@ -642,8 +764,24 @@ def main():
         print(f"\nOUTCOME=RED violating_cells={len(other_problems)} (language-enum gap counted separately)")
         return 1
 
-    if len(files) != expected["total"]:
-        print(f"\nOUTCOME=RED denominator_disagree produced={len(files)} expected={expected['total']}")
+    # A cell filed under a case_id the manifest does not pin is superseded, not produced: this port
+    # first published its T-API rows as `TAPI-T01`. Nothing is deleted here (M19, and the instruction
+    # to land cells additively), so the three old files stay on the face and are counted separately
+    # rather than quietly folded into the denominator.
+    pinned_tapi_ids = {str(r.get("case_id")) for r in req2.get("tapi_rows", [])}
+    superseded = sorted(
+        s for s, c in cells.items()
+        if c.get("case_group") == "tapi" and pinned_tapi_ids and str(c.get("case_id")) not in pinned_tapi_ids
+    )
+    print(f"\nsuperseded_cells_left_on_face={len(superseded)} {superseded}")
+    for s in superseded:
+        repl = "tapi__%s__entry-%s.json" % (sorted(pinned_tapi_ids)[0], cells[s].get("api_entry"))
+        print(f"   {s}: case_id={cells[s].get('case_id')!r} is not the pinned "
+              f"{sorted(pinned_tapi_ids)!r}; the row docs/tapi.md reads is {repl} "
+              f"(present={repl in cells})")
+    if len(files) - len(superseded) != expected["total"]:
+        print(f"\nOUTCOME=RED denominator_disagree produced={len(files)} superseded={len(superseded)} "
+              f"expected={expected['total']} (produced-superseded={len(files) - len(superseded)})")
         return 1
     gap = uncovered(req2, cells) if req2["present"] else []
     if gap:

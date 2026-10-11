@@ -10,11 +10,14 @@ controls_pass=true (5/5) — no INSTRUMENT-RED in this run.
 
 ```
 HEAD at delivery       559e50e (rev7 re-seal)      run started 2026-10-11T01:00:02Z (06:00 host clock)
-cells_required=44      cells_produced=80           cells_measured=80   cells_blocked=0
+cells_required=44      cells_produced=87           cells_measured=87   cells_blocked=0
 required covered       44/44 by measured cells     missing=0           cells_extra=36   cells_hang=0
-cells_valid=25         strict against spec/schema.json (the 55 failures are all one cause: gap G-2)
-spec/validate.py       24 valid / 56 void          (same family; see "the two rulers" in S4)
-probe_jobs=187  timeouts=0  nonzero_probe_exits=0  malformed_log_lines=0
+T-API pinned entries   3/3 seen by ci/tapi_report.py's own counting, 3 T-API rows landed (was 1/3, 0 rows)
+entry spread           trap/T01 and trap/T04 each answered by all three pinned entries, verdicts agree
+cells_valid=87         strict against spec/schema.json (rev3) -- 0 violations; was 27 before section 13
+ci/validate_cells.py   87 valid / 0 invalid (rc=0), the outside ruler, re-run per instruction
+spec/validate.py       still lags schema.json on the enum sets (S4 "the two rulers"); not re-run for this section
+probe_jobs=196  timeouts=0  nonzero_probe_exits=0  malformed_log_lines=0
 length rungs re-emitted for rev7:  12/12
   name_source   hex of the component actually passed: 156 / 240 / 400 characters for base_len 78/120/200
   len_triple    [78,78,78] / [120,120,120] / [200,200,200] -- the width of that name, three units equal
@@ -370,3 +373,179 @@ of that name in the three units, `len_ceiling=255` with first fail 256, and the 
 Status of the work: **all of it is still uncommitted**, so the face is perishable until the contract
 owner folds it into a commit. That is not this seat's action to take — `git push` is forbidden and the
 integration commit is the owner's.
+
+## 12. ENTRY-GAP closed: the three pinned entries were driven all night and filed where the leg could not see them
+
+`docs/tapi.md` read this port as `1/3 pinned entries seen, 0 T-API rows landed`, and
+`docs/acceptance-S02.md` repeated it. Both readings were **correct about the face and wrong about the
+harness**: `trapPlans` (impl/typescript/src/runner.ts:880) has run `writeFileSync`,
+`createWriteStream` and `appendFileSync` as three separate child processes for *every* trap since the
+first run, and `tapiPlans` had run all three against T01. Two filing decisions of mine hid that:
+
+| cause | mechanism | evidence |
+|---|---|---|
+| `extra: true` on every cell whose filename was not one of the 44 required stems | `ci/equality.py:255` drops `extra` cells inside `discover()`, so a pinned T-API row marked extra is not "not compared", it is **invisible** — which `docs/tapi.md` then reports as an entry that was never run | the three rows existed at 09:00 and read 0 rows at 11:31 |
+| `case_id: "TAPI-T01"` | the manifest pins `case_group=tapi, case_id=T-API` (`tapi_cells_per_language`); a row under a spelling the leg does not pin matches nothing | `spec/cells-required.json`, 26 pinned rows, 3 of them typescript |
+
+Fixed in the port, not in the ruler: `tapiPlans` now takes the identity **from the manifest**
+(`loadRequiredSet().tapiRows`, runner.ts:1132) and refuses to start if the manifest pins an entry this
+port has no driver for; `extra` now means "outside every list the manifest pins", with the two pinned
+exceptions (`tapi_cells_per_language`, and a non-primary entry leg of a required identity) each
+required to **cite** the list that pins it (`tapi_pinned_in_manifest`, `published_as_leg_of`) — the rule
+is `classify_extra_claims()` in `selfcheck.py`, with a green and a red arm in `--selftest-rules`
+(`green_passes=True, red_caught=True`, rc=0).
+
+Seven cells landed additively at 11:4x–11:5x host clock. **Nothing was removed and nothing pre-existing
+was modified**, checked by hashing all 80 files before the run and diffing after:
+`pre=80 now=87 removed=0 added=7 pre-existing files modified=0`.
+
+```
+tapi__T-API__entry-writeFileSync.json      create ok, 28 bytes on disk, enumerated CON.txt, legal
+tapi__T-API__entry-createWriteStream.json  same
+tapi__T-API__entry-appendFileSync.json     same
+trap__T01__entry-createWriteStream.json    verdict fields identical to trap__T01.json
+trap__T01__entry-appendFileSync.json       identical
+trap__T04__entry-createWriteStream.json    identical
+trap__T04__entry-appendFileSync.json       identical
+```
+
+The five control cells were **re-run** as the ruler for this subset (gate.md §8: controls verify the
+ruler; a selection containing no control cell must not reach `controls_pass=true` having tested
+nothing), and deliberately **not written** — `CTRL … ran as ruler only; not written (subset run)`. The
+missing-required reconciliation is skipped on a subset run and says so
+(`RECONCILE skipped: subset run …the required identities not in this selection are left exactly as the
+face holds them`); before this guard, `--only` would have emitted 44 blocked cells straight over the
+measured ones. That guard is the difference between an additive landing and the 07:16 accident.
+
+**What I expected the answer to be, and why:** agreement. All three pinned entries reach the same
+`CreateFile`/`open` — `writeFileSync` and `appendFileSync` differ only in the access mode, and
+`createWriteStream` adds an asynchronous `finish`/`close` event after the same call. Name legality is
+decided by the parse layer *before* any of that, so on a port whose layer-2 finding (C-2) is that
+`node:fs` skips Win32 name parsing altogether, three entries agreeing is the expected shape, not a
+suspicious one. `spec/gate.md` §2 as corrected says exactly that, and names the TypeScript observation
+as the reason the old wording was withdrawn — so `verdict_via=win32` on all three, identical verdict
+fields, published as **entry-invariance**. Two of the three traps' legs were measured twice: the first
+`trap__T04__entry-*` write carried `os_legality_verdict=unknown` because my spread plan gave its leg
+no extended leg, which is an artefact of *my plan's shape* rather than the entry's behaviour, and
+publishing that as an entry divergence would have been a manufactured finding. The second write added
+the `osprobe` job with the leg's own entry and produced `legal`, matching its sibling.
+
+Read back through the gate's own code (in memory — `ci/tapi_report.py` and `ci/acceptance.py` write
+into `docs/`, which this seat may not touch, so neither was run):
+
+```
+pinned=3 seen=3 covered=[appendFileSync, createWriteStream, writeFileSync] missing=[] rows_landed=3
+cells_with_multiple_entries (this port) = 3 keys: tapi/T-API, trap/T01, trap/T04  -- 1 distinct
+                                          verdict tuple each
+ci/equality.py run with SG_VERDICT_OUT pointed outside the repo:
+  cells_with_multiple_entries=2  of_which_spread_disagrees=0  cells_missing_primary=0
+  excluded as extra: typescript=36   (the 3 old TAPI-T01 rows are inside that count)
+  OUTCOME=RED verdict_disagreements=54   (unchanged from the state the acceptance sheet already held;
+                                          only each port's PRIMARY entry enters the cross-port digest,
+                                          so the new legs cannot move that number)
+```
+
+Two things the contract owner should know they will not get from the face:
+
+1. **`docs/tapi.md`'s "Does an entry change the answer?" paragraph cannot see this data.** It builds
+   its cell groups with `by_cell.setdefault(equality.fmt(k), []).append(lst[0])`
+   (`ci/tapi_report.py:74`) — one record *per identity key*, so a key holding three entries is appended
+   once and `len(rows) > 1` is only ever true when two distinct keys render to the same string. Every
+   port will keep reading "answered once" whether or not it published entry legs; the count that does
+   see it is `cells_with_multiple_entries` inside `ci/equality.py` (now 2, disagrees 0). I did not
+   touch `ci/`; this is reported as an instrument observation, with the line named.
+2. **Three superseded files are still on the face and I did not delete them**:
+   `tapi__TAPI-T01__entry-{writeFileSync,createWriteStream,appendFileSync}.json`. They stay `extra: true`
+   and therefore invisible to the gate, they contradict nothing, and `selfcheck.py` now prints
+   `superseded_cells_left_on_face=3` with a pointer from each to the pinned row that replaces it
+   (`present=True`). Removing them is the owner's call, not mine, under M19 and the additive-landing
+   order. `denominator_disagree` compares `produced - superseded` to the recomputed expectation
+   (87 − 3 = 84), so leaving them there cannot silently inflate a count.
+
+## 13. The three load-bearing fields: 61 non-conforming cells → 0 (host clock 11:45–12:0x)
+
+`ci/validate_cells.py` read this face as **24 conform of 80** (61 cells invalid at 87 files) while my
+own ruler said `cells_valid=27`. The outside ruler was right and the disagreement was mine: 60 cells
+carried `"read_result": null` and 60/14 carried null `roundtrip_ok` / `enum_to_stat_agrees`. A null on
+`read_result` is not caution — it is a **missing required field**, and `spec/canonical.md` section 5 has
+carried the honest word for that situation since rev4: `not_applicable`, "nothing was read because
+nothing landed: creation failed, or the name is a device this project refuses to open", requiring
+`read_skipped_reason`. My cells already recorded the reason; they just refused to name the field.
+
+I separated two different things before stamping anything, because the fix is not the same for both:
+
+**36 cells had a leg that was never run, not a leg that could not be run.** The length and bisection
+modes wrote a 28-byte file into the scratch directory, enumerated it, and then declined to read it back
+because "the question is whether it lands". That was my cell's question, not a fact about Windows, and
+it left three verdict fields unrecorded on cells whose answers were sitting on disk. So the instrument
+was widened instead of the label changed: `modeLen` and `modeBisect` now run the same read-back leg the
+trap cells run — guarded the same way (reserved device names are still never opened; if nothing landed,
+the leg says so) — and `modeCanon` now emits the enumeration event it had been omitting. Forty length
+cells and one control cell were re-measured in place.
+
+The diff against a snapshot taken before those runs is the part worth reading:
+
+```
+cells_changed_vs_snapshot= 36
+fields_that_moved= {'read_result': 36, 'roundtrip_ok': 36, 'enum_to_stat_agrees': 4, 'name_mutated': 4}
+name_source moved= 0   len_triple moved= 0   (the 12 rungs still read len_ceiling=255 first_fail=256)
+```
+
+Every movement is a field that was `null` and is now a measured value. No recorded verdict changed, no
+input changed, and the twelve rev7 rungs still report the same ceiling. `name_mutated` went from absent
+to `false` on the four standalone bisection cells because they now enumerate the confirming file — that
+is a new observation, not a re-labelling. The two `roundtrip_ok=True` cells among them read the pinned
+payload back and compared it: `c9fe45b2…` is unchanged on the CANON control cell after its re-run, and
+`canon_instruments.agree` is still true, so the control leg still verifies the ruler.
+
+**24 cells genuinely have nothing to record.** Fifteen are reserved device names this port will not open
+(the ticket's standing rule), nine refused at create. For those the honest value of `read_result` is the
+closed set's own word, so `--conform-face` (a new mode of the runner, not a separate script — it runs
+the same function a fresh cell passes through and re-serialises through `serialiseCell`, so a repaired
+file and a measured one cannot drift) stamped `not_applicable` on all 24 and kept each
+`read_skipped_reason` beside it: `files=87 changed=24 refused=0`, no file created, none removed.
+
+For `roundtrip_ok` and `enum_to_stat_agrees` on those 24 there is no honest value at all, and that one is
+the contract's, not mine: `spec/schema.json` types both `{"type": "boolean"}` — no null branch, no
+`not_applicable` word — and neither is in its `required` list. Stamping `false` would claim a comparison
+that was never made; stamping `true` would claim bytes came back. So the key is **absent and the cell
+says why**: `roundtrip_ok_not_observable_reason` / `enum_to_stat_agrees_not_observable_reason`, naming the
+leg that would have produced the value. 24 cells carry the first, 9 carry the second. My own ruler accepts
+an absence only when it is explained, and still calls an unexplained one a violation — both arms are in
+`--selftest-rules` (`red_unexplained_absence_caught=True, green_explained_absence_allowed=True`).
+
+Numbers after the pass, all three rulers, same 87 files:
+
+```
+ci/validate_cells.py   | typescript | 87 cells read | 87 valid | 0 invalid |  self-reported 87 |  rc=0
+                       invalid cells across the six faces: 0     (my row's SELF-REPORT-DISAGREES is gone)
+impl/typescript/selfcheck.py  OUTCOME=GREEN cells_valid=87 cells_invalid_on_rules_other_than_the_two_gaps=0
+                       cells_with_not_reached_null_gap_G2=0 (was 55)  cells_required=44/44 cells_blocked=0
+                       cells_with_an_unobservable_digest_field_explained=24  UNEXPLAINED_absent=0
+face integrity         files=87  non_cell_files_in_results_dir=0  probe_jobs=196 timeouts=0 nonzero_rc=0
+```
+
+Three things the owner should decide on rather than inherit:
+
+1. **G-2 has a second shape and it is not fixable by any port.** rev4/rev5 gave `read_result` a fifth
+   word and left the two derived booleans with none, so a cell whose read leg legitimately did not run
+   is conformant on one field and unrepresentable on two. The gate scores those as NOT-RECORDED, which
+   is why `verdict_not_recorded_pairs` is still 121 across the tree — and the rows name other ports too
+   (`roundtrip_ok` on the illegal-char control is missing for go, python, rust **and** typescript), so
+   this is a schema gap, not a TypeScript habit. A `not_applicable` branch on those two fields — or a
+   stated convention that absence *is* the not-applicable answer, which is what the gate already does
+   with it — would close it for everyone.
+2. **`name_landed_as` is deliberately null on my length cells** (40 of them; it is 45 of 87 across the
+   face counting the refused creates). The value exists — the enumeration matched the requested
+   component exactly — but the cell already publishes that component as `name_source`, and repeating a
+   255-character name in a second field was a recording choice, not an omission of evidence. Consequence
+   stated plainly: those cells score NOT-RECORDED for a verdict field, and if the owner wants them in the
+   digest, say so and I will stamp the enumerated name (it will then be compared against the other
+   ports' landed names, which is a real cross-port question I have not been asked to answer tonight).
+3. **`ci/equality.py` does not parse on the working tree right now.** `git status --porcelain` shows it
+   modified and uncommitted by another lane, and `python ci/equality.py` exits with `SyntaxError:
+   unmatched ')'` at line 944 (the OUTCOME=RED format string takes 13 arguments for 11 placeholders).
+   It ran cleanly for me minutes earlier, so the edit is in flight, not abandoned. I did not touch `ci/`.
+   The gate readings quoted in this section are from the runs that completed before it broke, plus one
+   count recomputed from `git show HEAD:ci/equality.py`'s committed `VERDICT_FIELDS` so the numbers above
+   do not depend on the in-flight file.

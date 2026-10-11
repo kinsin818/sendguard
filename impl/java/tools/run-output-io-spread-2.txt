@@ -1,0 +1,22 @@
+required list: 44 cells + 4 java T-API rows (blob sha ed8a8a29c0eea999)
+len_fill pinned unit=61 applies_to=['T17', 'T18']
+ROW_FILTER io-spread -> plan_rows=12
+plan rows=12 cell_files=12 case_ids=T17,T18
+TOOLCHAIN javac=C:\Program Files\Eclipse Adoptium\jdk-17.0.17.10-hotspot\bin\javac.exe
+TOOLCHAIN java =C:\Program Files\Eclipse Adoptium\jdk-17.0.17.10-hotspot\bin\java.exe
+MECHANISM verdict=name-parsing-still-applies-at-long-length
+CELL len   T17                    None           entry=FileOutputStream.write   create=ok             read=ok     legality=legal    via=win32  spread=0 EXTRA
+CELL len   T17                    None           entry=FileOutputStream.write   create=ok             read=ok     legality=legal    via=win32  spread=0 EXTRA
+CELL len   T17                    None           entry=FileOutputStream.write   create=ok             read=ok     legality=legal    via=win32  spread=0 EXTRA
+CELL len   T17                    None           entry=FileOutputStream.write   create=ok             read=ok     legality=legal    via=win32  spread=0 EXTRA
+CELL len   T17                    None           entry=FileOutputStream.write   create=ok             read=ok     legality=legal    via=win32  spread=0 EXTRA
+CELL len   T17                    None           entry=FileOutputStream.write   create=ok             read=ok     legality=legal    via=win32  spread=0 EXTRA
+CELL len   T18                    None           entry=FileOutputStream.write   create=ok             read=ok     legality=legal    via=win32  spread=0 EXTRA
+CELL len   T18                    None           entry=FileOutputStream.write   create=ok             read=ok     legality=legal    via=win32  spread=0 EXTRA
+CELL len   T18                    None           entry=FileOutputStream.write   create=ok             read=ok     legality=legal    via=win32  spread=0 EXTRA
+CELL len   T18                    None           entry=FileOutputStream.write   create=ok             read=ok     legality=legal    via=win32  spread=0 EXTRA
+CELL len   T18                    None           entry=FileOutputStream.write   create=ok             read=ok     legality=legal    via=win32  spread=0 EXTRA
+CELL len   T18                    None           entry=FileOutputStream.write   create=ok             read=ok     legality=legal    via=win32  spread=0 EXTRA
+ROW_FILTER append-only: 48 required identities are outside this run's filter; they are on the disk from the full run and were NOT re-answered here
+FACTS impl/java/tools/run-facts-io-spread.json
+cells_produced=12 cells_blocked=0 extra=12 missing_required=0 results_dir=D:\sendguard-work\seat-qoder\results\java.windows.x64

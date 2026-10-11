@@ -358,5 +358,14 @@
  "attribution_layer": "L3",
  "attribution_basis": "R2: java.nio rejected the path string before any syscall and every entry of this port agrees; third evidence: the OS-level leg answered err_at_syscall, so the name verdict is not language-only but the refusal STAGE is",
  "dir_view_contains_probe_created_files": false,
- "required_by_contract": true
+ "required_by_contract": true,
+ "control_pass": true,
+ "control_pass_rule": "Windows illegal (winerror=123) / POSIX creatable, paired with os_legality_verdict",
+ "control_pass_observed": "create_result='err_at_parse' os_legality_verdict='illegal'",
+ "control_pass_command": "python impl/java/tools/stamp_controls.py --apply",
+ "control_pass_tool": "impl/java/tools/stamp_controls.py",
+ "control_pass_basis": "judged from the fields this cell already recorded; no child process was started and no measurement was re-taken for this stamp",
+ "control_pass_spec_sha256_face": "committed blob face HEAD:spec/cases.yaml",
+ "control_pass_partial": "the expectation names winerror=123 and this port cannot surface a winerror at all: Java exposes no accessor for it, measured by reflection at impl/java/src/CellProbe.java:711 winErrorOf(), whose result is printed in the sibling control cell ctrl__T-CTRL-NAMETOOLONG.json as winerror=null(unavailable: NoSuchMethodException: java.nio.file.FileSystemException.getWinError()). That tag is NOT in this cell, because this cell's entry refused at parse and never raised a FileSystemException. What this port does surface is the OS refusing the same name once the language path parser is bypassed - os_legality_probe.instrument = java.io.FileOutputStream(java.io.File(String)) with the \\\\?\\ prefix answered create_result=err_at_syscall, error_class=java.io.FileNotFoundException, landed_by_enumeration=false, and that is the source of os_legality_verdict=illegal. The halves the criterion tests hold; the winerror half is recorded as unobservable, not counted.",
+ "control_pass_stamped_at": "2026-10-11 13:15:57 +0800"
 }

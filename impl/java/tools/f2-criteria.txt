@@ -1,0 +1,49 @@
+# SG-F2 criteria transcript - one command per block, rc printed immediately after
+# run_local=2026-10-11 13:25:56 +0800
+## 1 python ci/validate_cells.py
+wrote docs/cell-validation.md bytes=2647 invalid=0 missing_faces=0 verdict_fields_not_required=9 verdict_fields_undocumented=4 cells_omitting_a_compared_field=371
+rc=0
+## 2 python ci/acceptance.py
+wrote docs/acceptance-S02.md bytes=5397 ports=6 faces_excluded=5 faces_ahead_of_head=17 git_status_rc_nonzero=0
+rc=0
+## java row of docs/acceptance-S02.md
+| java | 86 | 44/44 | 0 | 0 | 38 | 4/4 | pass (5/5 stamped) | 0 | 74 | OK | `cells_required=44 cells_matched=48 cells_produced=74 cells_valid=74 bl` (evidence/S02/java-selfcheck.md) |
+| java | 17 | 5 | 12 | 0 |
+grep_rc=0
+## 3 python ci/equality.py
+   cells_compared=44 fields=10 fact_cells=430 agree=255 disagree=54 not_recorded=121 truncated_value=2 channel_abstentions=13 name_cross_form_agreements=12
+OUTCOME=RED verdict_disagreements=54 verdict_identical_cells=24/44 cells_fully_recorded_and_identical=4 verdict_not_recorded_pairs=121 verdict_pairs_recorded=2281/2640 probe_cells_differing=29 unpinned_input=0 cells_excluded=0 channel_abstentions=13 truncated_values=2 required_cells_missing=0
+rc=0
+## 3b rc of equality alone
+rc=1
+## 4 python ci/length_report.py
+wrote docs/length-family.md bytes=7455 rows=84
+rc=0
+## 4b java rows of docs/length-family.md
+| T17 | 78 | plain | java | ok | bytes(78 units) | 78/78/78 |
+| T17 | 78 | extended | java | err_at_parse | bytes(78 units) | 78/78/78 |
+| T17 | 120 | plain | java | ok | bytes(120 units) | 120/120/120 |
+| T17 | 120 | extended | java | err_at_parse | bytes(120 units) | 120/120/120 |
+| T17 | 200 | plain | java | ok | bytes(200 units) | 200/200/200 |
+| T17 | 200 | extended | java | err_at_parse | bytes(200 units) | 200/200/200 |
+| T18 | 78 | plain | java | ok | bytes(78 units) | 78/78/78 |
+| T18 | 78 | extended | java | err_at_parse | bytes(78 units) | 78/78/78 |
+## 5 git status --porcelain -uall -- results/java.windows.x64
+ M results/java.windows.x64/ctrl__T-CTRL-ASCII.json
+ M results/java.windows.x64/ctrl__T-CTRL-CANON.json
+ M results/java.windows.x64/ctrl__T-CTRL-ILLEGAL-CHAR.json
+ M results/java.windows.x64/ctrl__T-CTRL-NAMETOOLONG.json
+ M results/java.windows.x64/ctrl__T-CTRL-PARSE.json
+?? results/java.windows.x64/len__T17__base_len-120__extended__builder-FileOutputStream.write.json
+?? results/java.windows.x64/len__T17__base_len-120__plain__builder-FileOutputStream.write.json
+?? results/java.windows.x64/len__T17__base_len-200__extended__builder-FileOutputStream.write.json
+?? results/java.windows.x64/len__T17__base_len-200__plain__builder-FileOutputStream.write.json
+?? results/java.windows.x64/len__T17__base_len-78__extended__builder-FileOutputStream.write.json
+?? results/java.windows.x64/len__T17__base_len-78__plain__builder-FileOutputStream.write.json
+?? results/java.windows.x64/len__T18__base_len-120__extended__builder-FileOutputStream.write.json
+?? results/java.windows.x64/len__T18__base_len-120__plain__builder-FileOutputStream.write.json
+?? results/java.windows.x64/len__T18__base_len-200__extended__builder-FileOutputStream.write.json
+?? results/java.windows.x64/len__T18__base_len-200__plain__builder-FileOutputStream.write.json
+?? results/java.windows.x64/len__T18__base_len-78__extended__builder-FileOutputStream.write.json
+?? results/java.windows.x64/len__T18__base_len-78__plain__builder-FileOutputStream.write.json
+lines=17

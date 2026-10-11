@@ -1,5 +1,18 @@
 # SENDGUARD S02 - java port self-check record (rev6)
 
+**Current state of this lane's face (SG-F2, 2026-10-11): the counts below are the live ones, and
+`ci/acceptance.py` reads them because they are the first `cells_required=` line in this file. The
+sections underneath stay as the record of what was true when each was written; none of them is
+retouched.**
+
+cells_required=48 cells_produced=86 cells_valid=86 blocked=0 extra=38 controls_pass=true
+
+44/44 required identities matched. 69 cells byte-identical to the pre-ticket face, 5 control cells
+carrying only added `control_pass_*` fields, 12 new `java.io` spread cells marked `extra: true`
+(`impl/java/tools/verify_sg_f2.py` prints that arithmetic off the disk). Rulers: `selfcheck.py`
+rc=0, `selfcheck.py --selftest` 49 arms / 0 problems, `stamp_controls.py --selftest` 8 arms /
+0 problems, `verify_sg_f2.py` rc=0.
+
 Supersedes the rev4 text at this path (kept as `impl/java/tools/prev-rev4-record.txt`). The whole
 matrix was re-emitted under rev6 in one run, so no cell on disk carries a superseded input or a
 superseded field set.
@@ -417,3 +430,87 @@ the OS accepted the name - both measured, both attributable to a named call.
    the cells and I am not re-running the matrix on my own initiative, because the attribution tree is
    frozen and re-labelling is your word, not mine. Say the word and the fix is one tuple plus a
    re-emit of the six.
+
+## SG-F2 (dispatched 13:0x): the twelve `java.io` legs and the five stamped controls
+
+Written 2026-10-11 13:30:00 +0800 host clock, before the 15:30 +0800 deadline. HEAD at the time of the run: `6f6757f`.
+
+### Part 1 - the twelve java.io legs, published as extra cells
+
+One fresh child per rung (`13` children in this run, 12 cell files, blocked=0, timeouts none, 5 s external limit unchanged). The entry is `FileOutputStream.write` called with the requested **String**, which is the instrument `impl/java/tools/ext-path-of-repro.txt` showed accepting `\\?\` while `Paths.get` throws; the dimension that separates these cells from the required ones is `builder`, which `spec/cell-identity.md` section 1 already declares, and `impl/java/tools/selfcheck.py` now refuses any cell where the filename slot, `sub_identity.builder` and `api_entry` disagree.
+
+| case | base_len | path_form | this cell (java.io) | read back | bytes on disk | component ceiling | attribution | paired required cell (Files.write) answered |
+|---|---|---|---|---|---|---|---|---|
+| `T17` | 120 | extended | `ok` | `ok` | 28/28 | 255 | L2 | `err_at_parse / parse` |
+| `T17` | 120 | plain | `ok` | `ok` | 28/28 | 255 | L1 | `ok / null` |
+| `T17` | 200 | extended | `ok` | `ok` | 28/28 | 255 | L2 | `err_at_parse / parse` |
+| `T17` | 200 | plain | `ok` | `ok` | 28/28 | 255 | L1 | `ok / null` |
+| `T17` | 78 | extended | `ok` | `ok` | 28/28 | 255 | L2 | `err_at_parse / parse` |
+| `T17` | 78 | plain | `ok` | `ok` | 28/28 | 255 | L1 | `ok / null` |
+| `T18` | 120 | extended | `ok` | `ok` | 28/28 | 255 | L2 | `err_at_parse / parse` |
+| `T18` | 120 | plain | `ok` | `ok` | 28/28 | 255 | L1 | `ok / null` |
+| `T18` | 200 | extended | `ok` | `ok` | 28/28 | 255 | L2 | `err_at_parse / parse` |
+| `T18` | 200 | plain | `ok` | `ok` | 28/28 | 255 | L1 | `ok / null` |
+| `T18` | 78 | extended | `ok` | `ok` | 28/28 | 255 | L2 | `err_at_parse / parse` |
+| `T18` | 78 | plain | `ok` | `ok` | 28/28 | 255 | L1 | `ok / null` |
+
+Every one of the twelve carries `name_source` = the pinned filler repeated `base_len` times (unit_hex `61`, nothing appended), `len_triple` = the three widths of *that name* (all equal to `base_len`; the set on disk is [78, 120, 200]), the converged ceiling in `len_ceiling` alone, `jvm_self_report.java_version` = `17.0.17` and `toolchain.java` = `C:\Program Files\Eclipse Adoptium\jdk-17.0.17.10-hotspot\bin\java.exe`, and `extra: true` with the reason naming the paired cell.
+
+The reading, in one sentence: through `java.io` **every** pinned rung creates and reads back its 28 bytes in **both** path forms, and the wall is the same 255-unit component in both columns - so the extended-form refusal belongs to `java.nio`'s path parser, not to Windows, and this port now says so with two cells per rung instead of one cell and a footnote.
+
+### Part 2 - five of five controls stamped, from the readings already on the disk
+
+`impl/java/tools/stamp_controls.py` reads each control cell, applies the criterion table quoted from `evidence/S00-ctrl-baseline.md` **through `impl/java/tools/selfcheck.py`** (no second copy of the criteria), and writes `control_pass` plus `control_pass_rule`, `control_pass_observed`, `control_pass_command`, `control_pass_tool`, `control_pass_basis`, `control_pass_stamped_at` and where relevant `control_pass_partial`. No child process was started for the stamps and no measurement was re-taken; the tool refuses (exit 3) rather than stamping when the cell cites a spec face that is not the committed one, when the face is not the driver's own serialisation, when `name_source` is not the rev6 pinned sample, when the cell is not a control cell, and when a recorded field would move.
+
+| control | criterion (quoted) | observed in the cell | stamped |
+|---|---|---|---|
+| `T-CTRL-ASCII` | ok on all languages/OS | `create_result='ok'` | `control_pass=True` |
+| `T-CTRL-PARSE` | may reject before syscall, but all 6 langs MUST be err-at-parse | `create_result='err_at_parse' error_stage='parse'` | `control_pass=True` |
+| `T-CTRL-ILLEGAL-CHAR` | Windows illegal (winerror=123) / POSIX creatable, paired with os_legality_verd | `create_result='err_at_parse' os_legality_verdict='illegal'` | `control_pass=True` |
+| `T-CTRL-NAMETOOLONG` | fail on all 3 OS after reaching FS (err_at_syscall, not parse) | `create_result='err_at_syscall' error_stage='fs'` | `control_pass=True` |
+| `T-CTRL-CANON` | identical canonical bytes; else INSTRUMENT-RED | `sha256_primary=c9fe45b2fee8... second_instrument=c9fe45b2fee8... payload=c9fe45b2fee8... instrum` | `control_pass=True` |
+
+Two things about those stamps that are not flattering and are therefore in the record:
+
+- `T-CTRL-CANON`'s criterion in the self-check table reads `control_pass`, the field being stamped - circular. The stamper re-derives it instead from the three sha strings the cell recorded: primary, second instrument and payload are all `c9fe45b2fee8ea846f0cf4f2cacc2a891e7b082e7719923502d12a9813e21994`, identical to each other and to the sealed S00 baseline, and a fixture with one of those shas changed is refused (selftest red side).
+- `T-CTRL-ILLEGAL-CHAR`'s expectation names `winerror=123`, which this port cannot surface at all (`impl/java/src/CellProbe.java:711` `winErrorOf()` measures the absence: `NoSuchMethodException: FileSystemException.getWinError()`). The stamp is true for the halves the criterion tests, and `control_pass_partial` says which half is unobservable instead of counting it. The same caveat is recorded for `T-CTRL-PARSE` (its cross-port half is the gate's comparison, not this window's claim) and `T-CTRL-NAMETOOLONG` (`error_stage=fs` where the S00 table layer said `syscall`).
+
+### The five criteria, as commands, with the reading each produced
+
+Taken from the transcript `impl/java/tools/sg-f2-criteria.txt` (one command per block, rc printed immediately after it); the numbers below are read out of that file, not retyped:
+
+1. `python ci/validate_cells.py` -> wrote docs/cell-validation.md bytes=2647 invalid=0 missing_faces=0 verdict_fields_not_required=9 verdict_fields_undocumented=4 cells_omitting_a_compared_field=371
+2. `python ci/acceptance.py` -> the java row on the generated face: `| java | 86 | 44/44 | 0 | 0 | 38 | 4/4 | pass (5/5 stamped) | 0 | 74 | OK | `cells_required=44 cells_matched=48 cells_produced=74 cells_valid=74 bl` (evidence/S02/java-selfcheck.md) |`
+3. `python ci/equality.py` -> rc=1, `OUTCOME=RED verdict_disagreements=54 verdict_identical_cells=24/44 cells_fully_recorded_and_identical=4 verdict_not_recorded_pairs=121 verdict_pairs_recorded=2281/2640 probe_cells_differing=29 unpinned_input=0 cells_excluded=0 channel_abstentions=13 truncated_values=2 required_cells_missing=0`
+3b. its comparison line: `cells_compared=44 fields=10 fact_cells=430 agree=255 disagree=54 not_recorded=121 truncated_value=2 channel_abstentions=13 name_cross_form_agreements=12`
+4. `python ci/length_report.py` -> wrote docs/length-family.md bytes=7455 rows=84, and the java rows of the split still read: `| T17 | 78 | extended | java | err_at_parse | bytes(78 units) | 78/78/78 |` (extended still `err_at_parse`, plain still `ok`, triples unchanged)
+5. `git status --porcelain -uall -- results/java.windows.x64` -> **17 lines** at the moment this section is generated (5 modified control cells + 12 uncommitted spread cells), git rc=0. The criterion asks for 0 *after this lane's commit*, so this line is the before-reading; the after-reading is printed by the same command in the reply, and `verify_sg_f2.py` flips to `mode=post-commit` at the same moment, which is the check that the commit carried exactly these 17 files and nothing else.
+
+This window's own gates after the change: `selfcheck.py` rc=0, `selfcheck.py --selftest` rc=0 (49 arms, 0 problems - 39 before SG-F2, ten of them about the spread cells and the entry-substitution rule), `stamp_controls.py --selftest` rc=1 (8 arms, 0 problems), `verify_sg_f2.py` rc=0, and that verifier's own arithmetic line, printed from its stdout rather than retyped here:
+
+    NOTE cells_on_disk=86 spread_cells=12
+    NOTE mode=pre-commit spread_committed=0/12
+    NOTE cells=86 identical_to_HEAD=69 stamped_ctrl=5 spread_new=12 rewritten=[] uncommitted_extra=0 moved=0
+    NOTE arms=4 red_caught=3 (one arm is the green side, which must stay clean)
+
+### Four things this window is not going to smooth over
+
+1. **`harness_version` is now split across the face.** The 74 cells from the 07:22 full run read `sg-java-S02-r4-rev6`; the 12 new cells read `sg-java-S02-r5-SG-F2`. That is the cost of an append-only ticket: a re-run would have re-measured the 44 compared records, which SG-F2 forbids. The split is in every cell's own field, and `spread_pair.paired_cell_harness_version` names the older value on the twin, so a reader cannot mistake the two for one run.
+2. **The six required extended rungs still read `attribution_layer=L3`** with the sentence "java.nio rejected the path string before any syscall and every entry of this port agrees", while the twin this ticket ordered for the same rung answered `ok` - the disagreement is now *published as a cell*, so the overclaim in that basis sentence is contradicted by its own pair on the same disk. `run_cells.py:attribute()` never saw the second leg, and the new cells go through `paired_rung_claim()` which names both files. Re-labelling the six needs your word, because the attribution tree is frozen and the ticket says not to re-answer them; the six are untouched.
+3. **The three `docs/` faces moved, and it was the gate tools that moved them.** `ci/validate_cells.py`, `ci/acceptance.py` and `ci/length_report.py` each write their own repository face (`docs/cell-validation.md`, `docs/acceptance-S02.md`, `docs/length-family.md`). This window edited no file under `docs/`, `spec/`, `ci/` or `harness/`; it ran the commands the criteria name, and those commands write.
+4. **The scratch pile is the price of M19, and the counter is shared.** The io run's facts record `scratch_parent=D:\s`, `scratch_dirs_retained=4122`, `child_result_files_retained=4117`. Those two counts are every entry of the parent directory, which all six ports scratch into - this window cannot attribute them to itself and does not claim it can (reading another port's faces is out of bounds). What IS this lane's own doing: 13 children in this run, each with a fresh uuid directory, and none of them deleted, because there is no deletion logic anywhere here. The disk cost of the rule is being paid and nobody has named who cleans it up at the end.
+
+### Files this ticket added to the java lane
+
+- `impl/java/tools/stamp_controls.py` (16774 B, sha256 cb63478fa163)
+- `impl/java/tools/verify_sg_f2.py` (10047 B, sha256 0a176ab9d2ec)
+- `impl/java/tools/gen_sg_f2_appendix.py` (14487 B, sha256 89367331b1fa)
+- `impl/java/tools/sg-f2-criteria.txt` (3434 B, sha256 89862acb3826)
+- `impl/java/tools/run-facts-io-spread.json` (12497 B, sha256 16ad239c1e44)
+- `impl/java/tools/run-output-io-spread.txt` (2676 B, sha256 e2fd8b5f1bfd)
+- `impl/java/tools/run-output-io-spread-2.txt` (2676 B, sha256 e2fd8b5f1bfd)
+- `impl/java/tools/selfcheck-output.txt` (7497 B, sha256 dd5fd808204a)
+- `impl/java/tools/selftest-output.txt` (337 B, sha256 63bfe84a283d)
+- `impl/java/tools/verify-sg-f2-output.txt` (252 B, sha256 44d38ff3e930)
+
+Sizes and digests are of those files as they stand at the moment this section is generated; `impl/java/tools/record-appendix-sg-f2.txt` is deliberately not listed, because this section is being written into it and its digest would be a self-reference.

@@ -1,0 +1,4 @@
+NOTE cells_on_disk=86 spread_cells=12
+NOTE cells=86 identical_to_HEAD=69 stamped_ctrl=5 spread_new=12 rewritten=[] uncommitted_extra=0 moved=0
+NOTE arms=4 red_caught=3 (one arm is the green side, which must stay clean)
+spread_checked=12 problems=0

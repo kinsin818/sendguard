@@ -376,5 +376,13 @@
  "attribution_layer": "L1",
  "attribution_basis": "R3: nothing refused at parse and the call reached the filesystem (OS leg create_result=ok, landed=True), so the behaviour is an environment/OS fact for this port on this machine",
  "dir_view_contains_probe_created_files": false,
- "required_by_contract": true
+ "required_by_contract": true,
+ "control_pass": true,
+ "control_pass_rule": "ok on all languages/OS",
+ "control_pass_observed": "create_result='ok'",
+ "control_pass_command": "python impl/java/tools/stamp_controls.py --apply",
+ "control_pass_tool": "impl/java/tools/stamp_controls.py",
+ "control_pass_basis": "judged from the fields this cell already recorded; no child process was started and no measurement was re-taken for this stamp",
+ "control_pass_spec_sha256_face": "committed blob face HEAD:spec/cases.yaml",
+ "control_pass_stamped_at": "2026-10-11 13:15:57 +0800"
 }

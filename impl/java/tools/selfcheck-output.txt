@@ -4,7 +4,7 @@ closed sets from canonical.md: attribution_layer=4, case_group=5, create_result=
 spec_sha256(committed blob face of spec/cases.yaml)=8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261
 required list (blob face): base_len_ladder=78+120+200, java_tapi_cells=4, required_cells=44, required_list_faces=blob ed8a8a29c0eea999 / worktree ed8a8a29c0eea999 (equal), required_list_sha256=ed8a8a29c0eea99925659f6d0f2f63b94469654e1f793ab027b6e55a4a1a8cb8
 member-split required ids: trap__T09-m1.json, trap__T09-m2.json, trap__T14-m1.json, trap__T14-m2.json, trap__T14-m3.json, trap__T19-m1.json, trap__T19-m2.json
-cells_required=48 cells_produced=74 cells_extra_present=26
+cells_required=48 cells_produced=86 cells_extra_present=38
 VALID   blind__B1.json
 VALID   blind__B2.json
 VALID   blind__B3.json
@@ -26,26 +26,38 @@ VALID   len__T17__G3.json
 VALID   len__T17__G4.json
 VALID   len__T17__base_len-120.json
 VALID   len__T17__base_len-120__extended.json
+VALID   len__T17__base_len-120__extended__builder-FileOutputStream.write.json
 VALID   len__T17__base_len-120__plain.json
+VALID   len__T17__base_len-120__plain__builder-FileOutputStream.write.json
 VALID   len__T17__base_len-200.json
 VALID   len__T17__base_len-200__extended.json
+VALID   len__T17__base_len-200__extended__builder-FileOutputStream.write.json
 VALID   len__T17__base_len-200__plain.json
+VALID   len__T17__base_len-200__plain__builder-FileOutputStream.write.json
 VALID   len__T17__base_len-78.json
 VALID   len__T17__base_len-78__extended.json
+VALID   len__T17__base_len-78__extended__builder-FileOutputStream.write.json
 VALID   len__T17__base_len-78__plain.json
+VALID   len__T17__base_len-78__plain__builder-FileOutputStream.write.json
 VALID   len__T18__G1.json
 VALID   len__T18__G2.json
 VALID   len__T18__G3.json
 VALID   len__T18__G4.json
 VALID   len__T18__base_len-120.json
 VALID   len__T18__base_len-120__extended.json
+VALID   len__T18__base_len-120__extended__builder-FileOutputStream.write.json
 VALID   len__T18__base_len-120__plain.json
+VALID   len__T18__base_len-120__plain__builder-FileOutputStream.write.json
 VALID   len__T18__base_len-200.json
 VALID   len__T18__base_len-200__extended.json
+VALID   len__T18__base_len-200__extended__builder-FileOutputStream.write.json
 VALID   len__T18__base_len-200__plain.json
+VALID   len__T18__base_len-200__plain__builder-FileOutputStream.write.json
 VALID   len__T18__base_len-78.json
 VALID   len__T18__base_len-78__extended.json
+VALID   len__T18__base_len-78__extended__builder-FileOutputStream.write.json
 VALID   len__T18__base_len-78__plain.json
+VALID   len__T18__base_len-78__plain__builder-FileOutputStream.write.json
 VALID   tapi__T-API-1.json
 VALID   tapi__T-API-2.json
 VALID   tapi__T-API-3.json
@@ -79,7 +91,7 @@ VALID   trap__T19-m1.json
 VALID   trap__T19-m2.json
 VALID   trap__T19.json
 VALID   trap__T20.json
-cells_valid=74 cells_blocked=0 cells_void=0 cells_extra_marked=26
+cells_valid=86 cells_blocked=0 cells_void=0 cells_extra_marked=38
 == control cells (source: evidence/S00-ctrl-baseline.md)
    T-CTRL-NAMETOOLONG     PASS expectation(baseline): fail on all 3 OS after reaching FS (err_at_syscall, not parse) | observed: create_result='err_at_syscall' error_stage='fs'
    T-CTRL-NAMETOOLONG          node-table layer (reported, not a mandate): cell says error_stage='fs', S00 table said 'syscall'
@@ -91,6 +103,6 @@ cells_valid=74 cells_blocked=0 cells_void=0 cells_extra_marked=26
    T-CTRL-PARSE                node-table layer (reported, not a mandate): cell says error_code=None, S00 table said 'ERR_INVALID_ARG_VALUE'
    T-CTRL-CANON           PASS expectation(baseline): identical canonical bytes; else INSTRUMENT-RED | observed: control_pass=True instruments_agree=True
    T-CTRL-CANON                node-table layer (reported, not a mandate): this port agrees with the S00 table
-EXTRA_CELLS (marked, kept, excluded from the digest) blind__BLIND-1.json,blind__BLIND-2.json,blind__BLIND-3.json,blind__BLIND-4.json,blind__BLIND-5.json,len__T17__G1.json,len__T17__G2.json,len__T17__G3.json,len__T17__G4.json,len__T17__base_len-120.json,len__T17__base_len-200.json,len__T17__base_len-78.json,len__T18__G1.json,len__T18__G2.json,len__T18__G3.json,len__T18__G4.json,len__T18__base_len-120.json,len__T18__base_len-200.json,len__T18__base_len-78.json,tapi__T-API-1.json,tapi__T-API-2.json,tapi__T-API-3.json,tapi__T-API-4.json,trap__T09.json,trap__T14.json,trap__T19.json
+EXTRA_CELLS (marked, kept, excluded from the digest) blind__BLIND-1.json,blind__BLIND-2.json,blind__BLIND-3.json,blind__BLIND-4.json,blind__BLIND-5.json,len__T17__G1.json,len__T17__G2.json,len__T17__G3.json,len__T17__G4.json,len__T17__base_len-120.json,len__T17__base_len-120__extended__builder-FileOutputStream.write.json,len__T17__base_len-120__plain__builder-FileOutputStream.write.json,len__T17__base_len-200.json,len__T17__base_len-200__extended__builder-FileOutputStream.write.json,len__T17__base_len-200__plain__builder-FileOutputStream.write.json,len__T17__base_len-78.json,len__T17__base_len-78__extended__builder-FileOutputStream.write.json,len__T17__base_len-78__plain__builder-FileOutputStream.write.json,len__T18__G1.json,len__T18__G2.json,len__T18__G3.json,len__T18__G4.json,len__T18__base_len-120.json,len__T18__base_len-120__extended__builder-FileOutputStream.write.json,len__T18__base_len-120__plain__builder-FileOutputStream.write.json,len__T18__base_len-200.json,len__T18__base_len-200__extended__builder-FileOutputStream.write.json,len__T18__base_len-200__plain__builder-FileOutputStream.write.json,len__T18__base_len-78.json,len__T18__base_len-78__extended__builder-FileOutputStream.write.json,len__T18__base_len-78__plain__builder-FileOutputStream.write.json,tapi__T-API-1.json,tapi__T-API-2.json,tapi__T-API-3.json,tapi__T-API-4.json,trap__T09.json,trap__T14.json,trap__T19.json
 controls_pass=true
-ALL-VALID cells_required=48 cells_produced=74 cells_valid=74 blocked=0 extra=26
+ALL-VALID cells_required=48 cells_produced=86 cells_valid=86 blocked=0 extra=38

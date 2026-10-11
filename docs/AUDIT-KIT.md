@@ -155,7 +155,9 @@ What has **not** been fixed, and where you should push hardest:
 - Open tickets under `docs/tickets/` — `SG-F3` (OS portability of the collectors: the macOS and Linux result
   rows are predicted, not measured, and no port has made its harness portable), `SG-F5` (the acceptance
   sheet reads a partial tree status, and a quoted-path defect), `SG-F6` (the digest cannot police faces
-  outside the repository, such as the owner-facing status page).
+  outside the repository, such as the owner-facing status page), `SG-F7` (the deliverable has no version
+  string at all, so a reviewer holding a zip cannot name what they audited — which is why the packet template
+  asks for a commit instead).
 - The third CI job in `.github/workflows/` has never run to completion from a tree this seat can read, so its
   findings are unread rather than absent.
 - Three contract questions are unowned: whether "which executable answered" becomes a public field; which

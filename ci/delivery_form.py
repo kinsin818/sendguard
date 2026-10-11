@@ -421,11 +421,12 @@ def main(argv=None):
             "`tool/check.py`, %s bytes - and needs a Python 3 interpreter on `PATH` and nothing else: it "
             "imports the standard library only (`argparse, hashlib, json, os, re, sys, time, unicodedata`, plus "
             "`glob`, `uuid` and `subprocess` in local scopes - checked against the file, not remembered). "
-            "Measured on this host at %s: interpreter `%s`. A double-click on a "
-            "machine with no interpreter is `NOT-MEASURED(no code signing, no installer built)`, which is the "
-            "honest state, not a to-do slipped past the reader."
-            % ("{:,}".format(tool_bytes), time.strftime("%H:%M %z"),
-               sys.version.split()[0] + " (the interpreter running this leg)"),
+            "Which interpreter this reading was taken on is a fact about a machine, so it is not printed here: "
+            "`docs/host-stamp.md` carries it, and the reproducibility leg names that face as host-bound and does "
+            "not compare it. A double-click on a machine with no interpreter is "
+            "`NOT-MEASURED(no code signing, no installer built)`, which is the honest state, not a to-do slipped "
+            "past the reader."
+            % ("{:,}".format(tool_bytes),),
             "",
             "2. **How big is it?** The tracked answer is the table above: `%d` artifact files carrying `%s` bytes "
             "across the ports that commit any build output, and three ports that commit none. The checker itself "

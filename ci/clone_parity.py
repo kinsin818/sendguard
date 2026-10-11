@@ -36,6 +36,13 @@ DECLARED_EXCEPTIONS = {
     "docs/evidence.md": r"^- repository commit: ",
 }
 
+# Faces whose content is a fact about the machine that generated them. They are excluded **by name**, never by a
+# line pattern, because a pattern tolerance inside a compared face lets any other change on that line through -
+# which is how a reproducibility leg silently acquires a blind spot. Four outside reviewers reached the green
+# side of this leg only on the author's interpreter before this existed (docs/tickets/SG-F10-...): the fix is to
+# move host-bound values into their own face so every compared face is host-free.
+HOST_BOUND_FACES = {"docs/host-stamp.md"}
+
 TS_PATTERNS = [
     (re.compile(r"\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}( [+-]\d{4})?"), "<TS>"),
     (re.compile(r"\d{2}:\d{2} \+0800"), "<TS>"),
@@ -51,10 +58,13 @@ def normalize(text):
 
 
 def compare_pair(blob_text, disk_text, path):
-    """Return (verdict, detail). verdict is one of identical / declared / differing / missing."""
+    """Return (verdict, detail). verdict is one of identical / declared / host_bound / differing / missing."""
     if disk_text is None:
         return "missing", "the clone generated nothing at %s" % path
     a, b = normalize(blob_text), normalize(disk_text)
+    if path in HOST_BOUND_FACES:
+        return "host_bound", ("the two trees differ here, which is the expected behaviour of a machine fact"
+                              if a != b else "the two trees agree here too")
     if a == b:
         return "identical", ""
     la, lb = a.splitlines(), b.splitlines()
@@ -261,7 +271,7 @@ def run_parity(root, quiet, source=REPO):
 
     import refresh_all  # same commit, so its GEN list is the contract of what is generated
     faces = [doc for _s, doc, _ok in refresh_all.GEN] + ["evidence/S02/equality-verdict.json"]
-    counts = {"identical": 0, "declared": 0, "differing": 0, "missing": 0}
+    counts = {"identical": 0, "declared": 0, "differing": 0, "missing": 0, "host_bound": 0}
     problems = []
     for doc in faces:
         rc, blob = git(["show", "HEAD:" + doc], clone)
@@ -277,6 +287,8 @@ def run_parity(root, quiet, source=REPO):
             problems.append("%s: %s" % (doc, detail))
         elif verdict == "declared" and not quiet:
             print("declared| %s - %s" % (doc, detail))
+        elif verdict == "host_bound" and not quiet:
+            print("host-bound| %s - %s (excluded by name, not by pattern)" % (doc, detail))
     instrument = []
     tool_compared = tool_diffs = 0
     for name in TOOL_NAMES:
@@ -311,9 +323,11 @@ def run_parity(root, quiet, source=REPO):
               "line is verified about it")
         return 3
 
-    line = ("OUTCOME=%s faces_compared=%d identical=%d declared=%d differing=%d missing=%d clone=%s source=%s"
+    line = ("OUTCOME=%s faces_compared=%d identical=%d declared=%d differing=%d missing=%d host_bound=%d(%s) "
+            "clone=%s source=%s"
             % ("CLEAN" if not problems else "RED", len(faces), counts["identical"], counts["declared"],
-               counts["differing"], counts["missing"], clone, source))
+               counts["differing"], counts["missing"], counts["host_bound"],
+               ",".join(sorted(HOST_BOUND_FACES)) or "-", clone, source))
     for pr in problems:
         print("  face| %s" % pr)
     print(line)
@@ -324,7 +338,7 @@ def run_parity(root, quiet, source=REPO):
     return 0
 
 
-SELFTEST_ARMS = 14
+SELFTEST_ARMS = 18
 
 
 def selftest():
@@ -352,6 +366,23 @@ def selftest():
     chk(verdict == "missing", "selftest A3 red: a face the clone did not generate is not an identical face")
     chk(normalize("12:34 +0800 and 2026-10-11T01:02:03") == "<TS> and <TS>",
         "selftest A4 green: all three timestamp shapes normalise, or the leg cries wolf on every run")
+    # The host-bound edge is tested in both directions, because an exclusion with only a green side is a blind
+    # spot with a denominator attached: the same two texts must be tolerated at the named face and refused at
+    # any compared one, and a missing host-bound face must still read as missing.
+    stamp_a = "| interpreter | `3.14.7` |\n"
+    stamp_b = "| interpreter | `3.13.13` |\n"
+    verdict, detail = compare_pair(stamp_a, stamp_b, "docs/host-stamp.md")
+    chk(verdict == "host_bound" and "differ" in detail,
+        "selftest A14 green: a machine fact differing between trees is host-bound, not a finding, got %s" % verdict)
+    verdict, _ = compare_pair(stamp_a, stamp_b, "docs/delivery-form.md")
+    chk(verdict == "differing",
+        "selftest A15 red: the same difference at a compared face must still bite, or the exclusion is a hole")
+    verdict, _ = compare_pair(stamp_a, None, "docs/host-stamp.md")
+    chk(verdict == "missing",
+        "selftest A16 red: a host-bound face the clone did not generate is still a missing face, not excused")
+    chk(HOST_BOUND_FACES == {"docs/host-stamp.md"},
+        "selftest A17 green: exactly one face is host-bound; widening this set without a ticket is how the leg "
+        "loses its teeth")
     exc = "- repository commit: `abc123` (working tree carries 11 uncommitted faces at generation time).\n"
     exc2 = "- repository commit: `def456` (working tree carries 3 uncommitted faces at generation time).\n"
     verdict, _ = compare_pair(exc, exc2, "docs/evidence.md")

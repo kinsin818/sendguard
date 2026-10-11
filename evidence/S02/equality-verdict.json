@@ -1,4 +1,358 @@
 {
+ "cell_port_verdict_fields_recorded": {
+  "blind/B1": {
+   "csharp": 9,
+   "go": 10,
+   "java": 10,
+   "python": 10,
+   "rust": 10,
+   "typescript": 10
+  },
+  "blind/B2": {
+   "csharp": 9,
+   "go": 10,
+   "java": 10,
+   "python": 10,
+   "rust": 10,
+   "typescript": 10
+  },
+  "blind/B3": {
+   "csharp": 9,
+   "go": 10,
+   "java": 10,
+   "python": 10,
+   "rust": 10,
+   "typescript": 10
+  },
+  "blind/B4": {
+   "csharp": 9,
+   "go": 10,
+   "java": 10,
+   "python": 10,
+   "rust": 10,
+   "typescript": 10
+  },
+  "blind/B5": {
+   "csharp": 9,
+   "go": 10,
+   "java": 10,
+   "python": 10,
+   "rust": 10,
+   "typescript": 10
+  },
+  "ctrl/T-CTRL-ASCII": {
+   "csharp": 9,
+   "go": 10,
+   "java": 10,
+   "python": 10,
+   "rust": 9,
+   "typescript": 10
+  },
+  "ctrl/T-CTRL-CANON": {
+   "csharp": 9,
+   "go": 10,
+   "java": 10,
+   "python": 10,
+   "rust": 9,
+   "typescript": 10
+  },
+  "ctrl/T-CTRL-ILLEGAL-CHAR": {
+   "csharp": 6,
+   "go": 6,
+   "java": 5,
+   "python": 5,
+   "rust": 6,
+   "typescript": 5
+  },
+  "ctrl/T-CTRL-NAMETOOLONG": {
+   "csharp": 6,
+   "go": 6,
+   "java": 5,
+   "python": 5,
+   "rust": 6,
+   "typescript": 5
+  },
+  "ctrl/T-CTRL-PARSE": {
+   "csharp": 6,
+   "go": 5,
+   "java": 5,
+   "python": 3,
+   "rust": 6,
+   "typescript": 5
+  },
+  "len/T17[base_len=120,path_form=extended]": {
+   "csharp": 10,
+   "go": 10,
+   "java": 5,
+   "python": 10,
+   "rust": 10,
+   "typescript": 10
+  },
+  "len/T17[base_len=120,path_form=plain]": {
+   "csharp": 10,
+   "go": 10,
+   "java": 10,
+   "python": 10,
+   "rust": 10,
+   "typescript": 10
+  },
+  "len/T17[base_len=200,path_form=extended]": {
+   "csharp": 10,
+   "go": 10,
+   "java": 5,
+   "python": 10,
+   "rust": 10,
+   "typescript": 10
+  },
+  "len/T17[base_len=200,path_form=plain]": {
+   "csharp": 10,
+   "go": 10,
+   "java": 10,
+   "python": 5,
+   "rust": 10,
+   "typescript": 10
+  },
+  "len/T17[base_len=78,path_form=extended]": {
+   "csharp": 10,
+   "go": 10,
+   "java": 5,
+   "python": 10,
+   "rust": 10,
+   "typescript": 10
+  },
+  "len/T17[base_len=78,path_form=plain]": {
+   "csharp": 10,
+   "go": 10,
+   "java": 10,
+   "python": 10,
+   "rust": 10,
+   "typescript": 10
+  },
+  "len/T18[base_len=120,path_form=extended]": {
+   "csharp": 10,
+   "go": 10,
+   "java": 5,
+   "python": 10,
+   "rust": 10,
+   "typescript": 10
+  },
+  "len/T18[base_len=120,path_form=plain]": {
+   "csharp": 10,
+   "go": 10,
+   "java": 10,
+   "python": 10,
+   "rust": 10,
+   "typescript": 10
+  },
+  "len/T18[base_len=200,path_form=extended]": {
+   "csharp": 10,
+   "go": 10,
+   "java": 5,
+   "python": 10,
+   "rust": 10,
+   "typescript": 10
+  },
+  "len/T18[base_len=200,path_form=plain]": {
+   "csharp": 10,
+   "go": 10,
+   "java": 10,
+   "python": 5,
+   "rust": 10,
+   "typescript": 10
+  },
+  "len/T18[base_len=78,path_form=extended]": {
+   "csharp": 10,
+   "go": 10,
+   "java": 5,
+   "python": 10,
+   "rust": 10,
+   "typescript": 10
+  },
+  "len/T18[base_len=78,path_form=plain]": {
+   "csharp": 10,
+   "go": 10,
+   "java": 10,
+   "python": 10,
+   "rust": 10,
+   "typescript": 10
+  },
+  "trap/T01": {
+   "csharp": 7,
+   "go": 5,
+   "java": 5,
+   "python": 6,
+   "rust": 7,
+   "typescript": 9
+  },
+  "trap/T02": {
+   "csharp": 7,
+   "go": 5,
+   "java": 6,
+   "python": 6,
+   "rust": 7,
+   "typescript": 9
+  },
+  "trap/T03": {
+   "csharp": 6,
+   "go": 6,
+   "java": 5,
+   "python": 5,
+   "rust": 6,
+   "typescript": 5
+  },
+  "trap/T04": {
+   "csharp": 9,
+   "go": 10,
+   "java": 8,
+   "python": 10,
+   "rust": 9,
+   "typescript": 10
+  },
+  "trap/T05": {
+   "csharp": 9,
+   "go": 10,
+   "java": 5,
+   "python": 10,
+   "rust": 9,
+   "typescript": 10
+  },
+  "trap/T06": {
+   "csharp": 9,
+   "go": 10,
+   "java": 10,
+   "python": 10,
+   "rust": 10,
+   "typescript": 10
+  },
+  "trap/T07": {
+   "csharp": 9,
+   "go": 10,
+   "java": 10,
+   "python": 10,
+   "rust": 10,
+   "typescript": 10
+  },
+  "trap/T08": {
+   "csharp": 9,
+   "go": 10,
+   "java": 10,
+   "python": 10,
+   "rust": 10,
+   "typescript": 10
+  },
+  "trap/T09-m1": {
+   "csharp": 9,
+   "go": 10,
+   "java": 10,
+   "python": 10,
+   "rust": 10,
+   "typescript": 10
+  },
+  "trap/T09-m2": {
+   "csharp": 9,
+   "go": 10,
+   "java": 10,
+   "python": 10,
+   "rust": 10,
+   "typescript": 10
+  },
+  "trap/T10": {
+   "csharp": 7,
+   "go": 5,
+   "java": 5,
+   "python": 6,
+   "rust": 7,
+   "typescript": 9
+  },
+  "trap/T11": {
+   "csharp": 7,
+   "go": 5,
+   "java": 6,
+   "python": 6,
+   "rust": 7,
+   "typescript": 9
+  },
+  "trap/T12": {
+   "csharp": 9,
+   "go": 10,
+   "java": 10,
+   "python": 10,
+   "rust": 10,
+   "typescript": 10
+  },
+  "trap/T13": {
+   "csharp": 9,
+   "go": 10,
+   "java": 10,
+   "python": 10,
+   "rust": 10,
+   "typescript": 10
+  },
+  "trap/T14-m1": {
+   "csharp": 6,
+   "go": 5,
+   "java": 5,
+   "python": 5,
+   "rust": 6,
+   "typescript": 9
+  },
+  "trap/T14-m2": {
+   "csharp": 7,
+   "go": 5,
+   "java": 6,
+   "python": 6,
+   "rust": 7,
+   "typescript": 9
+  },
+  "trap/T14-m3": {
+   "csharp": 6,
+   "go": 5,
+   "java": 5,
+   "python": 5,
+   "rust": 6,
+   "typescript": 9
+  },
+  "trap/T15": {
+   "csharp": 6,
+   "go": 6,
+   "java": 5,
+   "python": 5,
+   "rust": 6,
+   "typescript": 5
+  },
+  "trap/T16": {
+   "csharp": 9,
+   "go": 10,
+   "java": 10,
+   "python": 10,
+   "rust": 10,
+   "typescript": 10
+  },
+  "trap/T19-m1": {
+   "csharp": 9,
+   "go": 10,
+   "java": 10,
+   "python": 10,
+   "rust": 10,
+   "typescript": 10
+  },
+  "trap/T19-m2": {
+   "csharp": 9,
+   "go": 10,
+   "java": 10,
+   "python": 10,
+   "rust": 10,
+   "typescript": 10
+  },
+  "trap/T20": {
+   "csharp": 9,
+   "go": 10,
+   "java": 10,
+   "python": 10,
+   "rust": 10,
+   "typescript": 10
+  }
+ },
  "cells_compared": 44,
  "cells_every_port_recorded_every_verdict_field": [
   "len/T17[base_len=78,path_form=plain]",
@@ -3340,5 +3694,5 @@
  ],
  "verdict_pairs_possible": 2640,
  "verdict_pairs_recorded": 2281,
- "written_at": "2026-10-11T14:12:25+0800"
+ "written_at": "2026-10-11T14:44:34+0800"
 }

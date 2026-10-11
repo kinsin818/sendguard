@@ -850,6 +850,7 @@ def main(argv):
     cells_all_recorded = []
     cell_recs = {}
     all_blank = []
+    cell_port_recorded = {}
     for k in cells_live:
         recs = cell_recs[k] = compare(VERDICT_FIELDS, {n: cmp[n][k] for n in names})
         for f in VERDICT_FIELDS:
@@ -857,6 +858,9 @@ def main(argv):
                 field_cov[f][n] += 1
             if not recs.get(f):
                 all_blank.append((k, f))
+        cell_port_recorded[fmt(k)] = {p: 0 for p in names}
+        for n in names:
+            cell_port_recorded[fmt(k)][n] = sum(1 for f in VERDICT_FIELDS if n in recs.get(f, {}))
         if all(len(recs.get(f, {})) >= len(names) for f in VERDICT_FIELDS):
             cells_all_recorded.append(k)
     cov_pairs = sum(c for f in field_cov.values() for c in f.values())
@@ -905,6 +909,10 @@ def main(argv):
         "cells_with_no_verdict_disagreement_and_fully_recorded": [fmt(k) for k in clean_cells],
         "verdict_field_coverage": {f: {n: field_cov[f][n] for n in names} for f in VERDICT_FIELDS},
         "verdict_pairs_no_port_recorded": [[fmt(k), f] for k, f in all_blank],
+        # how many of the ten verdict fields each port answered in each compared cell - the
+        # gate counts this so the coverage report does not have to re-read the faces and become a
+        # second ruler (docs/FINDINGS-rev6.md M6 item 2 is what happens when it does).
+        "cell_port_verdict_fields_recorded": cell_port_recorded,
         "not_recorded_pairs": [[fmt(k), f, sorted(w)] for k, f, w in vnr],
         "probe_cells_differing": len({k for k, _, _ in pdis}),
         "unpinned_input": [fmt(k) for k, _ in unpinned],

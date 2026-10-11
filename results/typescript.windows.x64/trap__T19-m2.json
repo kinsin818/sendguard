@@ -20,7 +20,7 @@
   "create_result": "ok",
   "deps_direct": 0,
   "deps_total": 0,
-  "elapsed_ms": 527,
+  "elapsed_ms": 500,
   "entry_spread": [
     {
       "api_entry": "createWriteStream",
@@ -34,7 +34,7 @@
       "path_form": "plain",
       "probe_exit_rc": 0,
       "probe_signal": null,
-      "probe_wall_ms": 141,
+      "probe_wall_ms": 125,
       "role": "spread"
     },
     {
@@ -49,7 +49,7 @@
       "path_form": "plain",
       "probe_exit_rc": 0,
       "probe_signal": null,
-      "probe_wall_ms": 139,
+      "probe_wall_ms": 128,
       "role": "spread"
     },
     {
@@ -244,7 +244,7 @@
         "stderr_tail": null,
         "tag": "p1",
         "timed_out": false,
-        "wall_ms": 141
+        "wall_ms": 125
       },
       {
         "api_entry": "appendFileSync",
@@ -257,7 +257,7 @@
         "stderr_tail": null,
         "tag": "p2",
         "timed_out": false,
-        "wall_ms": 139
+        "wall_ms": 128
       },
       {
         "api_entry": "writeFileSync",
@@ -279,16 +279,16 @@
   "read_skipped_reason": null,
   "roundtrip_ok": true,
   "scratch": {
-    "cell_root": "S:\\36eb615",
-    "cell_root_real": "D:\\sendguard-work\\seat-qoder\\.sgscratch\\36eb615",
+    "cell_root": "S:\\5e87bc4",
+    "cell_root_real": "D:\\sendguard-work\\seat-qoder\\.sgscratch\\5e87bc4",
     "cleanup": "not attempted by the port (M19 forbids deletion logic in this port); the path is recorded for the operator",
     "verified_empty_before_use": true
   },
-  "sha256_self": "0aca3f38e1573026aa07d75077cdb95bd1dc3323aea76324d012f71fb0a5a7ca",
+  "sha256_self": "25a3b94bff5a4eb211fa5f17f166175c3859af93273ecbddd34c9a8f1b893ca9",
   "sha256_truth": "c9fe45b2fee8ea846f0cf4f2cacc2a891e7b082e7719923502d12a9813e21994",
   "spec_sha256": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261",
   "spec_sha256_basis": "git cat-file blob HEAD:spec/cases.yaml, hashed (committed blob face, not the disk file)",
-  "started_at": "2026-10-10T23:51:13.223Z",
+  "started_at": "2026-10-11T01:00:12.227Z",
   "status": "measured",
   "sub_identity": "",
   "verdict_via": "win32",

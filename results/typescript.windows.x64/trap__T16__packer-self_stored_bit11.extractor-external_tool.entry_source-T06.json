@@ -27,9 +27,25 @@
   },
   "deps_direct": 0,
   "deps_total": 0,
-  "elapsed_ms": 175,
+  "elapsed_ms": 302,
   "entry_source": "T06",
-  "entry_spread": [],
+  "entry_spread": [
+    {
+      "api_entry": "writeFileSync",
+      "bytes_on_disk": 28,
+      "bytes_written": 28,
+      "create_result": "ok",
+      "error_code": null,
+      "error_message": null,
+      "error_stage": "null",
+      "name_landed_as": "zip-roundtrip.zip",
+      "path_form": "extended",
+      "probe_exit_rc": 0,
+      "probe_signal": null,
+      "probe_wall_ms": 141,
+      "role": "osprobe"
+    }
+  ],
   "enum_listed": [
     "x",
     "zip-roundtrip.zip"
@@ -173,8 +189,11 @@
   "name_source_basis": "spec/cases.yaml T16 sample_hex is the archive name; the zip ENTRY name is taken from the frozen T06 sample so bit 11 has something to do",
   "note": "packer=self_stored_bit11 extractor=external_tool entry_source=T06 bit11=true",
   "os": "windows",
-  "os_legality_basis": "no os-legality sibling probe in this plan",
-  "os_legality_verdict": "unknown",
+  "os_legality_authority": "extended-prefix (\\\\?\\) create probe through node:fs, i.e. the Win32 file API",
+  "os_legality_basis": "the filesystem itself accepts the name once the Win32 name parser is bypassed with the extended prefix",
+  "os_legality_verdict": "legal",
+  "os_probe_error_code": null,
+  "os_probe_landed_as": "zip-roundtrip.zip",
   "packer": "self_stored_bit11",
   "path_form": "plain",
   "phantom": false,
@@ -187,6 +206,19 @@
         "api_entry": "writeFileSync",
         "exit_rc": 0,
         "malformed_log_lines": 0,
+        "mode": "cell",
+        "path_form": "extended",
+        "role": "osprobe",
+        "signal": null,
+        "stderr_tail": null,
+        "tag": "oz",
+        "timed_out": false,
+        "wall_ms": 141
+      },
+      {
+        "api_entry": "writeFileSync",
+        "exit_rc": 0,
+        "malformed_log_lines": 0,
         "mode": "zip",
         "path_form": "plain",
         "role": "primary",
@@ -194,7 +226,7 @@
         "stderr_tail": null,
         "tag": "z4",
         "timed_out": false,
-        "wall_ms": 175
+        "wall_ms": 161
       }
     ],
     "node_version": "v24.15.0"
@@ -205,19 +237,19 @@
   "roundtrip_ok": true,
   "roundtrip_ok_basis": "container leg: the zip entry name survived pack -> extract -> create",
   "scratch": {
-    "cell_root": "S:\\e07e1f9",
-    "cell_root_real": "D:\\sendguard-work\\seat-qoder\\.sgscratch\\e07e1f9",
+    "cell_root": "S:\\f310af9",
+    "cell_root_real": "D:\\sendguard-work\\seat-qoder\\.sgscratch\\f310af9",
     "cleanup": "not attempted by the port (M19 forbids deletion logic in this port); the path is recorded for the operator",
     "verified_empty_before_use": true
   },
-  "sha256_self": "0226eee5f9b3bfb04df1ae66b07c057dc34144762459e1bb5059ae5bb4c6187f",
+  "sha256_self": "1da90fff42b42dfd1247a9e96b313577ec1f5bff7bed2c4a8b452d044c7b0e41",
   "sha256_truth": "97f515e9fb7b8f9ebf28b513904711d966e0311f786c76f5718c69cc13dfd6dd",
   "spec_sha256": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261",
   "spec_sha256_basis": "git cat-file blob HEAD:spec/cases.yaml, hashed (committed blob face, not the disk file)",
-  "started_at": "2026-10-10T23:51:14.345Z",
+  "started_at": "2026-10-11T01:00:13.912Z",
   "status": "measured",
   "sub_identity": "packer-self_stored_bit11.extractor-external_tool.entry_source-T06",
-  "verdict_via": "none",
+  "verdict_via": "win32",
   "worker_id": "seat-qoder-typescript",
   "zip_roundtrip": {
     "ev": "zip_extract",

@@ -116,7 +116,9 @@ def frozen_expectation():
     full = io.open(os.path.join(REPO, CASES_PATH), encoding="utf-8").read()
     # rev6 added a second `  - id:` list (control_samples) above cases:; counting the whole file
     # made the trap denominator read 27 instead of 22.
-    text = full.split(re.escape(CASES_MARKER))[-1]
+    # re.escape would escape the newline itself and never match, which is how this file
+    # once read 27 trap cells instead of 22
+    text = full.split(CASES_MARKER)[-1]
     blocks = re.split(r"(?m)^  - id: ", text)[1:]
     ids = []
     name_cells = 0

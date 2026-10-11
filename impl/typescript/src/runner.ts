@@ -937,6 +937,7 @@ function zipPlans(spec: FrozenSpec): CellPlan[] {
     nameSourceHex: archiveHex,
     nameSourceBasis: `spec/cases.yaml T16 sample_hex is the archive name; the zip ENTRY name is taken from the frozen ${leg.entrySource} sample so bit 11 has something to do`,
     jobs: [
+      job({ tag: "oz", role: "osprobe", mode: "cell", dirRel: "oz", nameHex: archiveHex, entry: PRIMARY_ENTRY, form: "extended" }),
       job({
         tag: leg.tag,
         role: "primary",
@@ -1089,7 +1090,7 @@ function ctrlPlans(spec: FrozenSpec): CellPlan[] {
     { id: "T-CTRL-ASCII", mode: "cell", osProbe: true },
     { id: "T-CTRL-ILLEGAL-CHAR", mode: "cell", osProbe: true },
     { id: "T-CTRL-PARSE", mode: "cell", osProbe: false },
-    { id: "T-CTRL-CANON", mode: "canon", osProbe: false },
+    { id: "T-CTRL-CANON", mode: "canon", osProbe: true },
   ];
 
   return defs.map((d) => {

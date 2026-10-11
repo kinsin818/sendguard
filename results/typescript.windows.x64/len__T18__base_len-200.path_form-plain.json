@@ -21,7 +21,7 @@
   "create_result": "ok",
   "deps_direct": 0,
   "deps_total": 0,
-  "elapsed_ms": 417,
+  "elapsed_ms": 398,
   "entry_spread": [
     {
       "api_entry": "writeFileSync",
@@ -37,7 +37,7 @@
       "path_form": "plain",
       "probe_exit_rc": 0,
       "probe_signal": null,
-      "probe_wall_ms": 142,
+      "probe_wall_ms": 132,
       "probes": 9,
       "role": "spread",
       "total_path_at_last_ok": 456
@@ -56,7 +56,7 @@
       "path_form": "extended",
       "probe_exit_rc": 0,
       "probe_signal": null,
-      "probe_wall_ms": 142,
+      "probe_wall_ms": 140,
       "probes": 9,
       "role": "spread",
       "total_path_at_last_ok": 456
@@ -229,7 +229,7 @@
         "stderr_tail": null,
         "tag": "g",
         "timed_out": false,
-        "wall_ms": 133
+        "wall_ms": 126
       },
       {
         "api_entry": "writeFileSync",
@@ -242,7 +242,7 @@
         "stderr_tail": null,
         "tag": "b",
         "timed_out": false,
-        "wall_ms": 142
+        "wall_ms": 132
       },
       {
         "api_entry": "writeFileSync",
@@ -255,7 +255,7 @@
         "stderr_tail": null,
         "tag": "bx",
         "timed_out": false,
-        "wall_ms": 142
+        "wall_ms": 140
       }
     ],
     "node_version": "v24.15.0"
@@ -265,16 +265,16 @@
   "roundtrip_ok": null,
   "rung_bracket_kept_in_len_ceiling": true,
   "scratch": {
-    "cell_root": "S:\\8e6cb4f",
-    "cell_root_real": "D:\\sendguard-work\\seat-qoder\\.sgscratch\\8e6cb4f",
+    "cell_root": "S:\\40020f9",
+    "cell_root_real": "D:\\sendguard-work\\seat-qoder\\.sgscratch\\40020f9",
     "cleanup": "not attempted by the port (M19 forbids deletion logic in this port); the path is recorded for the operator",
     "verified_empty_before_use": true
   },
-  "sha256_self": "95f7430cc1a305767d09bff7d329a589e20be38118ac5d21fb23383fa2c1292f",
+  "sha256_self": "117b66f67986321e1c02972c97c7f49647884005904a7dd779422ec96b0351d6",
   "sha256_truth": null,
   "spec_sha256": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261",
   "spec_sha256_basis": "git cat-file blob HEAD:spec/cases.yaml, hashed (committed blob face, not the disk file)",
-  "started_at": "2026-10-10T23:51:22.009Z",
+  "started_at": "2026-10-11T01:00:21.689Z",
   "status": "measured",
   "sub_identity": "base_len-200.path_form-plain",
   "tier": "len_fill",

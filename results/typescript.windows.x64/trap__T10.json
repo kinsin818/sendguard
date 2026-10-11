@@ -20,7 +20,7 @@
   "create_result": "ok",
   "deps_direct": 0,
   "deps_total": 0,
-  "elapsed_ms": 401,
+  "elapsed_ms": 406,
   "entry_spread": [
     {
       "api_entry": "createWriteStream",
@@ -34,7 +34,7 @@
       "path_form": "plain",
       "probe_exit_rc": 0,
       "probe_signal": null,
-      "probe_wall_ms": 128,
+      "probe_wall_ms": 145,
       "role": "spread"
     },
     {
@@ -213,7 +213,7 @@
         "stderr_tail": null,
         "tag": "p0",
         "timed_out": false,
-        "wall_ms": 136
+        "wall_ms": 124
       },
       {
         "api_entry": "createWriteStream",
@@ -226,7 +226,7 @@
         "stderr_tail": null,
         "tag": "p1",
         "timed_out": false,
-        "wall_ms": 128
+        "wall_ms": 145
       },
       {
         "api_entry": "appendFileSync",
@@ -248,16 +248,16 @@
   "read_skipped_reason": "reserved device name: this port never opens one for reading",
   "roundtrip_ok": null,
   "scratch": {
-    "cell_root": "S:\\a3bf91f",
-    "cell_root_real": "D:\\sendguard-work\\seat-qoder\\.sgscratch\\a3bf91f",
+    "cell_root": "S:\\dc823a0",
+    "cell_root_real": "D:\\sendguard-work\\seat-qoder\\.sgscratch\\dc823a0",
     "cleanup": "not attempted by the port (M19 forbids deletion logic in this port); the path is recorded for the operator",
     "verified_empty_before_use": true
   },
-  "sha256_self": "3b8b78a506315d4d2200db797d634f9974db5545abe3055236a79cf26a9a22bb",
+  "sha256_self": "2722606d8f733f38e6f4eb5ce47a4a04f3989cf9be1196c2b4ae95747ed2d378",
   "sha256_truth": null,
   "spec_sha256": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261",
   "spec_sha256_basis": "git cat-file blob HEAD:spec/cases.yaml, hashed (committed blob face, not the disk file)",
-  "started_at": "2026-10-10T23:51:08.523Z",
+  "started_at": "2026-10-11T01:00:07.520Z",
   "status": "measured",
   "sub_identity": "",
   "verdict_via": "win32",

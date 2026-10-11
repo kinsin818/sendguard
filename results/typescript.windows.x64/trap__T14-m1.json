@@ -20,7 +20,7 @@
   "create_result": "ok",
   "deps_direct": 0,
   "deps_total": 0,
-  "elapsed_ms": 375,
+  "elapsed_ms": 405,
   "entry_spread": [
     {
       "api_entry": "createWriteStream",
@@ -34,7 +34,7 @@
       "path_form": "plain",
       "probe_exit_rc": 0,
       "probe_signal": null,
-      "probe_wall_ms": 126,
+      "probe_wall_ms": 125,
       "role": "spread"
     },
     {
@@ -49,7 +49,7 @@
       "path_form": "plain",
       "probe_exit_rc": 0,
       "probe_signal": null,
-      "probe_wall_ms": 125,
+      "probe_wall_ms": 143,
       "role": "spread"
     }
   ],
@@ -215,7 +215,7 @@
         "stderr_tail": null,
         "tag": "p0",
         "timed_out": false,
-        "wall_ms": 124
+        "wall_ms": 137
       },
       {
         "api_entry": "createWriteStream",
@@ -228,7 +228,7 @@
         "stderr_tail": null,
         "tag": "p1",
         "timed_out": false,
-        "wall_ms": 126
+        "wall_ms": 125
       },
       {
         "api_entry": "appendFileSync",
@@ -241,7 +241,7 @@
         "stderr_tail": null,
         "tag": "p2",
         "timed_out": false,
-        "wall_ms": 125
+        "wall_ms": 143
       }
     ],
     "node_version": "v24.15.0"
@@ -250,16 +250,16 @@
   "read_skipped_reason": "reserved device name: this port never opens one for reading",
   "roundtrip_ok": null,
   "scratch": {
-    "cell_root": "S:\\0c7b9a1",
-    "cell_root_real": "D:\\sendguard-work\\seat-qoder\\.sgscratch\\0c7b9a1",
+    "cell_root": "S:\\5968322",
+    "cell_root_real": "D:\\sendguard-work\\seat-qoder\\.sgscratch\\5968322",
     "cleanup": "not attempted by the port (M19 forbids deletion logic in this port); the path is recorded for the operator",
     "verified_empty_before_use": true
   },
-  "sha256_self": "70d872062ca9f4fbdda12d375fc1c2a13584eb20677ddc71365704c4089b6529",
+  "sha256_self": "72bcd624a6300dcfb3bd450f1be3a4c296455953879bef295bf578e8a17b0069",
   "sha256_truth": null,
   "spec_sha256": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261",
   "spec_sha256_basis": "git cat-file blob HEAD:spec/cases.yaml, hashed (committed blob face, not the disk file)",
-  "started_at": "2026-10-10T23:51:10.384Z",
+  "started_at": "2026-10-11T01:00:09.364Z",
   "status": "measured",
   "sub_identity": "",
   "verdict_via": "win32",

@@ -30,7 +30,7 @@
   "create_result": "err_at_syscall",
   "deps_direct": 0,
   "deps_total": 0,
-  "elapsed_ms": 282,
+  "elapsed_ms": 266,
   "entry_spread": [
     {
       "api_entry": "writeFileSync",
@@ -38,13 +38,13 @@
       "bytes_written": null,
       "create_result": "err_at_syscall",
       "error_code": "ENOENT",
-      "error_message": "ENOENT: no such file or directory, open 'S:\\31aea59\\oz\\a<b.txt'",
+      "error_message": "ENOENT: no such file or directory, open 'S:\\c59c2b1\\oz\\a<b.txt'",
       "error_stage": "syscall",
       "name_landed_as": null,
       "path_form": "extended",
       "probe_exit_rc": 0,
       "probe_signal": null,
-      "probe_wall_ms": 136,
+      "probe_wall_ms": 128,
       "role": "osprobe"
     }
   ],
@@ -79,7 +79,7 @@
   },
   "errno": -4058,
   "error_code": "ENOENT",
-  "error_message": "ENOENT: no such file or directory, open 'S:\\31aea59\\p0\\a<b.txt'",
+  "error_message": "ENOENT: no such file or directory, open 'S:\\c59c2b1\\p0\\a<b.txt'",
   "error_stage": "syscall",
   "error_winerror": "not-obtainable-in-stdlib",
   "format_version": 1,
@@ -185,7 +185,7 @@
   "note": "control cell: it verifies the ruler, it is not counted in the 20 traps; payload is the pinned 28 bytes",
   "os": "windows",
   "os_legality_authority": "extended-prefix (\\\\?\\) create probe through node:fs, i.e. the Win32 file API",
-  "os_legality_basis": "extended-prefix create refused: ENOENT ENOENT: no such file or directory, open 'S:\\31aea59\\oz\\a<b.txt'",
+  "os_legality_basis": "extended-prefix create refused: ENOENT ENOENT: no such file or directory, open 'S:\\c59c2b1\\oz\\a<b.txt'",
   "os_legality_verdict": "illegal",
   "os_probe_error_code": "ENOENT",
   "os_probe_landed_as": null,
@@ -207,7 +207,7 @@
         "stderr_tail": null,
         "tag": "c0",
         "timed_out": false,
-        "wall_ms": 146
+        "wall_ms": 138
       },
       {
         "api_entry": "writeFileSync",
@@ -220,7 +220,7 @@
         "stderr_tail": null,
         "tag": "oz",
         "timed_out": false,
-        "wall_ms": 136
+        "wall_ms": 128
       }
     ],
     "node_version": "v24.15.0"
@@ -229,16 +229,16 @@
   "read_skipped_reason": "nothing landed, so no read was attempted",
   "roundtrip_ok": null,
   "scratch": {
-    "cell_root": "S:\\31aea59",
-    "cell_root_real": "D:\\sendguard-work\\seat-qoder\\.sgscratch\\31aea59",
+    "cell_root": "S:\\c59c2b1",
+    "cell_root_real": "D:\\sendguard-work\\seat-qoder\\.sgscratch\\c59c2b1",
     "cleanup": "not attempted by the port (M19 forbids deletion logic in this port); the path is recorded for the operator",
     "verified_empty_before_use": true
   },
-  "sha256_self": "ba6b5435ff6c639c9abc12fcf7d54f7fc6294bb14242346a931dfba002e2c581",
+  "sha256_self": "256115e8f8fa71cf9f3a1a277875dc55b4186bd3936de80adb625216988968cb",
   "sha256_truth": null,
   "spec_sha256": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261",
   "spec_sha256_basis": "git cat-file blob HEAD:spec/cases.yaml, hashed (committed blob face, not the disk file)",
-  "started_at": "2026-10-10T23:51:02.781Z",
+  "started_at": "2026-10-11T01:00:01.621Z",
   "status": "measured",
   "sub_identity": "",
   "verdict_via": "win32",

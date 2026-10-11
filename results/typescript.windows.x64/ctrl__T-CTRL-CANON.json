@@ -26,8 +26,24 @@
   "create_result": "ok",
   "deps_direct": 0,
   "deps_total": 0,
-  "elapsed_ms": 136,
-  "entry_spread": [],
+  "elapsed_ms": 274,
+  "entry_spread": [
+    {
+      "api_entry": "writeFileSync",
+      "bytes_on_disk": 28,
+      "bytes_written": 28,
+      "create_result": "ok",
+      "error_code": null,
+      "error_message": null,
+      "error_stage": "null",
+      "name_landed_as": "canon-check.txt",
+      "path_form": "extended",
+      "probe_exit_rc": 0,
+      "probe_signal": null,
+      "probe_wall_ms": 132,
+      "role": "osprobe"
+    }
+  ],
   "enum_listed": null,
   "enum_matched_by": null,
   "enum_to_stat_agrees": null,
@@ -160,8 +176,11 @@
   "name_source_basis": "control_samples entry for T-CTRL-CANON in spec/cases.yaml (rev6 pin)",
   "note": "control cell: it verifies the ruler, it is not counted in the 20 traps; payload is the pinned 28 bytes",
   "os": "windows",
-  "os_legality_basis": "no os-legality sibling probe in this plan",
-  "os_legality_verdict": "unknown",
+  "os_legality_authority": "extended-prefix (\\\\?\\) create probe through node:fs, i.e. the Win32 file API",
+  "os_legality_basis": "the filesystem itself accepts the name once the Win32 name parser is bypassed with the extended prefix",
+  "os_legality_verdict": "legal",
+  "os_probe_error_code": null,
+  "os_probe_landed_as": "canon-check.txt",
   "path_form": "plain",
   "phantom": false,
   "probe": {
@@ -180,7 +199,20 @@
         "stderr_tail": null,
         "tag": "c0",
         "timed_out": false,
-        "wall_ms": 136
+        "wall_ms": 142
+      },
+      {
+        "api_entry": "writeFileSync",
+        "exit_rc": 0,
+        "malformed_log_lines": 0,
+        "mode": "cell",
+        "path_form": "extended",
+        "role": "osprobe",
+        "signal": null,
+        "stderr_tail": null,
+        "tag": "oz",
+        "timed_out": false,
+        "wall_ms": 132
       }
     ],
     "node_version": "v24.15.0"
@@ -189,18 +221,18 @@
   "read_skipped_reason": null,
   "roundtrip_ok": true,
   "scratch": {
-    "cell_root": "S:\\5d9a013",
-    "cell_root_real": "D:\\sendguard-work\\seat-qoder\\.sgscratch\\5d9a013",
+    "cell_root": "S:\\ff4daed",
+    "cell_root_real": "D:\\sendguard-work\\seat-qoder\\.sgscratch\\ff4daed",
     "cleanup": "not attempted by the port (M19 forbids deletion logic in this port); the path is recorded for the operator",
     "verified_empty_before_use": true
   },
-  "sha256_self": "5ac93e6bba4ab042a17f5f9a62da05f6f290759330a4f3cfa29f6a35b5eb06f2",
+  "sha256_self": "36da731976c54f07e651e15e2c49851df4b90b2d776dca1a1b93f171c18fd627",
   "sha256_truth": "c9fe45b2fee8ea846f0cf4f2cacc2a891e7b082e7719923502d12a9813e21994",
   "spec_sha256": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261",
   "spec_sha256_basis": "git cat-file blob HEAD:spec/cases.yaml, hashed (committed blob face, not the disk file)",
-  "started_at": "2026-10-10T23:51:03.058Z",
+  "started_at": "2026-10-11T01:00:02.033Z",
   "status": "measured",
   "sub_identity": "",
-  "verdict_via": "none",
+  "verdict_via": "win32",
   "worker_id": "seat-qoder-typescript"
 }

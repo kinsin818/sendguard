@@ -20,7 +20,7 @@
   "create_result": "err_at_syscall",
   "deps_direct": 0,
   "deps_total": 0,
-  "elapsed_ms": 521,
+  "elapsed_ms": 514,
   "entry_spread": [
     {
       "api_entry": "createWriteStream",
@@ -28,7 +28,22 @@
       "bytes_written": null,
       "create_result": "err_at_syscall",
       "error_code": "ENOENT",
-      "error_message": "ENOENT: no such file or directory, open 'S:\\f6bcf92\\p1\\a<b.txt'",
+      "error_message": "ENOENT: no such file or directory, open 'S:\\a685a9a\\p1\\a<b.txt'",
+      "error_stage": "syscall",
+      "name_landed_as": null,
+      "path_form": "plain",
+      "probe_exit_rc": 0,
+      "probe_signal": null,
+      "probe_wall_ms": 127,
+      "role": "spread"
+    },
+    {
+      "api_entry": "appendFileSync",
+      "bytes_on_disk": null,
+      "bytes_written": null,
+      "create_result": "err_at_syscall",
+      "error_code": "ENOENT",
+      "error_message": "ENOENT: no such file or directory, open 'S:\\a685a9a\\p2\\a<b.txt'",
       "error_stage": "syscall",
       "name_landed_as": null,
       "path_form": "plain",
@@ -38,33 +53,18 @@
       "role": "spread"
     },
     {
-      "api_entry": "appendFileSync",
-      "bytes_on_disk": null,
-      "bytes_written": null,
-      "create_result": "err_at_syscall",
-      "error_code": "ENOENT",
-      "error_message": "ENOENT: no such file or directory, open 'S:\\f6bcf92\\p2\\a<b.txt'",
-      "error_stage": "syscall",
-      "name_landed_as": null,
-      "path_form": "plain",
-      "probe_exit_rc": 0,
-      "probe_signal": null,
-      "probe_wall_ms": 124,
-      "role": "spread"
-    },
-    {
       "api_entry": "writeFileSync",
       "bytes_on_disk": null,
       "bytes_written": null,
       "create_result": "err_at_syscall",
       "error_code": "ENOENT",
-      "error_message": "ENOENT: no such file or directory, open 'S:\\f6bcf92\\oz\\a<b.txt'",
+      "error_message": "ENOENT: no such file or directory, open 'S:\\a685a9a\\oz\\a<b.txt'",
       "error_stage": "syscall",
       "name_landed_as": null,
       "path_form": "extended",
       "probe_exit_rc": 0,
       "probe_signal": null,
-      "probe_wall_ms": 125,
+      "probe_wall_ms": 126,
       "role": "osprobe"
     }
   ],
@@ -99,7 +99,7 @@
   },
   "errno": -4058,
   "error_code": "ENOENT",
-  "error_message": "ENOENT: no such file or directory, open 'S:\\f6bcf92\\p0\\a<b.txt'",
+  "error_message": "ENOENT: no such file or directory, open 'S:\\a685a9a\\p0\\a<b.txt'",
   "error_stage": "syscall",
   "error_winerror": "not-obtainable-in-stdlib",
   "format_version": 1,
@@ -205,7 +205,7 @@
   "note": "frozen category=illegal_char_filter locale=en-US applicable=windows|macos|ubuntu; this host is windows so applicable_to_this_os=true",
   "os": "windows",
   "os_legality_authority": "extended-prefix (\\\\?\\) create probe through node:fs, i.e. the Win32 file API",
-  "os_legality_basis": "extended-prefix create refused: ENOENT ENOENT: no such file or directory, open 'S:\\f6bcf92\\oz\\a<b.txt'",
+  "os_legality_basis": "extended-prefix create refused: ENOENT ENOENT: no such file or directory, open 'S:\\a685a9a\\oz\\a<b.txt'",
   "os_legality_verdict": "illegal",
   "os_probe_error_code": "ENOENT",
   "os_probe_landed_as": null,
@@ -227,7 +227,7 @@
         "stderr_tail": null,
         "tag": "p0",
         "timed_out": false,
-        "wall_ms": 139
+        "wall_ms": 128
       },
       {
         "api_entry": "createWriteStream",
@@ -240,7 +240,7 @@
         "stderr_tail": null,
         "tag": "p1",
         "timed_out": false,
-        "wall_ms": 133
+        "wall_ms": 127
       },
       {
         "api_entry": "appendFileSync",
@@ -253,7 +253,7 @@
         "stderr_tail": null,
         "tag": "p2",
         "timed_out": false,
-        "wall_ms": 124
+        "wall_ms": 133
       },
       {
         "api_entry": "writeFileSync",
@@ -266,7 +266,7 @@
         "stderr_tail": null,
         "tag": "oz",
         "timed_out": false,
-        "wall_ms": 125
+        "wall_ms": 126
       }
     ],
     "node_version": "v24.15.0"
@@ -275,16 +275,16 @@
   "read_skipped_reason": "nothing landed, so no read was attempted",
   "roundtrip_ok": null,
   "scratch": {
-    "cell_root": "S:\\f6bcf92",
-    "cell_root_real": "D:\\sendguard-work\\seat-qoder\\.sgscratch\\f6bcf92",
+    "cell_root": "S:\\a685a9a",
+    "cell_root_real": "D:\\sendguard-work\\seat-qoder\\.sgscratch\\a685a9a",
     "cleanup": "not attempted by the port (M19 forbids deletion logic in this port); the path is recorded for the operator",
     "verified_empty_before_use": true
   },
-  "sha256_self": "4a2d9285179460e0fe0f01ea11d8344d53210b25244811dd412d654384e241b2",
+  "sha256_self": "d146e19c973075fe7f42749a9845b82cfb83a35a11d6c886686572441e929730",
   "sha256_truth": null,
   "spec_sha256": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261",
   "spec_sha256_basis": "git cat-file blob HEAD:spec/cases.yaml, hashed (committed blob face, not the disk file)",
-  "started_at": "2026-10-10T23:51:04.399Z",
+  "started_at": "2026-10-11T01:00:03.368Z",
   "status": "measured",
   "sub_identity": "",
   "verdict_via": "win32",

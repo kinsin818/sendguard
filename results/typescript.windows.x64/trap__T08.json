@@ -20,7 +20,7 @@
   "create_result": "ok",
   "deps_direct": 0,
   "deps_total": 0,
-  "elapsed_ms": 518,
+  "elapsed_ms": 536,
   "entry_spread": [
     {
       "api_entry": "createWriteStream",
@@ -34,7 +34,7 @@
       "path_form": "plain",
       "probe_exit_rc": 0,
       "probe_signal": null,
-      "probe_wall_ms": 127,
+      "probe_wall_ms": 142,
       "role": "spread"
     },
     {
@@ -49,7 +49,7 @@
       "path_form": "plain",
       "probe_exit_rc": 0,
       "probe_signal": null,
-      "probe_wall_ms": 138,
+      "probe_wall_ms": 126,
       "role": "spread"
     },
     {
@@ -64,7 +64,7 @@
       "path_form": "extended",
       "probe_exit_rc": 0,
       "probe_signal": null,
-      "probe_wall_ms": 125,
+      "probe_wall_ms": 128,
       "role": "osprobe"
     }
   ],
@@ -229,7 +229,7 @@
         "stderr_tail": null,
         "tag": "p0",
         "timed_out": false,
-        "wall_ms": 128
+        "wall_ms": 140
       },
       {
         "api_entry": "createWriteStream",
@@ -242,7 +242,7 @@
         "stderr_tail": null,
         "tag": "p1",
         "timed_out": false,
-        "wall_ms": 127
+        "wall_ms": 142
       },
       {
         "api_entry": "appendFileSync",
@@ -255,7 +255,7 @@
         "stderr_tail": null,
         "tag": "p2",
         "timed_out": false,
-        "wall_ms": 138
+        "wall_ms": 126
       },
       {
         "api_entry": "writeFileSync",
@@ -268,7 +268,7 @@
         "stderr_tail": null,
         "tag": "oz",
         "timed_out": false,
-        "wall_ms": 125
+        "wall_ms": 128
       }
     ],
     "node_version": "v24.15.0"
@@ -277,16 +277,16 @@
   "read_skipped_reason": null,
   "roundtrip_ok": true,
   "scratch": {
-    "cell_root": "S:\\9ca6507",
-    "cell_root_real": "D:\\sendguard-work\\seat-qoder\\.sgscratch\\9ca6507",
+    "cell_root": "S:\\8db8cc0",
+    "cell_root_real": "D:\\sendguard-work\\seat-qoder\\.sgscratch\\8db8cc0",
     "cleanup": "not attempted by the port (M19 forbids deletion logic in this port); the path is recorded for the operator",
     "verified_empty_before_use": true
   },
-  "sha256_self": "ab149238b39a320d731cde7d140e48da2549e01b1be1d4560e054128b654e153",
+  "sha256_self": "7d28cda9110e63b23c6c7c30204c1e60f407ac782e95017b79b2130d7078d34f",
   "sha256_truth": "c9fe45b2fee8ea846f0cf4f2cacc2a891e7b082e7719923502d12a9813e21994",
   "spec_sha256": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261",
   "spec_sha256_basis": "git cat-file blob HEAD:spec/cases.yaml, hashed (committed blob face, not the disk file)",
-  "started_at": "2026-10-10T23:51:07.041Z",
+  "started_at": "2026-10-11T01:00:06.030Z",
   "status": "measured",
   "sub_identity": "",
   "verdict_via": "win32",

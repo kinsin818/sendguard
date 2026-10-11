@@ -30,7 +30,7 @@
   "create_result": "err_at_parse",
   "deps_direct": 0,
   "deps_total": 0,
-  "elapsed_ms": 139,
+  "elapsed_ms": 135,
   "entry_spread": [],
   "enum_listed": [],
   "enum_matched_by": "none",
@@ -63,7 +63,7 @@
   },
   "errno": null,
   "error_code": "ERR_INVALID_ARG_VALUE",
-  "error_message": "The argument 'path' must be a string, Uint8Array, or URL without null bytes. Received 'S:\\\\eeba75e\\\\p0\\\\nul\\x00byte.txt'",
+  "error_message": "The argument 'path' must be a string, Uint8Array, or URL without null bytes. Received 'S:\\\\22ab7c7\\\\p0\\\\nul\\x00byte.txt'",
   "error_stage": "parse",
   "error_winerror": "not-obtainable-in-stdlib",
   "format_version": 1,
@@ -188,7 +188,7 @@
         "stderr_tail": null,
         "tag": "c0",
         "timed_out": false,
-        "wall_ms": 139
+        "wall_ms": 135
       }
     ],
     "node_version": "v24.15.0"
@@ -197,16 +197,16 @@
   "read_skipped_reason": "nothing landed, so no read was attempted",
   "roundtrip_ok": null,
   "scratch": {
-    "cell_root": "S:\\eeba75e",
-    "cell_root_real": "D:\\sendguard-work\\seat-qoder\\.sgscratch\\eeba75e",
+    "cell_root": "S:\\22ab7c7",
+    "cell_root_real": "D:\\sendguard-work\\seat-qoder\\.sgscratch\\22ab7c7",
     "cleanup": "not attempted by the port (M19 forbids deletion logic in this port); the path is recorded for the operator",
     "verified_empty_before_use": true
   },
-  "sha256_self": "ae283865c3701f245b557900c1d7c9eeb87777584abf2883c2fa3cbff8f6f2ef",
+  "sha256_self": "c78a326e7ea824ef7763674926b2c90f84497a6c849aad9eae407d4003bcc5c5",
   "sha256_truth": null,
   "spec_sha256": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261",
   "spec_sha256_basis": "git cat-file blob HEAD:spec/cases.yaml, hashed (committed blob face, not the disk file)",
-  "started_at": "2026-10-10T23:51:02.921Z",
+  "started_at": "2026-10-11T01:00:01.757Z",
   "status": "measured",
   "sub_identity": "",
   "verdict_via": "none",

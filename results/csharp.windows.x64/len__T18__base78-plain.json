@@ -15,8 +15,8 @@
   "bytes_written": 28,
   "case_group": "len",
   "case_id": "T18",
-  "cell_dir_hex": "443a5c736763735c32623964635c6464646464646464646464646464646464646464646464646464646464646464646464646464646464646464646464646464646464646464646464645c646464",
-  "child_elapsed_ms": 34,
+  "cell_dir_hex": "443a5c736763735c30393261635c6464646464646464646464646464646464646464646464646464646464646464646464646464646464646464646464646464646464646464646464645c646464",
+  "child_elapsed_ms": 33,
   "component_len": 78,
   "control_pass": true,
   "control_stamp_ref": "D:\\sg-cs-scratch\\controls-green.json",
@@ -191,7 +191,7 @@
     }
   ],
   "dir_view_error": null,
-  "elapsed_ms": 108,
+  "elapsed_ms": 99,
   "enum_to_stat_agrees": true,
   "env": {
     "LongPathsEnabled": 0,
@@ -201,7 +201,7 @@
     "dotnet_used": "C:\\Program Files\\dotnet\\dotnet.exe",
     "lcid": 2052,
     "max_component": 255,
-    "probe_dll_sha256": "78ef286cdcad80661bce6a64a76336615bac20bfcbe2df8da63f84854f6b7772",
+    "probe_dll_sha256": "8fc7b1555d563ec2b9804d9c8d2d87bbb270ad420329a0ead8fc83623a4d2dce",
     "toolchain": "dotnet.exe 8.0.413 (C:\\Program Files\\dotnet\\dotnet.exe) / net8.0 / csharp-s02-5-rev7",
     "unicode_version": "not-obtainable-here"
   },
@@ -441,12 +441,12 @@
   "sha256_self": "c9fe45b2fee8ea846f0cf4f2cacc2a891e7b082e7719923502d12a9813e21994",
   "sha256_truth": "c9fe45b2fee8ea846f0cf4f2cacc2a891e7b082e7719923502d12a9813e21994",
   "spec_sha256": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261",
-  "started_at": "2026-10-11T00:23:29.930Z",
+  "started_at": "2026-10-11T01:04:32.950Z",
   "sub_identity": {
     "base_len": 78,
     "path_form": "plain"
   },
-  "target_dir_hex": "443a5c736763735c32623964635c6464646464646464646464646464646464646464646464646464646464646464646464646464646464646464646464646464646464646464646464645c646464",
+  "target_dir_hex": "443a5c736763735c30393261635c6464646464646464646464646464646464646464646464646464646464646464646464646464646464646464646464646464646464646464646464645c646464",
   "tier_point_attempts": [],
   "tier_points_from_frozen_grid": [],
   "total_path_len": 157,

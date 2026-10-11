@@ -20,7 +20,7 @@
   "create_result": "err_at_syscall",
   "deps_direct": 0,
   "deps_total": 0,
-  "elapsed_ms": 502,
+  "elapsed_ms": 535,
   "entry_spread": [
     {
       "api_entry": "createWriteStream",
@@ -28,13 +28,13 @@
       "bytes_written": null,
       "create_result": "err_at_syscall",
       "error_code": "ENOENT",
-      "error_message": "ENOENT: no such file or directory, open 'S:\\a0a1033\\p1\\ctrl-\u0001.txt'",
+      "error_message": "ENOENT: no such file or directory, open 'S:\\99c5658\\p1\\ctrl-\u0001.txt'",
       "error_stage": "syscall",
       "name_landed_as": null,
       "path_form": "plain",
       "probe_exit_rc": 0,
       "probe_signal": null,
-      "probe_wall_ms": 127,
+      "probe_wall_ms": 143,
       "role": "spread"
     },
     {
@@ -43,13 +43,13 @@
       "bytes_written": null,
       "create_result": "err_at_syscall",
       "error_code": "ENOENT",
-      "error_message": "ENOENT: no such file or directory, open 'S:\\a0a1033\\p2\\ctrl-\u0001.txt'",
+      "error_message": "ENOENT: no such file or directory, open 'S:\\99c5658\\p2\\ctrl-\u0001.txt'",
       "error_stage": "syscall",
       "name_landed_as": null,
       "path_form": "plain",
       "probe_exit_rc": 0,
       "probe_signal": null,
-      "probe_wall_ms": 123,
+      "probe_wall_ms": 126,
       "role": "spread"
     },
     {
@@ -58,13 +58,13 @@
       "bytes_written": null,
       "create_result": "err_at_syscall",
       "error_code": "ENOENT",
-      "error_message": "ENOENT: no such file or directory, open 'S:\\a0a1033\\oz\\ctrl-\u0001.txt'",
+      "error_message": "ENOENT: no such file or directory, open 'S:\\99c5658\\oz\\ctrl-\u0001.txt'",
       "error_stage": "syscall",
       "name_landed_as": null,
       "path_form": "extended",
       "probe_exit_rc": 0,
       "probe_signal": null,
-      "probe_wall_ms": 128,
+      "probe_wall_ms": 127,
       "role": "osprobe"
     }
   ],
@@ -99,7 +99,7 @@
   },
   "errno": -4058,
   "error_code": "ENOENT",
-  "error_message": "ENOENT: no such file or directory, open 'S:\\a0a1033\\p0\\ctrl-\u0001.txt'",
+  "error_message": "ENOENT: no such file or directory, open 'S:\\99c5658\\p0\\ctrl-\u0001.txt'",
   "error_stage": "syscall",
   "error_winerror": "not-obtainable-in-stdlib",
   "format_version": 1,
@@ -205,7 +205,7 @@
   "note": "frozen category=control_char_handling locale=en-US applicable=windows|macos|ubuntu; this host is windows so applicable_to_this_os=true",
   "os": "windows",
   "os_legality_authority": "extended-prefix (\\\\?\\) create probe through node:fs, i.e. the Win32 file API",
-  "os_legality_basis": "extended-prefix create refused: ENOENT ENOENT: no such file or directory, open 'S:\\a0a1033\\oz\\ctrl-\u0001.txt'",
+  "os_legality_basis": "extended-prefix create refused: ENOENT ENOENT: no such file or directory, open 'S:\\99c5658\\oz\\ctrl-\u0001.txt'",
   "os_legality_verdict": "illegal",
   "os_probe_error_code": "ENOENT",
   "os_probe_landed_as": null,
@@ -227,7 +227,7 @@
         "stderr_tail": null,
         "tag": "p0",
         "timed_out": false,
-        "wall_ms": 124
+        "wall_ms": 139
       },
       {
         "api_entry": "createWriteStream",
@@ -240,7 +240,7 @@
         "stderr_tail": null,
         "tag": "p1",
         "timed_out": false,
-        "wall_ms": 127
+        "wall_ms": 143
       },
       {
         "api_entry": "appendFileSync",
@@ -253,7 +253,7 @@
         "stderr_tail": null,
         "tag": "p2",
         "timed_out": false,
-        "wall_ms": 123
+        "wall_ms": 126
       },
       {
         "api_entry": "writeFileSync",
@@ -266,7 +266,7 @@
         "stderr_tail": null,
         "tag": "oz",
         "timed_out": false,
-        "wall_ms": 128
+        "wall_ms": 127
       }
     ],
     "node_version": "v24.15.0"
@@ -275,16 +275,16 @@
   "read_skipped_reason": "nothing landed, so no read was attempted",
   "roundtrip_ok": null,
   "scratch": {
-    "cell_root": "S:\\a0a1033",
-    "cell_root_real": "D:\\sendguard-work\\seat-qoder\\.sgscratch\\a0a1033",
+    "cell_root": "S:\\99c5658",
+    "cell_root_real": "D:\\sendguard-work\\seat-qoder\\.sgscratch\\99c5658",
     "cleanup": "not attempted by the port (M19 forbids deletion logic in this port); the path is recorded for the operator",
     "verified_empty_before_use": true
   },
-  "sha256_self": "11232740b363e2f0390fe73144d8f46b5629c5cd37816f8fe7a394ebae800d97",
+  "sha256_self": "680f8eec6bb546515703c1bf06624ff4111ef97515a53914f18b7f7eb34606c9",
   "sha256_truth": null,
   "spec_sha256": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261",
   "spec_sha256_basis": "git cat-file blob HEAD:spec/cases.yaml, hashed (committed blob face, not the disk file)",
-  "started_at": "2026-10-10T23:51:11.646Z",
+  "started_at": "2026-10-11T01:00:10.688Z",
   "status": "measured",
   "sub_identity": "",
   "verdict_via": "win32",

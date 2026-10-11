@@ -79,8 +79,17 @@ property for every port. Do **not** add the nine fields to `required` yet.
 2. if `A`: whether `runtime_executable` should be *required* (my recommendation: documented now, required next
    round after the three silent ports add it - requiring it immediately would invalidate 237 of 264 records at
    a stroke, which is true but not useful in the same breath as shipping);
-3. nothing else in this file needs a decision: the two owed re-runs (`docs/tickets/`) and the java control-cell
-   stamps are already dispatched work, not questions.
+3. **Whether a control cell's stamp has to say where it came from.** Measured at 13:34 by
+   `python ci/validate_cells.py`: 30 control cells across six ports carry `control_pass=true` and **zero** carry
+   any pointer to the command that produced it, because no contract round asks for one (`control_pass_evidence`
+   is not a field anywhere except in a ticket this seat wrote and then retracted - see
+   `docs/tickets/SG-F2-*.md`'s amendment). Either the contract names it and every lane re-stamps with a source,
+   or the calibration marks stay assertions a reader cannot re-check, and the whitepaper should stop implying
+   they are measurements.
+4. Nothing else in this file needs a decision: the two re-runs that were owed have both landed
+   (`evidence/S11/SG-F1-acceptance.md`, `evidence/S11/SG-F2-acceptance.md`), and the OS-portability work is
+   written up but unscheduled (`docs/tickets/SG-F3-os-portability.md`), waiting on 1-3 above and on your
+   priority.
 
 Until one of those three words arrives, `spec/` stays at round 8, the legs keep printing the blanks, and the
 outward documents keep the pair-of-numbers rule (`cells_fully_recorded_and_identical` quoted beside

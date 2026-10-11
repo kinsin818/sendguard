@@ -220,6 +220,15 @@ still open and "none of it is in the recorded cells". `docs/GAP.md` cannot carry
 from cell coverage, and Java is 44/44 there - so the unfinished work is listed in `docs/whitepaper.md` §6's
 未做 list instead of being closed here.
 
+**Landed 13:34** (`b56e9c4`): the lane recorded twelve `java.io` cells - `FileOutputStream.write` at every pinned
+rung, plain and extended - and all twelve say `roundtrip_ok=true`, including the extended rungs where its own
+`Files.write` cells record the parse-layer refusal. The divergence is now data in the tree rather than a
+reproduction file a reader has to trust, and each of the twelve carries `toolchain` and `jvm_self_report`. What is
+still open is narrower than what was: the remaining `java.io` entries, and the second runtime's answer as a cell
+rather than as a capture. Acceptance - and one requirement this seat wrote into a ticket that no contract round
+contains (`control_pass_evidence`; the new census shows 30 stamps across six ports and zero sources, in every lane
+alike) - is recorded in `evidence/S11/SG-F2-acceptance.md`.
+
 ## M8 - the contract's required list and the gate's verdict list are different sets
 
 Reading at 12:05 host clock: `python ci/validate_cells.py` prints `invalid=0` for all 557 cells on the six

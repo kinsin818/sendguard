@@ -17,6 +17,7 @@ import glob
 import io
 import json
 import os
+import re
 import statistics
 import subprocess
 import sys
@@ -62,7 +63,8 @@ def tracked_files():
 BUILD_GLOBS = {
     "csharp": ["impl/csharp/bin/**/SendGuardProbe*.exe", "impl/csharp/*.exe"],
     "go": ["impl/go/*.exe", "impl/go/go-sendguard*.exe", "harness/audit.exe", "harness/audit.bin"],
-    "java": ["impl/java/build/**/*.class", "impl/java/build-repro/**/*.class"],
+    "java": ["impl/java/build/**/*.class", "impl/java/build-repro/**/*.class",
+             "impl/java/build-check/**/*.class"],
     "python": ["impl/python/sg_run.py"],
     "rust": ["impl/rust/target/**/release/*.exe", "impl/rust/target/**/debug/*.exe"],
     "typescript": ["impl/typescript/dist/**/*.js", "impl/typescript/src/*.ts"],
@@ -89,12 +91,17 @@ def filter_tracked(paths, tracked):
     """Split candidate artifact paths into what the repository carries and what only this disk carries.
 
     Kept as its own function so the arms can hand it a synthetic path list: the filter must be proven able to
-    *pass* something, because a filter that drops everything reproduces any expected number.
+    *pass* something, because a filter that drops everything reproduces any expected number. Paths are compared
+    after `normpath`, because `glob` keeps whatever separator was written inside the pattern, so a pattern like
+    `impl/java/build/**/*.class` returns a path with forward slashes in the middle of a Windows tree - and the
+    first version of this comparison treated four committed `.class` files, `sg_run.py` and seven TypeScript
+    sources as untracked for exactly that reason.
     """
-    uniq = sorted(set(paths))
+    uniq = sorted({os.path.normpath(p) for p in paths})
     if tracked is None:
         return uniq, []
-    return [p for p in uniq if p in tracked], [p for p in uniq if p not in tracked]
+    return ([p for p in uniq if p in tracked],
+            [p for p in uniq if p not in tracked])
 
 
 def measure_port(port, cells, tracked):
@@ -117,17 +124,84 @@ def measure_port(port, cells, tracked):
         "deps": (max(d[0] for d in deps), max(d[1] for d in deps), len(deps)) if deps else None,
         "timing": (min(times), statistics.median(times), max(times), len(times)) if times else None,
         "artifacts": len(uniq),
+        "kept_paths": uniq,
         "bytes": total,
         "sample": (os.path.relpath(biggest, REPO).replace("\\", "/") if uniq else None),
         "kinds": ",".join(sorted({os.path.splitext(p)[1].lstrip(".") or "noext" for p in uniq})) or "-",
+
         "executables": len(executable),
         "dropped_untracked": len(dropped),
     }
 
 
-def self_check(rows, ports_seen, tracked):
+def pattern_to_regex(pat):
+    """Translate a build-output glob into a matcher for git's forward-slash path names.
+
+    Written out rather than borrowed from `fnmatch` because the first witness used `fnmatch` with `**` replaced by
+    `*`, which silently turned `impl/java/build/**/*.class` into a two-segment pattern and matched none of the six
+    tracked `.class` files - the same class of defect it was supposed to detect. A18 asserts both sides.
+    """
+    out = []
+    i = 0
+    while i < len(pat):
+        if pat.startswith("**/", i):
+            out.append("(?:[^/]*/)*")
+            i += 3
+        elif pat.startswith("**", i):
+            out.append(".*")
+            i += 2
+        elif pat[i] == "*":
+            out.append("[^/]*")
+            i += 1
+        elif pat[i] == "?":
+            out.append("[^/]")
+            i += 1
+        else:
+            out.append(re.escape(pat[i]))
+            i += 1
+    return re.compile("".join(out) + r"\Z")
+
+
+def git_artifact_paths(port):
+    """The same artifact set, enumerated by git's own matcher instead of this leg's.
+
+    This exists because the leg's file classification had already been wrong three times in one day for one
+    reason - two different path spaces being compared - and no witness outside the leg could see it. A second
+    enumeration that does not share the code under test is the only thing that makes the artifact columns a
+    measurement rather than a tautology.
+    """
+    prefixes = []
+    for pat in BUILD_GLOBS[port]:
+        head = pat.split("*")[0]
+        prefixes.append(head if head.endswith("/") else os.path.dirname(head) + "/")
+    r = subprocess.run(["git", "ls-files", "-z", "--"] + sorted(set(prefixes)),
+                       cwd=REPO, capture_output=True, text=True, encoding="utf-8", errors="replace")
+    if r.returncode != 0:
+        return None
+    pats = [pattern_to_regex(p) for p in BUILD_GLOBS[port]]
+    keep = [os.path.normpath(os.path.join(REPO, x.replace("/", os.sep)))
+            for x in r.stdout.split(chr(0)) if x and any(m.match(x) for m in pats)]
+    return keep
+
+
+def self_check(rows, ports_seen, tracked, witness=None):
     """Every port must appear, no port may be reported from zero records, and the tracked set must be a parse."""
     problems = []
+    if witness:
+        for r in rows:
+            git_paths = witness.get(r["port"])
+            if git_paths is None:
+                problems.append("%s: git could not enumerate its own tracked artifact list, so the artifact "
+                                "columns have no independent witness" % r["port"])
+                continue
+            mine = set(r.get("kept_paths") or [])
+            theirs = set(git_paths)
+            if mine != theirs:
+                problems.append(
+                    "%s: this leg's file classifier kept %d tracked artifact(s) and git's own pathspec names %d; "
+                    "the two enumerate the same commit, so a difference is a bug in the leg (%s)"
+                    % (r["port"], len(mine), len(theirs),
+                       ", ".join(sorted(os.path.basename(x) for x in (theirs - mine))) or "-"))
     if tracked is None:
         problems.append("tracked file set: `git ls-files` did not return rc 0, so no artifact count below is "
                         "a measurement of the repository")
@@ -155,10 +229,12 @@ def self_check(rows, ports_seen, tracked):
 # without touching the disk: the NUL split that decides what the tracked set is, and the filter that decides what
 # it reports. A1-A4 judge the parse, A5-A8 the filter, A9-A13 the checker that decides whether a table may be
 # published at all, A14 the argument refusal, A15 the shape of the face a clone is expected to reproduce byte for
-# byte. Both sides of every predicate are asserted: an earlier revision of this leg filtered everything out and
-# still printed a table a cold clone agreed with, and a filter that passes nothing is indistinguishable from an
-# honest measurement of nothing.
-SELFTEST_ARMS = 15
+# byte, A16 the two path spaces git and glob use on this host, A17 the git witness that classifies the same
+# commit without this leg's code, A18 the pattern translator that witness depends on. Both sides of every
+# predicate are asserted: an earlier revision of this leg filtered everything out and still printed a table a
+# cold clone agreed with, and a filter that passes nothing is indistinguishable from an honest measurement of
+# nothing.
+SELFTEST_ARMS = 18
 
 
 def selftest():
@@ -238,6 +314,37 @@ def selftest():
     chk("untracked files ignored" not in published,
         "selftest A15 red: a count of ignored files needs the files to be present, so it may not be published in "
         "a face a clone is expected to reproduce byte for byte")
+
+    mixed = "impl" + "/" + "java" + "/" + "build" + "/" + "X.class"
+    native = os.path.normpath(mixed)
+    kept, dropped = filter_tracked([mixed], {native})
+    chk(kept == [native] and dropped == [],
+        "selftest A16 green: a path spelled with the separator the pattern carried must still be recognised as "
+        "tracked, kept=%r dropped=%r - this is the defect that published four committed .class files, sg_run.py "
+        "and seven TypeScript sources as untracked" % (kept, dropped))
+    kept, dropped = filter_tracked([mixed], {os.path.normpath("impl/java/build/Y.class")})
+    chk(kept == [] and dropped == [native],
+        "selftest A16 red: normalising must not turn a different file into a match, kept=%r dropped=%r"
+        % (kept, dropped))
+    problems = self_check(good, list(PORTS), t, {"java": [os.path.join(REPO, "nowhere.class")]})
+    chk(any("java" in x and "git's own pathspec" in x for x in problems),
+        "selftest A17 red: a git enumeration that disagrees with the leg's classifier must be named per port, "
+        "got %r" % (problems,))
+    chk(self_check(good, list(PORTS), t, {p: [] for p in PORTS}) == [],
+        "selftest A17 green: a witness that agrees with an empty classification publishes, got %r"
+        % (self_check(good, list(PORTS), t, {p: [] for p in PORTS}),))
+    deep = pattern_to_regex("impl/java/build/**/*.class")
+    chk(deep.match("impl/java/build/CellProbe.class") and deep.match("impl/java/build/sub/dir/X.class"),
+        "selftest A18 green: `**/` must accept both the zero-directory and the nested case")
+    chk(not deep.match("impl/java/build-check/CellProbe.class"),
+        "selftest A18 red: the translator must not let one port's directory leak into another's pattern")
+    one = pattern_to_regex("impl/typescript/src/*.ts")
+    chk(one.match("impl/typescript/src/identity.ts") and not one.match("impl/typescript/src/a/b.ts"),
+        "selftest A18 red: a single `*` must not cross a directory separator")
+    compiled = {p: [pattern_to_regex(pat) for pat in BUILD_GLOBS[p]] for p in PORTS}
+    chk(all(len(compiled[p]) == len(BUILD_GLOBS[p]) for p in PORTS),
+        "selftest A18 green: every port's whole pattern list must compile, or the witness is silent for the "
+        "patterns that did not")
     return errs
 
 
@@ -272,7 +379,8 @@ def main(argv=None):
     installers = [os.path.relpath(p, REPO).replace("\\", "/") for p in inst_keep]
     tool_py = os.path.join(REPO, "tool", "check.py")
     tool_bytes = os.path.getsize(tool_py) if os.path.isfile(tool_py) else 0
-    problems = self_check(rows, ports_seen, tracked)
+    problems = self_check(rows, ports_seen, tracked,
+                          {p: git_artifact_paths(p) for p in PORTS} if tracked is not None else None)
 
     out = ["# Delivery form - what is actually handed over", "",
            "Generated by `ci/delivery_form.py` at %s by reading the canonical faces, the repository's own "
@@ -319,11 +427,12 @@ def main(argv=None):
             % ("{:,}".format(tool_bytes), time.strftime("%H:%M %z"),
                sys.version.split()[0] + " (the interpreter running this leg)"),
             "",
-            "2. **How big is it?** Measured against the tracked file list, the answer this leg can defend is: the "
-            "checker itself plus the six ports' sources, and **no compiled output of any port** - that is what the "
-            "artifact columns above are saying. No packaging step exists, and `%d` installers of any format were "
-            "found in the tree. Any size claim about a shipped product is therefore unproven here and is not made."
-            % len(installers),
+            "2. **How big is it?** The tracked answer is the table above: `%d` artifact files carrying `%s` bytes "
+            "across the ports that commit any build output, and three ports that commit none. The checker itself "
+            "is the file in item 1. No packaging step exists, and `%d` installers of any format were found in the "
+            "tree, so any size claim about a shipped product is unproven here and is not made."
+            % (sum(r["artifacts"] for r in rows),
+               "{:,}".format(sum(r["bytes"] for r in rows)), len(installers)),
             "",
             "3. **How long does it take?** The per-cell timings above are what the harnesses recorded around "
             "their own probes on one host, not wall-clock for a scan: they exclude compile time, they were "

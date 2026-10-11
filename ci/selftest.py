@@ -169,8 +169,8 @@ def main(argv):
     # the same case_id at two base depths is two cells; both ports must emit both, and the
     # fixture writes them to two distinct filenames so neither overwrites the other
     for port in ("alpha", "beta"):
-        p[port] += [cell("T17", case_group="len", base_len=78, bytes_on_disk=None),
-                    cell("T17", case_group="len", base_len=200, bytes_on_disk=None)]
+        p[port] += [cell("T17", case_group="len", base_len=78, bytes_on_disk=3),
+                    cell("T17", case_group="len", base_len=200, bytes_on_disk=3)]
     arm("sub-identity-separates", 0, p, "same case_id at different base_len are different cells")
 
     # 9. a failed control cell blocks the port
@@ -232,6 +232,25 @@ def main(argv):
     p["beta"][0]["name_landed_as"] = "aaaaab"
     arm("different-names-still-red", 1, p,
         "shared-meaning matching must not turn a real name difference into agreement")
+
+    # 16-18. coverage: silence must never be folded into agreement. Added because the real tree reads 24
+    # cells with no verdict disagreement but only 4 cells where all six ports recorded all ten verdict
+    # fields - and a headline that quotes the 24 without the 4 counts cells nobody answered.
+    p = base_two(); p["beta"][0]["bytes_on_disk"] = None
+    arm("silence-is-not-agreement", 3, p,
+        "a verdict field one port left blank is counted as a blank and blocks a PASS",
+        expect_contains="verdict_not_recorded=1 pairs_no_port_recorded=0")
+
+    p = base_two()
+    p["alpha"][0]["enum_to_stat_agrees"] = None
+    p["beta"][0]["enum_to_stat_agrees"] = None
+    arm("nobody-answered-is-not-agreement", 3, p,
+        "a question none of the ports answered blocks a PASS too - it is the same hole with the other name",
+        expect_contains="pairs_no_port_recorded=1")
+
+    arm("coverage-green-still-passes", 0, base_two(),
+        "full coverage with no conflict must still say yes, or the two arms above just ate the green side",
+        expect_contains="cells_every_port_recorded_every_verdict_field=2/2")
 
     passed = failed = 0
     total = len(ARMS)

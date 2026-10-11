@@ -2,6 +2,12 @@
 
 Run:  python ci/validate_cells.py            # prints and writes docs/cell-validation.md
       python ci/validate_cells.py --quiet     # only the summary lines
+      python ci/validate_cells.py --selftest  # 15 arms: it must refuse, and it must be able to say yes
+
+This leg takes no output path on purpose: it always writes the repository's own face, and any other
+argument is refused (rc=3) rather than ignored. Measured on 2026-10-11 11:46: the seat passed
+`--out-dir <scratch>` believing it was reading the ruler without writing, and it wrote anyway while
+reporting rc=0 - which is the silent-acceptance shape this project keeps having to relearn.
 
 Why this leg exists: until now the only numbers about *cell validity* came from each port's own
 self-check script - a port grading its own homework, which is how the '31 instrument-red cells' run nearly
@@ -9,14 +15,16 @@ passed once. `spec/validate.py` checks the specification, not the results. This 
 against `spec/schema.json` (required fields, enums, types) and prints the count next to the count each
 window reported for itself.
 
-Exit codes: 0 = every cell on every face validates; 1 = at least one cell does not; 3 = a face is missing
-or unreadable (an instrument problem, never a measurement).
+Exit codes: 0 = every cell on every face validates (or all arms pass); 1 = at least one cell does not, or a
+self-test arm failed; 3 = a face is missing, unreadable, or the leg was called with an argument it does not
+implement (an instrument problem, never a measurement).
 """
 import glob
 import io
 import json
 import os
 import re
+import subprocess
 import sys
 import time
 
@@ -24,6 +32,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(HERE)
 SCHEMA = os.path.join(REPO, "spec", "schema.json")
 PORTS = ["csharp", "go", "java", "python", "rust", "typescript"]
+KNOWN_ARGS = ("--quiet", "--selftest")
+SAMPLE_LIMIT = 6
 
 
 def cells_in(face):
@@ -63,13 +73,115 @@ def check(cell, schema):
     return out
 
 
+def parse_args(argv):
+    """This leg implements one flag. Anything else is reported as unknown, never ignored.
+
+    Measured 2026-10-11 11:46: the seat called this leg with `--out-dir <scratch>` intending to read the
+    ruler without writing, and got rc=0 plus a rewritten `docs/cell-validation.md`. A leg that swallows an
+    argument it has never implemented describes its own interface as bigger than it is.
+    """
+    return [a for a in argv if a not in KNOWN_ARGS], ("--quiet" in argv)
+
+
+def port_lines(port, n, ok, rep, problems, quiet):
+    """One port's lines: the count row, a self-report disagreement, and attributed sample problems."""
+    out = ["| %s | %d | %d | %d | %s |" % (port, n, ok, len(problems), rep)]
+    if rep != "-" and ok != int(rep):
+        out.append("  - SELF-REPORT-DISAGREES: `%s` publishes cells_valid=%s, the outside ruler reads "
+                   "%d valid of %d cells (%+d)" % (port, rep, ok, n, ok - int(rep)))
+    if not quiet:
+        shown = problems[:SAMPLE_LIMIT]
+        if shown:
+            out.append("  - shown=%d total=%d%s" % (len(shown), len(problems),
+                       " TRUNCATED" if len(problems) > len(shown) else ""))
+        for fn, p in shown:
+            out.append("  - `%s` [port=%s]: %s" % (fn, port, "; ".join(p[:3])))
+    return out
+
+
+def dispatch(argv):
+    """('refuse', unknown) | ('selftest',) | ('run', quiet). No token is accepted and then ignored."""
+    unknown, quiet = parse_args(argv)
+    if unknown:
+        return "refuse", unknown
+    return ("selftest",) if "--selftest" in argv else ("run", quiet)
+
+
+def selftest():
+    """Red/green arms for this ruler, including the proof that refusing does not write."""
+    errs = []
+
+    def chk(cond, msg):
+        if not cond:
+            errs.append(msg)
+
+    u, q = parse_args(["--quiet"])
+    chk(u == [] and q is True, "selftest A1 green: --quiet should be known and set quiet")
+    u, q = parse_args([])
+    chk(u == [] and q is False, "selftest A2 green: bare call should be accepted")
+    u, _ = parse_args(["--out-dir", "x", "--selftest-x"])
+    chk(u == ["--out-dir", "x", "--selftest-x"], "selftest A3 red: unknown tokens must be named, got %r" % (u,))
+
+    probs = [("c%d.json", ["missing required read_result"]) for _ in range(8)]
+    ls = port_lines("go", 10, 2, "-", probs, False)
+    chk(any(l.startswith("  - shown=6 total=8 TRUNCATED") for l in ls),
+        "selftest A4 red: a truncated sample must print its denominator: %r" % (ls[1:3],))
+    chk(all("[port=go]" in l for l in ls if l.startswith("  - `")),
+        "selftest A5 red: every sample line must name its port - an unattributed list under a table "
+        "reads as the last port's")
+    ls = port_lines("go", 10, 8, "-", probs[:2], False)
+    chk(any(l == "  - shown=2 total=2" for l in ls) and not any("TRUNCATED" in l for l in ls),
+        "selftest A6 green: two of two must not claim truncation")
+    ls = port_lines("go", 10, 10, "-", [], False)
+    chk(not any("shown=" in l for l in ls), "selftest A7 green: no problems must print no sample denominator")
+    ls = port_lines("go", 10, 2, "-", probs, True)
+    chk(len(ls) == 1 and ls[0].startswith("| go |"), "selftest A8 green: --quiet keeps the row, drops samples")
+
+    chk(any("SELF-REPORT-DISAGREES" in l and "(+2)" in l
+            for l in port_lines("java", 9, 5, "3", [], False)),
+        "selftest A9 red: a self-report below the ruler must be named with its signed gap")
+    chk(not any("SELF-REPORT" in l for l in port_lines("java", 9, 5, "5", [], False)),
+        "selftest A10 green: agreement must not cry disagreement")
+    chk(not any("SELF-REPORT" in l for l in port_lines("java", 9, 5, "-", [], False)),
+        "selftest A11 green: 'no self-report published' is not a disagreement")
+
+    doc = os.path.join(REPO, "docs", "cell-validation.md")
+    before = io.open(doc, "rb").read() if os.path.isfile(doc) else None
+    p = subprocess.run([sys.executable, os.path.abspath(__file__), "--out-dir", "zz"],
+                       capture_output=True, text=True, encoding="utf-8", errors="replace", cwd=REPO)
+    chk(p.returncode == 3, "selftest A12 red: an unknown argument must exit 3 (instrument), got %d"
+        % p.returncode)
+    if before is not None and os.path.isfile(doc):
+        chk(io.open(doc, "rb").read() == before,
+            "selftest A13 red: refusing must not also write the face")
+    chk(dispatch(["--selftest", "--out-dir", "zz"]) == ("refuse", ["--out-dir", "zz"]),
+        "selftest A14 red: junk alongside --selftest is still junk")
+    chk(dispatch(["--selftest"]) == ("selftest",) and dispatch(["--quiet"]) == ("run", True)
+        and dispatch([]) == ("run", False),
+        "selftest A15 green: the three real modes must route correctly")
+    return errs
+
+
 def main():
+    mode = dispatch(sys.argv[1:])
+    if mode[0] == "refuse":
+        print("OUTCOME=VOID unknown argument(s): %s" % ", ".join(mode[1]))
+        print("usage: python ci/validate_cells.py [--quiet | --selftest]")
+        print("this leg always writes docs/cell-validation.md and accepts no output path - refusing is the "
+              "only honest answer to a caller that thinks it redirected the face")
+        return 3
+    if mode[0] == "selftest":
+        errs = selftest()
+        for e in errs:
+            print("SELFTEST-FAIL: %s" % e)
+        print("arms=15 passed=%d" % (15 - len(errs)))
+        return 1 if errs else 0
+    quiet = mode[1]
     if not os.path.isfile(SCHEMA):
         print("OUTCOME=VOID schema missing")
         return 3
     schema = json.load(io.open(SCHEMA, encoding="utf-8"))
     strict = schema.get("additionalProperties")
-    quiet = "--quiet" in sys.argv
     lines = ["# Cell validation, by an outside ruler", "",
              "Generated by `ci/validate_cells.py` at %s against `spec/schema.json` "
              "(%d required fields, %d documented properties, additionalProperties=%s)."
@@ -110,10 +222,7 @@ def main():
             m = re.search(r"cells_valid[= ]+(\d+)", t)
             if m:
                 rep = m.group(1)
-        lines.append("| %s | %d | %d | %d | %s |" % (port, n, ok, len(problems), rep))
-        if not quiet:
-            for fn, p in problems[:6]:
-                lines.append("  - `%s`: %s" % (fn, "; ".join(p[:3])))
+        lines += port_lines(port, n, ok, rep, problems, quiet)
     lines += ["", "**invalid cells across the six faces: %d**" % total_bad, ""]
     if missing_faces:
         lines.append("Faces not readable: %s" % ", ".join(missing_faces))

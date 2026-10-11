@@ -111,3 +111,12 @@ file describe the branch that is actually public (`a2037c1`). Nothing was claime
 happened; when the connection returns, `git push github main:main` is a fast-forward of that one commit and the
 divergence closes. Until then, anyone reading the public repository sees `a2037c1`, which is the tree that
 section 5 proved identical blob-for-blob.
+
+
+## Addendum closed at 15:30 +0800
+
+The next attempt succeeded: `git push github main:main` moved the public branch `a2037c1..c4c74be`, and after the
+fetch `github/main` equals the local HEAD with `ahead=0`. The gap described above existed for four minutes and is
+now closed, so the public repository carries both the verified deliverable and the records of how it was verified.
+The retry is the only change here - the verification itself was performed against `a2037c1`, which was already the
+public branch at the time, so nothing measured above needed re-running.

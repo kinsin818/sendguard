@@ -58,7 +58,7 @@
  "deps_total": 0,
  "deps_basis": "imports are stdlib only (argparse ctypes hashlib json os pathlib stat sys time uuid zipfile shutil); third-party count = 0",
  "scratch_root": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\sendguard-run",
- "scratch_dir": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\sendguard-run\\fb701a7a",
+ "scratch_dir": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\sendguard-run\\00942b5d",
  "scratch_verified_empty": true,
  "cleanup_attempted": false,
  "probe_timeout_s": 5.0,
@@ -73,7 +73,7 @@
  "error_stage_rule": "non-OSError raised before the syscall -> parse; OSError carrying errno/winerror -> syscall (fs/tool unused, see selfcheck)",
  "base_len": 200,
  "face_note": "the pinned component is the input of this cell; the ceiling is measured by bisection at the same holder depth in a sibling fresh directory",
- "leg_dir": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\sendguard-run\\fb701a7a",
+ "leg_dir": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\sendguard-run\\00942b5d",
  "leg_pre_existing_entries": 0,
  "entry_spread": {},
  "entries_agree_with_primary": true,
@@ -82,7 +82,7 @@
  "child_rc": 0,
  "child_timed_out": false,
  "child_reruns": 0,
- "holder_dir": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\sendguard-run\\fb701a7a",
+ "holder_dir": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\sendguard-run\\00942b5d",
  "holder_dir_len": 64,
  "bisection_search_range": [
   1,
@@ -102,7 +102,7 @@
    "bytes_on_disk": null,
    "name_landed_as_hex": null,
    "same_name_hits": 0,
-   "elapsed_ms": 109,
+   "elapsed_ms": 105,
    "rc": 0,
    "timed_out": false
   },
@@ -115,7 +115,7 @@
    "bytes_on_disk": 28,
    "name_landed_as_hex": "61",
    "same_name_hits": 1,
-   "elapsed_ms": 103,
+   "elapsed_ms": 107,
    "rc": 0,
    "timed_out": false
   },
@@ -128,7 +128,7 @@
    "bytes_on_disk": null,
    "name_landed_as_hex": null,
    "same_name_hits": 0,
-   "elapsed_ms": 104,
+   "elapsed_ms": 106,
    "rc": 0,
    "timed_out": false
   },
@@ -141,7 +141,7 @@
    "bytes_on_disk": 28,
    "name_landed_as_hex": "61616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161",
    "same_name_hits": 1,
-   "elapsed_ms": 104,
+   "elapsed_ms": 108,
    "rc": 0,
    "timed_out": false
   },
@@ -154,7 +154,7 @@
    "bytes_on_disk": 28,
    "name_landed_as_hex": "616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161",
    "same_name_hits": 1,
-   "elapsed_ms": 103,
+   "elapsed_ms": 108,
    "rc": 0,
    "timed_out": false
   },
@@ -167,7 +167,7 @@
    "bytes_on_disk": 28,
    "name_landed_as_hex": "61616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161",
    "same_name_hits": 1,
-   "elapsed_ms": 103,
+   "elapsed_ms": 106,
    "rc": 0,
    "timed_out": false
   },
@@ -180,7 +180,7 @@
    "bytes_on_disk": 28,
    "name_landed_as_hex": "61616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161",
    "same_name_hits": 1,
-   "elapsed_ms": 105,
+   "elapsed_ms": 107,
    "rc": 0,
    "timed_out": false
   },
@@ -193,7 +193,7 @@
    "bytes_on_disk": 28,
    "name_landed_as_hex": "61616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161",
    "same_name_hits": 1,
-   "elapsed_ms": 107,
+   "elapsed_ms": 109,
    "rc": 0,
    "timed_out": false
   },
@@ -206,7 +206,7 @@
    "bytes_on_disk": null,
    "name_landed_as_hex": null,
    "same_name_hits": 0,
-   "elapsed_ms": 107,
+   "elapsed_ms": 110,
    "rc": 0,
    "timed_out": false
   },
@@ -232,7 +232,7 @@
    "bytes_on_disk": null,
    "name_landed_as_hex": null,
    "same_name_hits": 0,
-   "elapsed_ms": 106,
+   "elapsed_ms": 107,
    "rc": 0,
    "timed_out": false
   }
@@ -295,7 +295,7 @@
  "verdict_via_detail": "kernel32.GetFileAttributesW via ctypes, extended prefix, parser bypassed",
  "win32_fullpath": {
   "ok": true,
-  "reported_hex": "433a5c55736572735c41646d696e6973747261746f725c417070446174615c4c6f63616c5c54656d705c73656e6467756172642d72756e5c66623730316137615c6161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161"
+  "reported_hex": "433a5c55736572735c41646d696e6973747261746f725c417070446174615c4c6f63616c5c54656d705c73656e6467756172642d72756e5c30303934326235645c6161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161"
  },
  "delivered_nothing": null,
  "create_result": "err_at_syscall",
@@ -324,7 +324,7 @@
  "attribution_layer_basis": "260-char legacy wall is OS policy that no stdlib entry of python removes, and it shadows NAME_MAX -> interaction cell, reported separately; varies_across_OS pending",
  "control_pass": true,
  "elapsed_ms": 104,
- "started_at": "2026-10-11T08:26:07+0800",
+ "started_at": "2026-10-11T13:07:57+0800",
  "len_triple_basis": "widths of the single pinned component handed to the API; the measured ceiling is in len_ceiling, not here",
  "name_source_hex_chars": 400,
  "name_source_is_pinned_filler": true,

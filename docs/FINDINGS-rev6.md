@@ -1,6 +1,6 @@
 # Findings from the six-port run (contract rev6), grouped by mechanism
 
-Every number in this file is a reading of `python ci/equality.py` on the canonical faces
+Every number in M1-M6 is a reading of `python ci/equality.py` on the canonical faces
 `results/<port>.windows.x64/` at HEAD `f15b399`, host clock 2026-10-11 05:08 +0800. Six ports
 (TypeScript/Node, Python, Go, Java, C#, Rust), one frozen spec, one Windows 10 build 19041 x64 host,
 `LongPathsEnabled=0`, console code page 936.
@@ -9,7 +9,9 @@ Every number in this file is a reading of `python ci/equality.py` on the canonic
 three times after this file was written: 17 compared cells became 44, 12 clean became 24, 19 conflicting
 facts became 54 - and the conflict count moving twice was each time a *stricter* instrument, not a softer
 one. Sections M1-M3 still describe measured data; M5 has a continuation in M6, and M6 is the section to
-read if you want to know what independent verification actually costs.
+read if you want to know what independent verification actually costs. **M7 corrects a sentence in this
+project's own whitepaper** — a finding that was filed under "Java says no" turned out to be a fact about a
+specific JVM build.
 
 Original reading at the time of writing: 44 required cells, 29 answered by every port. Of those 29, 12 are set aside because the
 ports did not ask the same question (5 with different input bytes, 7 with a different `verdict_via` or
@@ -167,3 +169,51 @@ Process note, kept deliberately: all three were found by re-reading the gate's o
 not by a port complaining. The rule this project keeps having to earn is that a change to a measuring
 instrument is not finished until the instrument has been shown to say yes, to say no, and to survive being
 run somewhere it has never been run before.
+
+## M7 — one port, two answers: the `\\?\` refusal is a property of the JVM, not of "Java"
+
+The length family reported exactly one port refusing the extended prefix while three others round-tripped it
+(`docs/length-family.md`, and the row in `docs/whitepaper.md` §3). That row read "one port rejects this prefix
+at its parse layer". The sentence was about a language, and it should have been about an executable. `impl/java/src/ExtPathOfRepro.java` compiles once; `impl/java/tools/ext-path-of-repro.txt` is the
+capture of the same class file run against the launchers actually installed on this host (both runs stamped
+`run_rc=0`, 11 TAGs each, `javac_rc=0` with empty stderr):
+
+| launcher | `TAG 3`, input `\\?\D:\Qoder` (12 code units) | `new File(String)` in the same run |
+|---|---|---|
+| Temurin `17.0.17` — the exe the recorded cells ran on | `Paths.get` THREW `java.nio.file.InvalidPathException`, message `Illegal character [?] in path at index 2`, at `sun.nio.fs.WindowsPathParser.nextSlash(WindowsPathParser.java:212)`; `Path.of` same throw | `OK`, `getPath` preserved verbatim, `isAbsolute=true` |
+| Temurin `21.0.6` | `Paths.get` **OK** — `toString()` is `D:\Qoder`: this parser accepts the prefix and drops it | `OK` |
+| `1.8.0_31` on `PATH` | **not run**, deliberately — the class calls `Path.of`, a JDK 11 API, so a 1.8 run returns `UnsupportedClassVersionError`. That is a fact about a launcher, not a measurement, and the file says so | — |
+
+Three consequences, and they are the reason this is a finding rather than a footnote:
+
+1. **The recorded cell is more honest than the sentence written about it.** The face reads `error_stage: parse`,
+   `roundtrip_ok: false`, `api_entry: Files.write`, `jvm_self_report.java_version: 17.0.17`, a `toolchain` block
+   pinning both `javac.exe` and `java.exe` to that JDK, and an `extended_leg_note` that already says the second
+   leg is `java.io` because "java.nio throws InvalidPathException on that string". The face is faithful to the
+   run, in two APIs and with its own binary named. What was wrong is any summary that files it under
+   "Java says no" — inside one port `java.io` and `java.nio.file` disagree (row 1 of the table above), and now
+   the same two APIs disagree with themselves across versions of the same vendor's JDK.
+2. **The criterion needs the runtime identity; three ports record it, three do not, and no two record it the
+   same way.** Measured over the canonical faces in the same batch as this section (`faces` = JSON files read,
+   all parsable): `java` 74/74 carry a `toolchain` dict *and* a `jvm_self_report` dict, `rust` 174/174 carry a
+   `toolchain` string (`rustc 1.98.0 … host=x86_64-pc-windows-msvc LLVM=22.1.8; PATH rustc is the rustup shim
+   …`), `python` 123/125 carry `interpreter_resolved` (a path), and `typescript` 0/87, `go` 0/203, `csharp`
+   0/50 carry no equivalent field at all. So "which executable answered" is a quantity this contract records in
+   three names and three shapes in half the ports and not at all in the other half — which means the gate
+   cannot compare runtimes across ports even though M7 shows a verdict field flipping between two runtimes of
+   one port. Naming that field is a contract change, and the current sealed round is the eighth, so it is not
+   this seat's to make unilaterally;
+   until then every document that says "port X answered" must keep saying *with which executable*, which is
+   what the row in `docs/whitepaper.md` §3 now does.
+3. **A third instrument is worth excluding in writing.** The 1.8 row is included even though it produced no
+   measurement, because "we did not run it, here is why" is the difference between a controlled comparison and
+   a lucky one. The same discipline is what caught M3's zip cell measuring three different archives.
+
+Clock honesty: the question was put to the java lane at 08:40 host clock and the capture is stamped
+10:53:14 +0800, so this finding landed 2h13m late; the delay is recorded here rather than in the numbers, and
+it does not change any verdict field — the gate's counts (`docs/STATUS.md`) are unaffected because the repro
+lives in `impl/java/`, not in `results/`. The same note in `evidence/S02/java-selfcheck.md:286-288` states what
+the delay was spent on and says plainly that it is **not** finished: the rev7 rule-4 `java.io` spread cells are
+still open and "none of it is in the recorded cells". `docs/GAP.md` cannot carry that row - it is generated
+from cell coverage, and Java is 44/44 there - so the unfinished work is listed in `docs/whitepaper.md` §6's
+未做 list instead of being closed here.

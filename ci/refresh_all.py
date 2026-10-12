@@ -46,6 +46,7 @@ JUDGE = [("ci/selftest.py", ["--scratch-root", os.path.join(REPO, "..", "sg-self
          ("ci/version_face.py", ["--quiet"]),
          ("ci/claim_digest.py", ["--quick", "--scratch-root",
                                     os.path.join(REPO, "..", "sg-claims-judge")]),
+         ("ci/face_preflight.py", ["--selftest"]),
          ("ci/process_leak_scan.py", ["--selftest"]),
          # the scan itself: RED is the standing finding recorded by SG-F8, not a broken instrument, and a
          # refusal counts as a result here while rc outside (0,1,3) would count as a tool failure

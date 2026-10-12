@@ -211,3 +211,18 @@ Whoever owns `D:\sendguard` decides what becomes of its 129 newly rewritten face
 seat will not touch that tree again. If a revert is wanted, it belongs in a ticket to the window that holds it,
 with the list above as its scope - and the window that takes it should know that restoring tracked faces there by
 `git checkout` changes line endings, so the byte comparison has to name which face it measured.
+
+## Owner's ruling, 2026-10-12 evening: no restore, and this record is the authority
+
+The owner read this face and ruled: **neither the 129 faces this session rewrote nor the 124 that were already
+dirty in that tree are to be restored.** His reason is the one that matters for an evidence tree - its value is a
+complete record of who changed what and when, not a clean `git status`; and a restore would introduce new
+contamination of its own (line-ending rewriting under autocrlf), which is a worse trade than the dirt.
+
+This therefore closes the item. The seat that owns `ci/` will not touch that tree again: no checkout, no reset, no
+restore, no clean, no write. The list above stands as the account, and any later action on that tree belongs to
+whoever holds it, taken with this record as the citation.
+
+The same ruling covers the sibling-directory artefacts this session produced while the defect was still live - the
+moved-aside output and the scratch copies of the lane binary. They stay where they are, named here, un-deleted
+(M19), outside the repository, and they are not part of the deliverable.

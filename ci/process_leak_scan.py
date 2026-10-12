@@ -68,10 +68,18 @@ def tracked_faces(root):
 
 
 def classify(face):
-    """'rule' | 'distributable' | 'other' - a rule face may quote a needle, a deliverable may not."""
-    if face.startswith(RULE_FACES):
+    r"""'rule' | 'distributable' | 'other' - a rule face may quote a needle, a deliverable may not.
+
+    Separators are normalised first. Every prefix in the two tables above is written with forward slashes because
+    that is what git prints, and a caller on Windows who builds a path with its own separator would otherwise see
+    `docs\coverage.md` classified as an undiscussed directory - which routes a fatal hit to counted-not-fatal.
+    A leg that quietly down-grades its own findings when the operator spells a path the way their shell does is
+    the same blind ruler that hid the escaped paths, so the shape is normalised, not guessed.
+    """
+    f = face.replace("\\", "/")
+    if f.startswith(RULE_FACES):
         return "rule"
-    return "distributable" if face.startswith(DISTRIBUTABLE) else "other"
+    return "distributable" if f.startswith(DISTRIBUTABLE) else "other"
 
 
 def _escaped_forms(raw):
@@ -120,6 +128,23 @@ def scan_face(text, line_offset_path=None, root_forms=(), home_forms=()):
     return hits
 
 
+def route(face, cls):
+    """Which bucket a hit lands in, decided once, for both the whole-tree scan and the pre-flight check.
+
+    `rule` faces may name a needle (that is how a ticket describes a defect), a non-fatal class is counted and
+    never blocks, and everything else inside a distributable face is fatal. A pre-flight that guessed this
+    independently would be a second ruler, which is the defect this repository keeps finding in itself.
+    """
+    kind = classify(face)
+    if kind == "rule":
+        return "mentioned"
+    if cls in NON_FATAL_CLASSES:
+        return "counted_not_fatal"
+    if kind == "distributable":
+        return "fatal"
+    return "counted_not_fatal"
+
+
 def scan(root):
     faces, err = tracked_faces(root)
     if err:
@@ -135,13 +160,13 @@ def scan(root):
         except OSError as e:
             unreadable.append("%s: %s" % (rel, str(e)[:60]))
             continue
-        kind = classify(rel)
         for cls, ln, excerpt in scan_face(text, root_forms=root_forms, home_forms=home_forms):
             row = (cls, rel, ln, excerpt)
-            if kind == "rule" or cls in NON_FATAL_CLASSES:
-                (mentioned if kind == "rule" else other).append(row)
-            elif kind == "distributable":
+            bucket = route(rel, cls)
+            if bucket == "fatal":
                 fatal.append(row)
+            elif bucket == "mentioned":
+                mentioned.append(row)
             else:
                 other.append(row)
     counts = {"files_scanned": len(faces), "unreadable": len(unreadable), "other": len(other)}
@@ -204,6 +229,20 @@ def selftest():
         "red: the tree is caught under either separator spelling")
     chk(scan_face("nothing absolute here", root_forms=rf, home_forms=hf) == [], "green: ordinary prose is silent")
     chk(scan_face("", root_forms=rf, home_forms=hf) == [], "green: an empty face yields nothing")
+    chk(route("docs/coverage.md", "LOGIN") == "fatal" and route("ci/audit.py", "LOGIN") == "mentioned"
+        and route("results/python.windows.x64/c.json", "TOOLPATH") == "counted_not_fatal"
+        and route("notes/x.md", "HOSTROOT") == "counted_not_fatal",
+        "green: route() is the single decision - distributable faces block, rule faces may name a needle, "
+        "non-fatal classes never block, and an undiscussed face is counted but not condemned")
+    chk(classify("docs" + chr(92) + "coverage.md") == "distributable"
+        and classify("docs" + chr(92) + "tickets" + chr(92) + "SG-F1.md") == "rule"
+        and classify("notes" + chr(92) + "x.md") == "other",
+        "red: a Windows-spelled face name is not reclassified as an undiscussed directory, which would silently "
+        "down-grade a fatal hit to a count")
+    chk(route("results/go.windows.x64/c.json", "TOOLPATH") == "counted_not_fatal"
+        and route("docs/claim-boundary.md", "RETIRED") == "mentioned",
+        "red: a class that blocks nothing is never reported as fatal, and the closed-set face that names the "
+        "retired key is quoted, not condemned")
     chk(len(ID_SHAPE.pattern) > 0 and not ID_SHAPE.match("a" * 40 + "-port"), "red: an over-long value is rejected")
     chk(not ID_SHAPE.match("Test"), "red: an uppercase fixture value is rejected")
     escaped = "C:" + SEP2 + "Users" + SEP2 + "alice"

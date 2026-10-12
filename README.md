@@ -151,6 +151,17 @@ including the ones this project's own instrumentation caused.
 
 ## 6. Status
 
+Every count printed in this file or under `docs/` is a reading of **this repository at the commit that generated
+it**, not a property of the project forever. That is especially true of the disclosure leg: re-run
+`python ci/process_leak_scan.py --repo-root .` and it answers for the checkout you are standing in, printing each
+class with its own count and the denominator it scanned. On 2026-10-12 this project published a set of those
+numbers that its own needles could not see - paths written with escaped separators were invisible to the comparison
+- so the figures printed that day understated the tree they measured, and the errata ledger
+([`docs/FINDINGS-rev6.md`](docs/FINDINGS-rev6.md), entry M12) says by how much and which faces carried them. The
+rule for a reader is therefore the rule this repository applies to itself: **a count quoted without the command
+beside it is a count to re-measure before repeating.** Nothing was retro-fitted to make the published numbers look
+better, and the published history was not rewritten to hide them; the correction travels forward only.
+
 Under construction. `docs/evidence.md` carries the current verdict line, regenerated from the committed
 result files; `docs/GAP.md` carries the required cells each port has not answered yet, by name. Until
 `ci/equality.py` prints `OUTCOME=PASS`, treat §1's claim as unverified and the project as unfinished - that

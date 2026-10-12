@@ -24,11 +24,11 @@
  "enum_api_entry": "os.ReadDir",
  "os_legality_verdict": "unknown",
  "mechanism_class": "unknown",
- "worker_id": "W-GO/qianwen",
+ "implementation_id": "go-port",
  "harness_version": "runner-v1",
  "sha256_self": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
- "started_at": "2026-10-10T15:52:31.1431072Z",
- "elapsed_ms": 5032,
+ "started_at": "2026-10-12T09:56:32.472966Z",
+ "elapsed_ms": 42,
  "env": {
   "LongPathsEnabled": 0,
   "dot3name": null,
@@ -37,6 +37,7 @@
   "unicode_version": "unavailable-no-api"
  },
  "notes": [
+  "SCHEMA-GAP: read_result closed set lacks err_open; raw=ROOT-REFUSED (child): no spec/FROZEN.md above D:\\sendguard-work: pass -repo \u003crepository root\u003e; this lane will not guess a checkout",
   "PHANTOM-OK: at least one member create=ok without matching dir entry"
  ],
  "members": [
@@ -47,13 +48,14 @@
    "dir_size": null,
    "path_exists": true,
    "path_size": 0,
-   "read_result": "hang",
+   "read_result": "eof",
    "read_bytes": null,
+   "read_error": "mapped-from:ROOT-REFUSED (child): no spec/FROZEN.md above D:\\sendguard-work: pass -repo \u003crepository root\u003e; this lane will not guess a checkout",
    "view_divergence": true,
    "same_name_hits": 0
   }
  ],
- "root_len_units": 61,
+ "root_len_units": 77,
  "comp_units": 0,
  "spec_defect": false,
  "control_pass": true,

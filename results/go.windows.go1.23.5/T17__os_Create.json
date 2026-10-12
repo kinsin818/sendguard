@@ -9,7 +9,7 @@
  "locale": "en-US",
  "api_entry": "os.Create",
  "attempt": 1,
- "name_source": "542d4c454e2d5041544820286c656e67746820626973656374696f6e2c2047312d473429",
+ "name_source": "",
  "name_encoding": "utf8_bytes",
  "path_form": "plain",
  "longpath_mechanism": "none",
@@ -24,11 +24,11 @@
  "enum_api_entry": "os.ReadDir",
  "os_legality_verdict": "legal",
  "mechanism_class": "component_length_limit",
- "worker_id": "W-GO/qianwen",
+ "implementation_id": "go-port",
  "harness_version": "runner-v1",
  "sha256_self": "9e40a2e058681afbbb379e58672c77cf90cdedd2c1a575728e4f04b2003b5032",
- "started_at": "2026-10-10T15:00:40.5238211Z",
- "elapsed_ms": 25,
+ "started_at": "2026-10-12T09:56:37.8039466Z",
+ "elapsed_ms": 37,
  "env": {
   "LongPathsEnabled": 0,
   "dot3name": null,
@@ -36,26 +36,27 @@
   "toolchain": "go1.23.5",
   "unicode_version": "unavailable-no-api"
  },
+ "notes": [
+  "SCHEMA-GAP: read_result closed set lacks err_open; raw=ROOT-REFUSED (child): no spec/FROZEN.md above D:\\sendguard-work: pass -repo \u003crepository root\u003e; this lane will not guess a checkout"
+ ],
  "members": [
   {
-   "Hex": "542d4c454e2d5041544820286c656e67746820626973656374696f6e2c2047312d473429",
-   "DirFound": true,
-   "DirSize": 1,
-   "PathOK": true,
-   "PathSize": 1,
-   "PathErr": "",
-   "Read": "",
-   "ReadN": null,
-   "ReadErr": "",
-   "Diverg": false,
-   "Drift": false,
-   "SameHits": 1
+   "name_utf8_hex": "542d4c454e2d5041544820286c656e67746820626973656374696f6e2c2047312d473429",
+   "create_result": "ok",
+   "dir_found": true,
+   "dir_size": 1,
+   "path_exists": true,
+   "path_size": 1,
+   "read_result": "eof",
+   "read_bytes": null,
+   "read_error": "mapped-from:ROOT-REFUSED (child): no spec/FROZEN.md above D:\\sendguard-work: pass -repo \u003crepository root\u003e; this lane will not guess a checkout",
+   "view_divergence": false,
+   "same_name_hits": 1
   }
  ],
- "root_len_units": 53,
+ "root_len_units": 69,
  "comp_units": 0,
- "spec_defect": true,
- "spec_defect_note": "sample_hex not valid hex; ",
+ "spec_defect": false,
  "control_pass": true,
  "instrument_red": false
 }

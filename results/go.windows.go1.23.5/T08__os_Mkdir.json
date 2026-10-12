@@ -9,7 +9,7 @@
  "locale": "en-US",
  "api_entry": "os.Mkdir",
  "attempt": 1,
- "name_source": "636166c3a92e747874",
+ "name_source": "",
  "name_encoding": "utf8_bytes",
  "path_form": "plain",
  "longpath_mechanism": "none",
@@ -22,13 +22,13 @@
  "read_result": "eof",
  "enum_to_stat_agrees": true,
  "enum_api_entry": "os.ReadDir",
- "os_legality_verdict": "unknown",
- "mechanism_class": "component_length_limit",
- "worker_id": "W-GO/qianwen",
+ "os_legality_verdict": "legal",
+ "mechanism_class": "unicode_normalization",
+ "implementation_id": "go-port",
  "harness_version": "runner-v1",
  "sha256_self": "0ec3502f47afd64b16ef92201f1ff724d6a7b8f112d4bf9e964cce96db115cbe",
- "started_at": "2026-10-10T15:00:37.50354Z",
- "elapsed_ms": 33,
+ "started_at": "2026-10-12T09:56:34.3306903Z",
+ "elapsed_ms": 36,
  "env": {
   "LongPathsEnabled": 0,
   "dot3name": null,
@@ -37,25 +37,24 @@
   "unicode_version": "unavailable-no-api"
  },
  "notes": [
-  "PHANTOM-OK: create ok, dir_view lacks requested bytes"
+  "SCHEMA-GAP: read_result closed set lacks err_open; raw=ROOT-REFUSED (child): no spec/FROZEN.md above D:\\sendguard-work: pass -repo \u003crepository root\u003e; this lane will not guess a checkout"
  ],
  "members": [
   {
-   "Hex": "636166c3a92e747874",
-   "DirFound": true,
-   "DirSize": 0,
-   "PathOK": true,
-   "PathSize": 0,
-   "PathErr": "",
-   "Read": "",
-   "ReadN": null,
-   "ReadErr": "",
-   "Diverg": false,
-   "Drift": false,
-   "SameHits": 1
+   "name_utf8_hex": "636166c3a92e747874",
+   "create_result": "ok",
+   "dir_found": true,
+   "dir_size": 0,
+   "path_exists": true,
+   "path_size": 0,
+   "read_result": "eof",
+   "read_bytes": null,
+   "read_error": "mapped-from:ROOT-REFUSED (child): no spec/FROZEN.md above D:\\sendguard-work: pass -repo \u003crepository root\u003e; this lane will not guess a checkout",
+   "view_divergence": false,
+   "same_name_hits": 1
   }
  ],
- "root_len_units": 52,
+ "root_len_units": 68,
  "comp_units": 0,
  "spec_defect": false,
  "control_pass": true,

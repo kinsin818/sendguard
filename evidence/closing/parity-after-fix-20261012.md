@@ -1,4 +1,4 @@
-# The parity reading that `930191e` promised, taken after it landed
+# The parity reading that `722c334` promised, taken after it landed
 
 Command, run from this repository at the commit named below:
 
@@ -15,7 +15,7 @@ source=D:\sendguard-work\seat-qoder
 rc=0
 ```
 
-Commit under test: `930191e` (`git rev-parse HEAD` at the time of the run; the clone adopted
+Commit under test: `722c334` (`git rev-parse HEAD` at the time of the run; the clone adopted
 `D:\sendguard-work\sg-parity-verify\parity-1`, created rather than reused, `status_before=0`).
 
 ## What this reading does and does not prove
@@ -34,8 +34,8 @@ This file exists because a claim was made one commit too early and then checked:
 
 | commit | what it claimed about parity | what the leg said |
 |---|---|---|
-| `1ea6ec2` | quoted a pre-commit reading, and said the post-commit one was "the next thing done" | `OUTCOME=RED ... differing=1 declared=0 rc=1` - the committed `docs/evidence.md` carried a line the clone's generator could not produce, because `ci/evidence_table.py` had fallen out of that commit's staged set |
-| `930191e` | names that defect, asserts each required face by name rather than by a count of staged paths | `OUTCOME=CLEAN ... differing=0 rc=0`, this file |
+| `6d15c6c` | quoted a pre-commit reading, and said the post-commit one was "the next thing done" | `OUTCOME=RED ... differing=1 declared=0 rc=1` - the committed `docs/evidence.md` carried a line the clone's generator could not produce, because `ci/evidence_table.py` had fallen out of that commit's staged set |
+| `722c334` | names that defect, asserts each required face by name rather than by a count of staged paths | `OUTCOME=CLEAN ... differing=0 rc=0`, this file |
 
 The line-count check is what caught it: `if rx and not extra` refuses to excuse a difference when the two faces do
 not even have the same number of lines, so a declared line-shape exception cannot swallow a whole missing line.

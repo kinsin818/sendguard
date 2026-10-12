@@ -31,7 +31,7 @@ different.
 1. **Work in a clone, never in the tree you were handed.** `python ci/refresh_all.py` regenerates tracked
    documentation faces as its last step, so running it where someone else is editing makes you a concurrent
    writer and your findings unattributable.
-   `git clone --no-local file:///D:/sendguard-work/seat-qoder <empty-dir>` on the host. `--no-local` matters: a
+   clone the tree the owner hands you a path to - the seat's working directory, addressed as `file:///<path you were given>` - and pass `--no-local`. The path is deliberately not spelled out here: this page is published, and an absolute path on one person's disk is a fact about their machine, not part of a reviewer's instructions. `--no-local` matters: a
    local clone hard-links objects and can read files the published tree does not contain.
    **Do not clone this kit from the published URL.** As measured by a reviewer on 2026-10-12, the public tip
    (`git ls-remote github refs/heads/main`, read live, not from a cached ref) is behind this tree and contains

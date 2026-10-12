@@ -95,3 +95,20 @@ constant, the lane's self-check, and the acceptance row in `evidence/S11/`.
 
 24 h from dispatch. Queue position: **in front of** the remaining SG-F8 residue work, because every later go run
 repeats the breach until this lands.
+
+## Landed 2026-10-12, same session
+
+Criterion 1: the literal is gone; `resolveRepo()` takes `-repo`/`--repo` or walks up to a directory carrying
+`spec/FROZEN.md`, and refuses with `rc=2` (capture in `evidence/S11/readonly-tree-contamination-20261012.md`).
+Criterion 2: `repo=` prints on every invocation, parent and child. Criterion 3: seven arms in `impl/go/root_test.go`
+- planted false tree must fail, this repository must pass, foreign `-repo` refused, no contract root refused,
+walk-up lands above the module directory, and the source-carrying-no-checkout-literal arm. Criterion 4: the
+versioned go face re-emitted here (129 records rewritten in this repository; `implementation_id=go-port`), and the
+29 records the current runner no longer produces are named in the acceptance correction. Criterion 5: the four
+readings unchanged. Criterion 6: the 129 faces in the other tree are listed by name in the contamination record,
+with no revert attempted.
+
+One thing this ticket did **not** predict and must record: removing the hardcoded root exposed a second defect of
+the same family - the child process computed its results directory from that same variable, empty in the child, so
+records went to a path relative to the operator's cwd. 128 files landed outside the repository before that was
+caught; they were moved aside, not deleted, and the fix is the child inheriting `--repo` and refusing without it.

@@ -129,3 +129,10 @@ leg; at the time of writing it reports
 `OUTCOME=RED ... fatal_by_class=HOSTROOT:14,IDENTITY:1134,LOGIN:17,RETIRED:1141` against this tree and
 `OUTCOME=CLEAN files_scanned=5 FATAL=0` against a sibling repository, so a future `CLEAN` is a reachable state and
 not a hope.
+
+## Erratum (2026-10-12)
+
+The reading quoted above (`HOSTROOT:14, IDENTITY:1134, LOGIN:17, RETIRED:1141`) was measured with needles that could
+not match an escaped Windows path, so the profile-path and tree-path counts it prints are lower bounds of the wrong
+kind - not conservative, simply blind. Corrected counts and the reason are in `docs/FINDINGS-rev6.md` M12. Any
+proposal text that relies on those numbers must re-read them, not reuse them.

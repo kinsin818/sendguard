@@ -50,3 +50,12 @@ not done, because this project has already been fooled by exactly that shape.
 `python ci/process_leak_scan.py --repo-root .` prints the remaining occurrences by class. It read
 `RETIRED:1143 IDENTITY:1134` when this dispatch was written. It reaches `FATAL=0` when all six rows above have
 landed; until then the leg is red on purpose and the number is the countdown, not a failure.
+
+## Erratum on the last row of this dispatch
+
+It predicted `FATAL=0` once the six rows landed. Measured after they landed: `FATAL=2401`, of which `RETIRED=458`.
+The prediction was wrong in two ways - it counted only the retired producer key while the leg also counts producer
+*values*, host paths and profile paths, and it assumed every retired key lived in a face a lane can re-emit. Some
+of it lives in captured evidence and in a frozen node face, which this project does not re-word. Composition,
+named block by block, is in `evidence/S11/SG-F8-acceptance.md` and the corrected counts in `docs/FINDINGS-rev6.md`
+M12.

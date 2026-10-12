@@ -381,3 +381,54 @@ planted paired -> `rc=0`, face restored byte-identical (`evidence/S11/SG-F11-acc
 
 The four verdict readings did not move, which is the point of a wording fix: `verdict_disagreements=54`,
 `verdict_identical_cells=24/44`, `cells_fully_recorded_and_identical=4`, `verdict_not_recorded_pairs=121`.
+
+## M12 - the leak leg could not see the paths it was built to find, and one lane verified a contract in another checkout
+
+Erratum, appended 2026-10-12 under the owner's ruling "the leak counts are corrected by erratum; the lane that
+verified the wrong contract must be fixed, re-verified, and written up". Two independent instrument failures,
+found the same afternoon, and both were green before they were found.
+
+**(a) The needles missed every escaped path.** `ci/process_leak_scan.py` compared host paths against faces in
+their *unescaped* spelling. A `.json` face writes `C:\\Users\\x` - doubled separators - so the leg's
+profile-root and tree-root tests could not match anything inside the data faces, which is exactly where those
+paths live. The numbers this project published with the push are therefore understated, and the corrected reading
+of the same tree is:
+
+| class | as published (blinded needles) | corrected (needles fixed) |
+|---|---|---|
+| `LOGIN` (host profile root in a shipped face) | 15 | **1111** |
+| `HOSTROOT` (this tree quoted in its own faces) | 13 | 274, later 389 as the go lane's records began naming the tree they were actually measured in |
+| `IDENTITY` (producer value failing the sealed pattern) | 1134 | 443 after the six-lane re-emit |
+| `RETIRED` (the retired producer key still in a shipped face) | 1143 | 458 |
+
+Nothing in the deliverable changed between the two columns except what this seat could see. Two dozen green arms
+did not catch it because the fixture built its expected needle sets by hand and repeated the same omission - which
+is why the leg now builds them through `_escaped_forms()` and carries an arm asserting that the builder emits the
+doubled-separator spelling. 24 arms, both directions.
+
+The consequence for the exhibit is a sentence, not a number: when this repository said *the countdown is public*,
+the countdown it printed was the count the leg was capable of seeing. Both readings are now in the faces that
+carry them, and the earlier figures must be quoted with that qualifier.
+
+**(b) A lane verified a contract in a different checkout.** `impl/go/main.go` held the project root as a string
+literal pointing at a second working copy. Its `verify` compared that copy's frozen files against that copy's
+frozen table, printed `VERIFY PASS: frozen artifacts intact`, and reported a `spec/schema.json` digest
+(`f387ec4b...`) that is **not** the contract this repository ships - this one is sealed at `c1a5097c...`, freeze
+revision 4 in `spec/FROZEN.md`. The same literal caused writes into a tree declared read-only for this seat; that
+part is recorded, with the 129 affected faces named, in
+`evidence/S11/readonly-tree-contamination-20261012.md`.
+
+Fixed, re-verified, and armed: the root is resolved from `-repo` or by walking up to a directory carrying
+`spec/FROZEN.md`, and the lane refuses with `rc=2` rather than guessing; the child process inherits the resolved
+root instead of deriving it from the operator's working directory (that is how 128 records once landed outside the
+repository, and the moved-aside directory is named in the contamination record); `verify` now prints `repo=` and
+compares work-tree bytes against the blob of the same path; and seven arms in `impl/go/root_test.go` include the
+planted false tree that must fail, the real tree that must pass, and an assertion that no checkout literal exists
+in the lane's source. Re-verified reading at this tip: `repo=` this repository, `spec/cases.yaml 8650a1863578`,
+`spec/schema.json c1a5097ce4a7`, eight rows `HASH-OK`, `rc=0`.
+
+**(c) A claim in this seat's own commit message was wrong, and is corrected here rather than amended away.** The
+six-lane re-emit message attributed a modified `evidence/S02/defects/sample-corruption.json` in the read-only tree
+to that run. The file's mtime puts it in the 2026-10-10 bucket - it was already dirty, and the run's footprint is
+129 files in one directory. Commit messages are permanent assertions; this is the record that one did not
+reproduce, and the arithmetic behind it is in the contamination record.

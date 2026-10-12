@@ -102,3 +102,9 @@ should be restated each time someone reaches for it: nothing in the rewritten ra
 backup branch and the private register hold every byte that was removed, the tree at the tip is unchanged, and
 the owner ordered it in writing. Any future rewrite that fails one of those four tests is a different act and
 comes back to the owner first.
+
+## Erratum pointer
+
+The leak counts quoted above (`RETIRED:1143 IDENTITY:1134 HOSTROOT:14 LOGIN:18`) were measured with needles that
+could not match an escaped Windows path. They remain a true record of what the leg printed that day and are not a
+true statement of what the tree contained. Corrected readings: `docs/FINDINGS-rev6.md` M12.

@@ -404,7 +404,9 @@ of the same tree is:
 Nothing in the deliverable changed between the two columns except what this seat could see. Two dozen green arms
 did not catch it because the fixture built its expected needle sets by hand and repeated the same omission - which
 is why the leg now builds them through `_escaped_forms()` and carries an arm asserting that the builder emits the
-doubled-separator spelling. 24 arms, both directions.
+doubled-separator spelling. Its arm count is deliberately not repeated here: `python ci/process_leak_scan.py --selftest`
+prints it on the line that reports the result, and a count copied into prose is the one this repository keeps having
+to retract. Both directions are covered - the escaped path fires, an ordinary line stays silent.
 
 The consequence for the exhibit is a sentence, not a number: when this repository said *the countdown is public*,
 the countdown it printed was the count the leg was capable of seeing. Both readings are now in the faces that

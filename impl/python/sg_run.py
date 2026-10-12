@@ -37,7 +37,7 @@ TIMEOUT_S = 5.0
 HARNESS_VERSION = "sg-python-s02-rederive-1"
 CONTRACT_REV = "rev4 (298d6e4: rulers aligned, read_result not_applicable, gate honours " \
                "declared sub_identity and excludes extra cells)"
-WORKER_ID = "seat-qoder-python-port"
+IMPLEMENTATION_ID = "python-port"
 
 SCRATCH_TEMP = os.path.join(tempfile.gettempdir(), "sendguard-run")
 SCRATCH_SHORT = "D:\\g"          # rev2 anchor, kept only to label the older extra cells
@@ -448,7 +448,7 @@ def base_fields(spec, run_meta):
         "run_status_basis": "measured = both legs ran, or ran and produced an OS answer; "
                             "blocked = the cell could not be run, with command+exit code+fix",
         "contract_rev_seen": CONTRACT_REV,
-        "worker_id": WORKER_ID,
+        "implementation_id": IMPLEMENTATION_ID,
         "spec_sha256": run_meta["spec_sha256"],
         "spec_face": run_meta["spec_face"],
         "env": run_meta["env"],
@@ -1390,6 +1390,14 @@ def load_required():
 def migrate(cell, meta, remeasured):
     """Bring a record written before rev3 up to rev3 without touching its numbers."""
     notes = []
+    if "worker_id" in cell:
+        # SG-F8: the producer key is renamed on the way through, so a re-emit purges the retired name from the
+        # data face instead of carrying it forward. This renames a field in the record being written; it does not
+        # delete a file, which M19 forbids, and the old value is not preserved because it named a seat, not a lane.
+        del cell["worker_id"]
+        cell["implementation_id"] = IMPLEMENTATION_ID
+        notes.append("producer key renamed from the retired name under SG-F8; the measurement is unchanged and "
+                     "the superseded value is not carried forward because it identified a seat, not a lane")
     if cell.get("name_encoding") == "utf16_code_units" or "length_unit" not in cell:
         notes.append("name_encoding=utf16_code_units (a length unit) split per rev3: "
                      "length_unit=code_points, name_encoding=hex_raw_bytes")
@@ -1650,6 +1658,12 @@ def main():
            len(req_keys) - len(req_doc.get("required_cells", [])), req_sha[:16], req_rc))
     print("cells_remeasured=%d cells_migrated_from_disk=%d cells_total=%d" %
           (len(built), len(kept), len(everything)))
+    n_purge = len([c for c in everything if any("SG-F8" in x for x in (c.get("rev3_migration_notes") or []))])
+    n_retired_left = len([c for c in everything if "worker_id" in c])
+    print("producer_keys_purged=%d records_still_carrying_retired_key=%d "
+          "implementation_id_present=%d/%d" % (n_purge, n_retired_left,
+                                               len([c for c in everything if c.get("implementation_id")]),
+                                               len(everything)))
     print("records_superseded_by_rev3_rename=%d" % n_super)
     print("cells_written=%d covered_required=%d extra=%d missing_required=%d" %
           (written, n_req, n_extra, len(missing)))

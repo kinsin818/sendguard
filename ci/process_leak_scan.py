@@ -74,11 +74,30 @@ def classify(face):
     return "distributable" if face.startswith(DISTRIBUTABLE) else "other"
 
 
+def _escaped_forms(raw):
+    r"""Every way a face can spell one and the same Windows path.
+
+    A JSON face escapes its separators, so `C:\\Users\\x` is a different byte string from `C:\Users\x`, and a
+    needle built only from the unescaped form silently never fires on the data faces - which is exactly where
+    these paths live. Found by re-running this leg over a lane's own records after a re-emit: the records carried
+    the profile root, and the leg reported the profile root as absent (73 records, one host).
+    """
+    forms = set()
+    if not raw:
+        return forms
+    forms.add(raw)
+    forms.add(raw.replace(SEP, "/"))
+    forms.add(raw.replace("/", SEP))
+    forms.add(raw.replace(SEP, SEP2))              # the JSON-escaped form, as it sits in a .json face
+    forms.add(raw.replace(SEP, SEP2).replace("/", SEP2))
+    return {f for f in forms if f}
+
+
 def _paths_of(root):
     root_abs = os.path.abspath(root)
-    forms = {root_abs, root_abs.replace(SEP, "/"), root_abs.replace("/", SEP)}
+    forms = _escaped_forms(root_abs)
     home = os.path.expanduser("~")
-    homes = {home, home.replace(SEP, "/")} if home and home != root_abs else set()
+    homes = _escaped_forms(home) if home and home != root_abs else set()
     return forms, homes
 
 
@@ -139,8 +158,10 @@ def selftest():
             errs.append("arm failed: %s" % label)
 
     root = "/tmp/fake-tree"
-    rf = {root, root.replace("/", SEP), "C:" + SEP + "fake" + SEP + "tree"}
-    hf = {"C:" + SEP + "Users" + SEP + "alice"}
+    # Built the way a real run builds them, not as a hand-picked pair of spellings: the escaped forms are what
+    # the data faces actually contain, and a fixture that omitted them could not have found the hole below.
+    rf = _escaped_forms("C:" + SEP + "fake" + SEP + "tree") | _escaped_forms(root)
+    hf = _escaped_forms("C:" + SEP + "Users" + SEP + "alice")
     chk(classify("results/python.windows.x64/cell.json") == "distributable", "green: a result face is distributable")
     chk(classify("docs/tickets/SG-F8-public-interface-process-metadata.md") == "rule", "green: a ticket is a rule face")
     chk(classify("notes/scratch.md") == "other", "green: an undiscussed directory is neither")
@@ -162,6 +183,13 @@ def selftest():
     chk(any(c == "LOGIN" for c, _, _ in scan_face('out = "C:' + SEP + 'Users' + SEP + 'alice' + SEP + 'x.txt"',
                                                   root_forms=rf, home_forms=hf)),
         "red: a user-profile path is caught as LOGIN")
+    chk(any(c == "LOGIN" for c, _, _ in scan_face('  "scratch_root": "C:' + SEP2 + 'Users' + SEP2 + 'alice'
+                                 + SEP2 + 'sendguard-run",', root_forms=rf, home_forms=hf)),
+        "red: the JSON-escaped form of a profile path is caught - a .json face escapes its separators, and a "
+        "needle built from unescaped bytes never fires on the data faces where the paths actually live")
+    chk(any(c == "HOSTROOT" for c, _, _ in scan_face('  "base": "C:' + SEP2 + 'fake' + SEP2 + 'tree'
+                                 + SEP2 + 'results",', root_forms=rf, home_forms=hf)),
+        "red: the escaped form of the scanned tree is caught too, not just the profile root")
     chk(not any(c == "TOOLPATH" for c, _, _ in scan_face('out = "C:' + SEP + 'Users' + SEP + 'alice"',
                                                           root_forms=rf, home_forms=hf)),
         "red: a profile path is not softened into a provenance path")
@@ -178,6 +206,11 @@ def selftest():
     chk(scan_face("", root_forms=rf, home_forms=hf) == [], "green: an empty face yields nothing")
     chk(len(ID_SHAPE.pattern) > 0 and not ID_SHAPE.match("a" * 40 + "-port"), "red: an over-long value is rejected")
     chk(not ID_SHAPE.match("Test"), "red: an uppercase fixture value is rejected")
+    escaped = "C:" + SEP2 + "Users" + SEP2 + "alice"
+    chk(escaped in _escaped_forms("C:" + SEP + "Users" + SEP + "alice"),
+        "red: the form builder must produce the JSON-escaped spelling, or the leg is blind to its own data faces")
+    chk(_escaped_forms("") == set(), "green: an empty path yields no needles, so a blank home cannot match "
+                                     "everything")
     # the leg writes nothing, so its refusals can be exercised by calling main() with a fake argv - these two
     # arms exist because a reviewer's report showed my own header documenting `--scratch-root`, which this
     # leg rejects: a comment that promises what the code does not do is the defect class this project has

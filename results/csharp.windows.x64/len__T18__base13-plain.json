@@ -15,8 +15,8 @@
   "bytes_written": 28,
   "case_group": "len",
   "case_id": "T18",
-  "cell_dir_hex": "443a5c736763735c3363313866",
-  "child_elapsed_ms": 35,
+  "cell_dir_hex": "443a5c736763735c6330633564",
+  "child_elapsed_ms": 34,
   "component_len": 13,
   "control_pass": true,
   "control_stamp_ref": "D:\\sg-cs-scratch\\controls-green.json",
@@ -245,7 +245,7 @@
     }
   ],
   "dir_view_error": null,
-  "elapsed_ms": 99,
+  "elapsed_ms": 97,
   "enum_to_stat_agrees": true,
   "env": {
     "LongPathsEnabled": 0,
@@ -265,6 +265,7 @@
   "extra": true,
   "format_version": 1,
   "harness_version": "csharp-s02-5-rev7",
+  "implementation_id": "csharp-port",
   "in_required_list": false,
   "instrument_conflict": false,
   "instrument_red": false,
@@ -545,16 +546,16 @@
   "roundtrip_basis": "read-back bytes vs the bytes handed to the API",
   "roundtrip_ok": true,
   "run_status": "ran",
-  "scratch_uuid_tag": "3c18f",
+  "scratch_uuid_tag": "c0c5d",
   "sha256_self": "c9fe45b2fee8ea846f0cf4f2cacc2a891e7b082e7719923502d12a9813e21994",
   "sha256_truth": "c9fe45b2fee8ea846f0cf4f2cacc2a891e7b082e7719923502d12a9813e21994",
   "spec_sha256": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261",
-  "started_at": "2026-10-11T01:04:35.864Z",
+  "started_at": "2026-10-12T07:50:40.128Z",
   "sub_identity": {
     "base_len": 13,
     "path_form": "plain"
   },
-  "target_dir_hex": "443a5c736763735c3363313866",
+  "target_dir_hex": "443a5c736763735c6330633564",
   "tier_point_attempts": [
     {
       "create_result": "ok",
@@ -616,6 +617,5 @@
   "total_path_len": 27,
   "unaccounted_entries": [],
   "verdict_via": "win32",
-  "verdict_via_method": "kernel32.CreateFileW(\\\\?\\ + dwDesiredAccess=0 + CREATE_NEW) via P/Invoke",
-  "worker_id": "seat-qoder/csharp-port"
+  "verdict_via_method": "kernel32.CreateFileW(\\\\?\\ + dwDesiredAccess=0 + CREATE_NEW) via P/Invoke"
 }

@@ -679,7 +679,7 @@ def assemble(tc, plan, runs, spec_sha, env, canon_extra=None, emit=None):
         "run_status": "ok",
         "longpath_mechanism": "none",
         "harness_version": HARNESS_VERSION,
-        "worker_id": "seat-qoder-java",
+        "implementation_id": "java-port",
         "started_at": prim["started_at"],
         "elapsed_ms": prim["elapsed_ms"],
         "spec_sha256": spec_sha,

@@ -25,7 +25,7 @@
  "run_status": "measured",
  "run_status_basis": "measured = both legs ran, or ran and produced an OS answer; blocked = the cell could not be run, with command+exit code+fix",
  "contract_rev_seen": "rev4 (298d6e4: rulers aligned, read_result not_applicable, gate honours declared sub_identity and excludes extra cells)",
- "worker_id": "seat-qoder-python-port",
+ "implementation_id": "python-port",
  "spec_sha256": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261",
  "spec_face": "git cat-file blob HEAD:spec/cases.yaml rc=0 bytes=11347",
  "env": {
@@ -49,7 +49,7 @@
  "deps_total": 0,
  "deps_basis": "imports are stdlib only (argparse ctypes hashlib json os pathlib stat sys time uuid zipfile shutil); third-party count = 0",
  "scratch_root": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\sendguard-run",
- "scratch_dir": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\sendguard-run\\a6f5c7cb",
+ "scratch_dir": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\sendguard-run\\03f6f46a",
  "scratch_verified_empty": true,
  "cleanup_attempted": false,
  "probe_timeout_s": 5.0,
@@ -65,7 +65,7 @@
  "filename_sub_tag": {
   "api_entry": "os.mkdir"
  },
- "leg_dir": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\sendguard-run\\a6f5c7cb\\L0",
+ "leg_dir": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\sendguard-run\\03f6f46a\\L0",
  "leg_pre_existing_entries": 0,
  "entry_spread": {},
  "entries_agree_with_primary": true,
@@ -149,8 +149,8 @@
  "attribution_layer": "L1",
  "attribution_layer_basis": "OS-level name policy; same for every entry of this language (entry_spread agrees); varies_across_OS pending",
  "control_pass": true,
- "elapsed_ms": 105,
- "started_at": "2026-10-11T13:07:48+0800",
+ "elapsed_ms": 100,
+ "started_at": "2026-10-12T15:38:47+0800",
  "spec_provenance": {
   "category": null,
   "applicable": "windows",

@@ -7,7 +7,7 @@
  */
 
 export const HARNESS_VERSION = "sg-ts-1.0.0";
-export const WORKER_ID = "seat-qoder-typescript";
+export const IMPLEMENTATION_ID = "typescript-port";
 export const PORT_NAME = "typescript";
 export const OS_NAME = "windows";
 export const ARCH_NAME = "x64";

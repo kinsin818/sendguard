@@ -316,7 +316,7 @@ func assembleCell(p *planRow, o *Observation, spec *FrozenSpec, env *envFace,
 	})
 	c.set("normalization_dependency", p.NormalizationDep)
 	c.set("payload_hex", payloadHex)
-	c.set("worker_id", "seat-qoder")
+	c.set("implementation_id", "go-port")
 	// len cells carry the arithmetic the S03 gate needs
 	if p.Packer != "" {
 		c.set("packer", p.Packer)

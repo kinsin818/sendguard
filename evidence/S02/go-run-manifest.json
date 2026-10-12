@@ -125,9 +125,9 @@
   "locale": "console_code_page=936 (the label around it is cp936 text; non-ASCII bytes are dropped, never guessed)",
   "go_exe_resolved": "C:\\Program Files\\Go\\bin\\go.exe",
   "go_version": "go version go1.23.5 windows/amd64",
-  "runner_exe": "D:\\sendguard-work\\seat-qoder\\impl\\go\\rederive\\bin\\sg.exe",
+  "runner_exe": "D:\\sendguard-work\\sg-rederive.exe",
   "runner_manifest_scan": {
-   "bytes_scanned": 4638720,
+   "bytes_scanned": 4648448,
    "disclaimer": "proves the string is present, not that the loader honours it; absence is recorded, not assumed",
    "hit_count": 0,
    "hits": [],
@@ -141,8 +141,8 @@
    "purpose": "green arm for manifestScan: this binary must show the token",
    "status": "scanned"
   },
-  "runner_exe_sha256_before": "916559034257452f511ee4efd4e601692170a5147f16b8e4408c2fc3cc434f11",
-  "runner_exe_sha256_after": "916559034257452f511ee4efd4e601692170a5147f16b8e4408c2fc3cc434f11",
+  "runner_exe_sha256_before": "7647d02835b33feb195ccc20cbaef526411ca022f0e42a5d2eae587396ab142b",
+  "runner_exe_sha256_after": "7647d02835b33feb195ccc20cbaef526411ca022f0e42a5d2eae587396ab142b",
   "longpaths_registry": {
    "command": [
     "reg",
@@ -151,7 +151,7 @@
     "/v",
     "LongPathsEnabled"
    ],
-   "elapsed_ms": 5,
+   "elapsed_ms": 6,
    "key": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\FileSystem\\LongPathsEnabled",
    "raw_line": "LongPathsEnabled    REG_DWORD    0x0",
    "rc": 0,
@@ -174,17 +174,17 @@
   "spec_sha256": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261",
   "spec_sha256_worktree_face": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261",
   "freeze_revision": "2",
-  "run_started_at": "2026-10-11T02:53:03.1515087Z",
+  "run_started_at": "2026-10-12T07:49:27.0713072Z",
   "python_readback_arm_exe": "C:\\Python314\\python.exe",
   "sandbox_root": "D:\\sendguard-run"
  },
  "exe_face_stable": true,
- "run_finished_at": "2026-10-11T02:53:12.8502582Z",
- "run_started_at": "2026-10-11T02:53:03.1515087Z",
+ "run_finished_at": "2026-10-12T07:49:36.371865Z",
+ "run_started_at": "2026-10-12T07:49:27.0713072Z",
  "sandbox_dirs_retained": 49,
  "sandbox_root": "D:\\sendguard-run",
- "sg_exe_sha256_after": "916559034257452f511ee4efd4e601692170a5147f16b8e4408c2fc3cc434f11",
- "sg_exe_sha256_before": "916559034257452f511ee4efd4e601692170a5147f16b8e4408c2fc3cc434f11",
+ "sg_exe_sha256_after": "7647d02835b33feb195ccc20cbaef526411ca022f0e42a5d2eae587396ab142b",
+ "sg_exe_sha256_before": "7647d02835b33feb195ccc20cbaef526411ca022f0e42a5d2eae587396ab142b",
  "timeout_enforced_ms": 5000,
- "wall_ms": 9958
+ "wall_ms": 9575
 }

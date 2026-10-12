@@ -16,7 +16,7 @@
  "create_result": "err_at_syscall",
  "error_stage": "syscall",
  "error_code": "WIN87_INVALID_PARAM",
- "error_message": "open D:\\sendguard\\_pilot_scratch\\go\\TAPI-T01__os_Create__9300\\CON.txt: The parameter is incorrect.",
+ "error_message": "open D:\\sendguard-work\\seat-qoder\\_pilot_scratch\\go\\TAPI-T01__os_Create__979500\\CON.txt: The parameter is incorrect.",
  "bytes_written": null,
  "bytes_on_disk": null,
  "read_result": "eof",
@@ -24,11 +24,11 @@
  "enum_api_entry": "os.ReadDir",
  "os_legality_verdict": "illegal",
  "mechanism_class": "unknown",
- "worker_id": "W-GO/qianwen",
+ "implementation_id": "go-port",
  "harness_version": "runner-v1",
  "sha256_self": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
- "started_at": "2026-10-10T15:52:26.0870083Z",
- "elapsed_ms": 5034,
+ "started_at": "2026-10-12T09:56:32.4132098Z",
+ "elapsed_ms": 40,
  "env": {
   "LongPathsEnabled": 0,
   "dot3name": null,
@@ -36,6 +36,9 @@
   "toolchain": "go1.23.5",
   "unicode_version": "unavailable-no-api"
  },
+ "notes": [
+  "SCHEMA-GAP: read_result closed set lacks err_open; raw=ROOT-REFUSED (child): no spec/FROZEN.md above D:\\sendguard-work: pass -repo \u003crepository root\u003e; this lane will not guess a checkout"
+ ],
  "members": [
   {
    "name_utf8_hex": "434f4e2e747874",
@@ -44,13 +47,14 @@
    "dir_size": null,
    "path_exists": true,
    "path_size": 0,
-   "read_result": "hang",
+   "read_result": "eof",
    "read_bytes": null,
+   "read_error": "mapped-from:ROOT-REFUSED (child): no spec/FROZEN.md above D:\\sendguard-work: pass -repo \u003crepository root\u003e; this lane will not guess a checkout",
    "view_divergence": true,
    "same_name_hits": 0
   }
  ],
- "root_len_units": 56,
+ "root_len_units": 74,
  "comp_units": 0,
  "spec_defect": false,
  "control_pass": true,

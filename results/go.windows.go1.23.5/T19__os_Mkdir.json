@@ -24,11 +24,11 @@
  "enum_api_entry": "os.ReadDir",
  "os_legality_verdict": "legal",
  "mechanism_class": "case_folding",
- "worker_id": "W-GO/qianwen",
+ "implementation_id": "go-port",
  "harness_version": "runner-v1",
  "sha256_self": "210a1c4945cf37dad8e4ee8992c63232ec6c2bc2afead85c52c02e13ca307c29",
- "started_at": "2026-10-10T15:52:47.0005452Z",
- "elapsed_ms": 78,
+ "started_at": "2026-10-12T09:56:38.4571705Z",
+ "elapsed_ms": 56,
  "env": {
   "LongPathsEnabled": 0,
   "dot3name": null,
@@ -37,8 +37,8 @@
   "unicode_version": "unavailable-no-api"
  },
  "notes": [
-  "SCHEMA-GAP: read_result closed set lacks err_open; raw=READERR 0 read D:\\sendguard\\_pilot_scratch\\go\\T19__os_Mkdir__534200\\\\uFF21\\uFF22\\uFF23.txt: Incorrect function.",
-  "SCHEMA-GAP: read_result closed set lacks err_open; raw=READERR 0 read D:\\sendguard\\_pilot_scratch\\go\\T19__os_Mkdir__534200\\\\u3131\\u3134\\u3137.txt: Incorrect function."
+  "SCHEMA-GAP: read_result closed set lacks err_open; raw=ROOT-REFUSED (child): no spec/FROZEN.md above D:\\sendguard-work: pass -repo \u003crepository root\u003e; this lane will not guess a checkout",
+  "SCHEMA-GAP: read_result closed set lacks err_open; raw=ROOT-REFUSED (child): no spec/FROZEN.md above D:\\sendguard-work: pass -repo \u003crepository root\u003e; this lane will not guess a checkout"
  ],
  "members": [
   {
@@ -50,7 +50,7 @@
    "path_size": 0,
    "read_result": "eof",
    "read_bytes": null,
-   "read_error": "mapped-from:READERR 0 read D:\\sendguard\\_pilot_scratch\\go\\T19__os_Mkdir__534200\\\\uFF21\\uFF22\\uFF23.txt: Incorrect function.",
+   "read_error": "mapped-from:ROOT-REFUSED (child): no spec/FROZEN.md above D:\\sendguard-work: pass -repo \u003crepository root\u003e; this lane will not guess a checkout",
    "view_divergence": false,
    "same_name_hits": 1
   },
@@ -63,12 +63,12 @@
    "path_size": 0,
    "read_result": "eof",
    "read_bytes": null,
-   "read_error": "mapped-from:READERR 0 read D:\\sendguard\\_pilot_scratch\\go\\T19__os_Mkdir__534200\\\\u3131\\u3134\\u3137.txt: Incorrect function.",
+   "read_error": "mapped-from:ROOT-REFUSED (child): no spec/FROZEN.md above D:\\sendguard-work: pass -repo \u003crepository root\u003e; this lane will not guess a checkout",
    "view_divergence": false,
    "same_name_hits": 1
   }
  ],
- "root_len_units": 52,
+ "root_len_units": 68,
  "comp_units": 0,
  "spec_defect": false,
  "control_pass": true,

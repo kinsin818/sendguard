@@ -9,7 +9,7 @@
  "locale": "en-US",
  "api_entry": "os.OpenFile",
  "attempt": 1,
- "name_source": "747261696c737020",
+ "name_source": "",
  "name_encoding": "utf8_bytes",
  "path_form": "plain",
  "longpath_mechanism": "none",
@@ -23,12 +23,12 @@
  "enum_to_stat_agrees": false,
  "enum_api_entry": "os.ReadDir",
  "os_legality_verdict": "unknown",
- "mechanism_class": "component_length_limit",
- "worker_id": "W-GO/qianwen",
+ "mechanism_class": "path_preprocessing_policy",
+ "implementation_id": "go-port",
  "harness_version": "runner-v1",
  "sha256_self": "371fe87b01135d4d98de4aeb8fcc8da6bb55a261601a9c0dc6d77479a0df9a5f",
- "started_at": "2026-10-10T15:00:36.7854371Z",
- "elapsed_ms": 31,
+ "started_at": "2026-10-12T09:56:33.6265477Z",
+ "elapsed_ms": 37,
  "env": {
   "LongPathsEnabled": 0,
   "dot3name": null,
@@ -37,25 +37,25 @@
   "unicode_version": "unavailable-no-api"
  },
  "notes": [
-  "PHANTOM-OK: create ok, dir_view lacks requested bytes"
+  "SCHEMA-GAP: read_result closed set lacks err_open; raw=ROOT-REFUSED (child): no spec/FROZEN.md above D:\\sendguard-work: pass -repo \u003crepository root\u003e; this lane will not guess a checkout",
+  "PHANTOM-OK: at least one member create=ok without matching dir entry"
  ],
  "members": [
   {
-   "Hex": "747261696c737020",
-   "DirFound": false,
-   "DirSize": null,
-   "PathOK": true,
-   "PathSize": 1,
-   "PathErr": "",
-   "Read": "",
-   "ReadN": null,
-   "ReadErr": "",
-   "Diverg": true,
-   "Drift": false,
-   "SameHits": 0
+   "name_utf8_hex": "747261696c737020",
+   "create_result": "ok",
+   "dir_found": false,
+   "dir_size": null,
+   "path_exists": true,
+   "path_size": 1,
+   "read_result": "eof",
+   "read_bytes": null,
+   "read_error": "mapped-from:ROOT-REFUSED (child): no spec/FROZEN.md above D:\\sendguard-work: pass -repo \u003crepository root\u003e; this lane will not guess a checkout",
+   "view_divergence": true,
+   "same_name_hits": 0
   }
  ],
- "root_len_units": 55,
+ "root_len_units": 71,
  "comp_units": 0,
  "spec_defect": false,
  "control_pass": true,

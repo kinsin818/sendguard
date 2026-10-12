@@ -24,11 +24,11 @@
  "enum_api_entry": "os.ReadDir",
  "os_legality_verdict": "legal",
  "mechanism_class": "unicode_normalization",
- "worker_id": "W-GO/qianwen",
+ "implementation_id": "go-port",
  "harness_version": "runner-v1",
  "sha256_self": "3ed30dc954ba8d834dfc179fabb9856eca17c3eb46b0a6bfa71f7e4d1c9461f6",
- "started_at": "2026-10-10T15:52:46.3135897Z",
- "elapsed_ms": 71,
+ "started_at": "2026-10-12T09:56:34.3838399Z",
+ "elapsed_ms": 54,
  "env": {
   "LongPathsEnabled": 0,
   "dot3name": null,
@@ -36,6 +36,10 @@
   "toolchain": "go1.23.5",
   "unicode_version": "unavailable-no-api"
  },
+ "notes": [
+  "SCHEMA-GAP: read_result closed set lacks err_open; raw=ROOT-REFUSED (child): no spec/FROZEN.md above D:\\sendguard-work: pass -repo \u003crepository root\u003e; this lane will not guess a checkout",
+  "SCHEMA-GAP: read_result closed set lacks err_open; raw=ROOT-REFUSED (child): no spec/FROZEN.md above D:\\sendguard-work: pass -repo \u003crepository root\u003e; this lane will not guess a checkout"
+ ],
  "members": [
   {
    "name_utf8_hex": "726573756d652d65cc812e747874",
@@ -44,8 +48,9 @@
    "dir_size": 1,
    "path_exists": true,
    "path_size": 1,
-   "read_result": "ok",
-   "read_bytes": 0,
+   "read_result": "eof",
+   "read_bytes": null,
+   "read_error": "mapped-from:ROOT-REFUSED (child): no spec/FROZEN.md above D:\\sendguard-work: pass -repo \u003crepository root\u003e; this lane will not guess a checkout",
    "view_divergence": false,
    "same_name_hits": 1
   },
@@ -56,13 +61,14 @@
    "dir_size": 1,
    "path_exists": true,
    "path_size": 1,
-   "read_result": "ok",
-   "read_bytes": 0,
+   "read_result": "eof",
+   "read_bytes": null,
+   "read_error": "mapped-from:ROOT-REFUSED (child): no spec/FROZEN.md above D:\\sendguard-work: pass -repo \u003crepository root\u003e; this lane will not guess a checkout",
    "view_divergence": false,
    "same_name_hits": 1
   }
  ],
- "root_len_units": 53,
+ "root_len_units": 69,
  "comp_units": 0,
  "spec_defect": false,
  "control_pass": true,

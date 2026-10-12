@@ -41,9 +41,48 @@ type Case struct {
 }
 
 var (
-	repo      = `D:\sendguard`
+	// repo is resolved at start-up by resolveRepo(); it is never a path written into this file. A lane whose
+	// root names a particular checkout verifies, measures and then reports on a tree its reader cannot see -
+	// and this one did: `verify` printed "frozen artifacts intact" while reading a second checkout whose
+	// spec/schema.json is at an older digest than the contract in this repository. See SG-F15.
+	repo      string
 	goEntries = []string{"os.Create", "os.WriteFile", "os.OpenFile", "os.Mkdir"}
 )
+
+// resolveRepo decides which tree this lane is allowed to read and write.
+//
+// It takes -repo <path> when the caller names one, and otherwise walks up from the working directory to the
+// directory that carries spec/FROZEN.md. It refuses, non-zero and loudly, when neither works: a default that
+// silently points at some checkout is the defect, not a fallback.
+func resolveRepo(args []string) (string, error) {
+	for i := 0; i+1 < len(args); i++ {
+		if args[i] == "-repo" || args[i] == "--repo" {
+			p, err := filepath.Abs(args[i+1])
+			if err != nil {
+				return "", err
+			}
+			if _, err := os.Stat(filepath.Join(p, "spec", "FROZEN.md")); err != nil {
+				return "", fmt.Errorf("-repo %s has no spec/FROZEN.md: it is not a SENDGUARD contract root", args[i+1])
+			}
+			return p, nil
+		}
+	}
+	wd, err := os.Getwd()
+	if err != nil {
+		return "", err
+	}
+	for d := wd; ; {
+		if _, err := os.Stat(filepath.Join(d, "spec", "FROZEN.md")); err == nil {
+			return d, nil
+		}
+		parent := filepath.Dir(d)
+		if parent == d {
+			return "", fmt.Errorf("no spec/FROZEN.md above %s: pass -repo <repository root>; this lane will "+
+				"not guess a checkout", wd)
+		}
+		d = parent
+	}
+}
 
 // ---------------- ---------- ---------------- ----------------
 
@@ -216,6 +255,13 @@ func verifyFrozen() error {
 			continue
 		}
 		got := sha(b)
+		// The contract's recipe is sha256(git show <head>:<path>); a face whose work-tree bytes differ from its
+		// own blob is a face the reader cannot reproduce from history, so the row is named even when the disk
+		// digest matches the table.
+		if hb, he := exec.Command("git", "-C", repo, "show", "HEAD:"+rel).Output(); he == nil && sha(hb) != got {
+			fmt.Printf("DISK-NE-BLOB  %-38s disk=%s blob=%s\n", rel, got[:12], sha(hb)[:12])
+			bad++
+		}
 		if got != want {
 			// Known freeze-recording bug (go-port blocker #1): FROZEN.md recorded the
 			// file's INNER sha256_self field for blind-map.json instead of the
@@ -655,6 +701,7 @@ func childCell(c *Case, entry string, hexList []string, payload []byte) {
 		c.ID+"__"+strings.ReplaceAll(entry, ".", "_")+"__"+fmt.Sprintf("%d", time.Now().UnixNano()%1000000))
 	os.MkdirAll(scratch, 0o755)
 	cmd := exec.CommandContext(ctx, self, selfExeKey, "cell",
+		"--repo", repo,
 		"--case", c.ID, "--group", c.Group, "--entry", entry,
 		"--dir", scratch, "--members", strings.Join(hexList, ","),
 		"--payload", hexOf(string(payload)), "--defect", c.Defect,
@@ -685,6 +732,7 @@ func childLen(caseID, group, grid string, base, comp int, form string) {
 	os.MkdirAll(bd, 0o755)
 	name := strings.Repeat("b", comp-4) + ".txt"
 	cmd := exec.CommandContext(ctx, self, selfExeKey, "cell",
+		"--repo", repo,
 		"--case", caseID, "--group", group, "--entry", "os.Create",
 		"--dir", bd, "--hex", hexOf(name), "--payload", hexOf("X"), "--form", form,
 		"--base", strconv.Itoa(base), "--comp", strconv.Itoa(comp))
@@ -738,6 +786,15 @@ func hex2bytes(h string) []byte {
 
 func main() {
 	if len(os.Args) >= 3 && os.Args[1] == selfExeKey {
+		// The child inherits the root the parent resolved, passed down as --repo, and refuses to run without
+		// it. Without this the child computed its results directory from an empty `repo`, which silently meant
+		// "wherever the operator was standing", and wrote records outside the repository.
+		var cerr error
+		repo, cerr = resolveRepo(os.Args[3:])
+		if cerr != nil {
+			fmt.Println("ROOT-REFUSED (child):", ascii(cerr.Error()))
+			os.Exit(2)
+		}
 		inner := os.Args[2]
 		switch inner {
 		case "cell":
@@ -780,8 +837,15 @@ func main() {
 			return
 		}
 	}
+	var err error
+	repo, err = resolveRepo(os.Args[1:])
+	if err != nil {
+		fmt.Println("ROOT-REFUSED:", ascii(err.Error()))
+		os.Exit(2)
+	}
+	fmt.Println("repo=" + repo)
 	if len(os.Args) < 2 {
-		fmt.Println("usage: sendguard-go verify | run [group]")
+		fmt.Println("usage: sendguard-go [-repo <path>] verify | run [group]")
 		os.Exit(2)
 	}
 	switch os.Args[1] {

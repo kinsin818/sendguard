@@ -24,11 +24,11 @@
  "enum_api_entry": "os.ReadDir",
  "os_legality_verdict": "legal",
  "mechanism_class": "",
- "worker_id": "W-GO/qianwen",
+ "implementation_id": "go-port",
  "harness_version": "runner-v1",
  "sha256_self": "74c6f94526eba842ef6d9626506553fd102948881e35b4ffe80685a860925b86",
- "started_at": "2026-10-10T15:52:49.2991967Z",
- "elapsed_ms": 63,
+ "started_at": "2026-10-12T09:56:40.4110504Z",
+ "elapsed_ms": 37,
  "env": {
   "LongPathsEnabled": 0,
   "dot3name": null,
@@ -36,6 +36,9 @@
   "toolchain": "go1.23.5",
   "unicode_version": "unavailable-no-api"
  },
+ "notes": [
+  "SCHEMA-GAP: read_result closed set lacks err_open; raw=ROOT-REFUSED (child): no spec/FROZEN.md above D:\\sendguard-work: pass -repo \u003crepository root\u003e; this lane will not guess a checkout"
+ ],
  "members": [
   {
    "name_utf8_hex": "626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262622e747874",
@@ -44,13 +47,14 @@
    "dir_size": 1,
    "path_exists": true,
    "path_size": 1,
-   "read_result": "ok",
-   "read_bytes": 0,
+   "read_result": "eof",
+   "read_bytes": null,
+   "read_error": "mapped-from:ROOT-REFUSED (child): no spec/FROZEN.md above D:\\sendguard-work: pass -repo \u003crepository root\u003e; this lane will not guess a checkout",
    "view_divergence": false,
    "same_name_hits": 1
   }
  ],
- "root_len_units": 259,
+ "root_len_units": 275,
  "base_units": 200,
  "comp_units": 254,
  "spec_defect": false,

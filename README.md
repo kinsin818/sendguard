@@ -8,6 +8,9 @@ gate that decides whether they do.** The gate separates the answer from the aski
 a name must be byte-identical across the six, while what each language's own standard library did when asked
 is the matrix, not a failure. That gate, not the language count, is the point of this repository.
 
+Everything below asks this repository's own legs. If you came to hold a port in your hands instead - build it, run
+it, produce its face yourself - §7 is that path, and it was walked in a fresh clone before it was written down.
+
 ## 1. Verify first; the claims come after
 
 ```
@@ -168,5 +171,49 @@ result files; `docs/GAP.md` carries the required cells each port has not answere
 is the honest reading of both files as of this commit. A cell that no port answered is a gap; a cell whose
 ports asked different layers is listed as not comparable, with the reason; neither is counted as agreement.
 
+## 7. Running a port yourself - the stranger's path
+
+A reader who wants to hold one port in their own hands, rather than read this repository's word for it, needs a
+toolchain and three commands per port. The table below is the path walked end to end on 2026-10-12 in a
+`--no-local` clone of the tip: every row was typed as written, in that clone, and each port's produced face was
+then compared field-by-field against the face this repository commits - **zero differences in any verdict field**
+across all six canonical faces; only timestamps, elapsed milliseconds and scratch-directory fields move, which is
+what a re-run is allowed to move. Re-check the versions you have before starting:
+
+```
+python -V && node -v && go version && rustc -V && javac -version && dotnet --version
+```
+
+| port | build | run the whole face | focused run (fast, proves the wiring) | what it prints |
+|---|---|---|---|---|
+| `python-port` | none - standard library only | `python impl/python/sg_run.py` | `python impl/python/sg_run.py --len-only` (twelve length cells plus the five controls) | `cells_written=`, `control_all_ok=`, `producer_keys_purged=` and its own scratch root |
+| `rust-port` | `cargo build` inside `impl/rust` (the runner builds the two faces it needs) | `python impl/rust/run_cells.py` | `python impl/rust/run_cells.py --phase controls` | per-cell control verdicts, then `controls_pass=`, `cells_produced=`, `problems=` |
+| `typescript-port` | no transpile step - node strips the types; the load test is `node --experimental-strip-types --check impl/typescript/src/runner.ts` | `node impl/typescript/src/runner.ts` | same command; it plans and runs the whole grid | `written=`, `cells_expected=`, `controls_pass=` |
+| `go-port` | `go build ./...` in `impl/go`, `go build` in `impl/go/rederive`, and `go build audit.go` in `harness` (three modules, one per instrument) | build the re-derivation tool and run it against this tree, giving it the results directory explicitly: `go build -o <outside-the-tree>/sg-rederive.exe ./impl/go/rederive` then `<that binary> run --repo . --results results/go.windows.x64` | add `-only ctrl` to that run | `cells_planned=`, `cells_written=`, `controls_pass=`, and a manifest path it writes under `evidence/S02/` |
+| `java-port` | `javac -nowarn -encoding US-ASCII -d impl/java/build impl/java/src/*.java` | `python impl/java/tools/run_cells.py` | add `--dry` for plan-only, no measurement | one `CELL` line per cell including the five `ctrl` rows, then `cells_produced=`, `missing_required=` |
+| `csharp-port` | `dotnet build` inside `impl/csharp` | `python impl/csharp/run_csharp.py --all` | `python impl/csharp/run_csharp.py --controls` - **and note this mode deliberately reports `missing=43`**: it runs the five controls only, and the harness prints the required list it did not cover instead of pretending | `cells_run=`, `required_ids=`, `missing=`, the dotnet version it found, and `stale_files_on_disk=` |
+
+Three honest caveats, because this is the part a README usually omits and a reader then discovers:
+
+- **`rust-port` needs a crate download on a truly cold machine.** Its two normalisation dependencies are not
+  vendored into this repository, so `cargo build` requires registry access the first time; the run quoted above
+  succeeded with `--offline` because the host had a warm cache, which is not a stranger's starting condition.
+  A stranger without that cache should expect to need network once.
+- **`java-port` has no lane-authored self-check file.** The other five lanes ship a `selfcheck` script that
+  re-parses the contract and judges the lane's own face independently of the shared rulers; the Java lane's
+  control assertions are its run output plus `ci/validate_cells.py` and `ci/equality.py`, which every face passes.
+  The asymmetry is real, is recorded in `docs/tickets/SG-F16-java-lane-selfcheck.md`, and does not currently
+  weaken any published reading.
+- **This is one host, one Windows edition, one set of toolchain versions.** `docs/host-stamp.md` prints what this
+  machine is, the cold-clone leg quarantines it by name rather than comparing it, and the ports' disagreement about
+  things like prefix handling is the product, not noise. If you run a port and get a different verdict field, that
+  is not a README problem to file - it is a result this project's gate would want: run `python ci/equality.py` in
+  your checkout and report the line it prints.
+
+If you want the whole repository to prove its own reproducibility rather than ask you to trust it, that is one
+command and it is meant to be run against a fresh clone of a remote, not a directory copy: `python ci/clone_parity.py
+--scratch-root ../<your-dir>`, and with `--source <url>` pointed at the published repository.
+
 License: to be set by the owner. Until then: forking and re-running to verify is welcome; redistribution as
 closed source is not licensed.
+

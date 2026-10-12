@@ -10,13 +10,13 @@ Output, verbatim:
 
 ```
 OUTCOME=CLEAN faces_compared=13 identical=11 declared=1 differing=0 missing=0
-host_bound=1(docs/host-stamp.md) clone=D:\sendguard-work\sg-parity-verify\parity-1
-source=D:\sendguard-work\seat-qoder
+host_bound=1(docs/host-stamp.md) clone=<scratch clone dir>
+source=this repository
 rc=0
 ```
 
 Commit under test: `722c334` (`git rev-parse HEAD` at the time of the run; the clone adopted
-`D:\sendguard-work\sg-parity-verify\parity-1`, created rather than reused, `status_before=0`).
+`<scratch clone dir>`, created rather than reused, `status_before=0`).
 
 ## What this reading does and does not prove
 

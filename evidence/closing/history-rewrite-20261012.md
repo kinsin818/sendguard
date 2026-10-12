@@ -38,7 +38,7 @@ date change:
 <reviewer workspace path>       -> "<the reviewer's own workspace file, path withheld>"
 <cross-check file path>         -> "<the cross-check file, path withheld>"
 <private register path>         -> "<the private register, path withheld>"
-C:\Users...                  -> "<a user profile root>"
+a profile root under the user directory -> "<a user profile root>"
 two reviewer seat names          -> "the kit review" / "the cross-check seat"
 ```
 

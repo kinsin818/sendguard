@@ -54,7 +54,7 @@ different.
    Six ports' value is that they cannot see each other, so a cross-port edit also destroys the experiment.
 6. **Out of scope:** anything outside this repository — the author's secrets directory, the read-only evidence
    tree `D:\sendguard`, other projects, other windows.
-7. **Redact your own machine before submitting.** Captures you paste will contain `<a user profile root><you>` and your
+7. **Redact your own machine before submitting.** Captures you paste will contain a profile path under your own user directory and your
    drive letters. The repository's own disclosure leg treats a login-name path as a finding; your packet
    should not add one.
 8. **State the tree you audited.** `git rev-parse HEAD` in the first lines of your report, plus the OS and the

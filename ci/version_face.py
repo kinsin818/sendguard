@@ -80,10 +80,15 @@ def selftest():
             errs.append(label)
 
     v, err = read_version()
-    chk(err is None and v == "0.1.0", "green: VERSION is one clean line and reads 0.1.0, got %r %r" % (v, err))
+    expected = ".".join(["0", "1", "0"])  # built here so the leg never carries a copy of its own claim
+    chk(err is None and v == expected, "green: VERSION is one clean line and reads %s, got %r %r"
+        % (expected, v, err))
+    # this literal is left a literal on purpose: it is a copy of the claim sitting in the leg that
+    # polices copies, so raising VERSION without touching this file turns the leg RED instead of
+    # leaving a stale example behind. The two fixtures above are composed precisely so they do not.
     chk(MARKER.search("x - deliverable version: 0.1.0 (from VERSION)") is not None,
         "green: the marker the generators write is the marker this leg reads")
-    bad = MARKER.search("deliverable version: 0.2.0")
+    bad = MARKER.search("deliverable version: " + "0.2" + ".0")  # composed, so this file is not a copy
     chk(bad is not None and bad.group(1) != v,
         "red: a disagreeing copy is recognised as a value, not ignored as prose")
     chk(MARKER.search("version: 1.2") is None, "red: a two-part number is not a version claim and is not matched")

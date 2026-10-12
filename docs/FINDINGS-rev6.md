@@ -347,3 +347,37 @@ exit.
 The lesson is not "declare your exceptions". It is that **an instrument whose pass condition depends on the host
 is not an instrument**, and the cheapest way to find out is to let someone else run it. Four of them did,
 unprompted, in one night; that is the strongest argument in this project for the outside-audit step.
+
+## M11 - the sentence about blanks counted one bucket, and the reader heard the whole hole
+
+Closed 2026-10-12 by SG-F11, from two audit packets that reached this seat by different routes (auditor-1 F-1,
+auditor-4 F-2). The gate was not wrong: it charges a disagreement first and an abstention second, and prints
+both. Three **sentences** were wrong - `docs/coverage.md` assured the reader that "nothing is left unplaced",
+which is true of the table below it and false of the grid, and `docs/claim-boundary.md` called the 121 published
+rows "field-cells" when 121 is a (cell, field) pair count and the expanded field-cell count in the same run is
+258.
+
+Measured from the gate's own artifact in one pass, never from prose:
+
+```
+blank_pairs= 121        (a port abstained, the answering ports did not contradict)
+disagree_with_abstention= 23   disagree_all_six_recorded= 31
+union (any port abstained on that pair)= 144     pair universe= 440     field-cell universe= 2640
+```
+
+`121 + 23 = 144`. **Auditor-1's own figure did not reproduce** - the packet states `154 of 440`. The defect
+survives, the number does not, and the intake rule treats a reviewer's arithmetic exactly like a published one:
+reproduced or refused, never copied (`evidence/audit-in/ADJUDICATION.md`).
+
+What changed: the arithmetic is now authored in `ci/coverage_report.py`, so the corrected wording cannot be
+restored by hand-editing the face, and the generator refuses to print a sentence whose two denominators disagree
+with the gate's (`coverage arithmetic: ... two rulers` is an instrument problem, not a paragraph). Both `121`
+and `258` name their unit on the face. And the pairing rule that used to live only in a reviewer's head is now
+mechanical: `ci/claim_digest.py` reports any paragraph that publishes `verdict_identical_cells` without
+`cells_fully_recorded_and_identical`, with the excluded face classes (`evidence/**`, `docs/tickets/**`) counted
+and printed rather than skipped. Four arms added (12 in total, labelled and contiguity-checked instead of a
+printed literal), and the rule was probed on the real tree, not only in a fixture: planted bare -> `rc=1`,
+planted paired -> `rc=0`, face restored byte-identical (`evidence/S11/SG-F11-acceptance.md`).
+
+The four verdict readings did not move, which is the point of a wording fix: `verdict_disagreements=54`,
+`verdict_identical_cells=24/44`, `cells_fully_recorded_and_identical=4`, `verdict_not_recorded_pairs=121`.

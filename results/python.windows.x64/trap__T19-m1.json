@@ -25,7 +25,7 @@
  "run_status": "measured",
  "run_status_basis": "measured = both legs ran, or ran and produced an OS answer; blocked = the cell could not be run, with command+exit code+fix",
  "contract_rev_seen": "rev4 (298d6e4: rulers aligned, read_result not_applicable, gate honours declared sub_identity and excludes extra cells)",
- "worker_id": "seat-qoder-python-port",
+ "implementation_id": "python-port",
  "spec_sha256": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261",
  "spec_face": "git cat-file blob HEAD:spec/cases.yaml rc=0 bytes=11347",
  "env": {
@@ -49,7 +49,7 @@
  "deps_total": 0,
  "deps_basis": "imports are stdlib only (argparse ctypes hashlib json os pathlib stat sys time uuid zipfile shutil); third-party count = 0",
  "scratch_root": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\sendguard-run",
- "scratch_dir": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\sendguard-run\\217bf236",
+ "scratch_dir": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\sendguard-run\\92a6651b",
  "scratch_verified_empty": true,
  "cleanup_attempted": false,
  "probe_timeout_s": 5.0,
@@ -67,7 +67,7 @@
  "error_stage_rule": "non-OSError raised before the syscall -> parse; OSError carrying errno/winerror -> syscall (fs/tool unused, see selfcheck)",
  "member_index": "0",
  "member_identity_note": "rev3 lists members in the case_id (T09-m1); member_index here is the 0-based position in the frozen sample_hex_list, kept as data, not identity",
- "leg_dir": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\sendguard-run\\217bf236\\L0",
+ "leg_dir": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\sendguard-run\\92a6651b\\L0",
  "leg_pre_existing_entries": 0,
  "entry_spread": {
   "os.mkdir": {
@@ -90,7 +90,7 @@
    "os_legality_verdict": "legal",
    "sha256_self": null,
    "sha256_truth": null,
-   "elapsed_ms_child": 1,
+   "elapsed_ms_child": 2,
    "phases_reached": [
     "start",
     "created",
@@ -248,7 +248,7 @@
  "verdict_via_detail": "kernel32.GetFileAttributesW via ctypes, extended prefix, parser bypassed",
  "win32_fullpath": {
   "ok": true,
-  "reported_hex": "433a5c55736572735c41646d696e6973747261746f725c417070446174615c4c6f63616c5c54656d705c73656e6467756172642d72756e5c32313762663233365c4c305cefbca1efbca2efbca32e747874"
+  "reported_hex": "433a5c55736572735c41646d696e6973747261746f725c417070446174615c4c6f63616c5c54656d705c73656e6467756172642d72756e5c39326136363531625c4c305cefbca1efbca2efbca32e747874"
  },
  "delivered_nothing": false,
  "create_result": "ok",
@@ -265,8 +265,8 @@
  "attribution_layer": "L2",
  "attribution_layer_basis": "another stdlib entry of python answers differently (entry_spread disagrees) -> stdlib policy; varies_across_OS pending",
  "control_pass": true,
- "elapsed_ms": 106,
- "started_at": "2026-10-11T13:07:45+0800",
+ "elapsed_ms": 104,
+ "started_at": "2026-10-12T15:38:43+0800",
  "spec_provenance": {
   "category": "case_folding",
   "applicable": "[windows, macos, ubuntu]",

@@ -46,7 +46,7 @@ SHALLOW_ROOT = r"D:\sgc"
 TIMEOUT_S = 5
 HARNESS = "S02-rust-seat-2"
 BLIND_MAP = os.path.join(REPO, "evidence", "S00", "blind-map.json")
-WORKER = "seat-qoder-rust"
+IMPLEMENTATION_ID = "rust-port"
 ARCH = "x64"
 BASELINE_CANON_SHA = "c9fe45b2fee8ea846f0cf4f2cacc2a891e7b082e7719923502d12a9813e21994"
 CANON_PAYLOAD = b"SENDGUARD-CANON-PAYLOAD-2026"
@@ -676,7 +676,7 @@ class Driver(object):
             "--out", tmp_out, "--mark", mark, "--payload-hex", bhex(CANON_PAYLOAD),
             "--mechanism-class", cell.mechanism, "--longpath-mechanism", lp, "--longpath-evidence", lpev,
             "--applicable", cell.applicable, "--name-source-kind", cell.kind,
-            "--harness", HARNESS, "--worker", WORKER, "--started-at", now_iso(),
+            "--harness", HARNESS, "--worker", IMPLEMENTATION_ID, "--started-at", now_iso(),
             "--spec-sha256", fa["blob_sha256"], "--spec-sha256-worktree", fa["worktree_sha256"],
             "--probe-sha256", d["sg_probe_norm_sha256"] if norm else d["sg_probe_sha256"],
             "--probe-face", "sg_probe_norm" if norm else "sg_probe",
@@ -846,7 +846,7 @@ class Driver(object):
             "os_legality_verdict": "unknown",
             "os_legality_basis": "the child never returned, so no OS answer for this name was obtainable",
             "attribution_layer": "L1", "mechanism_class": cell.mechanism,
-            "harness_version": HARNESS, "worker_id": WORKER, "started_at": now_iso(),
+            "harness_version": HARNESS, "implementation_id": IMPLEMENTATION_ID, "started_at": now_iso(),
             "elapsed_ms": elapsed, "elapsed_ms_harness": elapsed,
             "spec_sha256": self.faces["blob_sha256"], "spec_sha256_worktree": self.faces["worktree_sha256"],
             "probe_sha256": self.deps["sg_probe_norm_sha256"] if cell.norm else self.deps["sg_probe_sha256"],
@@ -1017,9 +1017,9 @@ def retire_stale(results_dir, keep_names, runs, ledger):
             ledger["skipped_not_mine"].append({"name": name, "sha256": sha_hex(raw), "reason": "unparseable, not touching it"})
             notmine += 1
             continue
-        if d.get("worker_id") != WORKER or d.get("language") != "rust":
+        if d.get("implementation_id") != IMPLEMENTATION_ID or d.get("language") != "rust":
             ledger["skipped_not_mine"].append({"name": name, "sha256": sha_hex(raw),
-                                               "reason": "not authored by this seat (worker_id=%r language=%r)" % (d.get("worker_id"), d.get("language"))})
+                                               "reason": "not authored by this lane (implementation_id=%r language=%r)" % (d.get("implementation_id"), d.get("language"))})
             notmine += 1
             continue
         dst = os.path.join(qdir, name)

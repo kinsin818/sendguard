@@ -23,7 +23,7 @@
   "create_result": "ok",
   "deps_direct": 0,
   "deps_total": 0,
-  "elapsed_ms": 137,
+  "elapsed_ms": 136,
   "entry_spread": [],
   "enum_listed": [
     "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
@@ -76,6 +76,7 @@
   "first_fail_comp": 256,
   "format_version": 1,
   "harness_version": "sg-ts-1.0.0",
+  "implementation_id": "typescript-port",
   "in_cells_required": false,
   "instrument_conflict": false,
   "instrument_red": false,
@@ -157,7 +158,7 @@
     "scratch_carrier": {
       "drive": "S:",
       "mapped": true,
-      "note": "S: was already mapped by an earlier run in this session",
+      "note": "mapped S: -> D:\\sendguard-work\\seat-qoder\\.sgscratch for this run; the port removes nothing (M19)",
       "target": "D:\\sendguard-work\\seat-qoder\\.sgscratch"
     },
     "spec_sha256": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261",
@@ -166,7 +167,7 @@
       "spec/canonical.md": "f3fe3122c131649d5df81d6c5331d0224dc270065f8ff46dd328d465324e6e69",
       "spec/cases.yaml": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261",
       "spec/cell-identity.md": "5c87c7c66cfe828ea304a6aa16d28d492cf36bf77d520bde293ba213955b10b7",
-      "spec/schema.json": "52abbc86c8899f41e1889e71d35cdf73bd363204274e862bf6bcb2ab9f761435"
+      "spec/schema.json": "c1a5097ce4a7e63c21aa1e24e7c89d0c20824cf6f1b814eba2482d06a7c419f7"
     },
     "volume_component_limit": 255
   },
@@ -199,7 +200,7 @@
         "stderr_tail": null,
         "tag": "b",
         "timed_out": false,
-        "wall_ms": 137
+        "wall_ms": 136
       }
     ],
     "node_version": "v24.15.0"
@@ -208,16 +209,16 @@
   "read_skipped_reason": null,
   "roundtrip_ok": true,
   "scratch": {
-    "cell_root": "S:\\6324e9d",
-    "cell_root_real": "D:\\sendguard-work\\seat-qoder\\.sgscratch\\6324e9d",
+    "cell_root": "S:\\8879deb",
+    "cell_root_real": "D:\\sendguard-work\\seat-qoder\\.sgscratch\\8879deb",
     "cleanup": "not attempted by the port (M19 forbids deletion logic in this port); the path is recorded for the operator",
     "verified_empty_before_use": true
   },
-  "sha256_self": "4ae9d5a03564913babee945d06a88535d30d5dd385b2b881a5eec1a2c8535518",
+  "sha256_self": "9a106e1f38c805c1db687bccf276612b379e340388851b9dcbb3b818f1a73cfe",
   "sha256_truth": "c9fe45b2fee8ea846f0cf4f2cacc2a891e7b082e7719923502d12a9813e21994",
   "spec_sha256": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261",
   "spec_sha256_basis": "git cat-file blob HEAD:spec/cases.yaml, hashed (committed blob face, not the disk file)",
-  "started_at": "2026-10-11T03:53:28.949Z",
+  "started_at": "2026-10-12T07:45:56.396Z",
   "status": "measured",
   "sub_identity": {
     "base_len": 13,
@@ -226,6 +227,5 @@
   },
   "total_path_at_first_fail": 270,
   "total_path_at_last_ok": 269,
-  "verdict_via": "none",
-  "worker_id": "seat-qoder-typescript"
+  "verdict_via": "none"
 }

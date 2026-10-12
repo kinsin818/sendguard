@@ -794,7 +794,7 @@ fn main() {
     putb(&mut f, "primary", a.flag("primary"));
     puti(&mut f, "attempt", a.num("attempt").unwrap_or(1));
     puts(&mut f, "harness_version", &a.get("harness"));
-    puts(&mut f, "worker_id", &a.get("worker"));
+    puts(&mut f, "implementation_id", &a.get("worker"));
     puts(&mut f, "started_at", &a.get("started-at"));
     puts(&mut f, "spec_sha256", &a.get("spec-sha256"));
     puts(&mut f, "spec_sha256_worktree", &a.get("spec-sha256-worktree"));

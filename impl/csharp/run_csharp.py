@@ -42,7 +42,7 @@ SCRATCH_ROOT = r"D:\sg-cs-scratch\cells"
 REPORT_DIR = r"D:\sg-cs-scratch\reports"
 TIMEOUT_S = 5.0
 HARNESS_VERSION = "csharp-s02-5-rev7"
-WORKER_ID = "seat-qoder/csharp-port"
+IMPLEMENTATION_ID = "csharp-port"
 LANG = "csharp"
 OS = "windows"
 LENGTH_UNIT = "utf16_code_units"      # rev3: the unit this port measures lengths in
@@ -443,7 +443,7 @@ def build_cell(kind, spec, cases, blind, env, ctx):
     cell["read_result"] = None
     cell["os_legality_verdict"] = "unknown"
     cell["harness_version"] = HARNESS_VERSION
-    cell["worker_id"] = WORKER_ID
+    cell["implementation_id"] = IMPLEMENTATION_ID
     cell["started_at"] = meta["started_at"]
     cell["elapsed_ms"] = elapsed
     cell["cell_dir_hex"] = utf8hex(cdir)

@@ -33,7 +33,7 @@ import time
 import uuid
 
 HARNESS_VERSION = "0.2.0-s02"
-WORKER_ID = "W-PY"
+IMPLEMENTATION_ID = "python-port"
 PAYLOAD = b"SENDGUARD-CANON-PAYLOAD-2026"  # 28 bytes; MUST match node S00 baseline
 PROBE_TIMEOUT_S = 5
 PY = sys.executable
@@ -432,7 +432,7 @@ def measure_cell(case_id, group, name_hex, category, locale, entry=PRIMARY_ENTRY
         "control_pass": True,
         "instrument_red": bool(truth_rows is None),
         "harness_version": HARNESS_VERSION,
-        "worker_id": WORKER_ID,
+        "implementation_id": IMPLEMENTATION_ID,
         "started_at": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
         "elapsed_ms": elapsed_ms,
         "deps_direct": 0,
@@ -492,7 +492,7 @@ def run_controls():
         "control_expected": "node baseline sha c9fe45...",
         "bytes_written": len(PAYLOAD), "bytes_on_disk": len(PAYLOAD),
         "roundtrip_ok": True, "mechanism_class": "unknown",
-        "worker_id": WORKER_ID, "deps_direct": 0, "deps_total": 0,
+        "implementation_id": IMPLEMENTATION_ID, "deps_direct": 0, "deps_total": 0,
     }
     cells.append(canon); extras.append({"run_dir": str(canon_dir), "read_detail": {}})
     return cells, extras
@@ -549,7 +549,7 @@ def _len_cell(cid, kind, boundary, path_form, mech, base):
         "longpath_mechanism": mech, "create_result": "ok", "error_stage": "null",
         "read_result": "ok", "os_legality_verdict": "legal",
         "harness_version": HARNESS_VERSION, "started_at": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
-        "elapsed_ms": 0, "worker_id": WORKER_ID, "deps_direct": 0, "deps_total": 0,
+        "elapsed_ms": 0, "implementation_id": IMPLEMENTATION_ID, "deps_direct": 0, "deps_total": 0,
         "len_kind": kind, "boundary_component_len": boundary,
         "base_len": len(str(base)), "control_pass": True,
         "mechanism_class": "component_length_limit",
@@ -641,7 +641,7 @@ def main():
             p = RESULTS / "python" / "api" / (c["case_id"].replace("@", "__") + ".json")
             p.write_text(json.dumps(c, indent=2, ensure_ascii=True), encoding="utf-8", newline="\n")
         (RESULTS / "python" / "api-entry.windows.json").write_text(
-            json.dumps({"meta": {"harness_version": HARNESS_VERSION, "worker_id": WORKER_ID,
+            json.dumps({"meta": {"harness_version": HARNESS_VERSION, "implementation_id": IMPLEMENTATION_ID,
                                  "case_group": "tapi", "entries": PY_ENTRIES},
                         "cells": api_cells}, indent=2, ensure_ascii=True),
             encoding="utf-8", newline="\n")
@@ -651,7 +651,7 @@ def main():
     for cell, extra in zip(cells, extras):
         p = RESULTS / "python" / "windows" / ("%s.json" % cell["case_id"])
         p.write_text(json.dumps(cell, indent=2, ensure_ascii=True), encoding="utf-8", newline="\n")
-    bundle = {"meta": {"harness_version": HARNESS_VERSION, "worker_id": WORKER_ID,
+    bundle = {"meta": {"harness_version": HARNESS_VERSION, "implementation_id": IMPLEMENTATION_ID,
                        "language": "python", "os": "windows", "python": PY,
                        "python_version": ver, "started_at": time.strftime("%Y-%m-%dT%H:%M:%S%z")},
               "cells": cells}

@@ -31,7 +31,6 @@
  "name_encoding": "hex_raw_bytes",
  "mechanism_class": "component_length_limit",
  "harness_version": "sg-python-s02-rederive-1",
- "worker_id": "seat-qoder-python-port",
  "spec_sha256": "a7f9a57df1b4d39a19421a54d175e87793100ce3393e363622ca59816e19148b",
  "spec_face": "git cat-file blob HEAD:spec/cases.yaml rc=0 bytes=8075",
  "env": {
@@ -186,9 +185,12 @@
  "verdict_via_detail": "kernel32.GetFileAttributesW via ctypes, extended prefix, parser bypassed",
  "instrument_base_noncompliant": "this cell's base directory was built under D:\\g, a directory created at a drive root; spec/cell-identity.md section 6 (rev3) forbids that and states the shortest legal base measured is ~78. The measurement stands as recorded, the reachability method does not comply with the sentence added after it was taken.",
  "rev3_migrated": true,
- "rev3_migration_notes": [],
+ "rev3_migration_notes": [
+  "producer key renamed from the retired name under SG-F8; the measurement is unchanged and the superseded value is not carried forward because it identified a seat, not a lane"
+ ],
  "extra": true,
  "run_status": "measured",
  "migrated_under_spec_sha256": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261",
- "migrated_under_spec_face": "git cat-file blob HEAD:spec/cases.yaml rc=0 bytes=11347"
+ "migrated_under_spec_face": "git cat-file blob HEAD:spec/cases.yaml rc=0 bytes=11347",
+ "implementation_id": "python-port"
 }

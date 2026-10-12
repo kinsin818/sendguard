@@ -345,7 +345,7 @@ def green_cell(**over):
         "verdict_via": "win32",
         "create_result": "ok", "error_stage": "null", "read_result": "ok",
         "os_legality_verdict": "legal", "mechanism_class": "unknown",
-        "attribution_layer": "L1", "harness_version": "test", "worker_id": "test",
+        "attribution_layer": "L1", "harness_version": "test", "implementation_id": "python-port",
         "started_at": "2026-10-11T00:00:00+0800", "elapsed_ms": 1,
         "spec_sha256": "0" * 64, "probe_timeout_s": 5.0,
         "child_spawn_form": "argv list, shell=False, timeout=5.0",

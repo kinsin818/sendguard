@@ -21,7 +21,7 @@
   "create_result": "ok",
   "deps_direct": 0,
   "deps_total": 0,
-  "elapsed_ms": 447,
+  "elapsed_ms": 446,
   "entry_spread": [
     {
       "api_entry": "writeFileSync",
@@ -37,7 +37,7 @@
       "path_form": "extended",
       "probe_exit_rc": 0,
       "probe_signal": null,
-      "probe_wall_ms": 144,
+      "probe_wall_ms": 140,
       "probes": 9,
       "role": "spread",
       "total_path_at_last_ok": 376
@@ -56,7 +56,7 @@
       "path_form": "plain",
       "probe_exit_rc": 0,
       "probe_signal": null,
-      "probe_wall_ms": 154,
+      "probe_wall_ms": 149,
       "probes": 9,
       "role": "spread",
       "total_path_at_last_ok": 376
@@ -100,6 +100,7 @@
   "error_winerror": null,
   "format_version": 1,
   "harness_version": "sg-ts-1.0.0",
+  "implementation_id": "typescript-port",
   "in_cells_required": true,
   "instrument_conflict": false,
   "instrument_red": false,
@@ -186,7 +187,7 @@
     "scratch_carrier": {
       "drive": "S:",
       "mapped": true,
-      "note": "S: was already mapped by an earlier run in this session",
+      "note": "mapped S: -> D:\\sendguard-work\\seat-qoder\\.sgscratch for this run; the port removes nothing (M19)",
       "target": "D:\\sendguard-work\\seat-qoder\\.sgscratch"
     },
     "spec_sha256": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261",
@@ -195,7 +196,7 @@
       "spec/canonical.md": "f3fe3122c131649d5df81d6c5331d0224dc270065f8ff46dd328d465324e6e69",
       "spec/cases.yaml": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261",
       "spec/cell-identity.md": "5c87c7c66cfe828ea304a6aa16d28d492cf36bf77d520bde293ba213955b10b7",
-      "spec/schema.json": "52abbc86c8899f41e1889e71d35cdf73bd363204274e862bf6bcb2ab9f761435"
+      "spec/schema.json": "c1a5097ce4a7e63c21aa1e24e7c89d0c20824cf6f1b814eba2482d06a7c419f7"
     },
     "volume_component_limit": 255
   },
@@ -228,7 +229,7 @@
         "stderr_tail": null,
         "tag": "g",
         "timed_out": false,
-        "wall_ms": 149
+        "wall_ms": 157
       },
       {
         "api_entry": "writeFileSync",
@@ -241,7 +242,7 @@
         "stderr_tail": null,
         "tag": "b",
         "timed_out": false,
-        "wall_ms": 144
+        "wall_ms": 140
       },
       {
         "api_entry": "writeFileSync",
@@ -254,7 +255,7 @@
         "stderr_tail": null,
         "tag": "bx",
         "timed_out": false,
-        "wall_ms": 154
+        "wall_ms": 149
       }
     ],
     "node_version": "v24.15.0"
@@ -264,16 +265,16 @@
   "roundtrip_ok": true,
   "rung_bracket_kept_in_len_ceiling": true,
   "scratch": {
-    "cell_root": "S:\\716b368",
-    "cell_root_real": "D:\\sendguard-work\\seat-qoder\\.sgscratch\\716b368",
+    "cell_root": "S:\\83b7592",
+    "cell_root_real": "D:\\sendguard-work\\seat-qoder\\.sgscratch\\83b7592",
     "cleanup": "not attempted by the port (M19 forbids deletion logic in this port); the path is recorded for the operator",
     "verified_empty_before_use": true
   },
-  "sha256_self": "5de71922480a24a2862b0c555aaff7799f57140419067cd5ed6fcfab4bafb143",
+  "sha256_self": "dbe823908b39d0c2dca1fa9f65fa99ee1c82a814e36e708279cea5434dc45844",
   "sha256_truth": "c9fe45b2fee8ea846f0cf4f2cacc2a891e7b082e7719923502d12a9813e21994",
   "spec_sha256": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261",
   "spec_sha256_basis": "git cat-file blob HEAD:spec/cases.yaml, hashed (committed blob face, not the disk file)",
-  "started_at": "2026-10-11T03:53:25.248Z",
+  "started_at": "2026-10-12T07:45:52.915Z",
   "status": "measured",
   "sub_identity": {
     "base_len": 120,
@@ -281,6 +282,5 @@
   },
   "tier": "len_fill",
   "total_path_len": 241,
-  "verdict_via": "none",
-  "worker_id": "seat-qoder-typescript"
+  "verdict_via": "none"
 }

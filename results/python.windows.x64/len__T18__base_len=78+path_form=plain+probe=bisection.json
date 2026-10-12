@@ -35,7 +35,6 @@
  "mechanism_class": "component_length_limit",
  "harness_version": "sg-python-s02-rederive-1",
  "contract_rev_seen": "rev4 (298d6e4: rulers aligned, read_result not_applicable, gate honours declared sub_identity and excludes extra cells)",
- "worker_id": "seat-qoder-python-port",
  "spec_sha256": "a7f9a57df1b4d39a19421a54d175e87793100ce3393e363622ca59816e19148b",
  "spec_face": "git cat-file blob HEAD:spec/cases.yaml rc=0 bytes=8075",
  "env": {
@@ -370,9 +369,12 @@
   "spec_source": "opposite-face companion (extra cell)"
  },
  "rev3_migrated": true,
- "rev3_migration_notes": [],
+ "rev3_migration_notes": [
+  "producer key renamed from the retired name under SG-F8; the measurement is unchanged and the superseded value is not carried forward because it identified a seat, not a lane"
+ ],
  "extra": true,
  "run_status": "measured",
  "migrated_under_spec_sha256": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261",
- "migrated_under_spec_face": "git cat-file blob HEAD:spec/cases.yaml rc=0 bytes=11347"
+ "migrated_under_spec_face": "git cat-file blob HEAD:spec/cases.yaml rc=0 bytes=11347",
+ "implementation_id": "python-port"
 }

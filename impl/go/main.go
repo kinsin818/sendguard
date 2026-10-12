@@ -1,4 +1,4 @@
-// SENDGUARD W-GO worker (impl/go). Independent implementation per M3.
+// SENDGUARD go-port implementation (impl/go). Independent implementation per M3.
 // Contract: spec/cases.yaml + schema.json + canonical.md + gate.md (frozen at S01).
 // Red lines honored here: M1 path_view+dir_view dual record; M2 no exists()/no
 // return-code-only verdicts; M15 cell=(lang x api_entry x trap); M16 errno raw;
@@ -25,11 +25,11 @@ import (
 )
 
 const (
-	payloadCanon  = "SENDGUARD-CANON-PAYLOAD-2026"
-	baselineCanon = "c9fe45b2fee8ea846f0cf4f2cacc2a891e7b082e7719923502d12a9813e21994"
-	workerID      = "W-GO/qianwen"
-	selfExeKey    = "--sendguard-self"
-	perActionTO   = 5 * time.Second
+	payloadCanon     = "SENDGUARD-CANON-PAYLOAD-2026"
+	baselineCanon    = "c9fe45b2fee8ea846f0cf4f2cacc2a891e7b082e7719923502d12a9813e21994"
+	implementationID = "go-port"
+	selfExeKey       = "--sendguard-self"
+	perActionTO      = 5 * time.Second
 )
 
 type Case struct {
@@ -63,49 +63,49 @@ type member struct {
 }
 
 type cellOut struct {
-	FormatVersion int            `json:"format_version"`
-	CaseID        string         `json:"case_id"`
-	CaseGroup     string         `json:"case_group"`
-	Language      string         `json:"language"`
-	OS            string         `json:"os"`
-	OSVersion     string         `json:"os_version"`
-	Arch          string         `json:"arch"`
-	Locale        string         `json:"locale"`
-	APIEntry      string         `json:"api_entry"`
-	Attempt       int            `json:"attempt"`
-	NameSource    string         `json:"name_source"`
-	NameEncoding  string         `json:"name_encoding"`
-	PathForm      string         `json:"path_form"`
-	LongpathMech  string         `json:"longpath_mechanism"`
-	CreateResult  string         `json:"create_result"`
-	ErrorStage    string         `json:"error_stage"`
-	ErrorCode     string         `json:"error_code"`
-	ErrorMessage  string         `json:"error_message"`
-	BytesWritten  *int64         `json:"bytes_written"`
-	BytesOnDisk   *int64         `json:"bytes_on_disk"`
-	ReadResult    string         `json:"read_result"`
-	ReadErr       string         `json:"read_error,omitempty"`
-	ReadBytes     *int64         `json:"read_bytes,omitempty"`
-	RoundtripOK   *bool          `json:"roundtrip_ok,omitempty"`
-	EnumToStat    bool           `json:"enum_to_stat_agrees"`
-	EnumAPIEntry  string         `json:"enum_api_entry"`
-	OSLegality    string         `json:"os_legality_verdict"`
-	Mechanism     string         `json:"mechanism_class"`
-	WorkerID      string         `json:"worker_id"`
-	HarnessVer    string         `json:"harness_version"`
-	SelfSHA       string         `json:"sha256_self,omitempty"`
-	StartedAt     string         `json:"started_at"`
-	ElapsedMS     int64          `json:"elapsed_ms"`
-	Env           map[string]any `json:"env"`
-	Notes         []string       `json:"notes,omitempty"`
-	Members       []member       `json:"members,omitempty"`
-	RootLen       int            `json:"root_len_units"`
-	BaseUnits     *int           `json:"base_units,omitempty"`
-	CompUnits     *int           `json:"comp_units,omitempty"`
-	SpecDefect    bool           `json:"spec_defect"`
-	DefectNote    string         `json:"spec_defect_note,omitempty"`
-	ControlPass   bool           `json:"control_pass"`
-	InstrumentRed bool           `json:"instrument_red"`
+	FormatVersion    int            `json:"format_version"`
+	CaseID           string         `json:"case_id"`
+	CaseGroup        string         `json:"case_group"`
+	Language         string         `json:"language"`
+	OS               string         `json:"os"`
+	OSVersion        string         `json:"os_version"`
+	Arch             string         `json:"arch"`
+	Locale           string         `json:"locale"`
+	APIEntry         string         `json:"api_entry"`
+	Attempt          int            `json:"attempt"`
+	NameSource       string         `json:"name_source"`
+	NameEncoding     string         `json:"name_encoding"`
+	PathForm         string         `json:"path_form"`
+	LongpathMech     string         `json:"longpath_mechanism"`
+	CreateResult     string         `json:"create_result"`
+	ErrorStage       string         `json:"error_stage"`
+	ErrorCode        string         `json:"error_code"`
+	ErrorMessage     string         `json:"error_message"`
+	BytesWritten     *int64         `json:"bytes_written"`
+	BytesOnDisk      *int64         `json:"bytes_on_disk"`
+	ReadResult       string         `json:"read_result"`
+	ReadErr          string         `json:"read_error,omitempty"`
+	ReadBytes        *int64         `json:"read_bytes,omitempty"`
+	RoundtripOK      *bool          `json:"roundtrip_ok,omitempty"`
+	EnumToStat       bool           `json:"enum_to_stat_agrees"`
+	EnumAPIEntry     string         `json:"enum_api_entry"`
+	OSLegality       string         `json:"os_legality_verdict"`
+	Mechanism        string         `json:"mechanism_class"`
+	ImplementationID string         `json:"implementation_id"`
+	HarnessVer       string         `json:"harness_version"`
+	SelfSHA          string         `json:"sha256_self,omitempty"`
+	StartedAt        string         `json:"started_at"`
+	ElapsedMS        int64          `json:"elapsed_ms"`
+	Env              map[string]any `json:"env"`
+	Notes            []string       `json:"notes,omitempty"`
+	Members          []member       `json:"members,omitempty"`
+	RootLen          int            `json:"root_len_units"`
+	BaseUnits        *int           `json:"base_units,omitempty"`
+	CompUnits        *int           `json:"comp_units,omitempty"`
+	SpecDefect       bool           `json:"spec_defect"`
+	DefectNote       string         `json:"spec_defect_note,omitempty"`
+	ControlPass      bool           `json:"control_pass"`
+	InstrumentRed    bool           `json:"instrument_red"`
 }
 
 func sha(b []byte) string { h := sha256.Sum256(b); return hex.EncodeToString(h[:]) }
@@ -166,7 +166,7 @@ func loadCases() ([]Case, []string, []string, error) {
 				cases[cur].Defect += "sample_hex not valid hex; "
 			}
 		case strings.HasPrefix(t, "      - \"") && cur >= 0:
-			// ORDER FIX (W-GO blocker): strip the trailing comment FIRST, then
+			// ORDER FIX (go-port blocker): strip the trailing comment FIRST, then
 			// trim quotes. The old order trimmed quotes while the comment was
 			// still attached (nothing to trim at the end), leaving a dangling
 			// `"` after the comment cut -> hex.DecodeString failed -> raw hex
@@ -217,7 +217,7 @@ func verifyFrozen() error {
 		}
 		got := sha(b)
 		if got != want {
-			// Known freeze-recording bug (W-GO blocker #1): FROZEN.md recorded the
+			// Known freeze-recording bug (go-port blocker #1): FROZEN.md recorded the
 			// file's INNER sha256_self field for blind-map.json instead of the
 			// whole-file hash. Accept ONLY if (a) the file's own sha256_self field
 			// equals the frozen value AND (b) git HEAD content == worktree content.
@@ -259,7 +259,7 @@ func runCell(caseID, group, entry, scratch, hexName string, payload []byte, defe
 		PathForm: "plain", LongpathMech: "none",
 		ErrorStage: "null", ReadResult: "eof",
 		EnumAPIEntry: "os.ReadDir", Mechanism: categoryToMech(category),
-		WorkerID: workerID, StartedAt: started,
+		ImplementationID: implementationID, StartedAt: started,
 		Env: map[string]any{"LongPathsEnabled": nil, "dot3name": nil,
 			"max_component": nil, "unicode_version": "unavailable-no-api",
 			"toolchain": runtime.Version()},
@@ -546,7 +546,7 @@ func ctrlCell(id, name string) cellOut {
 		Attempt: 1, NameSource: hexOf(name), NameEncoding: "utf8_bytes",
 		PathForm: "plain", LongpathMech: "none", ErrorStage: "null",
 		ReadResult: "eof", EnumAPIEntry: "os.ReadDir", Mechanism: "control",
-		WorkerID: workerID, StartedAt: started,
+		ImplementationID: implementationID, StartedAt: started,
 		Env:     map[string]any{"LongPathsEnabled": nil, "toolchain": runtime.Version()},
 		RootLen: len([]rune(filepath.Join(repo, "evidence", "S02", "ctrl-go")))}
 	d := filepath.Join(repo, "evidence", "S02", "ctrl-go")
@@ -712,7 +712,7 @@ func writeHangCell(caseID, group, entry, hexName, defect string) {
 		APIEntry: entry, Attempt: 1, NameSource: hexName, NameEncoding: "utf8_bytes",
 		PathForm: "plain", LongpathMech: "none", CreateResult: "hang",
 		ErrorStage: "null", ReadResult: "hang", EnumAPIEntry: "os.ReadDir",
-		Mechanism: "unknown", WorkerID: workerID,
+		Mechanism: "unknown", ImplementationID: implementationID,
 		HarnessVer: "runner-v1", StartedAt: time.Now().UTC().Format(time.RFC3339Nano),
 		Env:     map[string]any{"toolchain": runtime.Version()},
 		RootLen: len([]rune(repo)), SpecDefect: defect != "", DefectNote: defect,
@@ -820,7 +820,7 @@ func runCellMulti(caseID, group, entry, scratch string, hexList []string, payloa
 		APIEntry: entry, Attempt: 1, NameEncoding: "utf8_bytes",
 		PathForm: defaultForm(form), LongpathMech: probeLongpathMech(filepath.Dir(scratch)),
 		ErrorStage: "null", ReadResult: "eof", EnumAPIEntry: "os.ReadDir",
-		Mechanism: mech, WorkerID: workerID, HarnessVer: "runner-v1", StartedAt: started,
+		Mechanism: mech, ImplementationID: implementationID, HarnessVer: "runner-v1", StartedAt: started,
 		Env: map[string]any{"LongPathsEnabled": longPaths(), "dot3name": nil,
 			"max_component": nil, "unicode_version": "unavailable-no-api",
 			"toolchain": runtime.Version()},
@@ -1028,7 +1028,7 @@ func buildCell(caseID, group, entry, scratch, hexName string, payload []byte, de
 		APIEntry: entry, Attempt: 1, NameSource: hexName, NameEncoding: "utf8_bytes",
 		PathForm: defaultForm(form), ErrorStage: "null",
 		ReadResult: "eof", EnumAPIEntry: "os.ReadDir",
-		Mechanism: "component_length_limit", WorkerID: workerID,
+		Mechanism: "component_length_limit", ImplementationID: implementationID,
 		HarnessVer: "runner-v1", StartedAt: started,
 		Env: map[string]any{"LongPathsEnabled": longPaths(), "dot3name": nil,
 			"max_component": nil, "unicode_version": "unavailable-no-api",
@@ -1211,7 +1211,7 @@ func runAll(group, only string) {
 			onlySet[strings.TrimSpace(id)] = true
 		}
 	}
-	fmt.Println("W-GO runner start; toolchain=" + runtime.Version() + " arch=" + runtime.GOARCH)
+	fmt.Println("go-port runner start; toolchain=" + runtime.Version() + " arch=" + runtime.GOARCH)
 	if err := verifyFrozen(); err != nil {
 		fmt.Println("HARD STOP: " + ascii(err.Error()))
 		os.Exit(1)
@@ -1251,7 +1251,7 @@ func runAll(group, only string) {
 		}
 	}
 	runLenGrids()
-	fmt.Println("W-GO run complete; cells in results/go.windows." + runtime.Version() + "/")
+	fmt.Println("go-port run complete; cells in results/go.windows." + runtime.Version() + "/")
 	fmt.Println("NEXT: python spec/validate.py results/go.windows." + runtime.Version())
 }
 
@@ -1266,13 +1266,13 @@ func runZipCell(c *Case) {
 		NameSource: hexOf("zip-roundtrip.zip"), NameEncoding: "utf8_bytes",
 		PathForm: "plain", LongpathMech: "none", ErrorStage: "null",
 		ReadResult: "eof", EnumAPIEntry: "archive/zip (reader)",
-		Mechanism: "zip_roundtrip", WorkerID: workerID, StartedAt: started,
+		Mechanism: "zip_roundtrip", ImplementationID: implementationID, StartedAt: started,
 		Env:     map[string]any{"LongPathsEnabled": longPaths(), "toolchain": runtime.Version()},
 		RootLen: len([]rune(scratch)), ControlPass: true}
 	out.OSLegality = "legal" // zip container created; per-entry legality is N/A (container-level op)
 	// NOTE: frozen sample_hex names the ARCHIVE; the member entry names below are
-	// worker-selected (recorded as deviation) because bit-11 can only be observed
-	// with non-ASCII members. dev: entry-name choice is not worker-self-selection
+	// lane-selected (recorded as deviation) because bit-11 can only be observed
+	// with non-ASCII members. dev: entry-name choice is not lane-self-selection
 	// of cases; it is the protocol payload.
 	type want struct{ name string }
 	wants := []want{{"ascii-e.txt"}, {"café.txt"}, {"café.txt"}, {"e-😀.txt"}}
@@ -1325,7 +1325,7 @@ func runZipCell(c *Case) {
 			out.RoundtripOK = &eq
 			out.SelfSHA = sha(buf.Bytes()) // sha256 of the archive on disk
 			out.Notes = append(out.Notes, "bit11 per entry: "+strings.Join(flags, " ; "))
-			out.Notes = append(out.Notes, "entry-name choice is worker-recorded deviation (archive name is the frozen sample)")
+			out.Notes = append(out.Notes, "entry-name choice is lane-recorded deviation (archive name is the frozen sample)")
 		}
 	}
 	d := filepath.Join(repo, "results", "go.windows."+runtime.Version())

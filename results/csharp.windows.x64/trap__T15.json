@@ -11,8 +11,8 @@
   "bytes_written": null,
   "case_group": "trap",
   "case_id": "T15",
-  "cell_dir_hex": "443a5c73672d63732d736372617463685c63656c6c735c63666136643033303362656235",
-  "child_elapsed_ms": 25,
+  "cell_dir_hex": "443a5c73672d63732d736372617463685c63656c6c735c63323832316333366661616433",
+  "child_elapsed_ms": 24,
   "control_pass": true,
   "control_stamp_ref": "D:\\sg-cs-scratch\\controls-green.json",
   "create_result": "err_at_syscall",
@@ -42,7 +42,7 @@
     }
   ],
   "dir_view_error": null,
-  "elapsed_ms": 88,
+  "elapsed_ms": 87,
   "enum_to_stat_agrees": true,
   "env": {
     "LongPathsEnabled": 0,
@@ -57,11 +57,12 @@
     "unicode_version": "not-obtainable-here"
   },
   "error_code": "winerror=123",
-  "error_message": "IOException: \u6587\u4ef6\u540d\u3001\u76ee\u5f55\u540d\u6216\u5377\u6807\u8bed\u6cd5\u4e0d\u6b63\u786e\u3002 : '<HEX:443a5c73672d63732d736372617463685c63656c6c735c63666136643033303362656235>\\<HEX:6374726c2d012e747874>'",
+  "error_message": "IOException: \u6587\u4ef6\u540d\u3001\u76ee\u5f55\u540d\u6216\u5377\u6807\u8bed\u6cd5\u4e0d\u6b63\u786e\u3002 : '<HEX:443a5c73672d63732d736372617463685c63656c6c735c63323832316333366661616433>\\<HEX:6374726c2d012e747874>'",
   "error_stage": "syscall",
   "extra": false,
   "format_version": 1,
   "harness_version": "csharp-s02-5-rev7",
+  "implementation_id": "csharp-port",
   "in_required_list": true,
   "instrument_conflict": false,
   "instrument_red": false,
@@ -116,15 +117,14 @@
   "roundtrip_basis": "no successful roundtrip: nothing was read back that matches what was written",
   "roundtrip_ok": false,
   "run_status": "ran",
-  "scratch_uuid_tag": "cfa6d0303beb5",
+  "scratch_uuid_tag": "c2821c36faad3",
   "sha256_self": "c9fe45b2fee8ea846f0cf4f2cacc2a891e7b082e7719923502d12a9813e21994",
   "sha256_truth": null,
   "spec_sha256": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261",
-  "started_at": "2026-10-11T01:04:35.286Z",
+  "started_at": "2026-10-12T07:50:39.515Z",
   "sub_identity": {},
-  "target_dir_hex": "443a5c73672d63732d736372617463685c63656c6c735c63666136643033303362656235",
+  "target_dir_hex": "443a5c73672d63732d736372617463685c63656c6c735c63323832316333366661616433",
   "unaccounted_entries": [],
   "verdict_via": "win32",
-  "verdict_via_method": "kernel32.CreateFileW(\\\\?\\ + dwDesiredAccess=0 + CREATE_NEW) via P/Invoke",
-  "worker_id": "seat-qoder/csharp-port"
+  "verdict_via_method": "kernel32.CreateFileW(\\\\?\\ + dwDesiredAccess=0 + CREATE_NEW) via P/Invoke"
 }

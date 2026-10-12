@@ -1,6 +1,6 @@
 # Status - the numbers, generated
 
-From `evidence/S02/equality-verdict.json`, written by `ci/equality.py` at 2026-10-12T10:51:09+0800; this file is written by `ci/status_brief.py` at 2026-10-12T10:51:10+0800. Any other document quoting these counts is stale by construction - re-run the two commands instead of trusting the prose.
+From `evidence/S02/equality-verdict.json`, written by `ci/equality.py` at 2026-10-12T10:55:46+0800; this file is written by `ci/status_brief.py` at 2026-10-12T10:55:48+0800. Any other document quoting these counts is stale by construction - re-run the two commands instead of trusting the prose.
 
 | quantity | value |
 |---|---|

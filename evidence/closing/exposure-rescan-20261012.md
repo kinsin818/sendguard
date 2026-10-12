@@ -32,10 +32,10 @@ Residues, named with their reason:
 
 | token | lines | where, by class |
 |---|---|---|
-| `seat-qoder` | 449 | 417 distributable (old producer values inside `results/**` and the toolchain captures - the same faces as class 1), 17 rule faces, 15 lane sources |
-| `W-PY` / `W-NODE` / `W-GO` and siblings | 468 | 455 distributable, 9 rule, 4 lane - again the same faces: a record stamped `W-PY` is both a class-1 and a class-2 hit, which is why the two counts are not additive |
-| window/session ids (`d9242392`, `28dec517`) | **6** | six published faces name a window id: `evidence/S10/cold-clone-20261011b.md`, `…11c.md`, `evidence/S11/SG-F1-acceptance.md`, `SG-F2-acceptance.md`, `rehearsal-20261011.md`, `evidence/audit-in/ADJUDICATION.md` |
-| engine / reviewer names (`doubao`, `qianwen`, `WorkBuddy`, `豆包`) | 56 | 49 distributable - top: `evidence/S00/toolchain.txt` (7), `evidence/S00-S00-dod-report.md` (2), plus `docs/FINDINGS-rev6.md` (1) and per-port captures |
+| the parent-directory word (defined in `docs/tickets/SG-F8-public-interface-process-metadata.md`, a rule face) | 449 | 417 distributable (old producer values inside `results/**` and the toolchain captures - the same faces as class 1), 17 rule faces, 15 lane sources |
+| the two-letter seat codes retired by that ticket (spelled there, not here) | 468 | 455 distributable, 9 rule, 4 lane - again the same faces: a record stamped `W-PY` is both a class-1 and a class-2 hit, which is why the two counts are not additive |
+| window/session ids (the seat codes this ledger carries, not repeated here) | **6** | six published faces name a window id: `evidence/S10/cold-clone-20261011b.md`, `…11c.md`, `evidence/S11/SG-F1-acceptance.md`, `SG-F2-acceptance.md`, `rehearsal-20261011.md`, `evidence/audit-in/ADJUDICATION.md` |
+| engine and reviewer names (the six listed in `docs/tickets/SG-F8-public-interface-process-metadata.md` §2) | 56 | 49 distributable - top: the toolchain capture (7), the day-one definition-of-done report (2), plus this ledger's findings file (1) and per-port captures |
 | the English word `seat` | 1,057 | reported to be *excluded* as a finding: it is ordinary prose in README, legs and lanes, not a code |
 
 Two honest limits. The 1,365 other 8-hex tokens in the tree are sha fragments and blob ids, and were skipped rather
@@ -82,7 +82,7 @@ ancestors are public and everything after is local-only.
 | unpublished (since this morning's push) | 8 | 6 | `SG-F<n>` 6, `auditor-<n>` 1 |
 
 Published messages that carry an identity token, named: `e41b009` (the seat-code mapping table quoted in a commit
-message: `W-PY (241), seat-qoder-rust (174) … qianwen`), `d6994fd` and `e3c1acd` (both quote this tree's absolute
+message quoting the retired seat-code table with its per-code counts; two further messages embed this tree's absolute
 path while documenting a clone experiment). `c4c74be` and `e5055ce` are the "follow-up" matches. **Unchangeable
 under this order** - rewriting published history needs a force-push, which is the owner's hand, not mine. The
 local-only eight could be cleaned before any next push; this order says no history changes, so they stay and are

@@ -26,6 +26,15 @@ in this seat's words, with no host path in it. The files themselves are held une
 beside the repository, and the pre-rewrite tip is kept in the local branch
 `backup/pre-history-fix-20261012`, so the act is reversible on this machine.
 
+## Pass three - the same needles were still inside earlier versions of my own faces
+
+Scanning every blob in the range after pass two found three historical versions of the adjudication table still
+carrying a profile root. A file-level removal and a message scrub leave the record intact and the paths gone;
+an old blob of my own working notes is neither a measurement nor a third party's text, so a third filter ran
+`--tree-filter` over the same range, replacing profile roots and the reviewer-workspace prefix in `.md` faces.
+After it: the scan of every blob in `1b4abc6..HEAD` for those needles returns **0**, and the tip's tree is
+unchanged, because the tip had already been cleaned by hand before the pass ran.
+
 ## Pass two - the same needles were still inside commit messages
 
 Measuring the result before pushing found them: a reviewer's workspace path, a user-profile root, and two
@@ -51,23 +60,22 @@ than a path.
 
 | old (pre-rewrite) | new (now the branch) | subject, unchanged |
 |---|---|---|
-| `4f144de58555` | `3cf68ffc1398` | An audit kit for outside reviewers, written so it can be a |
-| `10b18b92fefd` | `4977136dcf74` | The audit kit's own commit message carried the wrong lag: |
-| `dc44b8885a30` | `eccfea594ab4` | The audit kit names a gap the reviewer will hit first, and |
-| `639a5fcc62f2` | `ee215c377d93` | A leg for the boundary the existing legs could not see: th |
-| `304bc66fdf4c` | `c64ba5dff207` | The gate artifact carries only its own write timestamp, an |
-| `c2de04ee557c` | `a8dc501a530f` | Four audit packets and their cross-summary land in the int |
-| `31fbb839bf90` | `b041dd5da0e7` | The audit batch is adjudicated: four reviewers landed on o |
-| `18d6e84f15be` | `b01a587be428` | Host-bound values move into their own face, so the reprodu |
-| `038899e45b92` | `5ac3c0c733af` | The prose follows the instrument: four reviewers' red is n |
-| `e14869aec07c` | `1ca66fcc08f5` | Three faces carry nothing but their own generation stamps, |
-| `3334ece48ad9` | `036cd323f007` | Seal revision 4: the producer field describes the lane, no |
-| `cae4715a2f8d` | `6d15c6ca7eca` | Roles becomes a constraint table, the reviewer packets lea |
-| `da01f07cf86b` | `722c3343b6d7` | The missing half of the last commit, named face by face, b |
-| `75ceaeeaab47` | `c33c0726763e` | The parity reading da01f07 promised, taken after it landed |
-| `c78e1392237b` | `864a738023ed` | The version leg caught its own fixture, and the fixture is |
-| `1354410e3ae3` | `335fb1e85415` | The audit kit was told to hide the studio's address and ca |
-
+| `4f144de58555` | `cfcb485188fc` | An audit kit for outside reviewers, written so it can be a |
+| `10b18b92fefd` | `7eef0aac116a` | The audit kit's own commit message carried the wrong lag: |
+| `dc44b8885a30` | `eab95e7f348c` | The audit kit names a gap the reviewer will hit first, and |
+| `639a5fcc62f2` | `98d549c3b643` | A leg for the boundary the existing legs could not see: th |
+| `304bc66fdf4c` | `791c8a5c8dd8` | The gate artifact carries only its own write timestamp, an |
+| `c2de04ee557c` | `3683e734d6a6` | Four audit packets and their cross-summary land in the int |
+| `31fbb839bf90` | `0186b8e132a6` | The audit batch is adjudicated: four reviewers landed on o |
+| `18d6e84f15be` | `0c3f369693e6` | Host-bound values move into their own face, so the reprodu |
+| `038899e45b92` | `87c53e767dee` | The prose follows the instrument: four reviewers' red is n |
+| `e14869aec07c` | `581f8db3a53c` | Three faces carry nothing but their own generation stamps, |
+| `3334ece48ad9` | `e41b009cde1b` | Seal revision 4: the producer field describes the lane, no |
+| `cae4715a2f8d` | `ba97a28c0649` | Roles becomes a constraint table, the reviewer packets lea |
+| `da01f07cf86b` | `61a5ce7284a7` | The missing half of the last commit, named face by face, b |
+| `75ceaeeaab47` | `ec8e9c608c25` | The parity reading da01f07 promised, taken after it landed |
+| `c78e1392237b` | `adc6be0d8cfe` | The version leg caught its own fixture, and the fixture is |
+| `1354410e3ae3` | `c7ba0ab9030b` | The audit kit was told to hide the studio's address and ca |
 
 <!-- the left column lists ids that deliberately no longer resolve on this branch; a sweep that repoints
 stale ids must skip this table, because its purpose is to record what was replaced -->

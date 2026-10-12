@@ -115,6 +115,23 @@ jobs:
         shell: bash
         run: python ci/selftest.py --scratch-root "$RUNNER_TEMP/sg-selftest"
 
+      - name: Pre-flight arms (the commit-metadata ruler must be able to say yes and no)
+        shell: bash
+        run: |
+          python ci/face_preflight.py --selftest
+          python ci/process_leak_scan.py --selftest
+        # Deliberately NOT a whole-history message scan: the published segment is already recorded RED by
+        # evidence/S11/msg-scrub-20261012.md and cannot be rewritten under the standing order, so a history-wide
+        # leg here would be permanently red and would be ignored - which is how gates die. The enforcement point
+        # for a message is the moment it is written, which is ci/hooks/commit-msg.
+
+      - name: Commit-metadata pre-flight over the commits this push added
+        shell: bash
+        if: github.event_name == 'push'
+        run: |
+          python ci/face_preflight.py --messages "${{ github.event.before }}..${{ github.sha }}" || {
+            echo "OUTCOME=RED - these messages are now immutable; the record face must name them"; exit 1; }
+
       - name: CI lint with its own red/green arms
         shell: bash
         run: |

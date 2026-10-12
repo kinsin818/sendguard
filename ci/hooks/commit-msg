@@ -1,0 +1,21 @@
+#!/bin/sh
+# commit-msg hook: refuse metadata that cannot be edited after the push.
+#
+# The ruler is ci/face_preflight.py and nothing else - this file holds no patterns of its own, so the two-sided
+# arms that live with the ruler are the only definition of what a host path is. A hook that restates the rule
+# is a second ruler, and the second ruler is the one that drifts.
+#
+# Install (the repository cannot install it for you; .git/hooks is not a tracked face):
+#   cp ci/hooks/commit-msg .git/hooks/commit-msg && chmod +x .git/hooks/commit-msg
+# Verify it bites before trusting it - the two sides are pinned by arms M1/M4 (red) and M2/M3 (green) inside
+# ci/face_preflight.py --selftest, which is also what the CI job runs, so this file never spells a needle and
+# never claims a behaviour the ruler cannot demonstrate:
+#   python ci/face_preflight.py --selftest        -> arms=13 passed=13
+# Then try one real commit and watch the hook answer.
+#
+# Emergency: --no-verify exists on every git and this project's rule is that it is never used silently. If a
+# window does use it, the push-side CI leg over the added range still runs the same ruler, so the bypass is
+# detected one step later rather than never.
+set -e
+root=$(git rev-parse --show-toplevel)
+python "$root/ci/face_preflight.py" --message-file "$1"

@@ -19,6 +19,9 @@ sys.path.insert(0, HERE)
 import equality  # the same digest the gate uses, so the table cannot disagree with the gate
 
 
+
+VERSION_VALUE = (io.open(os.path.join(REPO, "VERSION"), encoding="utf-8").read().strip()
+               if os.path.isfile(os.path.join(REPO, "VERSION")) else "ABSENT")
 def run(*a):
     r = subprocess.run(list(a), cwd=REPO, capture_output=True, text=True,
                        encoding="utf-8", errors="replace", shell=False)
@@ -100,6 +103,7 @@ def main():
            "is necessarily newer, and the cells the table describes belong to the HEAD named here."
            % (head_full[:12], len(dirty.splitlines())),
            "- frozen spec `spec/cases.yaml` blob sha256: `%s`" % spec_digest,
+           "- deliverable version: %s (read from the `VERSION` file at generation time - the file is the only source, and `python ci/version_face.py` refuses the tree when any face quotes a different copy)." % VERSION_VALUE,
            "- equality verdict right now: **%s**" % verdict,
            "- gate self-test: **%s**" % st,
            "- faces on disk but not read (earlier revisions or other naming): %s" % (

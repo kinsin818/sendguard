@@ -49,7 +49,7 @@ difference between "nobody contradicted" and "everybody answered"; the blanks an
 are in [`docs/coverage.md`](docs/coverage.md)).
 
 The reproducibility promise was checked from a stranger's tree, not asserted: `--no-local` clone, clean
-status, every leg green inside the clone (self-test 21 arms, lint 24, cell conformance 24, spec-drift 15, delivery
+status, every leg green inside the clone (self-test 21 arms, lint 24, cell conformance 29, spec-drift 15, delivery
 form 18 - the earliest recorded run listed 18 lint arms because three legs did not exist yet), the eight
 published spec digests recomputed from the clone's own object store, and the gate's verdict identical to the
 author's tree. Twelve derived faces were then compared with the lines that are allowed to differ declared

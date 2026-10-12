@@ -63,3 +63,20 @@ every sentence containing `docs/tickets/` becomes a leak.
 ## Clock
 
 24 h from dispatch. Queue position: behind SG-F8's six-lane re-emit; it blocks nothing.
+
+## Erratum on the sentence "Nothing fatal moved"
+
+It was true under the needles the leg had at the time. Those needles could not match an escaped Windows path, so
+they were blind to the data faces; once `_escaped_forms()` went in, `LOGIN` read 15 -> 1111 and `HOSTROOT`
+13 -> 338 on the same tree. The `TOOLPATH` over-match this ticket is about is unaffected and still stands. See
+`docs/FINDINGS-rev6.md` M12(a) - and note that this ticket's own criterion 2 demanded both a firing arm and a
+non-firing arm, which is the habit that made the needle bug findable at all.
+
+## One more measured cost of the over-match
+
+`evidence/S11/readonly-tree-contamination-20261012.md` lists the 129 faces that session rewrote in the other
+checkout, by name, because a record that does not name its scope is not a record. The leg reads that face as
+**136 TOOLPATH lines** - every one of them a repo-relative path, none of them a host path, none of them fatal. A
+count that inflates by 136 because a face did its job is the clearest argument this ticket has: the class is named
+for absolute paths and measures path-shaped text, so it cannot be raised to fatal, and it should not be quoted as
+if it counted leaks.

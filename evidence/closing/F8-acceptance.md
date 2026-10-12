@@ -122,3 +122,18 @@ The effect is a measurement change, not a disclosure change: `LOGIN 15 -> 1111` 
 deliverable contained those paths this morning too; the leg could not see them. The published count understated
 the exposure by two orders of magnitude, and it is the second time this week a green leg was found to be reading
 a tree or a form it was not looking at.
+
+## Correction, appended after the same session's `SG-F15` landing
+
+The residue table above says `results/go.windows.go1.23.5/` holds 154 retired records and that the face cannot be
+re-emitted here because the lane's runner resolves its root to a different checkout. Both rows were true when
+written. `SG-F15` has now landed - the root is derived and the child inherits it - so that face has been
+re-emitted in **this** repository and the block is **29**, not 154: the records the current runner no longer
+produces under its rev3 identity spelling (`T09-m*/T14-m*/T19-m*`, member position folded into `case_id` by the
+contract). They are stale faces in a non-canonical directory, superseded by rev3 rather than mislabeled; the node
+lane's frozen face and the evidence captures are unchanged in count.
+
+Corrected readings at this tip, one command each: `RETIRED=458`, `IDENTITY=443`, `LOGIN=1111`, `HOSTROOT=389`,
+`files_scanned=1200`; and the gate's four readings unchanged at `54 / 24 of 44 / 4 / 121` with
+`verdict_pairs_recorded=2281/2640`, which is what this ticket was obliged not to move.
+

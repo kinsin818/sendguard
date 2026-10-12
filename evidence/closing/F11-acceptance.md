@@ -130,3 +130,11 @@ and `docs/tickets/SG-F13-pairing-rule-scope.md` now owns the widening with that 
 
 No bucket changed in the gate; no verdict-adjacent number moved; no generated face was hand-edited (the corrected
 sentences are authored in `ci/coverage_report.py`); nothing was deleted; `spec/` was not touched.
+
+## Erratum on the before/after leak table above
+
+The two rows were captured with needles that could not match an escaped Windows path, so the column headed `LOGIN`
+read 15 in both rows and the claim "no fatal class moved" was measured with a blind ruler. Re-measured after
+`_escaped_forms()` went into `ci/process_leak_scan.py`: `LOGIN 15 -> 1111`, `HOSTROOT 13 -> 338+` on the same
+content. What this ticket actually proved still stands - the four *verdict* readings did not move, and they are
+re-read by the gate itself, not by this face. See `docs/FINDINGS-rev6.md` M12(a).

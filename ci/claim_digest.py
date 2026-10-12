@@ -19,6 +19,12 @@ What it checks, and what it refuses to claim:
                      Excluded with the reason printed, because a gate that flags those lines is a gate that gets
                      ignored - and this repository has already been warned that a blanket clause reading its own
                      text is unsatisfiable.
+  - `pairing` (SG-F11, not a numbered claim but a property of a paragraph) - a number that is only true next to
+                     its qualifier must not be publishable without it. Every paragraph of every face this leg
+                     reads is checked; the classes it does not fatal on (`evidence/**` captured runs, and
+                     `docs/tickets/**`, where the ticket quoting a bare number is quoting the defect it names)
+                     are enumerated and their bare-pair count printed; and the faces it does not read at all are
+                     counted too, so the verdict line says which subset it is clean over.
   - Coverage is published, not assumed: every `arms=<N>` and every known-gate-key quote in the scanned faces is
     counted, and the ones the table does not reach are reported as `not_reached_by_table=` instead of passing
     quietly. A table with no coverage number is the same silence this project spent all day subtracting.
@@ -57,7 +63,7 @@ CLAIMS = [
     ("readme-arms-coverage", "README.md", r"runs its own (\d+) arms", "arms", "ci/coverage_report.py"),
     ("readme-arms-parity", "README.md", r"own arms are (\d+), both-sided", "arms", "ci/clone_parity.py"),
     ("readme-parity-faces", "README.md", r"faces_compared=(\d+)", "parity", "refresh_all.GEN"),
-    ("boundary-blank-rows", "docs/claim-boundary.md", r"(\d+) field-cells blank in at least one port",
+    ("boundary-blank-rows", "docs/claim-boundary.md", r"(\d+) \(cell, field\) pairs blank in at least one port",
      "gate", "verdict_not_recorded_pairs"),
     ("boundary-fully-recorded", "docs/claim-boundary.md", r"only (\d+) of the 24 have every one",
      "gate", "cells_fully_count"),
@@ -75,6 +81,54 @@ GATE_KEYS = ["verdict_disagreements", "verdict_not_recorded_pairs", "required_ce
              "cells_fully_recorded_and_identical",
              "cells_compared", "channel_abstentions", "probe_cells_differing", "truncated_values",
              "unpinned_input", "cells_excluded"]
+
+# SG-F11 criterion 3: a number that survives publication only while welded to its qualifier must not be
+# emittable bare. `verdict_identical_cells=24/44` counts cells where an abstention made a contradiction
+# impossible; the honest cell count is `cells_fully_recorded_and_identical`. The rule is mechanical and
+# paragraph-scoped, because that is where a reader meets the pair.
+#
+# (needle, qualifier, why the pairing is required)
+PAIR_RULES = [
+    ("verdict_identical_cells", "cells_fully_recorded_and_identical",
+     "it counts cells where an abstention made a contradiction impossible, so alone it is not a correctness "
+     "number"),
+]
+
+# Two face classes are named, counted and excluded rather than silently skipped, per this repository's rule
+# that an exclusion which prints no denominator is blind: `evidence/**` is a captured run and a capture is not
+# prose this seat may re-word, and `docs/tickets/**` is the text that *names* the defect, which would condemn
+# itself if policed by its own rule.
+EXCLUDED_DIRS = ["evidence", os.path.join("docs", "tickets")]
+EXCLUDED_DIRS_N = ["evidence", "docs/tickets"]  # the same two, in index form, for path comparison
+
+
+def excluded_faces():
+    """The two named excluded directories, enumerated rather than assumed empty, so the count is printed.
+
+    This walks the **working tree**, so a captured run that was never committed is still visible; the tracked
+    population is measured from the index by `tracked_md_faces()` and the difference between the two is printed,
+    because a directory that looks empty in the index can be full on disk.
+    """
+    out = []
+    for d in EXCLUDED_DIRS:
+        root = os.path.join(REPO, d)
+        if not os.path.isdir(root):
+            out.append((d, None))
+            continue
+        for dirpath, _dirs, files in os.walk(root):
+            for fn in files:
+                if fn.lower().endswith(".md"):
+                    out.append((os.path.relpath(os.path.join(dirpath, fn), REPO).replace(os.sep, "/"), True))
+    return [x[0] for x in out if x[1]], [x[0] for x in out if not x[1]]
+
+
+def classify_population(all_md, policed):
+    """Split the tracked markdown population three ways, disjointly, so 'clean' can name its own subset."""
+    pol = set(policed)
+    ex = [f for f in all_md if f not in pol and any(f == d or f.startswith(d + "/") for d in EXCLUDED_DIRS_N)]
+    exp = set(ex)
+    rest = [f for f in all_md if f not in pol and f not in exp]
+    return ex, rest
 
 
 def validate_scratch(raw):
@@ -141,6 +195,55 @@ def read_faces(faces):
             continue
         texts[face] = io.open(p, encoding="utf-8", newline="\n").read()
     return texts, missing
+
+
+def pair_violations(texts):
+    """Every occurrence of a paired needle must carry its qualifier in the same paragraph.
+
+    A paragraph here is a blank-line-delimited block of the markdown face, which is the unit a reader sees at
+    once. Returns one finding per offending block; the block index and total are printed because a finding that
+    cannot be located is not actionable.
+    """
+    out = []
+    for face in sorted(texts):
+        blocks = re.split(r"\n[ \t]*\n", texts[face])
+        for bi, block in enumerate(blocks):
+            for needle, qual, why in PAIR_RULES:
+                if needle in block and qual not in block:
+                    out.append("%s block %d/%d: `%s` is published without `%s` - %s (SG-F11)"
+                               % (face, bi + 1, len(blocks), needle, qual, why))
+    return out
+
+
+def excluded_pair_readings(texts):
+    """Count what the excluded class would have said, so an exclusion is a named blind spot and not a zero."""
+    faces = 0
+    hits = 0
+    for face in sorted(texts):
+        n = 0
+        for block in re.split(r"\n[ \t]*\n", texts[face]):
+            for needle, qual, _why in PAIR_RULES:
+                if needle in block and qual not in block:
+                    n += 1
+        if n:
+            faces += 1
+            hits += n
+    return faces, hits
+
+
+def tracked_md_faces():
+    """Every tracked markdown face, from the repository's own index.
+
+    `git ls-files` is asked in list form (a shell string would go through cmd.exe on this host and lose the
+    path), and a non-zero rc is an instrument problem rather than an empty population.
+    """
+    p = subprocess.run(["git", "ls-files", "-z", "--", "*.md"], cwd=REPO, capture_output=True,
+                       shell=False)
+    if p.returncode != 0:
+        return None, "git ls-files rc=%d: the face population cannot be measured, so neither can the " \
+                     "pairing rule's coverage" % p.returncode
+    names = [n.decode("utf-8", "replace").replace("\\", "/") for n in (p.stdout or b"").split(b"\0") if n]
+    return sorted(names), ""
 
 
 def check_claims(values, arms_cache, texts):
@@ -213,13 +316,17 @@ def quote_coverage(texts, spans):
     return hit, unreached, examples
 
 
-SELFTEST_ARMS = 6
-
-
 def selftest():
     errs = []
+    seen = []
 
     def chk(cond, msg):
+        m = re.match(r"selftest (A\d+)", msg)
+        if not m:
+            errs.append("unlabelled arm (a count that cannot be tied to a check is a made-up number): %s" % msg)
+            return
+        if m.group(1) not in seen:
+            seen.append(m.group(1))
         if not cond:
             errs.append(msg)
 
@@ -272,7 +379,51 @@ def selftest():
         "selftest A6 green: coverage counts every quote the face carries in either word order (`21 arms` and the "
         "two `key=` quotes) and must name the one no claim reaches, got total=%d unreached=%d" % (total,
                                                                                                   unreached))
-    return errs
+    needle = "verdict_identical_cells"
+    qual = "cells_fully_recorded_and_identical"
+    bare = "the verdict is right in `%s=24/44` cells." % needle
+    paired = "the verdict is right in `%s=24/44` cells, of which `%s=4` were answered by every port." % (
+        needle, qual)
+    split = "%s\n\nSome other paragraph.\n\n`%s=4` is mentioned two paragraphs away." % (bare, qual)
+    _r, _m = excluded_faces()
+    _rt, _rm2 = read_faces(_r)
+    chk(len(PAIR_RULES) >= 1 and not _m and len(_r) > 0 and not _rm2 and len(_rt) == len(_r),
+        "selftest A7 green: the pairing table must be a closed non-empty list, both excluded directories must "
+        "exist, and the excluded class must enumerate readable faces (an exclusion that matches nothing is a "
+        "rule nobody tested), got rules=%d excluded_faces=%d unreadable=%r missing_dirs=%r"
+        % (len(PAIR_RULES), len(_r), _rm2, _m))
+    f7 = pair_violations({"x.md": bare})
+    chk(len(f7) == 1 and qual in f7[0] and "block 1/1" in f7[0],
+        "selftest A8 red: a bare paired number planted in a face must be caught, named with its qualifier and "
+        "located by block, got %r" % (f7,))
+    chk(pair_violations({"x.md": paired}) == [],
+        "selftest A9 green: the same number carrying its qualifier in the same paragraph must not be reported, "
+        "got %r" % (pair_violations({"x.md": paired}),))
+    f10 = pair_violations({"x.md": split})
+    chk(len(f10) == 1,
+        "selftest A10 red: a qualifier parked in a different paragraph does not rescue the number - a reader "
+        "meets them apart, got %d findings for a two-block face %r" % (len(f10), f10))
+    faces11, hits11 = excluded_pair_readings({"x.md": bare, "y.md": paired, "z.md": "nothing here"})
+    chk(faces11 == 1 and hits11 == 1,
+        "selftest A11 red: the excluded face class must be counted, not dropped - a blind spot with no "
+        "denominator is how a rule becomes decorative, got faces=%d hits=%d" % (faces11, hits11))
+    all_md, why_md = tracked_md_faces()
+    pol = sorted(set(LIVE_FACES) | set(GENERATED_FACES))
+    exl, exd = excluded_faces()
+    ex_tracked, unp = classify_population(all_md, pol)
+    three = set(pol) | set(ex_tracked) | set(unp)
+    chk(why_md == "" and three == set(all_md) and len(pol) + len(ex_tracked) + len(unp) == len(three)
+        and set(pol) <= set(all_md) and not exd and unp and set(exl) >= set(ex_tracked),
+        "selftest A12 red: policed, named-excluded and unpoliced must be three disjoint sets whose union is "
+        "exactly the tracked markdown population, every policed face must be in the index, both excluded "
+        "directories must exist, and the unpoliced set must be non-empty (a rule that claims full coverage "
+        "without showing the remainder is the two-rulers defect) - got tracked=%d policed=%d excluded_tracked=%d "
+        "unpoliced=%d union=%d missing_dirs=%r walk=%d why=%r"
+        % (len(all_md), len(pol), len(ex_tracked), len(unp), len(three), exd, len(exl), why_md))
+    gap = [n for n in range(1, len(seen) + 1) if "A%d" % n not in seen]
+    chk(not gap, "selftest A13 red: the arm labels must be contiguous, or the printed count is a number nobody "
+                 "can audit; gap at %r of %r" % (gap, seen))
+    return errs, len(seen)
 
 
 def main(argv=None):
@@ -283,10 +434,10 @@ def main(argv=None):
                     help="skip running the suites; arm-count claims are then reported as unchecked")
     ns = ap.parse_args(argv)
     if ns.selftest:
-        errs = selftest()
+        errs, arms = selftest()
         for e in errs:
             print("SELFTEST-FAIL: %s" % e)
-        print("arms=%d passed=%d" % (SELFTEST_ARMS, SELFTEST_ARMS - len(errs)))
+        print("arms=%d passed=%d" % (arms, arms - len(errs)))
         return 1 if errs else 0
 
     scratch, why = validate_scratch(ns.scratch_root)
@@ -314,10 +465,49 @@ def main(argv=None):
     instrument += instr2
     total, unreached, examples = quote_coverage(texts, spans)
 
+    # SG-F11: the pairing rule is measured over the live prose faces *and* the generated faces, because the
+    # sentence that needed correcting lived in a generated face. Generated faces are not claim anchors - their
+    # numbers come from the artifact, so only the pairing (a property of the sentence, not of the number) is
+    # checked there.
+    gtexts, gmissing = read_faces(GENERATED_FACES)
+    instrument += ["generated face %s is missing, so the pairing rule cannot claim to have read it" % m
+                   for m in gmissing]
+    paired = dict(texts)
+    paired.update(gtexts)
+    pair_findings = pair_violations(paired)
+    ex_files, ex_dirs = excluded_faces()
+    ex_texts, _ex_missing = read_faces(ex_files)
+    ex_faces, ex_hits = excluded_pair_readings(ex_texts)
+    # The face set this leg reads is a closed list, so the faces it does NOT read are a blind spot with a name
+    # and a number, not an absence. The verdict line says which of the two it is.
+    all_md, why_md = tracked_md_faces()
+    policed_names = sorted(set(texts) | set(gtexts))
+    if all_md is None:
+        instrument.append(why_md)
+        ex_tracked, unpoliced, up_texts, up_faces, up_hits = [], [], {}, 0, 0
+    else:
+        not_in_index = [f for f in policed_names if f not in set(all_md)]
+        if not_in_index:
+            instrument.append("policed face(s) not in the repository index: %s - the leg reads a file the "
+                              "repository does not publish, so its denominator is not the published set"
+                              % ",".join(not_in_index))
+        ex_tracked, unpoliced = classify_population(all_md, policed_names)
+        up_texts, _upm = read_faces(unpoliced)
+        up_faces, up_hits = excluded_pair_readings(up_texts)
+        if _upm:
+            instrument.append("unpoliced face(s) unreadable: %s" % ",".join(_upm))
+    disk_only = sorted(set(ex_files) - set(all_md))
+
     for x in instrument:
         print("  instrument| %s" % x)
     for f in findings:
         print("  stale| %s" % f)
+    for f in pair_findings:
+        print("  unpaired| %s" % f)
+    for f in pair_violations(up_texts)[:8]:
+        print("  blind-not-fatal| %s" % f)
+    if up_hits > 8:
+        print("  blind-not-fatal| TRUNCATED shown=8 total=%d" % up_hits)
     for e in examples[:8]:
         print("  unreached| %s" % e)
     if len(examples) > 8:
@@ -325,15 +515,26 @@ def main(argv=None):
     print("claims=%d verified=%d history_excluded=%d quotes_in_faces=%d not_reached_by_table=%d faces=%s "
           "generated_excluded=%d"
           % (len(CLAIMS), checked, excluded, total, unreached, ",".join(sorted(texts)), len(GENERATED_FACES)))
+    print("pairing| rules=%d faces_scanned=%d unpaired=%d | excluded_named=%s on_disk=%d tracked=%d "
+          "blocks_with_bare_pair=%d faces=%d dirs_missing=%d disk_only=%d | tracked_md=%d policed=%d "
+          "unpoliced=%d unpoliced_bare_blocks=%d unpoliced_faces_with_bare=%d"
+          % (len(PAIR_RULES), len(paired), len(pair_findings), ",".join(EXCLUDED_DIRS_N), len(ex_files),
+             len(ex_tracked), ex_hits, ex_faces, len(ex_dirs), len(disk_only), len(all_md), len(policed_names),
+             len(unpoliced), up_hits, up_faces))
     if instrument:
         print("OUTCOME=INSTRUMENT-RED a claim that could not be measured is not a pass")
         return 3
-    if findings:
-        print("OUTCOME=RED stale_claims=%d" % len(findings))
+    if findings or pair_findings:
+        print("OUTCOME=RED stale_claims=%d unpaired_claims=%d" % (len(findings), len(pair_findings)))
         return 1
+    # The same rule this leg enforces on other faces applies to its own verdict line: a CLEAN that is only
+    # clean over a subset must say which subset, because "no face has the defect" and "the faces I read have
+    # no defect" are two different claims.
+    scope = ("policed-only(blind_bare_blocks=%d,unpoliced_faces_with_bare=%d - SG-F13 owns the widening)"
+             % (up_hits, up_faces)) if up_hits else "tracked_md_covered=%d" % len(all_md)
     # a partial check must not read as a pass: quick mode skips the arm counts, and says so on the verdict line
-    print("OUTCOME=CLEAN stale_claims=0 coverage=%s"
-          % ("partial(arm-count-claims-unchecked)" if ns.quick else "full"))
+    print("OUTCOME=CLEAN stale_claims=0 unpaired_claims=0 pairing_scope=%s coverage=%s"
+          % (scope, "partial(arm-count-claims-unchecked)" if ns.quick else "full"))
     return 0
 
 

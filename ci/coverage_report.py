@@ -231,8 +231,9 @@ def main(argv=None):
               "",
               "- A blank is **not** an agreement: the gate compares only the ports that recorded a field, and "
               "a cell where",
-              "  five of six recorded still counts as `VERDICT-NOT-RECORDED` for the sixth (%d such field-cells "
-              "in this run)." % len(nr),
+              "  five of six recorded still counts as `VERDICT-NOT-RECORDED` for the sixth (%d such (cell, field) "
+              "pairs in this run; a pair may charge more than one port, so the expanded field-cell count is larger "
+              "and is printed below)." % len(nr),
               "- A blank is **not yet** distinguishable from 'this field does not apply to this case group'. The "
               "frozen contract",
               "  lists verdict fields per checker answer but never says which of them apply to which case group, "
@@ -240,8 +241,8 @@ def main(argv=None):
               "  report publishes every blank and judges none of them. Deciding which blanks are legal is a "
               "contract",
               "  change (the current sealed round is the eighth); filling a blank is the port's own work.",
-              "- `%d` field-cells were left blank by **all six** ports - nobody answered that question at all. "
-              "Those are" % len(no_port),
+              "- `%d` (cell, field) pairs were left blank by **every** port - nobody answered that question at "
+              "all, so a pair here is a blank for each port in the grid. Those are" % len(no_port),
               "  listed by name below, and they are the cheapest cells in the whole project to make valuable.",
               ""]
     if no_port:
@@ -249,21 +250,52 @@ def main(argv=None):
         lines += ["| `%s` | `%s` |" % (k, f) for k, f in sorted(no_port)]
         lines.append("")
     att_rows, tally, per_port, att_problems = attribute_blanks(nr, cell_counts, fields, names)
+    # SG-F11: the published pair count is ONE bucket, not the whole hole. Computed from the same artifact
+    # the gate judged, never copied from prose, with both denominators named because they are different
+    # objects: cells x fields for a (cell, field) pair, and that again times the ports for a field-cell.
+    blank_pairs = {(c, f) for c, f, _ in nr}
+    ports_all = set(names)
+    both_pairs = set()
+    for _c, _f, _vals in verdict.get("disagreements", []):
+        _seen = {str(x).split("=", 1)[0].strip() for x in _vals}
+        if ports_all - _seen:
+            both_pairs.add((_c, _f))
+    both_only = both_pairs - blank_pairs
+    union_pairs = blank_pairs | both_only
     shown = [l for _a, _b, l in BUCKETS if tally_for(per_port, l)]
+    if sum(tally.values()) != len(att_rows):
+        att_problems.append("bucket partition: the buckets hold %d of the %d expanded blanks, so a blank is "
+                            "either dropped or counted twice" % (sum(tally.values()), len(att_rows)))
+    if denom_per_port * len(names) != possible:
+        att_problems.append("coverage arithmetic: fields x cells x ports = %d x %d x %d = %d, but the gate "
+                            "publishes verdict_pairs_possible=%d - two rulers, which is this project's oldest "
+                            "defect, so the sentence below prints the gate's value, not the recomputed one"
+                            % (len(fields), compared, len(names), denom_per_port * len(names), possible))
     lines += ["", "## Sorting the blanks by what the same port answered in the same cell", "",
               "The frozen contract never says which verdict fields apply to which case group, so whether a blank ",
               "is *legal* is a contract question and this report does not answer it. What it can measure is the ",
               "shape of the work: for each blank, how many of the ten verdict fields that same port recorded in ",
-              "that same cell. The gate publishes `%d` (cell, field) rows; a row may charge more than one "
-              "port, so they expand to `%d` (cell, field, port) blanks below, and every one of them is "
-              "placed in exactly one bucket." % (len(nr), len(att_rows)), "",
+              "that same cell. The gate publishes `%d` (cell, field) rows; a row may charge more than one port, "
+              "so they expand to `%d` (cell, field, port) blanks below, and each of those is placed in exactly "
+              "one bucket **of the table below** - a weaker claim than the one a reader will hear, so the "
+              "pair-level arithmetic is printed beside it. The two kinds of pair being added are different "
+              "objects: `%d` pairs where a port stayed silent and the ports that answered did not contradict, "
+              "plus `%d` pairs where a port stayed silent *and* the answering ports disagree, which the gate "
+              "charges to the disagreement bucket first. `%d + %d = %d` pairs, out of `%d` (cell, field) pairs "
+              "in the grid; of the `%d` field-cells possible, `%d` were answered at all. Neither bucket is a "
+              "verdict, and neither is folded into the other."
+              % (len(nr), len(att_rows), len(blank_pairs), len(both_only), len(blank_pairs), len(both_only),
+                 len(union_pairs), denom_per_port, possible, recorded), "",
               "| what the port answered in that cell | blank rows |", "|---|---|"]
     for _lo, _hi, label in BUCKETS:
         if "instrument problem" in label:
             continue
         lines.append("| %s | %d |" % (label, tally.get(label, 0)))
-    lines += ["", "The bucket column sums to %d, which is the expanded (cell, field, port) count - nothing is "
-              "placed in two buckets and nothing is left unplaced." % sum(tally.values()), "",
+    lines += ["", "The bucket column sums to `%d`, which is the expanded (cell, field, port) count of the `%d` "
+              "published (cell, field) rows: no expanded blank is counted twice and none is dropped. That is "
+              "the whole of the claim this table makes - these rows are the gate's silence bucket, not the "
+              "whole grid, and the pair arithmetic above is the face that covers both kinds of silence."
+              % (sum(tally.values()), len(nr)), "",
               "| port | " + " | ".join(l.split(" (")[0] for l in shown) + " |",
               "|---" * (1 + len(shown)) + "|"]
     for p in names:

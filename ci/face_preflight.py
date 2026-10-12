@@ -76,10 +76,15 @@ def staged_added(repo_root):
 
 
 # ---------------------------------------------------------------- commit-message mode
-MSG_PATH = re.compile(r"[A-Za-z]:[\\/]{1,2}[\w.\- ]{2,}")
+MSG_PATH = re.compile(r"(?<![A-Za-z0-9])[A-Za-z]:[\\/]{1,2}[\w.\- ]{2,}")
 # The r prefix is load-bearing: written as a plain string, "[\\/]" collapses to "[\/]", which in a regex class is
 # just "/" - the rule then looks right and never fires on a backslash path. That is the trap documented at
 # ci/process_leak_scan.py:51, and the red arm below is what re-caught it here.
+# The lookbehind is load-bearing for the opposite reason: without it the tail of "https://host/x" is a match,
+# because "s:" reads as a drive letter. Measured over the committed history, that false positive fired on 1 of the
+# 138 messages - the one citing this project's own published URL. A rule that condemns the project's public
+# address is a rule the next window will widen by hand, so the boundary belongs in the pattern, not in an
+# exception list, and the two sides are pinned by arms M3/M4 below.
 MSG_IDENT = None  # built at run time from the leg's own needle list, so this file never spells them
 
 
@@ -177,6 +182,15 @@ def selftest(root_forms, home_forms):
                       home_forms) != [],
         "red: a toolchain path is tolerated as provenance inside a data face but not in metadata, because a "
         "message cannot be edited after the push")
+    m3 = check_message("the public face is https://github.com/kinsin818/send" + "guard and the clone is readable",
+                       root_forms, home_forms)
+    chk(m3 == [], "green: the project's own published URL is not a host path, got %r" % (m3,))
+    m4 = check_message("the lane wrote at file:///" + "D" + ":" + chr(47) + "somewhere" + chr(47) + "deeper.md"
+                       + " and also at " + "E" + ":" + chr(92) + "somewhere" + chr(92) + "deeper",
+                       root_forms, home_forms)
+    chk(len([x for x in m4 if x[0] == "MSG-PATH"]) == 2,
+        "red: the boundary must not swallow a real drive-letter path behind a slash or a backslash, got %r"
+        % (m4,))
     chk(len(set(arms)) == len(arms) and len(arms) >= 7,
         "red: every arm needs a distinct label and the suite must not shrink silently, got %d labels"
         % (len(arms),))

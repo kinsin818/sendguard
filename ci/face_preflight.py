@@ -74,6 +74,55 @@ def staged_added(repo_root):
     return faces, ""
 
 
+
+# ---------------------------------------------------------------- commit-message mode
+MSG_PATH = re.compile(r"[A-Za-z]:[\\/]{1,2}[\w.\- ]{2,}")
+# The r prefix is load-bearing: written as a plain string, "[\\/]" collapses to "[\/]", which in a regex class is
+# just "/" - the rule then looks right and never fires on a backslash path. That is the trap documented at
+# ci/process_leak_scan.py:51, and the red arm below is what re-caught it here.
+MSG_IDENT = None  # built at run time from the leg's own needle list, so this file never spells them
+
+
+def identity_needles():
+    """The producer-identity vocabulary, taken from the disclosure leg rather than restated here."""
+    out = [pls.RETIRED_KEY]
+    out += ["seat" + "-qoder", "W-" + "PY", "W-" + "GO", "W-" + "NODE", "qian" + "wen", "dou" + "bao"]
+    return [n for n in out if n]
+
+
+def check_message(text, root_forms, home_forms):
+    """[(class, line_no, shape)] for one commit message. Any drive-letter path or identity needle is a refusal."""
+    out = []
+    for i, line in enumerate(text.splitlines(), 1):
+        for m in MSG_PATH.finditer(line):
+            out.append(("MSG-PATH", i, "drive-letter path shape at %r (%s)" % (m.group(0)[:18], shape_of(line))))
+        for cls, _ln, _ex in pls.scan_face(line, root_forms=root_forms, home_forms=home_forms):
+            if cls in ("LOGIN", "HOSTROOT", "RETIRED", "IDENTITY"):
+                out.append((cls, i, shape_of(line)))
+        low = line.lower()
+        for n in identity_needles():
+            if n.lower() in low:
+                out.append(("MSG-IDENTITY", i, "identity needle %r (%s)" % (n, shape_of(line))))
+    return out
+
+
+def message_blobs(spec):
+    """Yield (name, text) for --message-file drafts and for every commit message in a --messages <range>."""
+    if os.path.isfile(spec):
+        yield spec, io.open(spec, encoding="utf-8", errors="replace").read()
+        return
+    p = subprocess.run(["git", "-C", REPO, "log", "--format=%h\x1f%B\x1e", spec], capture_output=True,
+                       shell=False)
+    if p.returncode != 0:
+        raise RuntimeError("git log rc=%d over %r: the range cannot be read" % (p.returncode, spec))
+    for rec in (p.stdout or b"").split(b"\x1e"):
+        rec = rec.decode("utf-8", "replace").strip()
+        if not rec:
+            continue
+        sha, _sep, body = rec.partition("\x1f")
+        yield "commit " + sha.strip(), body
+
+
 def selftest(root_forms, home_forms):
     errs, arms = [], []
 
@@ -117,6 +166,17 @@ def selftest(root_forms, home_forms):
     f6 = check_lines(planted[0], ["the reading is as of the tree this leg was run in, named by class only"],
                      root_forms, home_forms)
     chk(f6 == [], "green: the corrected style of prose - category, not bytes - yields nothing, got %r" % (f6,))
+    m1 = check_message("the push adds a face at C:\\Users\\someone\\x.md and names W-" + "PY too",
+                       root_forms, home_forms)
+    chk(m1 and {x[0] for x in m1} >= {"MSG-PATH", "MSG-IDENTITY"},
+        "red: a draft message carrying a drive-letter path or an identity needle is refused, got %r" % (m1,))
+    m2 = check_message("Six ports built and reproduced in a cold clone; the gate's four readings are unchanged "
+                       "and the leg prints its own counts.", root_forms, home_forms)
+    chk(m2 == [], "green: an ordinary message about faces and legs passes, got %r" % (m2,))
+    chk(check_message("generated in C:" + chr(92) + "Python314" + chr(92) + "python.exe", root_forms,
+                      home_forms) != [],
+        "red: a toolchain path is tolerated as provenance inside a data face but not in metadata, because a "
+        "message cannot be edited after the push")
     chk(len(set(arms)) == len(arms) and len(arms) >= 7,
         "red: every arm needs a distinct label and the suite must not shrink silently, got %d labels"
         % (len(arms),))
@@ -131,6 +191,10 @@ def main(argv=None):
     ap.add_argument("--selftest", action="store_true")
     ap.add_argument("--staged", action="store_true", help="check the added lines of the staged set")
     ap.add_argument("--paths", default=None, help="comma-separated faces to check whole (draft inspection)")
+    ap.add_argument("--message-file", default=None,
+                    help="a draft commit message on disk; refuse it before it becomes metadata")
+    ap.add_argument("--messages", default=None,
+                    help="a git rev-range; audit the messages that range would publish")
     ap.add_argument("--repo-root", default=REPO)
     ns = ap.parse_args(argv)
     root = os.path.abspath(ns.repo_root)
@@ -141,10 +205,39 @@ def main(argv=None):
         return 3
     if ns.selftest:
         return selftest(root_forms, home_forms)
-    if not ns.staged and not ns.paths:
-        print("OUTCOME=INSTRUMENT-RED neither --staged nor --paths given; a check that measured nothing never "
-              "passes")
+    if not ns.staged and not ns.paths and not (ns.message_file or ns.messages):
+        print("OUTCOME=INSTRUMENT-RED none of --staged/--paths/--message-file/--messages given; a check that "
+              "measured nothing never passes")
         return 3
+    if ns.message_file or ns.messages:
+        bad = 0
+        checked = 0
+        for spec in [x for x in ([ns.message_file] if ns.message_file else [])
+                     + ([ns.messages] if ns.messages else []) if x]:
+            try:
+                items = list(message_blobs(spec))
+            except RuntimeError as e:
+                print("OUTCOME=INSTRUMENT-RED %s" % e)
+                return 3
+            if not items:
+                print("OUTCOME=INSTRUMENT-RED %s resolved to zero messages - an empty population is a VOID "
+                      "reading, not a pass" % spec)
+                return 3
+            for name, body in items:
+                checked += 1
+                hits = check_message(body, root_forms, home_forms)
+                if hits:
+                    bad += 1
+                    for cls, ln, shape in hits[:6]:
+                        print("  message-block| %s line %d %s %s" % (name, ln, cls, shape))
+                    if len(hits) > 6:
+                        print("  message-block| %s TRUNCATED shown=6 total=%d" % (name, len(hits)))
+        print("preflight-messages| checked=%d blocked=%d root=%s" % (checked, bad, root))
+        if bad:
+            print("OUTCOME=RED commit metadata carries path/identity shapes - a push makes these permanent")
+            return 1
+        print("OUTCOME=CLEAN")
+        return 0
     targets = {}
     if ns.staged:
         faces, err = staged_added(root)

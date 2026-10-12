@@ -8,27 +8,27 @@ and `docs/tickets/SG-F8-dispatch-20261012.md`. Every number is from this session
 ```
 python-port   re-emitted: 123 records (73 purged through the runner's migrate path, 50 measured fresh) at this commit
               unchanged:  disagreements=54 identical=24/44 fully-recorded=4 not-recorded=121  (face-level verdict diff vs HEAD: 0 differences in 123 records x 10 fields)
-              worker_id:  0 occurrences left in my canonical face   (leg: results/python.windows.x64 files=123 retired=0 implementation_id={'python-port': 123})
+              retired key: 0 occurrences left in my canonical face   (leg: results/python.windows.x64 files=123 retired=0 implementation_id={'python-port': 123})
 
 rust-port     re-emitted: 174 records at this commit
               unchanged:  same four readings; controls_pass=true; face-level verdict diff vs HEAD = 0 differences
-              worker_id:  0 occurrences left (files=174 retired=0 implementation_id={'rust-port': 174})
+              retired key: 0 occurrences left (files=174 retired=0 implementation_id={'rust-port': 174})
 
 typescript-port re-emitted: 84 records at this commit
               unchanged:  same four readings; controls_pass=true; verdict diff vs HEAD = 0 differences
-              worker_id:  3 occurrences left - named below, in records the current runner does not produce
+              retired key: 3 occurrences left - named below, in records the current runner does not produce
 
 go-port       re-emitted: 49 records into results/go.windows.x64 at this commit
               unchanged:  same four readings; controls_pass=true
-              worker_id:  0 in the canonical face (files=49 retired=0 implementation_id={'go-port': 49})
+              retired key: 0 in the canonical face (files=49 retired=0 implementation_id={'go-port': 49})
 
 java-port     re-emitted: 86 records at this commit
               unchanged:  same four readings
-              worker_id:  0 (files=86 retired=0 implementation_id={'java-port': 86})
+              retired key: 0 (files=86 retired=0 implementation_id={'java-port': 86})
 
 csharp-port   re-emitted: 50 records at this commit
               unchanged:  same four readings; required_ids=48 produced_ids=50 missing=0
-              worker_id:  0 (files=50 retired=0 implementation_id={'csharp-port': 50})
+              retired key: 0 (files=50 retired=0 implementation_id={'csharp-port': 50})
 ```
 
 The gate's four readings after all six lanes:

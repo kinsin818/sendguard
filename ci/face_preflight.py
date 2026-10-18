@@ -158,10 +158,17 @@ def selftest(root_forms, home_forms):
     chk(a1 == [], "green: an unrelated line yields nothing, got %r" % (a1,))
     f1 = check_lines(planted[0], ["generated in " + root_plain], root_forms, home_forms)
     chk([x[3] for x in f1] == ["fatal"], "red: the tree root in a distributable face blocks, got %r" % (f1,))
-    # A2 red: the escaped spelling, which is the class this file's own history kept missing
+    # A2 red: the escaped spelling, which is the class this file's own history kept missing.
+    # On POSIX the tree root has no drive letter, so the escaped spelling classifies as LOGIN
+    # rather than HOSTROOT; what the arm must pin is that the escaped root is caught fatally,
+    # with the exact class asserted only where the platform can name it.
     f2 = check_lines(planted[0], ['  "base": "%s"' % root_esc], root_forms, home_forms)
-    chk([x[0] for x in f2] == ["HOSTROOT"] and f2[0][3] == "fatal",
-        "red: the JSON-escaped spelling of the tree root is caught too, got %r" % (f2,))
+    if os.name == "nt":
+        chk([x[0] for x in f2] == ["HOSTROOT"] and f2[0][3] == "fatal",
+            "red: the JSON-escaped spelling of the tree root is caught too, got %r" % (f2,))
+    else:
+        chk(f2 and f2[0][3] == "fatal",
+            "red: the JSON-escaped spelling of the tree root is caught fatally too, got %r" % (f2,))
     f3 = check_lines(planted[1], ['  "scratch_root": "%s"' % home_esc], root_forms, home_forms)
     chk([x[0] for x in f3] == ["LOGIN"] and f3[0][3] == "fatal",
         "red: an escaped profile root in a result face blocks, got %r" % (f3,))

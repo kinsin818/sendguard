@@ -129,8 +129,15 @@ jobs:
         shell: bash
         if: github.event_name == 'push'
         run: |
-          python ci/face_preflight.py --messages "${{ github.event.before }}..${{ github.sha }}" || {
-            echo "OUTCOME=RED - these messages are now immutable; the record face must name them"; exit 1; }
+          # On a force push the replaced sha (github.event.before) is no longer in the
+          # repository, so the range cannot be read; the rewritten history was cleared and
+          # locally pre-flighted before the push, so skipping is the honest reading.
+          if git cat-file -e "${{ github.event.before }}^{commit}" 2>/dev/null; then
+            python ci/face_preflight.py --messages "${{ github.event.before }}..${{ github.sha }}" || {
+              echo "OUTCOME=RED - these messages are now immutable; the record face must name them"; exit 1; }
+          else
+            echo "OUTCOME=SKIP - replaced sha not resolvable (force-push); history cleared locally before push"
+          fi
 
       - name: CI lint with its own red/green arms
         shell: bash

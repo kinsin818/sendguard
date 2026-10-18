@@ -2,3 +2,8 @@
 # Without this, a stranger's clone differs from the committed content and no declared hash
 # can be reproduced. Author: kinsin818 2026-10-11.
 * -text
+
+# Language stats: generated artifacts are not the subject of this repository.
+# The language bar will still read Python - the CI harness is Python by design and is deliberately NOT
+# excluded; masking it with linguist-vendored would be the kind of cosmetic claim this repo refuses.
+pilots/**/gen/**  linguist-generated

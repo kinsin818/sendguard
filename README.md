@@ -3,6 +3,18 @@
 Point it at a folder and it tells you which file names will break on the recipient's machine, before you
 hit send.
 
+**Stack.** One frozen spec, six independent implementations - **Go · TypeScript · Rust · Java · C# · Python**. Around them:
+a Python CI harness (`ci/`), a Go out-of-band enumerator (`harness/`), and a single-file deliverable (`tool/check.py`).
+GitHub's language bar reads "Python" because the harness and the per-port runners live there - not because this is a
+Python project. The six implementations, and whether they agree, are the point.
+
+**Current verdict - a reading, not a boast:** `python ci/equality.py` prints `OUTCOME=RED`. Of 44 required cells,
+**24 carry no verdict conflict and 20 do**; only **4 of the 44** have every verdict field recorded by every port; field
+coverage is **2281/2640 (86.4%)**. The conflicts and the blanks are the result this repository exists to produce, not a
+bug hidden from you - `docs/STATUS.md` is generated from the gate's own artifact and `docs/coverage.md` names every
+blank. The project calls a run PASS only when no port disagrees on any field, no field is left blank, and none is
+excluded; it has never met that bar, and says so.
+
 The same core exists in six implementations. **They are required to give the same answer, and there is a
 gate that decides whether they do.** The gate separates the answer from the asking: the checker's verdict on
 a name must be byte-identical across the six, while what each language's own standard library did when asked

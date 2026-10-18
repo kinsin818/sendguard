@@ -214,6 +214,5 @@ If you want the whole repository to prove its own reproducibility rather than as
 command and it is meant to be run against a fresh clone of a remote, not a directory copy: `python ci/clone_parity.py
 --scratch-root ../<your-dir>`, and with `--source <url>` pointed at the published repository.
 
-License: to be set by the owner. Until then: forking and re-running to verify is welcome; redistribution as
-closed source is not licensed.
+License: MIT — see [`LICENSE`](LICENSE). Forking, re-running to verify, and reuse are all welcome.
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Verify SG-F2 landed as specified, from the files, not from memory. Read-only except the
+"""Verify F2 landed as specified, from the files, not from memory. Read-only except the
 verification output path it is given. Exit 0 = every claim holds; 1 = a claim does not; 3 = the
 verifier itself could not run.
 

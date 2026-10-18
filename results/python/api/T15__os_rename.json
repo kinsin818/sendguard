@@ -34,7 +34,7 @@
   "control_pass": true,
   "instrument_red": false,
   "harness_version": "0.2.0-s02",
-  "worker_id": "W-PY",
+  "worker_id": "port-python",
   "started_at": "2026-10-10T22:53:24+0800",
   "elapsed_ms": 60,
   "deps_direct": 0,

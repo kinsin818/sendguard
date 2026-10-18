@@ -13,7 +13,7 @@
  "sub_identity": {},
  "sub_identity_order": [],
  "name_source": "646174615f76325f315f2e637376",
- "name_source_kind": "evidence/S00/blind-map.json name_utf8_hex",
+ "name_source_kind": "evidence/freeze/blind-map.json name_utf8_hex",
  "path_form": "plain",
  "longpath_mechanism": "none",
  "length_unit": "code_points",
@@ -43,7 +43,7 @@
   "toolchain": "C:\\Python314\\python.exe 3.14.7",
   "utf8_mode": 0,
   "longpath_manifest_on_interpreter": true,
-  "longpath_manifest_source": "evidence/S00/env-facts-windows-local.json manifest_scan: C:\\Python314\\python.exe found=true"
+  "longpath_manifest_source": "evidence/freeze/env-facts-windows-local.json manifest_scan: C:\\Python314\\python.exe found=true"
  },
  "deps_direct": 0,
  "deps_total": 0,
@@ -54,7 +54,7 @@
  "cleanup_attempted": false,
  "probe_timeout_s": 5.0,
  "child_spawn_form": "subprocess.run(argv list, shell=False, timeout=5.0); one child per probe",
- "cleanup_note": "M19: no deletion logic exists in this port; run dirs accumulate outside the repo",
+ "cleanup_note": "project rule: no deletion logic exists in this port; run dirs accumulate outside the repo",
  "instrument_red": false,
  "instrument_conflict": false,
  "entries_run": [
@@ -269,7 +269,7 @@
   "category": null,
   "applicable": "windows",
   "case_locale": "en-US",
-  "spec_source": "evidence/S00/blind-map.json"
+  "spec_source": "evidence/freeze/blind-map.json"
  },
  "rev3_migrated": false,
  "rev3_migration_notes": [],

@@ -7,7 +7,7 @@ historical - a face the current gate no longer reads, or a number from before a 
 says so; the rest re-runs from a clean clone.
 
 Sequence: a one-line requirement -> a requirement document -> a UI -> a construction order written by six
-AI seats in committee -> six independent language ports -> a gate -> acceptance. Roughly 36 hours, most of
+Six independent language ports, written blind to each other -> a gate -> acceptance. Roughly 36 hours, most of
 it one night.
 
 ## 1. The requirement, and the reversal that decided everything
@@ -23,7 +23,7 @@ became an appendix that falls out for free.
 
 That reversal deleted more of the plan than it kept. Gone: the three-layer attribution tree (L1 OS / L2
 stdlib policy / L3 language semantics), the divergence-hit Go/No-Go gate, the counting statistics, and the
-blind-window ceremony around them. They were load-bearing only for a claim nobody was selling any more.
+blind-session ceremony around them. They were load-bearing only for a claim nobody was selling any more.
 What replaced them is three legs: **the specification is one thing** (one frozen file, hashes published
 before any port ran), **the implementations are independent** (no cross-language calls, no shared helper),
 and **the result is checkable from outside** (the equality gate, a sealed expectation table, and the
@@ -71,7 +71,7 @@ WITHDRAWN: the 03:4x version of this list came from a mis-parse ... discard it a
 
 `spec/schema.json` and `spec/validate.py` enforce the same contract in two places. rev3 changed one and not
 the other, so a port's cells validated green under one ruler and failed under the other. Reported by the
-TypeScript window rather than smoothed by me:
+TypeScript session rather than smoothed by me:
 
 ```
 cells_required=33 cells_produced=74 cells_valid=25 (strict, spec/schema.json rev3)
@@ -209,7 +209,7 @@ The same genre, three times over, so they go in the record rather than into a fo
   as hex. Names are compared by the set of meanings a value could have; when that intersection is what
   rescued a cell the gate prints `NAME-CROSS-FORM-AGREE`, and an arm (`different-names-still-red`) keeps the
   rule from becoming a machine that declares different names equal.
-- **The self-test overwrote the real verdict.** The gate emits `evidence/S02/equality-verdict.json`; the path
+- **The self-test overwrote the real verdict.** The gate emits `evidence/judgement/equality-verdict.json`; the path
   was hardcoded, so every fixture arm replaced the project's answer with a two-port toy - *while the
   self-test reported green*. Verdict paths are arguments now, arms write into their own scratch, the artifact
   records the face it came from, and `ci/matrix_table.py` refuses to publish a verdict that did not come from
@@ -227,16 +227,16 @@ re-checked, and the two documents that went stale mid-morning say which reading 
 ### 2.14 A sentence of mine filed one JVM's answer under a language's name
 
 The whitepaper's §3 length row read "一门 False（它在 parse 层就拒绝了这个前缀）" - one port rejects this prefix at
-its parse layer. The java window then reproduced the refusal against both JDKs installed on this host
+its parse layer. The java session then reproduced the refusal against both JDKs installed on this host
 (`impl/java/tools/ext-path-of-repro.txt`, one compiled class, both runs stamped `run_rc=0`), and the same class
 file answers differently depending on which launcher reads it:
 
 ```
-TAG 3 extended, SHORT, ordinary drive path | len=12 | input=\\?\D:\Qoder      [Temurin 17.0.17 - the exe the recorded cells ran on]
+TAG 3 extended, SHORT, ordinary drive path | len=12 | input=\\?\D:\probe      [Temurin 17.0.17 - the exe the recorded cells ran on]
     Paths.get          -> THREW java.nio.file.InvalidPathException | Illegal character [?] in path at index 2
     new File(String)   -> OK  isAbsolute=true
-TAG 3 extended, SHORT, ordinary drive path | len=12 | input=\\?\D:\Qoder      [Temurin 21.0.6 - same class file]
-    Paths.get          -> OK  impl=sun.nio.fs.WindowsPath toString=D:\Qoder
+TAG 3 extended, SHORT, ordinary drive path | len=12 | input=\\?\D:\probe      [Temurin 21.0.6 - same class file]
+    Paths.get          -> OK  impl=sun.nio.fs.WindowsPath toString=D:\probe
 ```
 
 The refusal was never "Java's". It belongs to one binary - and the recorded face had said so all along: it
@@ -358,13 +358,13 @@ declare which verdict fields apply to which case group, and give a boolean a doc
 there). Cost if the owner says yes: six ports re-emit their faces, and every "0 invalid" in the tree starts
 carrying a second number.
 
-**And a worker caught this seat leaving a broken instrument in the shared tree.** At 12:02 the TypeScript
-window reported that `ci/equality.py` would not parse - `SyntaxError: unmatched ')'` at line 944, 13 format
+**And a worker caught this local leaving a broken instrument in the shared tree.** At 12:02 the TypeScript
+session reported that `ci/equality.py` would not parse - `SyntaxError: unmatched ')'` at line 944, 13 format
 arguments against 11 placeholders - and refused to touch `ci/`, re-deriving its own counts from
 `git show HEAD:ci/equality.py` so its report would not depend on the broken file. That was me: I was
 sabotaging arms to prove they bite, and the work tree carried a half-edited gate for several minutes while a
 worker was running against it. Two rules come out of it, and the second one is the one I would otherwise
-skip: a seat's tool edits are worker-facing files, so they belong in history before somebody else trips over
+skip: a local's tool edits are worker-facing files, so they belong in history before somebody else trips over
 them; and a sabotage experiment is only honest if the file is shown to compile and its arms to pass **after**
 it, which is now a step in the routine rather than something I remember to do (`python -m py_compile` on the
 five `ci/` files touched today, rc=0, before the 12:27 commit). The lane's own wording, kept because it is
@@ -427,7 +427,7 @@ because nothing in the leg could ask a second party whether its file set was rig
    file - producing exactly the table a clone produced, because the truth happened to be a zero. The clone
    agreement I had written up as the vindication of the fix was the bug's own symptom.
 3. The column that counted dropped files was itself disk-dependent: a file must be present to be ignored, so the
-   seat read `untracked_ignored=14` and a clone of the same commit read `12`. Moved out of the published face into
+   local read `untracked_ignored=14` and a clone of the same commit read `12`. Moved out of the published face into
    the run line.
 4. `glob` keeps the separator typed inside the pattern, so its results came back as
    `D:\repo\impl/java/build\CellProbe.class` while the tracked set was pure backslashes. Nothing ever matched:
@@ -480,14 +480,14 @@ without committing a false face: a one-digit tamper of `docs/coverage.md` was pu
 commit on a temporary branch in a separate work tree, and the leg answered
 `OUTCOME=RED faces_compared=12 identical=10 declared=1 differing=1 missing=0`, naming the file, the line count
 and both texts. The probe, its cleanup and the first attempt that failed because the probe commit predated the
-leg itself are in `evidence/S11/parity-red-probe-20261011.md`.
+leg itself are in `evidence/closing/parity-red-probe-20261011.md`.
 
 
 ## 3. What the six windows did that the plan did not expect
 
 Two things the committee's construction order never asked for and the ports delivered anyway: the
-TypeScript window published a port label it could not verify ("no type-checker has ever run against this
-source") and refused to let it be upgraded to "TypeScript verified"; the Go window answered the same name
+TypeScript session published a port label it could not verify ("no type-checker has ever run against this
+source") and refused to let it be upgraded to "TypeScript verified"; the Go session answered the same name
 with `legal` where five others said `illegal`, and the answer turned out to be about which path prefix it
 had asked - a fact the contract now records as `verdict_via` instead of scoring as a mistake.
 

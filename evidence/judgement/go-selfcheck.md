@@ -1,11 +1,11 @@
-# SENDGUARD S02 — Go port self-check (seat-qoder), contract rev7 run
+# SENDGUARD S02 — Go port self-check (session-token), contract rev7 run
 
 Round verdict: **controls 5/5 PASS against the sealed baseline and against the pinned control samples.
-No INSTRUMENT-RED.** This seat's checker says `OUTCOME=PASS` with 0 void cells, and `ci/gap_report.py`
+No INSTRUMENT-RED.** This local's checker says `OUTCOME=PASS` with 0 void cells, and `ci/gap_report.py`
 reads this port as `matched 44/44, missing 0, outside-list 0, extra-flagged 1`.
 
-- seat `seat-qoder`, language face `go`; repo `D:\sendguard-work\seat-qoder`, HEAD at the time of writing
-  `177ecc6`; no commit, no tag, no push by this seat
+- local `session-token`, language face `go`; repo `D:\work\session-token`, HEAD at the time of writing
+  `177ecc6`; no commit, no tag, no push by this local
 - landed face `results/go.windows.x64/` — 49 cell files: 22 trap + 5 ctrl + 12 len + 5 blind + 4 T-API,
   plus 1 `extra: true` zip cell. Nothing else is in that directory; `results/go.windows.go1.23.5` was left
   exactly where it is.
@@ -15,7 +15,7 @@ reads this port as `matched 44/44, missing 0, outside-list 0, extra-flagged 1`.
 - `spec/cases.yaml` at the committed blob face: `git cat-file blob HEAD:spec/cases.yaml` =
   `8650a1863578231e…`, which is what every cell records in `provenance.spec_sha256`, and it equals the
   worktree face and the value `spec/FROZEN.md` declares. `freeze_revision` read from the file: `2`.
-- Locked-artifact check this seat ran (8 files): `spec/cases.yaml`, `gate.md`, `canonical.md`,
+- Locked-artifact check this local ran (8 files): `spec/cases.yaml`, `gate.md`, `canonical.md`,
   `attribution-tree.md`, `validate.py`, `schema.json`, `cell-identity.md`, `cells-required.json` — all
   eight measured shas equal the values declared in `spec/FROZEN.md`.
 - `spec/cells-required.json`: measured sha256 equals the FROZEN declaration, and the file still carries its
@@ -28,7 +28,7 @@ reads this port as `matched 44/44, missing 0, outside-list 0, extra-flagged 1`.
   absent from this machine's module cache); the normalisation cells carry
   `normalization_dependency = "not-achievable-in-stdlib: …"` in words, never a silent 0.
 
-## 1. Counters (this seat's own checker)
+## 1. Counters (this local's own checker)
 
 ```
 cells_required=48        (44 rows of spec/cells-required.json + the 4 go T-API rows)
@@ -88,7 +88,7 @@ face because the OS answered `winerror 2 (ERROR_FILE_NOT_FOUND)` to *both* the c
 the legality probe — the recorded answer is "no such file", not "invalid name". `T14-m2` (`AUX.log`) is
 `illegal`. Any port that reports `illegal` for PRN/LPT9 got there from the reserved-name list rather than
 from what the create call answered on this machine; S03 should treat those two cells as a
-comparability item, which is what rev6 §9.4 is for. This seat did not upgrade the code to fit the list.
+comparability item, which is what rev6 §9.4 is for. This local did not upgrade the code to fit the list.
 
 ## 3. rev6 item 2 — the five control cells on the pinned samples
 
@@ -104,7 +104,7 @@ loaded, and the write payload is the pinned one.
 | T-CTRL-NAMETOOLONG | 256 × `61` | `aaa…` | err_at_syscall 123 | illegal |
 | T-CTRL-CANON | `63616e6f6e2d636865636b2e747874` | **`canon-check.txt`** | ok | legal |
 
-`T-CTRL-CANON` is the one this seat had invented: the previous run used `canon-go-arm.txt`, exactly the
+`T-CTRL-CANON` is the one this local had invented: the previous run used `canon-go-arm.txt`, exactly the
 drift rev6 §6 names. Both CANON arms now hash the pinned 28 bytes
 (`SENDGUARD-CANON-PAYLOAD-2026`): `sha256_self` (what this port wrote) equals `sha256_truth`
 (`C:\Python314\python.exe` hashing the bytes the **directory enumerated**, never the requested path) equals
@@ -141,7 +141,7 @@ via a rewrite. Corollary for the manifest: the scanning instrument was itself br
 the first version searched for a plain string that is compiled into `sg.exe`, so it reported 0 hits on one
 build and 1 on the next with no manifest change. The needle is now assembled at run time from an obfuscated
 copy and a green arm was added: the same scan finds 2 hits in `C:\Python314\python.exe` (which is what
-`evidence/S00/env-facts-windows-local.json` records) and **0** in this runner. Byte scan, not a PE
+`evidence/freeze/env-facts-windows-local.json` records) and **0** in this runner. Byte scan, not a PE
 manifest parse, with the same disclaimer the S00 file carries.
 
 ## 5. What the rest of the face says (data, not judgment)
@@ -167,7 +167,7 @@ Reserved-device names, primary entry (`!` = create said yes and the directory st
 The T-API rows roll up per entry: `os.Mkdir` answers differently from the primary on 20 of 22 members, and
 `os.WriteFile` on exactly the seven reserved names, where it is recorded **blocked** inside the spread
 (it is one indivisible open+write; running it as pinned would push 28 bytes into a device — `PRN` would
-queue a print job, `COM1` would drive a serial port, and the seat order allows those names to be created
+queue a print job, `COM1` would drive a serial port, and the local order allows those names to be created
 and listed only). Those seven are this port's only unmeasured legs; none of them is a published cell, so
 none is a silent pass.
 
@@ -182,25 +182,25 @@ three names read back byte-equal.
 ## 6. State, and what this document does not prove
 
 - 119 superseded pre-rev6 cell files were **moved, not deleted**, to
-  `D:\sendguard-run\_superseded-go-pre-rev6\`; `git status` shows 0 tracked deletions, so nothing committed
+  `D:\work-run\_superseded-go-pre-rev6\`; `git status` shows 0 tracked deletions, so nothing committed
   was removed. The previous version of this self-check document was untracked and has been rewritten: its
   two claims that this round contradicts (the `prefix_rewrite` inference and the `FindFirstFileW` legality
   rule) are restated and withdrawn in §2 and §4 rather than left standing.
-- Sandbox directories accumulate under `D:\sendguard-run\<uuid>\` (49 per run, plus earlier runs and the
+- Sandbox directories accumulate under `D:\work-run\<uuid>\` (49 per run, plus earlier runs and the
   out-of-repo verification trees): measured dir plus same-depth siblings for the extended probe, the
   legality probe and the three bisection faces. No delete call exists in this port; the checker counts it
   (`deletion_calls_found=0` over `files_scanned=13`). `docs/cleanup-notice.md` gives the operator the
-  `\\?\` recipe; this seat did not run it.
+  `\\?\` recipe; this local did not run it.
 - No aggregate file is written: `ci/export_aggregate.py` still does not exist and hand-writing one is what
-  `spec/cell-identity.md` §3 forbids. Instrument output is `evidence/S02/go-run-manifest.json`, never
+  `spec/cell-identity.md` §3 forbids. Instrument output is `evidence/judgement/go-run-manifest.json`, never
   `results/`.
 - Independence, as discipline not measurement: no file under another port's `impl/` or `results/` was
-  opened, and `impl/go/main.go`, `impl/go/run_log.txt`, `evidence/S02/ctrl-go-json/`,
-  `evidence/S02/conflicts/` and the other ports' `*-selfcheck.md` were not read. Two name-level queries were
+  opened, and `impl/go/main.go`, `impl/go/run_log.txt`, `evidence/judgement/ctrl-go-json/`,
+  `evidence/judgement/conflicts/` and the other ports' `*-selfcheck.md` were not read. Two name-level queries were
   made (`ls impl`, `git ls-files results/`), and `ci/gap_report.py` was run with `--out` redirected outside
-  `docs/` — its default target is `docs/GAP.md`, which this seat may not write — and only the go block of
+  `docs/` — its default target is `docs/GAP.md`, which this local may not write — and only the go block of
   that scratch copy was read.
-- Not proven here: cross-port equality (S03's, and `ci/equality.py` was never run by this seat because its
+- Not proven here: cross-port equality (S03's, and `ci/equality.py` was never run by this local because its
   output would show other ports' answers), any `attribution_layer` (`spec/attribution-tree.md` §1's first
   pass needs the other five ports), and whether the 255-everywhere ceiling result holds on a host where the
   259-unit wall is enforced. The `PRN`/`LPT9` unknowns in §2 are the one place this face knowingly differs
@@ -222,12 +222,12 @@ three names read back byte-equal.
 4. `spec/cells-required.json` has no `generated_at` key (the checker prints `None`), so its withdrawal of the
    03:4x version rests on the `withdraws` sentence alone.
 
-## 8. Files this seat wrote
+## 8. Files this local wrote
 
 `impl/go/rederive/` (13 `.go` files, `selfcheck.py`, `go.mod`, `bin/sg.exe` gitignored),
-`results/go.windows.x64/` (49 cells), `evidence/S02/go-selfcheck.md` (this file),
-`evidence/S02/go-run-manifest.json`. Nothing under `spec/`, `ci/`, `harness/`, `docs/` or `D:\sendguard`
-was written by this seat, and no other port's face was touched.
+`results/go.windows.x64/` (49 cells), `evidence/judgement/go-selfcheck.md` (this file),
+`evidence/judgement/go-run-manifest.json`. Nothing under `spec/`, `ci/`, `harness/`, `docs/` or `D:\local-dir`
+was written by this local, and no other port's face was touched.
 
 
 ---

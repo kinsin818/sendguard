@@ -3,7 +3,7 @@
 // The baseline file is the ONLY allowed source of control expectations.
 // Expectations are MEASURED, not hand-written (julying discipline).
 // Node side drives create attempts; CANON second arm is a Python child process.
-// Usage: node ctrl-baseline.mjs > evidence/S00-ctrl-baseline.md
+// Usage: node ctrl-baseline.mjs > evidence/ctrl-baseline.md
 import { writeFileSync, readFileSync, statSync, mkdirSync, rmSync, readdirSync } from "fs";
 import { createHash } from "crypto";
 import { execFileSync } from "child_process";
@@ -11,7 +11,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const RUN = path.join(__dirname, "..", "evidence", "S00", "_ctrlrun");
+const RUN = path.join(__dirname, "..", "evidence", "freeze", "_ctrlrun");
 const PAYLOAD = Buffer.from("SENDGUARD-CANON-PAYLOAD-2026");
 
 function sha256(buf) {
@@ -101,7 +101,7 @@ cells.push({
 
 // --- Output markdown ---
 const lines = [];
-lines.push("# SENDGUARD S00 Control-Cell Baseline (measured on this machine)");
+lines.push("# SENDGUARD Control-Cell Baseline (measured on this machine)");
 lines.push("");
 lines.push(`- date: ${new Date().toISOString()}`);
 lines.push(`- os: ${process.platform} / node ${process.version}`);

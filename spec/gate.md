@@ -48,7 +48,7 @@ The old wording ("hits == 0 => instrument broken, batch void") is withdrawn: it 
 
 IV' (above) is the gate form; IV (cross-language unit) is a data column.
 
-## 4. Verification-cell vs bisection deviation triage (Qoder 3-5)
+## 4. Verification-cell vs bisection deviation triage (the maintainer 3-5)
 
 | |verification - bisection| | verdict |
 |---|---|---|
@@ -70,13 +70,13 @@ law and cannot be a gate condition.
 - Base depth 13 is reachable inside a copy through a mapped drive (`subst`); the ladder is
   {78, 120, 200} required and 13 permitted as extra.
 
-## 5bis. Old heading kept for provenance (Qoder 3-3)
+## 5bis. Old heading kept for provenance (the maintainer 3-3)
 
-Only the arbitration seat may sign a bisection downgrade. Basis: domain B four
+Only the arbitration local may sign a bisection downgrade. Basis: domain B four
 base tiers each hit `259 - base - 1` EXACTLY (zero tolerance), boundary code 3.
 Flow: (1) S03 gate verifies domain B four tiers + G1/G2 six points -> record
-`linear-model-confirmed`; (2) arbitration seat signs downgrade;
-(3) taking-data seat re-checks domain A four tiers all == 255 and domain C ==
+`linear-model-confirmed`; (2) arbitration local signs downgrade;
+(3) taking-data local re-checks domain A four tiers all == 255 and domain C ==
 NAME_MAX; any failure keeps the bisection leg. Tolerance: the linear model is
 a zero-tolerance equality; +/- 1 code unit applies only to verification-vs-
 bisection deviation, never mixed.
@@ -122,4 +122,4 @@ bisection deviation, never mixed.
   is dir_view; view_divergence is itself a headline column.
 - errno / winerror stored verbatim (M16).
 - Batch result cells: `control_pass: true` required; zero "conflict-but-not-
-  archived" cells (all conflicts -> evidence/S02/conflicts/).
+  archived" cells (all conflicts -> evidence/judgement/conflicts/).

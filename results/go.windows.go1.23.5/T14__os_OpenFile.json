@@ -16,7 +16,7 @@
  "create_result": "err_at_syscall",
  "error_stage": "syscall",
  "error_code": "WIN2_FILE_NOT_FOUND",
- "error_message": "open D:\\sendguard-work\\seat-qoder\\_pilot_scratch\\go\\T14__os_OpenFile__652800\\LPT9: The system cannot find the file specified.",
+ "error_message": "open D:\\work\\session-token\\_pilot_scratch\\go\\T14__os_OpenFile__652800\\LPT9: The system cannot find the file specified.",
  "bytes_written": 1,
  "bytes_on_disk": null,
  "read_result": "eof",
@@ -37,7 +37,7 @@
   "unicode_version": "unavailable-no-api"
  },
  "notes": [
-  "SCHEMA-GAP: read_result closed set lacks err_open; raw=ROOT-REFUSED (child): no spec/FROZEN.md above D:\\sendguard-work: pass -repo \u003crepository root\u003e; this lane will not guess a checkout"
+  "SCHEMA-GAP: read_result closed set lacks err_open; raw=ROOT-REFUSED (child): no spec/FROZEN.md above D:\\work: pass -repo \u003crepository root\u003e; this lane will not guess a checkout"
  ],
  "members": [
   {
@@ -47,10 +47,10 @@
    "dir_size": null,
    "path_exists": false,
    "path_size": null,
-   "path_error": "CreateFile D:\\sendguard-work\\seat-qoder\\_pilot_scratch\\go\\T14__os_OpenFile__652800\\PRN: The system cannot find the file specified.",
+   "path_error": "CreateFile D:\\work\\session-token\\_pilot_scratch\\go\\T14__os_OpenFile__652800\\PRN: The system cannot find the file specified.",
    "read_result": "eof",
    "read_bytes": null,
-   "read_error": "mapped: path_view unresolvable; raw=CreateFile D:\\sendguard-work\\seat-qoder\\_pilot_scratch\\go\\T14__os_OpenFile__652800\\PRN: The system cannot find the file specified.",
+   "read_error": "mapped: path_view unresolvable; raw=CreateFile D:\\work\\session-token\\_pilot_scratch\\go\\T14__os_OpenFile__652800\\PRN: The system cannot find the file specified.",
    "view_divergence": false,
    "same_name_hits": 0
   },
@@ -63,7 +63,7 @@
    "path_size": 0,
    "read_result": "eof",
    "read_bytes": null,
-   "read_error": "mapped-from:ROOT-REFUSED (child): no spec/FROZEN.md above D:\\sendguard-work: pass -repo \u003crepository root\u003e; this lane will not guess a checkout",
+   "read_error": "mapped-from:ROOT-REFUSED (child): no spec/FROZEN.md above D:\\work: pass -repo \u003crepository root\u003e; this lane will not guess a checkout",
    "view_divergence": true,
    "same_name_hits": 0
   },
@@ -74,10 +74,10 @@
    "dir_size": null,
    "path_exists": false,
    "path_size": null,
-   "path_error": "CreateFile D:\\sendguard-work\\seat-qoder\\_pilot_scratch\\go\\T14__os_OpenFile__652800\\LPT9: The system cannot find the file specified.",
+   "path_error": "CreateFile D:\\work\\session-token\\_pilot_scratch\\go\\T14__os_OpenFile__652800\\LPT9: The system cannot find the file specified.",
    "read_result": "eof",
    "read_bytes": null,
-   "read_error": "mapped: path_view unresolvable; raw=CreateFile D:\\sendguard-work\\seat-qoder\\_pilot_scratch\\go\\T14__os_OpenFile__652800\\LPT9: The system cannot find the file specified.",
+   "read_error": "mapped: path_view unresolvable; raw=CreateFile D:\\work\\session-token\\_pilot_scratch\\go\\T14__os_OpenFile__652800\\LPT9: The system cannot find the file specified.",
    "view_divergence": false,
    "same_name_hits": 0
   }

@@ -107,7 +107,7 @@ def build():
         req.append({"case_group": "ctrl", "case_id": name, "sub_identity": {}})
     # blind cells: the ids come from the sealed map so every port names them the same way.
     # The names themselves stay in the map; a port reads them there, not from prose.
-    bmap = os.path.join(REPO, "evidence", "S00", "blind-map.json")
+    bmap = os.path.join(REPO, "evidence", "freeze", "blind-map.json")
     blind_ids = []
     if os.path.isfile(bmap):
         for e in json.load(io.open(bmap, encoding="utf-8")).get("entries", []):

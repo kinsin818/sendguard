@@ -1,10 +1,10 @@
-# SG-F3 — Six lanes: make the harnesses able to answer on macOS and Ubuntu at all
+# F3 — Six lanes: make the harnesses able to answer on macOS and Ubuntu at all
 
 Status: **not dispatched to anyone yet, and deliberately unscheduled.** This file exists because the project's
 outward documents said "the macOS and Linux rows need CI to run", which is what a reader of
 `.github/workflows/matrix.yml` would reasonably conclude and what is not true. Writing the work down is the
 correction; nobody has agreed to do it, and no deadline is set, because whether it is worth six harness
-rewrites is the owner's call, not this seat's.
+rewrites is the owner's call, not this local's.
 
 ## The measured reason the rows do not exist
 

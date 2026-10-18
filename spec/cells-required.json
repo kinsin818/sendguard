@@ -1,6 +1,6 @@
 {
  "generated_by": "ci/gen_cells_required.py - derived from the committed spec face; deterministic, no timestamp in the output so the file can be byte-compared against a re-run",
- "spec_blob_sha256": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261",
+ "spec_blob_sha256": "4ffeadca18318c92feb16d6556a80804f89d80920147d0df60db40936d9516df",
  "withdraws": "the first version of this file (generated 03:4x from a mis-parse that saw only the 20 traps) is void; any port that used it must re-derive from this one",
  "note": "A port must emit exactly these cells. Missing => status blocked with command, exit code and one attempted fix. Extra => allowed, marked extra, excluded from the equality digest.",
  "primary_entry_per_port": {

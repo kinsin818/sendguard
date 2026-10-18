@@ -9,7 +9,7 @@ entry_name_hex_list, payload_hex, extractor ("zipfile" | "shutil").
 The archive is written by the primary entry (open-style write_bytes) so this leg
 answers the delivery question -- "can the recipient unpack what I packed" --
 and the extractor is the only thing that varies. Names are read back as hex;
-nothing is deleted (red line M19); a 5-second timeout is enforced by the parent.
+nothing is deleted (red line project rule); a 5-second timeout is enforced by the parent.
 """
 import argparse
 import hashlib

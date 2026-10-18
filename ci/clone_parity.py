@@ -39,7 +39,7 @@ DECLARED_EXCEPTIONS = {
 # Faces whose content is a fact about the machine that generated them. They are excluded **by name**, never by a
 # line pattern, because a pattern tolerance inside a compared face lets any other change on that line through -
 # which is how a reproducibility leg silently acquires a blind spot. Four outside reviewers reached the green
-# side of this leg only on the author's interpreter before this existed (docs/tickets/SG-F10-...): the fix is to
+# side of this leg only on the author's interpreter before this existed (docs/tickets/F10-...): the fix is to
 # move host-bound values into their own face so every compared face is host-free.
 HOST_BOUND_FACES = {"docs/host-stamp.md"}
 
@@ -187,14 +187,14 @@ def parse_verdict(text):
     return got, ""
 
 
-def compare_tool_fields(seat, clone_run):
-    """Field-by-field between the two trees. Returns (compared, list of (name, field, seat, clone))."""
+def compare_tool_fields(local, clone_run):
+    """Field-by-field between the two trees. Returns (compared, list of (name, field, local, clone))."""
     diffs = []
     compared = 0
     for f in tool_field_names():
         compared += 1
-        if seat[f] != clone_run[f]:
-            diffs.append((f, seat[f], clone_run[f]))
+        if local[f] != clone_run[f]:
+            diffs.append((f, local[f], clone_run[f]))
     return compared, diffs
 
 
@@ -236,7 +236,7 @@ def run_parity(root, quiet, source=REPO):
         return 3
     if head != local_head:
         print("OUTCOME=INSTRUMENT-RED the source tip is %s and this tree's HEAD is %s - the clone would verify a "
-              "different delivery than the one this seat built, so nothing is claimed"
+              "different delivery than the one this local built, so nothing is claimed"
               % (head[:12], local_head[:12]))
         return 3
     clone, state = pick_clone_dir(scratch, head)
@@ -270,7 +270,7 @@ def run_parity(root, quiet, source=REPO):
               % (clone, state, source, head[:12], dirty_before, p.returncode))
 
     import refresh_all  # same commit, so its GEN list is the contract of what is generated
-    faces = [doc for _s, doc, _ok in refresh_all.GEN] + ["evidence/S02/equality-verdict.json"]
+    faces = [doc for _s, doc, _ok in refresh_all.GEN] + ["evidence/judgement/equality-verdict.json"]
     counts = {"identical": 0, "declared": 0, "differing": 0, "missing": 0, "host_bound": 0}
     problems = []
     for doc in faces:
@@ -295,7 +295,7 @@ def run_parity(root, quiet, source=REPO):
         rc_s, out_s = run_tool(REPO, name)
         rc_c, out_c = run_tool(clone, name)
         label = name if len(name) < 24 else "%s...(%d chars)" % (name[:12], len(name))
-        bad = [(rc_c, "clone"), (rc_s, "seat")]
+        bad = [(rc_c, "clone"), (rc_s, "local")]
         if any(rc not in TOOL_RC_OK for rc, _ in bad):
             who = [w for rc, w in bad if rc not in TOOL_RC_OK]
             why = [TOOL_RC_INSTRUMENT.get(rc, "unexpected code") for rc, _ in bad if rc not in TOOL_RC_OK]
@@ -469,10 +469,10 @@ def selftest():
         and TOOL_RC_INSTRUMENT[2] == "scan failed",
         "selftest A12 red: the checker's own failure codes must be instrument failures, never answers")
     chk(not is_local("https://github.com/kinsin818/sendguard") and not is_local("git@github.com:a/b.git")
-        and is_local(r"D:\sendguard-work\seat-qoder") and is_local("../somewhere"),
+        and is_local(r"D:\work\session-token") and is_local("../somewhere"),
         "selftest A13 green: a URL is recognised as remote and a path as local, so --no-local is claimed only "
         "where it means something")
-    rc, got, how = remote_head(r"D:\sendguard-work\definitely-not-a-tree-xyz")
+    rc, got, how = remote_head(r"D:\work\definitely-not-a-tree-xyz")
     chk(rc != 0 and "no such directory" in (got + how),
         "selftest A13 red: a source path that does not exist is refused before anything is cloned, got %r %r %r"
         % (rc, got[:40], how))

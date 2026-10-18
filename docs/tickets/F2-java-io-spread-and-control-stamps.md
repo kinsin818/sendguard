@@ -1,4 +1,4 @@
-# SG-F2 — Java lane: finish the `java.io` spread you declared open, and stamp the four control cells that have no calibration result
+# F2 — Java lane: finish the `java.io` spread you declared open, and stamp the four control cells that have no calibration result
 
 **Race guard first.** Before writing, check ownership of the surface: any file under
 `results/java.windows.x64/` with an mtime newer than this dispatch (13:0x +0800, 2026-10-11), and any line in
@@ -7,7 +7,7 @@
 
 ## Why this exists — two open items that are yours, found and disclosed by you
 
-1. **The `java.io` spread is unfinished.** Your own note (`evidence/S02/java-selfcheck.md:286-288`) says the
+1. **The `java.io` spread is unfinished.** Your own note (`evidence/judgement/java-selfcheck.md:286-288`) says the
    delay on the extended-prefix question was spent on rev7 rule 4 - the `java.io` legs - and that **"none of it
    is in the recorded cells."** That work is the difference between the strongest Windows-semantics fact in this
    project and a half-told one: `impl/java/tools/ext-path-of-repro.txt` (which you produced, `run_rc=0`, both
@@ -15,7 +15,7 @@
    and that the answer flips between Temurin 17.0.17 and 21.0.6. The recorded cells still describe only
    `Files.write` and the one `java.io` leg you noted in `extended_leg_note`. `docs/whitepaper.md` §6 now lists
    this as 未做, and `docs/FINDINGS-rev6.md` M7 says it is yours to carry.
-2. **Four of your five control cells carry no `control_pass` result.** `docs/acceptance-S02.md` prints
+2. **Four of your five control cells carry no `control_pass` result.** `docs/acceptance.md` prints
    `pass (1/5 stamped)` for `java`; every other port prints `5/5`. Those cells are the calibration of the port
    itself - `T-CTRL-PARSE`, `T-CTRL-ILLEGAL-CHAR`, `T-CTRL-NAMETOOLONG`, `T-CTRL-CANON` - and a control cell
    without a self-check result is a claim that the instrument works which nobody, including you, can read back.
@@ -24,7 +24,7 @@
 
 - `results/java.windows.x64/`
 - `impl/java/`
-- `evidence/S02/java-selfcheck.md`
+- `evidence/judgement/java-selfcheck.md`
 
 `spec/`, `ci/`, `docs/`, `tool/` and other ports' faces are **out of bounds**; if one of them needs a change,
 argue it in your report. Do not edit `impl/java/src/ExtPathOfRepro.java`'s recorded capture
@@ -69,9 +69,9 @@ claim, and `docs/whitepaper.md` §3 quotes the control cells today). Reply with 
 refusal you reproduced, that is a legitimate `DONE` with Part 1 reported as `NOT-REACHED(reason=…)` and the
 command that shows why - a blocked leg that says so is worth more than a green one that hedges.
 
-## Amendment after acceptance (`evidence/S11/SG-F2-acceptance.md`)
+## Amendment after acceptance (`evidence/closing/F2-acceptance.md`)
 
-The lane met all five numbered criteria (`b56e9c4`). The one thing it did not carry is **this ticket's fault, not
+The lane met all five numbered criteria (`d781b83`). The one thing it did not carry is **this ticket's fault, not
 its own**: it asked for `control_pass_evidence`, a field that appears in no contract round - and the census added
 to `ci/validate_cells.py` at 13:34 shows 30 control cells stamped across six ports with **zero** carrying any
 source, in every lane alike. Putting an uncontracted requirement into one worker's criteria and then treating its

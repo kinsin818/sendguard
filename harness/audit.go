@@ -1,5 +1,5 @@
 // SENDGUARD independent enumerator (audit instrument).
-// Written by the taking-data seat, NOT by any language worker (M3/M10).
+// Written by the taking-data local, NOT by any language worker (M3/M10).
 // Shares zero code with the six measured implementations.
 //
 // Build:  CGO_ENABLED=0 go build -trimpath -o audit.exe .

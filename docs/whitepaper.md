@@ -21,10 +21,10 @@ python ci/expected_summary.py                      # 预期 vs 实测，含"没�
 ## 1. 这份东西是怎么造出来的
 
 一份冻结规范（20 条陷阱 + 5 个控制格 + 5 个盲样本 + 每语言钉死的 API 入口，样本一律 hex 存字节），
-六个人互不可见的窗口各写一门：TypeScript(Node 24 去类型)、Python、Go、Java、C#、Rust。
+六个互不可见的实现各写一门：TypeScript(Node 24 去类型)、Python、Go、Java、C#、Rust。
 **没有跨语言调用，没有共用工具函数，没有互相抄。**判定只看一件事：同一格上，六门交付的报告字节是否相同。
 
-规范的哈希在任何一门跑之前公布（`spec/FROZEN.md`，8 件产物）。期望表由一个既不写门也不写骨架的窗口
+规范的哈希在任何一门跑之前公布（`spec/FROZEN.md`，8 件产物）。期望表由一个既不写门也不写骨架的实现
 先写好封存（`spec/expectations.sealed.md`），六门全跑完才打开对照——这一条是为了抓第六种失败：**六门
 一起读错同一句话**。
 
@@ -176,7 +176,7 @@ cat impl/java/tools/ext-path-of-repro.txt
   9 个**，其中 `phantom`、`name_mutated`、`len_triple`、`name_landed_as` 连"已文档化字段"都没进。
   换句话说，"六门判定逐字节一致"这句话一直建立在"这些字段没人被要求回答"的前提上。修法是把差集公开印出来
   （`docs/cell-validation.md` 现在有一张逐门省略计数表），并把"哪些空白是合法的"交回契约本身——
-  下一轮契约要拍的事，本座不擅自动封存件。
+  下一轮契约要拍的事，维护方不擅自改封存件。
   ```
   python ci/validate_cells.py | tail -1 && sed -n '/does not require/,/^## What this/p' docs/cell-validation.md
   ```
@@ -200,22 +200,22 @@ cat impl/java/tools/ext-path-of-repro.txt
 缺格清单在 `docs/GAP.md`。弃权不是把分歧藏起来——被摘掉的只有"合法性"这一个字段，其余判定照比，
 而且少掉的那一格（`T03` `a<b.txt`）后来是被数据解决的：一门改了探测方式之后六门现在都给"非法"。
 
-未做，且这份报告一律不提具体结论：**macOS 与 Linux 的行**（**卡住它的不是那一下推送**：规范里早就封存了 22 行 macOS、22 行 Ubuntu 的预测，可六门的采集器都把结果路径写死成 `results/<门>.windows.x64/`，探的又是 Windows 独有语义，所以现在任何 runner 都产不出这些面；要做的是六门各来一遍 OS 可移植化，活儿与前置的契约决定写在 `docs/tickets/SG-F3-os-portability.md`。CI 那边今天补上的任务是**在三个 OS 上重跑判据本身**，（这个任务**从没跑过**，因为还没有推送）；工作流文件里也自己写明它不产结果面——以前 README 与本节都写着“需要 CI 跑”，读者会理解成“一推就有”，那是我们表述的错，不是数据的错。本仓远端在
-`https://github.com/kinsin818/sendguard`，公开仓 + standard runner 的分钟数免费，但推送动作不在本座授权内）、
+未做，且这份报告一律不提具体结论：**macOS 与 Linux 的行**（**卡住它的不是那一下推送**：规范里早就封存了 22 行 macOS、22 行 Ubuntu 的预测，可六门的采集器都把结果路径写死成 `results/<门>.windows.x64/`，探的又是 Windows 独有语义，所以现在任何 runner 都产不出这些面；要做的是六门各来一遍 OS 可移植化，活儿与前置的契约决定写在 `docs/tickets/F3-os-portability.md`。CI 那边今天补上的任务是**在三个 OS 上重跑判据本身**，（这个任务**从没跑过**，因为还没有推送）；工作流文件里也自己写明它不产结果面——以前 README 与本节都写着“需要 CI 跑”，读者会理解成“一推就有”，那是我们表述的错，不是数据的错。本仓远端在
+`https://github.com/kinsin818/sendguard`，公开仓 + standard runner 的分钟数免费，但推送动作不在维护方授权内）、
 **同一门语言内、同一 API 族内的对照**（Java 已经把 `FileOutputStream.write` 在 12 个长度档上各记成一格，**普通侧与
 `\\?\` 侧全部 `roundtrip_ok=true`**，而同样是 Java 的 `Files.write` 在扩展档记的是解析层拒绝——两套答案现在都在树里，
 不再只是一段话。仍未做完的是其余 `java.io` 入口的展开，以及把第二版运行时的答案也记成格（今天只有一份复现记录），
-见 `docs/FINDINGS-rev6.md` M7 与 `evidence/S11/SG-F2-acceptance.md`）、
+见 `docs/FINDINGS-rev6.md` M7 与 `evidence/closing/F2-acceptance.md`）、
 U 盘/SD 卡（FAT32/exFAT）、网络卷、网盘与邮件附件的文件名重写层、手机端下载层的字符清洗。
 
-还欠契约层两句拍板（本座不擅自改封存件，见 §5 最后两条）：一是给"哪枚可执行文件答的"一个跨门公共字段——
+还欠契约层两个待决项（维护方不擅自改封存件，见 §5 最后两条）：一是给"哪枚可执行文件答的"一个跨门公共字段——
 今早已实测六门里只有三门记录了自己的 exe，而且用了三个字段名、三种形状；二是写明十个判定字段里哪些在哪类格上是
 **合法空白**，并给布尔字段一个和 `read_result` 一样的 `not_applicable` 出路。这两条不改，"逐字节一致"就仍然建立在
 一半问题没人被要求回答的前提上。**两种改法的代价、今天的读数与建议都写在 `docs/NOTICE-rev9-proposal.md`，等一句 A／B／C。**
 
-上面这两笔欠账也已经落成两张带验收命令与钟点的工单：`docs/tickets/SG-F1-python-restamp.md`（一门的 27 格补
+上面这两笔欠账也已经落成两张带验收命令与钟点的工单：`docs/tickets/F1-python-restamp.md`（一门的 27 格补
 当前规范指纹，判据是 `python ci/spec_drift.py` 读到 `older=0`）与
-`docs/tickets/SG-F2-java-io-spread-and-control-stamps.md`（Java 的 `java.io` 展开＋四枚控制格盖下真实自检结果，
+`docs/tickets/F2-java-io-spread-and-control-stamps.md`（Java 的 `java.io` 展开＋四枚控制格盖下真实自检结果，
 判据是验收板读到 `pass (5/5 stamped)`）。两张工单都同一条规矩：**判据数字动了就上报，不许为了好看把它抹平。**
 
 方法全部公开，数据可复现，欢迎来挑刺。

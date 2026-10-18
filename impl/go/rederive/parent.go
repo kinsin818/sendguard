@@ -77,10 +77,10 @@ type planRow struct {
 }
 
 // sandboxRoot is on the same volume as the repo. docs/cleanup-notice.md puts scratch
-// under %TEMP%, which on this host is C:; evidence/S00/env-facts-windows-local.json
+// under %TEMP%, which on this host is C:; evidence/freeze/env-facts-windows-local.json
 // records 8dot3 name creation ENABLED on C: and DISABLED on D:, so measuring length
 // and enumeration behaviour on C: would not be the volume the project ships from.
-const sandboxRoot = `D:\sendguard-run`
+const sandboxRoot = `D:\work-run`
 
 const (
 	// zipTool names this port's packer and extractor with a version, which
@@ -124,10 +124,10 @@ func newUUID() string {
 //
 //	22 trap cells (one per frozen member, primary entry os.Create)
 //	88 tapi cells (22 members x the 4 pinned api_entry.go entries)
-//	 5 ctrl cells (primary entry; expectations only from evidence/S00-ctrl-baseline.md)
+//	 5 ctrl cells (primary entry; expectations only from evidence/ctrl-baseline.md)
 //	24 len cells  (T17/T18 x the G1-G4 grid pinned in spec/FROZEN.md, 3 points each)
 //
-// Blind samples are deliberately not measured here: evidence/S00/blind-map.json
+// Blind samples are deliberately not measured here: evidence/freeze/blind-map.json
 // seals them for the S03 dual-blind audit ("do not gate any judgment"), and the
 // landed python denominator (117 = 22+88+5+2) does not contain them.
 func buildPlan(spec *FrozenSpec, cases map[string]*CaseDef, ladder []int) []*planRow {
@@ -181,14 +181,14 @@ func buildPlan(spec *FrozenSpec, cases map[string]*CaseDef, ladder []int) []*pla
 		add(&planRow{
 			CaseID: cc.ID, BaseID: cc.ID, Group: "ctrl", Entry: spec.GoEntries[0],
 			HexName: hexName, MechanismClass: ctrlClass(cc.ID), Locale: "en-US",
-			Note:       "control cell; sample pinned in spec/cases.yaml control_samples, expectation from evidence/S00-ctrl-baseline.md",
+			Note:       "control cell; sample pinned in spec/cases.yaml control_samples, expectation from evidence/ctrl-baseline.md",
 			Applicable: []string{"windows"}, SubIdentity: []pair{}, Publish: true,
 			PathForm: "plain",
 		})
 	}
 
 	// The five sealed blind samples. rev6 requires them; the seal is opened by the
-	// contract owner's written instruction, not by this seat deciding to unseal it.
+	// contract owner's written instruction, not by this local deciding to unseal it.
 	for _, b := range spec.Blind {
 		add(&planRow{
 			CaseID: b.CaseID, BaseID: b.CaseID, Group: "blind", Entry: spec.GoEntries[0],
@@ -322,7 +322,7 @@ func normDep(class string) string {
 }
 
 // runParent drives the grid: one child process per cell, an externally enforced
-// timeout, one fresh uuid sandbox per cell, and no deletion anywhere (M19).
+// timeout, one fresh uuid sandbox per cell, and no deletion anywhere (project rule).
 func runParent(repo, resDir string, timeoutMS int64, only string) error {
 	started := time.Now()
 	enforcedTimeoutMS = timeoutMS
@@ -555,7 +555,7 @@ func runParent(repo, resDir string, timeoutMS int64, only string) error {
 	mb, _ := json.MarshalIndent(manifest, "", " ")
 	mb = append(mb, '\n')
 	// Instrument output never lands in results/ (spec/cell-identity.md §3).
-	mp := filepath.Join(repo, "evidence", "S02", "go-run-manifest.json")
+	mp := filepath.Join(repo, "evidence", "judgement", "go-run-manifest.json")
 	if err := os.WriteFile(mp, mb, 0644); err != nil {
 		fmt.Fprintf(os.Stderr, "manifest write failed: %v\n", err)
 	}
@@ -707,7 +707,7 @@ func failedObservation(r *planRow, why string) *Observation {
 		BytesOnDiskFace: "instrument failure",
 		Legality:        Legality{Verdict: "unknown", Probe: "none", Note: "not probed"},
 		Blocked:         true, BlockReason: "instrument could not produce an observation: " + truncate(why, 200),
-		BlockAttempt: "re-checked the sandbox and the child phase file; see evidence/S02/go-selfcheck.md",
+		BlockAttempt: "re-checked the sandbox and the child phase file; see evidence/judgement/go-selfcheck.md",
 	}
 }
 
@@ -951,7 +951,7 @@ func specSHA256s(repo string) (blob, disk string) {
 }
 
 // manifestScan looks for the longPathAware token in the bytes of the binary doing the
-// measuring. Like evidence/S00/env-facts-windows-local.json this is a byte scan, not a
+// measuring. Like evidence/freeze/env-facts-windows-local.json this is a byte scan, not a
 // PE manifest parse: it proves the string is in the file, not that the loader honours
 // it, and the absence of the string is reported the same way.
 // manifestScan looks for the longPathAware token in the bytes of a binary. The needle is
@@ -960,7 +960,7 @@ func specSHA256s(repo string) (blob, disk string) {
 // measured here, one build said 0 hits and the next said 1 on a binary whose manifest had
 // not changed, and the difference was my own literal sitting in rodata.
 //
-// Like evidence/S00/env-facts-windows-local.json this is a byte scan, not a PE manifest
+// Like evidence/freeze/env-facts-windows-local.json this is a byte scan, not a PE manifest
 // parse: it proves the string is in the file, not that the loader honours it. Excerpts are
 // published so a reader can judge the context of each hit.
 func manifestScan(b []byte) map[string]any {
@@ -1088,7 +1088,7 @@ func localeFace() string {
 }
 
 // asciiOnly keeps only printable ASCII so a cp936 console string cannot be baked
-// into a cell as replacement characters. evidence/S00/env-facts-windows-local.json
+// into a cell as replacement characters. evidence/freeze/env-facts-windows-local.json
 // records this host's console code page as 936.
 func asciiOnly(s string) string {
 	b := []byte(s)
@@ -1103,7 +1103,7 @@ func asciiOnly(s string) string {
 
 // envProbeCmd runs one read-only console probe through the cmd interpreter that
 // Windows actually resolves, with rc checked before the text is used. Output is
-// ASCII here, so the host console code page (936 per evidence/S00) cannot mangle it.
+// ASCII here, so the host console code page (936 per evidence/freeze) cannot mangle it.
 func envProbeCmd(args []string, timeoutMS int64) ([]byte, error) {
 	sh, err := exec.LookPath("cmd")
 	if err != nil {

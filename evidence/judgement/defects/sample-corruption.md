@@ -1,7 +1,7 @@
 # S02 defect report — frozen sample corruption (P0, freeze-blocking)
 
 - date: 2026-10-10
-- found by: W-PY (Python seat), first run of `impl/python/sg_python.py`
+- found by: W-PY (Python local), first run of `impl/python/sg_python.py`
 - object: `spec/cases.yaml` (frozen_at 2026-10-10, T01–T20)
 - severity: **P0 / freeze-blocking** — the frozen samples do not carry the intended bytes
 - status: **RESOLVED in freeze revision 2 (2026-10-10)** — see "Resolution" at the end
@@ -16,7 +16,7 @@ intended, or to invalid UTF-8. If S02 ran as-is, every Unicode / bidi / zero-wid
 and the headline "6 languages disagree" claim would be built on garbage.
 
 This is the classic 0.1-degree fault the review warned about: it is invisible in
-review, fatal at run time, and I am the first seat to actually decode + materialize.
+review, fatal at run time, and I am the first local to actually decode + materialize.
 
 ## Defect table
 
@@ -50,7 +50,7 @@ up invalid UTF-8. This is a spec-generation bug, not a per-language behaviour.
 ## Required action (do NOT silently patch)
 
 1. Amend `spec/FROZEN.md` and patch the 9 `sample_hex` values above (resolution
-   seat picks exact names for T06/T09/T19 — the base strings there are ambiguous).
+   local picks exact names for T06/T09/T19 — the base strings there are ambiguous).
 2. Re-seal the freeze (sha-locked), bump the freeze revision.
 3. Re-run the affected cells across all seats; the corrected names must be used
    by every worker (hex from the new freeze, never hand-typed).

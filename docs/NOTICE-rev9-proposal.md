@@ -28,7 +28,7 @@ every cell's `spec_sha256` becomes stale until each port re-emits - which is pre
 | cells where all six answered all ten fields, and matched | **4** | `docs/STATUS.md` |
 | ports that record *which executable* answered | 3 of 6, in 3 field names and 3 shapes (`java` 74/74 `toolchain`+`jvm_self_report`, `rust` 174/174 string, `python` 123/125 path) | `docs/FINDINGS-rev6.md` M7 |
 | ports that record nothing about it | 3 of 6 (`typescript` 0/87, `go` 0/203, `csharp` 0/50) | same |
-| control cells stamped with a calibration result | 5/5 in five ports, **1/5 in `java`** | `docs/acceptance-S02.md` |
+| control cells stamped with a calibration result | 5/5 in five ports, **1/5 in `java`** | `docs/acceptance.md` |
 | ports that declare whether a Windows-shaped trap even applies on this OS | **1 of 6** (reading 13:26, work tree: `java` 81 records `true`, 5 `false`; the other five write the field nowhere) | `python ci/validate_cells.py` → "Who declares whether a question applies on this OS" |
 
 The last row is the one that makes the applicability question answerable rather than rhetorical: the field
@@ -82,13 +82,13 @@ property for every port. Do **not** add the nine fields to `required` yet.
 3. **Whether a control cell's stamp has to say where it came from.** Measured at 13:34 by
    `python ci/validate_cells.py`: 30 control cells across six ports carry `control_pass=true` and **zero** carry
    any pointer to the command that produced it, because no contract round asks for one (`control_pass_evidence`
-   is not a field anywhere except in a ticket this seat wrote and then retracted - see
-   `docs/tickets/SG-F2-*.md`'s amendment). Either the contract names it and every lane re-stamps with a source,
+   is not a field anywhere except in a ticket this local wrote and then retracted - see
+   `docs/tickets/F2-*.md`'s amendment). Either the contract names it and every lane re-stamps with a source,
    or the calibration marks stay assertions a reader cannot re-check, and the whitepaper should stop implying
    they are measurements.
 4. Nothing else in this file needs a decision: the two re-runs that were owed have both landed
-   (`evidence/S11/SG-F1-acceptance.md`, `evidence/S11/SG-F2-acceptance.md`), and the OS-portability work is
-   written up but unscheduled (`docs/tickets/SG-F3-os-portability.md`), waiting on 1-3 above and on your
+   (`evidence/closing/F1-acceptance.md`, `evidence/closing/F2-acceptance.md`), and the OS-portability work is
+   written up but unscheduled (`docs/tickets/F3-os-portability.md`), waiting on 1-3 above and on your
    priority.
 
 Until one of those three words arrives, `spec/` stays at round 8, the legs keep printing the blanks, and the
@@ -101,8 +101,8 @@ outward documents keep the pair-of-numbers rule (`cells_fully_recorded_and_ident
 The owner ruled this morning that this repository is **not** rewritten. The measured blast radius of the disclosure
 fix is 11 non-data faces and 17 lines (1 in `spec/schema.json`, 16 across the six ports' emit sites), and nothing
 in the judging apparatus reads the field - `ci/`, `tool/` and the generated `docs/` faces score 0 hits. See
-`docs/tickets/SG-F8-public-interface-process-metadata.md` for the change and
-`docs/tickets/SG-F9-narrative-faces-production-metadata.md` for its narrative half.
+`docs/tickets/F8-public-interface-process-metadata.md` for the change and
+`docs/tickets/F9-narrative-faces-production-metadata.md` for its narrative half.
 
 Why it belongs in this round rather than a tenth: renaming a schema property changes `spec/schema.json`'s digest,
 which re-seals the contract and stales every record's `spec_sha256` until all six ports re-emit. Two seals would
@@ -123,7 +123,7 @@ What the seal must carry in one act:
 
 What a seal cannot undo, stated rather than implied: the field and its values are already in the published
 history - 1,150 occurrences over 880 result faces and 63 evidence faces - plus the narrative faces. History is not
-rewritten on the owner's ruling, so the forward correction is paired with an errata row naming what was public,
+rewritten on the owner's rule, so the forward correction is paired with an errata row naming what was public,
 and no face may read as though it always was clean. `python ci/process_leak_scan.py --repo-root .` is the standing
 leg; at the time of writing it reports
 `OUTCOME=RED ... fatal_by_class=HOSTROOT:14,IDENTITY:1134,LOGIN:17,RETIRED:1141` against this tree and

@@ -412,7 +412,7 @@
   "case_locale": "en-US",
   "cell_dir": "D:\\sendguard-run\\4de91538-3aa2-408e-b704-2f1c4bc4a345\\t",
   "child_command": [
-    "D:\\sendguard-work\\sg-rederive.exe",
+    "D:\\work\\sg-rederive.exe",
     "cell",
     "--plan",
     "D:\\sendguard-run\\4de91538-3aa2-408e-b704-2f1c4bc4a345\\_plan.json"
@@ -424,7 +424,7 @@
   "child_timeout_ms_enforced": 5000,
   "cleanup_attempted": false,
   "cleanup_failed": false,
-  "cleanup_note": "M19: this port contains no delete/unlink call anywhere; cleanup_failed is true only if a directory that had to be reused was not already empty, which is reported instead of cleaned",
+  "cleanup_note": "project rule: this port contains no delete/unlink call anywhere; cleanup_failed is true only if a directory that had to be reused was not already empty, which is reported instead of cleaned",
   "control_pass": true,
   "create_result": "ok",
   "deps_direct": 0,
@@ -465,7 +465,7 @@
       "token": "the needle is assembled at run time and is not stored as a literal in this binary"
     },
     "sandbox_root": "D:\\sendguard-run",
-    "toolchain": "go version go1.23.5 windows/amd64 | builder=C:\\Program Files\\Go\\bin\\go.exe | runner=D:\\sendguard-work\\sg-rederive.exe",
+    "toolchain": "go version go1.23.5 windows/amd64 | builder=C:\\Program Files\\Go\\bin\\go.exe | runner=D:\\work\\sg-rederive.exe",
     "unicode_version": "not-obtainable-here"
   },
   "error_code": "",
@@ -474,7 +474,7 @@
   "extended_probe": {
     "attempted": true,
     "bytes_written": 28,
-    "note": "created in extended form; no deletion is attempted (M19), the entry is left in place",
+    "note": "created in extended form; no deletion is attempted (project rule), the entry is left in place",
     "ok": true
   },
   "extra": false,
@@ -624,9 +624,9 @@
     "go_exe_resolved": "C:\\Program Files\\Go\\bin\\go.exe",
     "go_version_string": "go version go1.23.5 windows/amd64",
     "harness_source": "impl/go/rederive/",
-    "independence": "no file under results/ and no other language under impl/ was opened by this seat",
+    "independence": "no file under results/ and no other language under impl/ was opened by this local",
     "independent_enumerator": "harness/audit.go is the audit instrument; this port shares no code with it and never invoked it",
-    "runner_exe": "D:\\sendguard-work\\sg-rederive.exe",
+    "runner_exe": "D:\\work\\sg-rederive.exe",
     "sg_exe_sha256_before": "7647d02835b33feb195ccc20cbaef526411ca022f0e42a5d2eae587396ab142b",
     "spec_sha256": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261",
     "spec_sha256_face": "git cat-file blob HEAD:spec/cases.yaml",
@@ -653,7 +653,7 @@
   "scratch_dir_verified_empty_at_creation": false,
   "sha256_self": "c9fe45b2fee8ea846f0cf4f2cacc2a891e7b082e7719923502d12a9813e21994",
   "sha256_truth": "c9fe45b2fee8ea846f0cf4f2cacc2a891e7b082e7719923502d12a9813e21994",
-  "spec_source": "2nd-round arbitration 3 / Qoder 3-1/3-2: measure curve not points | base ladder and path forms from spec/cells-required.json",
+  "spec_source": "2nd-round arbitration 3 / the maintainer 3-1/3-2: measure curve not points | base ladder and path forms from spec/cells-required.json",
   "started_at": "2026-10-12T07:49:27.477244Z",
   "sub_identity": {
     "base_len": 78,

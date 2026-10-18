@@ -78,5 +78,5 @@ CELL tapi  T-API                  Files.newOutputStream entry=Files.newOutputStr
 CELL tapi  T-API-3                None           entry=Files.newOutputStream    create=ok             read=ok     legality=legal    via=win32  spread=0 EXTRA
 CELL tapi  T-API                  Files.move     entry=Files.move               create=ok             read=ok     legality=legal    via=win32  spread=0
 CELL tapi  T-API-4                None           entry=Files.move               create=ok             read=ok     legality=legal    via=win32  spread=0 EXTRA
-FACTS D:\sendguard-work\seat-qoder\impl\java\tools\run-facts.json
-cells_produced=74 cells_blocked=0 extra=26 missing_required=0 results_dir=D:\sendguard-work\seat-qoder\results\java.windows.x64
+FACTS D:\work\session-token\impl\java\tools\run-facts.json
+cells_produced=74 cells_blocked=0 extra=26 missing_required=0 results_dir=D:\work\session-token\results\java.windows.x64

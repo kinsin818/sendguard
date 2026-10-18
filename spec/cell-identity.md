@@ -75,7 +75,7 @@ ports had answered three different questionnaires.
   the port digests are in.
 - Whether a given machine's answer depends on hardware (a reserved name with a device behind it) or on
   policy (`LongPathsEnabled`) is an environment fact, recorded per run, never folded into a verdict.
-## 6. Addendum from the outside referee (2026-10-11, `evidence/S00/referee-windows.md`)
+## 6. Addendum from the outside referee (2026-10-11, `evidence/freeze/referee-windows.md`)
 
 Two sentences this contract was missing, added because the referee measured their absence:
 
@@ -110,7 +110,7 @@ sealed expectation table's binding line - which is why this is a rule and a help
 - `sub_identity` is an object holding exactly the applicable dimensions. For `len` cells the dimensions are
   `base_len` and `path_form` (plain and extended are two separate measurements). For every other group
   `sub_identity` is `{}` - `path_form` there is a behaviour field, not identity.
-- Blind cells are named `B1`..`B5`, taken from `blind_id` in `evidence/S00/blind-map.json`. No port invents
+- Blind cells are named `B1`..`B5`, taken from `blind_id` in `evidence/freeze/blind-map.json`. No port invents
   its own blind spelling.
 - `tapi` cells are per-language by construction (the pinned entries are different strings), so they are
   **excluded from the equality digest** and reported separately as the instrument self-check. They are

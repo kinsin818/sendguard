@@ -62,7 +62,7 @@
    "toolchain": "C:\\Python314\\python.exe 3.14.7",
    "utf8_mode": 0,
    "longpath_manifest_on_interpreter": true,
-   "longpath_manifest_source": "evidence/S00/env-facts-windows-local.json manifest_scan: C:\\Python314\\python.exe found=true"
+   "longpath_manifest_source": "evidence/freeze/env-facts-windows-local.json manifest_scan: C:\\Python314\\python.exe found=true"
   },
   "interpreter": {
    "resolved_executable": "C:\\Python314\\python.exe",

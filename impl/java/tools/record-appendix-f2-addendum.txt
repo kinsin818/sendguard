@@ -1,6 +1,6 @@
 
 
-### SG-F2 addendum - the stamper's own arms went false, and one number above is now stale
+### F2 addendum - the stamper's own arms went false, and one number above is now stale
 
 The section above prints `stamp_controls.py --selftest` as **8 arms / 0 problems**. That was the true
 reading of a real run when it was captured. It then went false on its own ticket, for a reason worth
@@ -21,7 +21,7 @@ tool, not in the number:
 Reading after that fix, in the same capture as this addendum:
 `python impl/java/tools/stamp_controls.py --selftest` -> `arms_checked=10 problems=0`, rc=0.
 `python impl/java/tools/selfcheck.py --selftest` -> `arms_checked=49 problems=0`, rc=0.
-`python impl/java/tools/verify_sg_f2.py` -> `mode=post-commit spread_committed=12/12
+`python impl/java/tools/verify_f2.py` -> `mode=post-commit spread_committed=12/12
 cells=86 identical_to_HEAD=86 stamped_ctrl=0 rewritten=[] moved=0`, rc=0 - which is the commit-level
 proof that `b56e9c4` carried exactly this lane: after the commit every cell on the disk equals its
 own committed face.

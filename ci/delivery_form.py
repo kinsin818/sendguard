@@ -41,7 +41,7 @@ def tracked_files():
     The first version of this leg sized whatever was on this disk, which made the published byte counts
     irreproducible: a lane's scratch build output, present in a working copy and absent in a clone, changed the
     numbers by ~38 bytes of text and several hundred kilobytes of bytes. The check that found it is
-    `evidence/S10/cold-clone-20261011d.md`. A delivery form has to describe the artifact a customer receives
+    `evidence/clone-tool/cold-clone-20261011d.md`. A delivery form has to describe the artifact a customer receives
     from the repository, so it measures the tracked file set and prints what it dropped.
 
     The NUL that separates `git ls-files -z` output cannot survive being typed into this source file (the console
@@ -394,7 +394,7 @@ def main(argv=None):
            "deliberately not published in this face: a count of ignored files requires those files to be present, "
            "so it describes a machine rather than a delivery. The two readings this leg was checked against - this "
            "working copy and a cold clone of the same commit - are recorded in "
-           "`evidence/S10/cold-clone-20261011d.md`.", "",
+           "`evidence/clone-tool/cold-clone-20261011d.md`.", "",
            "| port | cells read | direct/total imports (max seen, n cells reporting) | per-cell time ms "
            "min/med/max (n) | tracked files matched | extensions | executables | bytes | largest file |",
            "|---|---|---|---|---|---|---|---|---|"]

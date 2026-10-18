@@ -91,7 +91,10 @@ MSG_IDENT = None  # built at run time from the leg's own needle list, so this fi
 def identity_needles():
     """The producer-identity vocabulary, taken from the disclosure leg rather than restated here."""
     out = [pls.RETIRED_KEY]
-    out += ["seat" + "-qoder", "W-" + "PY", "W-" + "GO", "W-" + "NODE", "qian" + "wen", "dou" + "bao"]
+    out += ["local" + "-the maintainer", "W-" + "PY", "W-" + "GO", "W-" + "NODE", "qian" + "wen", "dou" + "bao"]
+    out += ["Qo" + "der", "this " + "seat", "Python " + "seat", "worker " + "seat", "one " + "seat",
+            "the " + "seat", "a " + "seat", "stand" + "ing order", "D" + "oD", "M" + "19", "M" + "20",
+            "led" + "ger", "rul" + "ing", "SG" + "-F", "军" + "令", "老" + "板", "拍" + "板", "座" + "席"]
     return [n for n in out if n]
 
 
@@ -106,7 +109,10 @@ def check_message(text, root_forms, home_forms):
                 out.append((cls, i, shape_of(line)))
         low = line.lower()
         for n in identity_needles():
-            if n.lower() in low:
+            # word-boundary match: "SG-F" must not condemn "sg-final" and "DoD" must not
+            # condemn "dodged" - a needle that fires on ordinary words is a needle that
+            # gets ignored, which is how gates die.
+            if re.search(r"\b" + re.escape(n.lower()) + r"\b", low):
                 out.append(("MSG-IDENTITY", i, "identity needle %r (%s)" % (n, shape_of(line))))
     return out
 
@@ -159,7 +165,7 @@ def selftest(root_forms, home_forms):
     f3 = check_lines(planted[1], ['  "scratch_root": "%s"' % home_esc], root_forms, home_forms)
     chk([x[0] for x in f3] == ["LOGIN"] and f3[0][3] == "fatal",
         "red: an escaped profile root in a result face blocks, got %r" % (f3,))
-    f4 = check_lines(os.path.join("docs", "tickets", "SG-F15-x.md"), ["it held " + home_plain], root_forms,
+    f4 = check_lines(os.path.join("docs", "tickets", "F15-x.md"), ["it held " + home_plain], root_forms,
                      home_forms)
     chk(f4 and f4[0][3] == "mentioned",
         "green: a rule face naming the path is quoted, not condemned (it is describing the defect), got %r"

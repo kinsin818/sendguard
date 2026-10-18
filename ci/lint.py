@@ -2,7 +2,7 @@
 """SENDGUARD CI lint - 3 pieces, each with red AND green arms.
 
 Piece 1: runs-on label whitelist (standard images only; *-latest and
-         larger/xl runners FORBIDDEN - M20).
+         larger/xl runners FORBIDDEN - project rule).
 Piece 2: tracked-name legality (git ls-files). Checks reserved device names,
          illegal chars, trailing dot/space, control chars, 8.3 short-name
          patterns. Names are checked at STRING level only; forbidden-name
@@ -205,7 +205,7 @@ def check_workflow_instrument(text):
             errs.append("instrument job does not run on the frozen label %r" % label)
     for floating in ("ubuntu-latest", "macos-latest", "windows-latest"):
         if floating in text:
-            errs.append("floating runner label present: %r (M20 forbids them)" % floating)
+            errs.append("floating runner label present: %r (project rule forbids them)" % floating)
     return errs
 
 

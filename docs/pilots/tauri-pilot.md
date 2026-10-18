@@ -1,6 +1,6 @@
 # SENDGUARD double-click chain pilot (B19 technical half)
 
-Date: 2026-10-10 (S00). Verdict: **Tauri path OK** -> use Tauri for the
+Date: 2026-10-10. Verdict: **Tauri path OK** -> use Tauri for the
 sender-side checker GUI unless a later stage finds a blocker.
 
 ## What was verified

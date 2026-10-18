@@ -57,4 +57,4 @@ Deadline **07:30** host clock, unchanged. If a rung is unreachable, emit it with
 the command, its exit code and one attempted fix.
 
 Unchanged: do not read another port's `impl/` or `results/`, no `git push`, no edits to `spec/`, `ci/`,
-`docs/`, `harness/`, no deletion logic (M19), never open the **contents** of a reserved device name.
+`docs/`, `harness/`, no deletion logic (project rule), never open the **contents** of a reserved device name.

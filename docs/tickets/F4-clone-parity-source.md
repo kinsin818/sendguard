@@ -1,6 +1,6 @@
-# SG-F4 - make `ci/clone_parity.py` able to verify a source other than this working copy
+# F4 - make `ci/clone_parity.py` able to verify a source other than this working copy
 
-Owner: the seat that owns `ci/` (this seat). Written 2026-10-11 15:26 +0800, from work already done by hand.
+Owner: the local that owns `ci/` (this local). Written 2026-10-11 15:26 +0800, from work already done by hand.
 
 ## Why
 
@@ -8,7 +8,7 @@ Since the push, the sentence a buyer cares about is "the **public** repository r
 knows how to clone `REPO`, so at 15:24 the public check had to be done with a throwaway script beside the
 repository - which then got two things wrong that the leg would not have got wrong (an incomplete timestamp
 pattern, and a second verdict parser). The public result is recorded in
-`evidence/S11/public-clone-20261011.md`; this ticket exists so the next such check is one command instead of one
+`evidence/closing/public-clone-20261011.md`; this ticket exists so the next such check is one command instead of one
 riskier improvisation.
 
 ## Deliverable
@@ -37,8 +37,8 @@ explicitly because Python evaluates the condition before the label can be regist
 2. a new red-side arm: a source path that does not exist returns rc=3 and creates no directory;
 3. a green-side arm: a URL-shaped source is recognised as remote, so `--no-local` is not claimed where it is inert;
 4. one live run against `https://github.com/kinsin818/sendguard` reporting `OUTCOME=CLEAN` with the same
-   identical/declared counts as `evidence/S11/public-clone-20261011.md` section 3;
-5. no face under `results/`, `spec/` or `impl/` moves, and nothing under `D:\sendguard` is touched at all.
+   identical/declared counts as `evidence/closing/public-clone-20261011.md` section 3;
+5. no face under `results/`, `spec/` or `impl/` moves, and nothing under `D:\local-dir` is touched at all.
 
 ## Landed, 15:34 +0800
 
@@ -51,15 +51,15 @@ self-counting guard that `ci/coverage_report.py` carries. `--selftest` reads `ar
 Live run against the public repository, which is what the ticket was opened for:
 
 ```
-clone| D:\sendguard-work\sg-public\parity-1 (created) source=https://github.com/kinsin818/sendguard head=02807a92edd2 status_before=0 pipeline_rc=1
+clone| D:\work\sg-public\parity-1 (created) source=https://github.com/kinsin818/sendguard head=02807a92edd2 status_before=0 pipeline_rc=1
 declared| docs/evidence.md - 1 line(s) inside the declared shape: - repository commit: `38446a01d551` (working tree carries 15 uncommitted faces at generation time). That is the HEAD thi
 tool| names=5 fields_compared=55 differing=0
-OUTCOME=CLEAN faces_compared=12 identical=11 declared=1 differing=0 missing=0 clone=D:\sendguard-work\sg-public\parity-1 source=https://github.com/kinsin818/sendguard
+OUTCOME=CLEAN faces_compared=12 identical=11 declared=1 differing=0 missing=0 clone=D:\work\sg-public\parity-1 source=https://github.com/kinsin818/sendguard
 ```
 
 One consequence worth noting: because the deliverable comparison runs between this tree and the clone, pointing
-`--source` at the public URL strengthens it - the 55 fields are now seat-versus-public-clone, not
-seat-versus-clone-of-seat.
+`--source` at the public URL strengthens it - the 55 fields are now local-versus-public-clone, not
+local-versus-clone-of-local.
 
 ## Limits to state in the face, not only here
 

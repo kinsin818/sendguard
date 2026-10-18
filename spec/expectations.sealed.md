@@ -187,7 +187,7 @@ Member 2 (Hangul jamo .txt):
 ## 2. Control cells (T-CTRL-*)
 
 Note: the frozen table names these five but carries no sample hex for them (their expectations are defined
-by `evidence/S00-ctrl-baseline.md`, which is outside this seal's read scope). Predictions below are
+by `evidence/ctrl-baseline.md`, which is outside this seal's read scope). Predictions below are
 category-level from each control's name plus `spec/canonical.md` §8 role ("verify the ruler"); rows whose
 content I could not see are marked accordingly.
 
@@ -220,17 +220,17 @@ content I could not see are marked accordingly.
 ## 3. Blind samples — declared NO COVERAGE at this seal
 
 The blind set is referenced only as `seed_blind_samples: 7f3c1a9e...` and
-`blind_map_ref: evidence/S00/blind-map.json`. The five blind sample names are **not** present in
+`blind_map_ref: evidence/freeze/blind-map.json`. The five blind sample names are **not** present in
 `spec/cases.yaml`, and `evidence/` is inside this seal's forbidden-read set (reading the map would also
 violate the blind protocol). Therefore no per-case prediction can be written without guessing, and
 guessing silently is exactly what this document exists to forbid. Recorded instead:
 
 - blind_1 .. blind_5 | prediction: withheld — hex not available within sealed read scope.
-- Process note for the seat: a valid sealed expectation for the blind cells requires either (a) the
+- Process note for the local: a valid sealed expectation for the blind cells requires either (a) the
   five sample hex strings handed over through a channel that does not reveal trap identity
   (blind-by-construction: values only, no mapping), or (b) accepting that blind cells are checked
   post-hoc against the trap rows whose category they turn out to share.
-- Consistency guard the seat can still use: whatever the blind samples turn out to be, the
+- Consistency guard the local can still use: whatever the blind samples turn out to be, the
   per-OS predictions above already pin every mechanism_class in canonical §10 except `unknown`.
 
 ---
@@ -260,7 +260,7 @@ guessing silently is exactly what this document exists to forbid. Recorded inste
 
 ---
 
-## Seat correction (append-only, 2026-10-11 04:35) - does not alter any prediction
+## Correction (append-only, 2026-10-11 04:35) - does not alter any prediction
 
 The header binds this table to `sha256_cases_yaml: 08484788745D...`, which is the digest of the
 **checked-out file**, taken with `Get-FileHash`. The committed blob face of the same file is

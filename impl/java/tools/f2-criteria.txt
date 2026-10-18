@@ -1,13 +1,13 @@
-# SG-F2 criteria transcript - one command per block, rc printed immediately after
+# F2 criteria transcript - one command per block, rc printed immediately after
 # run_local=2026-10-11 13:25:56 +0800
 ## 1 python ci/validate_cells.py
 wrote docs/cell-validation.md bytes=2647 invalid=0 missing_faces=0 verdict_fields_not_required=9 verdict_fields_undocumented=4 cells_omitting_a_compared_field=371
 rc=0
 ## 2 python ci/acceptance.py
-wrote docs/acceptance-S02.md bytes=5397 ports=6 faces_excluded=5 faces_ahead_of_head=17 git_status_rc_nonzero=0
+wrote docs/acceptance.md bytes=5397 ports=6 faces_excluded=5 faces_ahead_of_head=17 git_status_rc_nonzero=0
 rc=0
-## java row of docs/acceptance-S02.md
-| java | 86 | 44/44 | 0 | 0 | 38 | 4/4 | pass (5/5 stamped) | 0 | 74 | OK | `cells_required=44 cells_matched=48 cells_produced=74 cells_valid=74 bl` (evidence/S02/java-selfcheck.md) |
+## java row of docs/acceptance.md
+| java | 86 | 44/44 | 0 | 0 | 38 | 4/4 | pass (5/5 stamped) | 0 | 74 | OK | `cells_required=44 cells_matched=48 cells_produced=74 cells_valid=74 bl` (evidence/judgement/java-selfcheck.md) |
 | java | 17 | 5 | 12 | 0 |
 grep_rc=0
 ## 3 python ci/equality.py

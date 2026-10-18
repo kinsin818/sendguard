@@ -16,7 +16,7 @@
   "harness_version": "0.2.0-s02",
   "started_at": "2026-10-10T15:51:18.757Z",
   "elapsed_ms": 0,
-  "worker_id": "W-NODE",
+  "worker_id": "port-node",
   "deps_direct": 0,
   "deps_total": 0,
   "len_kind": "path",

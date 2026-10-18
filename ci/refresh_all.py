@@ -27,7 +27,7 @@ GEN = [("ci/gap_report.py", "docs/GAP.md", (0,)),
        ("ci/expected_summary.py", "docs/expected-summary.md", (0,)),
        ("ci/validate_cells.py", "docs/cell-validation.md", (0, 1)),
        ("ci/tapi_report.py", "docs/tapi.md", (0,)),
-       ("ci/acceptance.py", "docs/acceptance-S02.md", (0,)),
+       ("ci/acceptance.py", "docs/acceptance.md", (0,)),
        ("ci/status_brief.py", "docs/STATUS.md", (0,)),
        ("ci/coverage_report.py", "docs/coverage.md", (0,)),
        ("ci/spec_drift.py", "docs/spec-drift.md", (0, 1)),
@@ -48,7 +48,7 @@ JUDGE = [("ci/selftest.py", ["--scratch-root", os.path.join(REPO, "..", "sg-self
                                     os.path.join(REPO, "..", "sg-claims-judge")]),
          ("ci/face_preflight.py", ["--selftest"]),
          ("ci/process_leak_scan.py", ["--selftest"]),
-         # the scan itself: RED is the standing finding recorded by SG-F8, not a broken instrument, and a
+         # the scan itself: RED is the standing finding recorded by F8, not a broken instrument, and a
          # refusal counts as a result here while rc outside (0,1,3) would count as a tool failure
          ("ci/process_leak_scan.py", ["--repo-root", REPO, "--quiet"]),
          ("ci/equality.py", []),

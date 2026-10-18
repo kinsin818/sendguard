@@ -25,7 +25,7 @@
  "enum_api_entry": "os.ReadDir",
  "os_legality_verdict": "unknown",
  "mechanism_class": "component_length_limit",
- "worker_id": "W-GO/qianwen",
+ "worker_id": "port-go",
  "harness_version": "runner-v1",
  "started_at": "2026-10-10T14:44:23.8116899Z",
  "elapsed_ms": 24,

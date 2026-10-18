@@ -13,11 +13,11 @@
   "os": "windows",
   "os_version": "",
   "arch": "",
-  "locale": "zh-CN console cp936; python default encoding cp936; see evidence/S00/env-facts-windows-local.json",
+  "locale": "zh-CN console cp936; python default encoding cp936; see evidence/freeze/env-facts-windows-local.json",
   "api_entry": "std::fs::File::create",
   "primary": true,
   "attempt": 1,
-  "harness_version": "S02-rust-seat-2",
+  "harness_version": "S02-rust-local-2",
   "implementation_id": "rust-port",
   "started_at": "2026-10-12T15:44:17.270+08:00",
   "spec_sha256": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261",
@@ -37,7 +37,7 @@
   "name_encoding": "hex_raw_bytes",
   "name_encoding_basis": "name_source and name_landed_as_hex are the hex of the raw UTF-8 bytes of the name, never the name itself (N12); no cell in this port records hex_utf16le",
   "longpath_mechanism": "prefix_rewrite",
-  "longpath_evidence": "bisection cell: the plain face is deliberately probed past 259 code units, and no declared mechanism name fits what was observed (see the longpath section of evidence/S02/rust-selfcheck.md)",
+  "longpath_evidence": "bisection cell: the plain face is deliberately probed past 259 code units, and no declared mechanism name fits what was observed (see the longpath section of evidence/judgement/rust-selfcheck.md)",
   "spec_applicability": "windows,macos,ubuntu",
   "cell_state": "measured-bisection",
   "contract_role": "extra",
@@ -53,7 +53,7 @@
   "path_form": "extended",
   "name_source_kind": "generated-measured-name",
   "bisect_range": "[64, 33000]",
-  "bisect_range_basis": "this seat's own pre-flight ladder, re-measured inside the cell",
+  "bisect_range_basis": "this local's own pre-flight ladder, re-measured inside the cell",
   "bisect_subject": "width of the whole path",
   "rev4_regime_question": "gate.md section 5 (rev4) keys the expected ceiling on longpath_mechanism, not on path_form",
   "name_source": "742e62696e",
@@ -210,5 +210,5 @@
   "instrument_conflict": false,
   "scratch_removed_empty": false,
   "cleanup_failed": true,
-  "cleanup_reason": "scratch holds entries left by the measurement; this port carries no deletion logic (M19)"
+  "cleanup_reason": "scratch holds entries left by the measurement; this port carries no deletion logic (project rule)"
 }

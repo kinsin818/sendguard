@@ -17,12 +17,12 @@ Verification rather than intent: `git log --name-only 1b4abc6..main` returns **0
 `git diff --stat backup/pre-history-fix-20261012 main` was **empty** after the pass - the tree at the tip is
 byte-for-byte the tree it started from, minus files that were already deleted from it, so nothing else moved.
 
-Why exactly these five: they are third-party text. The repository publishes what this seat measured and what it
+Why exactly these five: they are third-party text. The repository publishes what this local measured and what it
 judged; it does not publish other people's working directories. Those files carry 21 absolute host paths, four
 of which this project's own leg grades FATAL under `HOSTROOT`/`LOGIN`, and each reviewer's scratch layout -
 rule 7 of `docs/AUDIT-KIT.md` asked auditors to redact precisely that, and four did not. The adjudication of
 everything they raised survives in `evidence/audit-in/ADJUDICATION.md`: claim, command, reading, disposition,
-in this seat's words, with no host path in it. The files themselves are held unedited in the private register
+in this local's words, with no host path in it. The files themselves are held unedited in the private register
 beside the repository, and the pre-rewrite tip is kept in the local branch
 `backup/pre-history-fix-20261012`, so the act is reversible on this machine.
 
@@ -38,7 +38,7 @@ unchanged, because the tip had already been cleaned by hand before the pass ran.
 ## Pass two - the same needles were still inside commit messages
 
 Measuring the result before pushing found them: a reviewer's workspace path, a user-profile root, and two
-reviewer seat names. Removing five files while publishing the messages that quote those paths would have kept
+reviewer local names. Removing five files while publishing the messages that quote those paths would have kept
 the letter of option A and defeated its point, so a second filter ran over the same unpushed range,
 `--msg-filter`, replacing exactly these strings and touching nothing else - no rewording, no reordering, no
 date change:
@@ -48,7 +48,7 @@ date change:
 <cross-check file path>         -> "<the cross-check file, path withheld>"
 <private register path>         -> "<the private register, path withheld>"
 a profile root under the user directory -> "<a user profile root>"
-two reviewer seat names          -> "the kit review" / "the cross-check seat"
+two reviewer local names          -> "the kit review" / "the cross-check local"
 ```
 
 A scan of every message in `1b4abc6..main` for those needles now returns **NONE**. The pseudonymous labels
@@ -75,15 +75,15 @@ than a path.
 | `da01f07cf86b` | `61a5ce7284a7` | The missing half of the last commit, named face by face, b |
 | `75ceaeeaab47` | `ec8e9c608c25` | The parity reading da01f07 promised, taken after it landed |
 | `c78e1392237b` | `adc6be0d8cfe` | The version leg caught its own fixture, and the fixture is |
-| `1354410e3ae3` | `c7ba0ab9030b` | The audit kit was told to hide the studio's address and ca |
+| `1354410e3ae3` | `c7ba0ab9030b` | The audit kit was told to hide the project's address and ca |
 
 <!-- the left column lists ids that deliberately no longer resolve on this branch; a sweep that repoints
 stale ids must skip this table, because its purpose is to record what was replaced -->
 
 Sixteen commits. Every left-hand id resolves only through this table or the backup branch; the right-hand column
 is what `git log` shows. The references that pointed at left-hand ids inside faces were rewritten to the
-right-hand ones (`evidence/S11/DELIVERY-RECEIPT-20261011.md`, `evidence/audit-in/ADJUDICATION.md`,
-`evidence/S11/parity-after-fix-20261012.md`, and the generated `docs/evidence.md` by regenerating it), which is
+right-hand ones (`evidence/closing/DELIVERY-RECEIPT-20261011.md`, `evidence/audit-in/ADJUDICATION.md`,
+`evidence/closing/parity-after-fix-20261012.md`, and the generated `docs/evidence.md` by regenerating it), which is
 a forward correction of a reference, not a rewriting of a claim: each corrected sentence still asserts what it
 asserted, about the commit that still exists under its new name.
 
@@ -91,9 +91,9 @@ asserted, about the commit that still exists under its new name.
 
 **It un-publishes nothing.** The published tip is `1b4abc6` and is untouched by both passes, so everything
 already out there stays out there: the 1,150 occurrences of the retired producer key in the result faces, the
-role table's persona names, the S00 DoD report's studio vocabulary, and the commit messages that named seats and
+role table's persona names, the stage-0 acceptance report's project vocabulary, and the commit messages that named seats and
 lanes before today. `python ci/process_leak_scan.py --repo-root .` still reads
-`RETIRED:1143 IDENTITY:1134 HOSTROOT:14 LOGIN:18` and will stay red until the six lanes re-emit and `SG-F9`
+`RETIRED:1143 IDENTITY:1134 HOSTROOT:14 LOGIN:18` and will stay red until the six lanes re-emit and `F9`
 clears the narrative faces - the rewrite is not a way to make that number look better, and nothing on this page
 claims it is.
 

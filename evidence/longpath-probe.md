@@ -1,9 +1,9 @@
-# SENDGUARD S00 longpath 2x2 sub-experiment (Node probe)
+# SENDGUARD longpath 2x2 sub-experiment (Node probe)
 
 - date: 2026-10-10T12:55:09.790Z
 - LongPathsEnabled (before): 0
-- plain target: D:\sendguard\evidence\S00\_longrun\0123456789abcdef0123456789abcdef\0123456789abcdef0123456789abcdef\0123456789abcdef0123456789abcdef\0123456789abcdef0123456789abcdef\0123456789abcdef0123456789abcdef\0123456789abcdef0123456789abcdef\0123456789abcdef0123456789abcdef\0123456789abcdef0123456789abcdef\report-2026.txt (len=314)
-- extended target: \\?\D:\sendguard\evidence\S00\_longrun\0123456789abcdef0123456789abcdef\0123456789abcdef0123456789abcdef\0123456789abcdef0123456789abcdef\0123456789abcdef0123456789abcdef\0123456789abcdef0123456789abcdef\0123456789abcdef0123456789abcdef\0123456789abcdef0123456789abcdef\0123456789abcdef0123456789abcdef\report-2026.txt (len=318)
+- plain target: D:\local-dir\evidence\000\_longrun\0123456789abcdef0123456789abcdef\0123456789abcdef0123456789abcdef\0123456789abcdef0123456789abcdef\0123456789abcdef0123456789abcdef\0123456789abcdef0123456789abcdef\0123456789abcdef0123456789abcdef\0123456789abcdef0123456789abcdef\0123456789abcdef0123456789abcdef\report-2026.txt (len=314)
+- extended target: \\?\D:\local-dir\evidence\000\_longrun\0123456789abcdef0123456789abcdef\0123456789abcdef0123456789abcdef\0123456789abcdef0123456789abcdef\0123456789abcdef0123456789abcdef\0123456789abcdef0123456789abcdef\0123456789abcdef0123456789abcdef\0123456789abcdef0123456789abcdef\0123456789abcdef0123456789abcdef\report-2026.txt (len=318)
 
 ## Cell A: LongPathsEnabled=0 x plain
 

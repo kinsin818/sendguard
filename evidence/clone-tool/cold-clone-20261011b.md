@@ -1,10 +1,10 @@
 # Cold-clone verification, second run - after the gate learned to count silence
 
-Author: the delivery seat (window `d9242392`). Host clock 2026-10-11 12:12 +0800.
-Repository under test: `D:\sendguard-work\seat-qoder` at HEAD `578ba56` ("Make silence a counted fact").
-Clone: `D:\sendguard-work\cold-2`, made with `git clone --no-local file:///D:/sendguard-work/seat-qoder cold-2`
+Author: the delivery local (window `d9242392`). Host clock 2026-10-11 12:12 +0800.
+Repository under test: `D:\work\session-token` at HEAD `578ba56` ("Make silence a counted fact").
+Clone: `D:\work\cold-2`, made with `git clone --no-local file:///D:/work/session-token cold-2`
 (`clone_rc=0`, `git status --porcelain` = 0 lines in the clone). Scratch root for the self-test:
-`D:\sendguard-work\cold-st` (passed in by the caller; the instrument picks no landing place, and it is not a
+`D:\work\cold-st` (passed in by the caller; the instrument picks no landing place, and it is not a
 drive root).
 
 ## What ran in the clone, and what it said
@@ -61,7 +61,7 @@ port's 11:35 face set. Consequences for how these numbers may be used:
 
 The TypeScript lane's 12:02 batch landed as `2037b15` ("Land the TypeScript lane's 12:02 batch…", 67 files:
 56 modified faces, 7 new faces, its `selfcheck.py`/`runner.ts`/`probe.ts` and its own closing report), so the
-work tree was re-cloned and the same commands run again: `git clone --no-local file:///D:/sendguard-work/seat-qoder cold-3`
+work tree was re-cloned and the same commands run again: `git clone --no-local file:///D:/work/session-token cold-3`
 (`clone_rc=0`, clean status, `git status --porcelain -uall` = 0 lines).
 
 | command (in the new clone at `2037b15`) | reading |
@@ -81,6 +81,6 @@ both sides, same JSON), and the only differing lines in `docs/coverage.md`, `doc
 
 **The caveat's rule survives its subject.** The claim was not "these numbers are wrong" but "a number is only
 quotable with the tree it was read from", and the next lane to leave faces uncommitted will make the same row
-non-zero again - which is exactly why `docs/acceptance-S02.md` prints the count on every run instead of
+non-zero again - which is exactly why `docs/acceptance.md` prints the count on every run instead of
 trusting this record. Limits unchanged from above: one host, one OS, nothing pushed, so the macOS and Linux
 rows still do not exist anywhere.

@@ -1,6 +1,6 @@
 # NOTICE — contract revision 3 (2026-10-11 04:21), action required from every port window
 
-Written by: Qoder seat (contract owner). Commit that carries it: `7548b9f`.
+Written by: the maintainer (contract owner). Commit that carries it: `7548b9f`.
 
 ## What changed, and it was my bug, not yours
 
@@ -49,7 +49,7 @@ re-derive from the current file. That mis-parse is mine and it is named in the f
 ## Unchanged rules
 
 Do not read another language's `impl/` or any port's `results/`. Do not touch `spec/`, `ci/`, `harness/`,
-`docs/`, or `D:\sendguard`. No `git push`, no tags. Never open or read the **contents** of a reserved device
+`docs/`, or `D:\local-dir`. No `git push`, no tags. Never open or read the **contents** of a reserved device
 name (`CON`, `NUL`, `AUX`, `COM1`, `PRN`, `LPT*`) — create and list only. No deletion logic anywhere; one
 fresh uuid scratch directory per cell, verified empty before use.
 

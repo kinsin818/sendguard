@@ -1,6 +1,6 @@
 # S02 — Node port provenance and reproduction report
 
-Seat: qoder. Date of run: 2026-10-11 (host clock, `date` rc=0). Scope: provenance + reproduction only; nothing in `D:\sendguard` was created, modified, moved, or deleted; nothing was pushed.
+Author: the maintainer. Date of run: 2026-10-11 (host clock, `date` rc=0). Scope: provenance + reproduction only; nothing in `D:\local-dir` was created, modified, moved, or deleted; nothing was pushed.
 
 Verdict: **DOES_NOT_REPRODUCE (0 of 36 case cells match the committed record; pre-merge stage alone matched 1 of 36).** The committed results are more likely wrong (they are a crashed-run record written by an *earlier, different* code state than the recovered files), not the recovered code — corroborated by the fact that the recovered code independently re-produces, 33/36 cells, the lane's own later results that exist only as *uncommitted* files in the read-only tree (§5a).
 
@@ -8,10 +8,10 @@ Verdict: **DOES_NOT_REPRODUCE (0 of 36 case cells match the committed record; pr
 
 ## 1. Inventory (all commands run 2026-10-11; rc noted)
 
-`git -C D:\sendguard status --porcelain -uall -- impl/node` → 7 lines, all `??` (rc=0).
-`git -C D:\sendguard ls-files impl/node` → empty (rc=0). `git log --oneline -- impl/node` in both `D:\sendguard` and the clone → empty (rc=0). The Node implementation was never committed. No stashes, no other branches (`git stash list` empty, `git branch -a` = main + origin/main; rc=0).
+`git -C D:\local-dir status --porcelain -uall -- impl/node` → 7 lines, all `??` (rc=0).
+`git -C D:\local-dir ls-files impl/node` → empty (rc=0). `git log --oneline -- impl/node` in both `D:\local-dir` and the clone → empty (rc=0). The Node implementation was never committed. No stashes, no other branches (`git stash list` empty, `git branch -a` = main + origin/main; rc=0).
 
-Files under `D:\sendguard\impl\node` (`stat -c '%n|%s|%y'`, rc=0):
+Files under `D:\local-dir\impl\node` (`stat -c '%n|%s|%y'`, rc=0):
 
 | file | bytes | mtime (local +0800) | sha256 |
 |---|---:|---|---|
@@ -27,7 +27,7 @@ Total: 7 files, 55,952 bytes.
 
 ## 2. Byte-for-byte copy + verification
 
-Copied (unmodified) to `D:\sendguard-work\seat-qoder\evidence\recovered\node-uncommitted\` (`cp -p`, rc=0). `sha256sum -c` of the source hashes against the copies: **all 7 OK, rc=0**. Source and copy hashes are identical (table above). No file was edited.
+Copied (unmodified) to `D:\work\session-token\evidence\recovered\node-uncommitted\` (`cp -p`, rc=0). `sha256sum -c` of the source hashes against the copies: **all 7 OK, rc=0**. Source and copy hashes are identical (table above). No file was edited.
 
 ## 3. What the port does (read, not modified)
 
@@ -36,16 +36,16 @@ Copied (unmodified) to `D:\sendguard-work\seat-qoder\evidence\recovered\node-unc
 - Field parity vs the other committed ports: the node cells carry all `spec/schema.json` required fields (validated: missing = 0, rc=0). vs the Python cells node additionally carries `cross_reader` and `len_triple`, and lacks `name_landed_as`, `name_mutated`, `phantom` (pre-merge), `control_expected`.
 - Two out-of-process passes fold independent instruments back in: `run-passes.py` (Go `audit.exe` truth + `py-reader.py` Python cross-reader, each dir-timeboxed) and `merge-truth.mjs` (rewrites cells in place with truth verdicts, recomputes device/phantom, rewrites the bundle).
 
-## 4. Reproduction attempt (all outputs under `D:\sendguard-work\node-repro\`)
+## 4. Reproduction attempt (all outputs under `D:\work\node-repro\`)
 
-Setup: scratch tree `node-repro\run\{impl/node, spec, evidence/S00, harness}` built from the recovered copies + the clone's frozen `spec/cases.yaml` (rev2) + clone `evidence/S00/blind-map.json`, `env-windows.json`; copies hash-verified against source (rc=0). Node resolved executable: `C:\Program Files\nodejs\node.exe` (`where node.exe`, rc=0), v24.15.0 (committed bundle meta: node 22.22.2). `audit.exe` was **not committed anywhere**; the copy used was taken (read-only) from `D:\sendguard\harness\audit.exe`, untracked, 2,896,896 bytes, sha256 dca3681f9920251da45213b50c9d4bd5a1744306df8e14479c4b88e675415ae1.
+Setup: scratch tree `node-repro\run\{impl/node, spec, evidence/freeze, harness}` built from the recovered copies + the clone's frozen `spec/cases.yaml` (rev2) + clone `evidence/freeze/blind-map.json`, `env-windows.json`; copies hash-verified against source (rc=0). Node resolved executable: `C:\Program Files\nodejs\node.exe` (`where node.exe`, rc=0), v24.15.0 (committed bundle meta: node 22.22.2). `audit.exe` was **not committed anywhere**; the copy used was taken (read-only) from `D:\local-dir\harness\audit.exe`, untracked, 2,896,896 bytes, sha256 dca3681f9920251da45213b50c9d4bd5a1744306df8e14479c4b88e675415ae1.
 
 - `timeout 240 node main.mjs` → **rc=0** (log `node-repro\main-run.log`): "cells written: 36 {trap:22, ctrl:5, len:4, blind:5, … device_findings:0, phantom:0}", 38 files in `run/results/node/windows/`. No hang despite device-named samples: on this host Node's write created a *real* 28-byte `CON.txt` in the run dir (dir listing, names/sizes only — no device-named file content was ever opened).
 - `python impl/node/run-passes.py` → **rc=0** (log `passes.log`): "audit pass: 31 dirs -> 31 lines, device entries seen: 7", "pyreader pass: 26 entries -> 26 lines, hangs: 0".
 - `timeout 120 node merge-truth.mjs` → **rc=0** (`merge.log`): "merged windows: 36 api: 0 … device_findings:7, phantom:9". Reproduced device findings: T01, T02, T10, T11, T14a/b/c (`truth_is_device=true`, verdict `illegal`), matching the "headline divergence" the code comments and the Python port (T01 verdict `illegal`) claim.
 - Per-case comparison vs the 36 committed case cells, excluding volatile fields (`started_at`, `elapsed_ms`, `os_version`, `error_message`, env node-version strings): **identical 0, differs 36, not produced 0, crashed 0.** Before the merge pass, exactly 1 cell (T-CTRL-CANON) matched the committed record byte-for-field; after merge it differs by the added `phantom:false`.
 - Bundle: committed `node.windows.22.22.2.json` holds 36 cells (rc=0 on read); reproducible code emits the same 36 cell ids. The aggregate + 4 `_` support files complete the 41 committed files.
-- Cleanup: scratch `node-repro\` intentionally retained as evidence; the harness's own run dirs under `%TEMP%\sendguard-run\node` (112 dirs incl. pre-existing ones from the original lane) were left in place per the code's M19 no-delete discipline; not-obtainable: none.
+- Cleanup: scratch `node-repro\` intentionally retained as evidence; the harness's own run dirs under `%TEMP%\sendguard-run\node` (112 dirs incl. pre-existing ones from the original lane) were left in place per the code's project rule no-delete discipline; not-obtainable: none.
 
 ## 5. Where it differs (headline facts, from the diff above)
 
@@ -56,7 +56,7 @@ Setup: scratch tree `node-repro\run\{impl/node, spec, evidence/S00, harness}` bu
 
 ## 5a. Third face: the original tree's *uncommitted* later results (pre-existing, verified read-only)
 
-`git -C D:\sendguard status --porcelain` (rc=0) shows `M` on all 41 committed result files — these modifications **pre-existed this ticket** (file mtimes 2026-10-10 23:52:24, i.e. the stopped lane re-ran the fixed code in place at local 23:51, after committing nothing). That later working-tree face (`D:\sendguard\results\node\windows\*.json`, started_at 2026-10-10T15:51:05Z) holds sane cells (T01: create ok, `truth_is_device:true`, verdict illegal, instrument_red false). Comparing that face to my independent reproduction: **33 of 36 case cells identical, 3 differ only in `error_code` (wt `EPERM` vs repro `ENOENT` on T03/T15/T-CTRL-ILLEGAL-CHAR — an environment/sandbox difference), plus `phantom.windows.json` differing because the wt run included `--api` cells.** So the recovered code is self-consistent and stable across runs; it simply is not the code state that produced the committed record. Consequence: the *final* Node results exist nowhere in the public record either — only as uncommitted files one `git checkout` away from deletion inside `D:\sendguard`.
+`git -C D:\local-dir status --porcelain` (rc=0) shows `M` on all 41 committed result files — these modifications **pre-existed this ticket** (file mtimes 2026-10-10 23:52:24, i.e. the stopped lane re-ran the fixed code in place at local 23:51, after committing nothing). That later working-tree face (`D:\local-dir\results\node\windows\*.json`, started_at 2026-10-10T15:51:05Z) holds sane cells (T01: create ok, `truth_is_device:true`, verdict illegal, instrument_red false). Comparing that face to my independent reproduction: **33 of 36 case cells identical, 3 differ only in `error_code` (wt `EPERM` vs repro `ENOENT` on T03/T15/T-CTRL-ILLEGAL-CHAR — an environment/sandbox difference), plus `phantom.windows.json` differing because the wt run included `--api` cells.** So the recovered code is self-consistent and stable across runs; it simply is not the code state that produced the committed record. Consequence: the *final* Node results exist nowhere in the public record either — only as uncommitted files one `git checkout` away from deletion inside `D:\local-dir`.
 
 ## 6. Reasons the recovered code's committed results (and any future results) should not be trusted without care
 

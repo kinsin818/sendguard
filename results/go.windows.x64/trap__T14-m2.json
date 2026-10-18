@@ -19,7 +19,7 @@
   "case_locale": "en-US",
   "cell_dir": "D:\\sendguard-run\\40e20099-516d-4c3c-8059-7969fbf0f885\\t",
   "child_command": [
-    "D:\\sendguard-work\\sg-rederive.exe",
+    "D:\\work\\sg-rederive.exe",
     "cell",
     "--plan",
     "D:\\sendguard-run\\40e20099-516d-4c3c-8059-7969fbf0f885\\_plan.json"
@@ -31,7 +31,7 @@
   "child_timeout_ms_enforced": 5000,
   "cleanup_attempted": false,
   "cleanup_failed": false,
-  "cleanup_note": "M19: this port contains no delete/unlink call anywhere; cleanup_failed is true only if a directory that had to be reused was not already empty, which is reported instead of cleaned",
+  "cleanup_note": "project rule: this port contains no delete/unlink call anywhere; cleanup_failed is true only if a directory that had to be reused was not already empty, which is reported instead of cleaned",
   "coexistence": {
     "cells_sharing_this_dir": 3,
     "dir": "D:\\sendguard-run\\40e20099-516d-4c3c-8059-7969fbf0f885\\t",
@@ -49,7 +49,7 @@
   "dir_view": [],
   "dir_view_count": 0,
   "elapsed_ms": 197,
-  "entry_half": "open-half only: content transfer suppressed (seat order: reserved device names are created and listed, never written)",
+  "entry_half": "open-half only: content transfer suppressed (local order: reserved device names are created and listed, never written)",
   "entry_spread": {},
   "enum_to_stat_agrees_basis": "not recorded: the path_view probe did not run (not probed: reserved device name, a stat would open the device)",
   "env": {
@@ -74,7 +74,7 @@
       "token": "the needle is assembled at run time and is not stored as a literal in this binary"
     },
     "sandbox_root": "D:\\sendguard-run",
-    "toolchain": "go version go1.23.5 windows/amd64 | builder=C:\\Program Files\\Go\\bin\\go.exe | runner=D:\\sendguard-work\\sg-rederive.exe",
+    "toolchain": "go version go1.23.5 windows/amd64 | builder=C:\\Program Files\\Go\\bin\\go.exe | runner=D:\\work\\sg-rederive.exe",
     "unicode_version": "not-obtainable-here"
   },
   "error_code": "",
@@ -166,9 +166,9 @@
     "go_exe_resolved": "C:\\Program Files\\Go\\bin\\go.exe",
     "go_version_string": "go version go1.23.5 windows/amd64",
     "harness_source": "impl/go/rederive/",
-    "independence": "no file under results/ and no other language under impl/ was opened by this seat",
+    "independence": "no file under results/ and no other language under impl/ was opened by this local",
     "independent_enumerator": "harness/audit.go is the audit instrument; this port shares no code with it and never invoked it",
-    "runner_exe": "D:\\sendguard-work\\sg-rederive.exe",
+    "runner_exe": "D:\\work\\sg-rederive.exe",
     "sg_exe_sha256_before": "7647d02835b33feb195ccc20cbaef526411ca022f0e42a5d2eae587396ab142b",
     "spec_sha256": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261",
     "spec_sha256_face": "git cat-file blob HEAD:spec/cases.yaml",
@@ -176,12 +176,12 @@
   },
   "read_bytes": null,
   "read_leg_executed": false,
-  "read_leg_reason": "not executed: reserved device name; seat order allows create and list only",
+  "read_leg_reason": "not executed: reserved device name; local order allows create and list only",
   "read_result": "eof",
   "requested_name_visible": "AUX.log",
   "required_identity": "trap/T14-m2",
   "roundtrip_leg_executed": false,
-  "roundtrip_ok_basis": "not recorded: not executed: reserved device name; seat order allows create and list only",
+  "roundtrip_ok_basis": "not recorded: not executed: reserved device name; local order allows create and list only",
   "run_status": "ran",
   "sandbox_dir": "D:\\sendguard-run\\40e20099-516d-4c3c-8059-7969fbf0f885",
   "sandbox_sharing": {

@@ -38,17 +38,17 @@ PORT = os.path.dirname(HERE)
 REPO = os.path.dirname(os.path.dirname(PORT))
 BUILD = os.path.join(PORT, "build")
 RESULTS_DIR = os.path.join(REPO, "results", "java.windows.x64")
-SCRATCH_ROOT = "D:\\s\\"           # one parent dir outside the repo, never under D:\sendguard
+SCRATCH_ROOT = "D:\\s\\"           # one parent dir outside the repo, never under D:\local-dir
 FACTS_PATH = os.path.join(PORT, "tools", "run-facts.json")
 OUT_DIR = [RESULTS_DIR]   # set from --out-dir in main; assemble reads a PAIRED cell from here
 TIMEOUT_S = 5.0
-HARNESS_VERSION = "sg-java-S02-r5-SG-F2"
+HARNESS_VERSION = "sg-java-S02-r5-F2"
 PAYLOAD_HEX_PINNED = "53454e4447554152442d43414e4f4e2d5041594c4f41442d32303236"   # rev6 control_samples, 28 bytes
 PAYLOAD = bytes.fromhex(PAYLOAD_HEX_PINNED)   # its sha256 is the sealed S00 baseline value
 PAD = "0123456789abcdef"
 
 PRIMARY_ENTRY = "Files.write"
-# SG-F2 part 1: the second instrument of this port, published as its own cell per pinned length
+# F2 part 1: the second instrument of this port, published as its own cell per pinned length
 # rung. It is a java.io call driven from the requested String, so it never passes through
 # java.nio's path parser (impl/java/tools/ext-path-of-repro.txt is the reproduction).
 IO_SPREAD_ENTRY = "FileOutputStream.write"
@@ -72,7 +72,7 @@ LEN_GRID = [("G1", 13, [244, 245, 246]), ("G2", 120, [137, 138, 139]),
 
 RESERVED_RE = re.compile(r"^(CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9]|CONIN\$|CONOUT\$)(\..*)?$", re.I)
 
-# quoted from evidence/S00-ctrl-baseline.md (T-CTRL-ASCII row); measured, not typed twice
+# quoted from evidence/ctrl-baseline.md (T-CTRL-ASCII row); measured, not typed twice
 BASELINE_SHA = "c9fe45b2fee8ea846f0cf4f2cacc2a891e7b082e7719923502d12a9813e21994"
 assert re.fullmatch(r"[0-9a-f]{64}", BASELINE_SHA), "baseline hash face is not 64 hex chars"
 assert hashlib.sha256(PAYLOAD).hexdigest() == BASELINE_SHA, \
@@ -176,7 +176,7 @@ def local_env_facts():
         int(states[0]) if states else -1, "unknown")
     f["dot3name_state_meaning"] = "fsutil prints <n> (8dot3 name creation ...); 0=enabled 1=disabled"
     f["dot3name_verbatim_excerpt"] = txt.strip().replace("\r\n", " | ")[:240]
-    f["fsutil_decoded_as"] = "cp936 (console code page recorded in evidence/S00/env-facts-windows-local.json)"
+    f["fsutil_decoded_as"] = "cp936 (console code page recorded in evidence/freeze/env-facts-windows-local.json)"
     f["max_component"] = 255
     f["max_component_basis"] = "NTFS; GetVolumeInformationW measured 255 at S00 (env-facts-windows-local.json), same host and same D: volume"
     f["unicode_version"] = "not-obtainable-here"
@@ -383,7 +383,7 @@ def build_plan(cases, api, ctrl_ids, blind_entries, java_entries, req, csamples,
                                    "sub_parts": ["base_len-%d" % base, form],
                                    "member_index": None, "sub_identity": sub_id,
                                    "path_form": form, "extra": False}]})
-                    # SG-F2 part 1: the same rung measured by this port's second instrument, as its
+                    # F2 part 1: the same rung measured by this port's second instrument, as its
                     # own extra cell. `builder` is a dimension spec/cell-identity.md section 1
                     # already declares, and its value is the entry this cell called; the arm in
                     # impl/java/tools/selfcheck.py requires builder == api_entry, so the filename
@@ -397,7 +397,7 @@ def build_plan(cases, api, ctrl_ids, blind_entries, java_entries, req, csamples,
                         "name_source": pinned.hex(), "category": c["category"],
                         "locale": c["locale"], "applicable": c["applicable"], "fill_unit": unit,
                         "headline": "pinned", "pinned_component_bytes": len(pinned),
-                        "entries": [IO_SPREAD_ENTRY], "zip": False, "grid_rule": "SG-F2-part1",
+                        "entries": [IO_SPREAD_ENTRY], "zip": False, "grid_rule": "F2-part1",
                         "paired_required_cell": req_fn,
                         "emits": [{"case_id": c["id"], "group": "len",
                                    "sub_parts": ["base_len-%d" % base, form,
@@ -408,7 +408,7 @@ def build_plan(cases, api, ctrl_ids, blind_entries, java_entries, req, csamples,
                                    "path_form": form, "extra": True,
                                    "paired_required_cell": req_fn,
                                    "extra_reason":
-                                       "SG-F2 part 1: the java.io leg of this pinned rung published "
+                                       "F2 part 1: the java.io leg of this pinned rung published "
                                        "as its own cell on the contract's own `builder` dimension. "
                                        "Extra because api_entry is not part of the equality key "
                                        "(spec/cell-identity.md section 1), so it is published and "
@@ -603,7 +603,7 @@ def attribute(primary, spread, ext, entry_count):
 
 
 def paired_rung_claim(plan, head, spec_sha):
-    """SG-F2 part 1. This row ran exactly ONE entry, so it may not say "every entry of this port
+    """F2 part 1. This row ran exactly ONE entry, so it may not say "every entry of this port
     agrees" - that claim needs evidence about the other entries, and here there is none in the row.
     The paired required cell for the same rung IS published, so read it and describe the agreement
     or disagreement as what was observed, naming both files."""
@@ -868,7 +868,7 @@ def assemble(tc, plan, runs, spec_sha, env, canon_extra=None, emit=None):
         "scratch_entry_count_before": doc.get("scratch_entry_count_before"),
         "scratch_entry_count_after": doc.get("scratch_entry_count_after"),
         "cleanup_failed": True,
-        "cleanup_reason": "M19: this port has no deletion logic, so every fresh scratch dir is left in place",
+        "cleanup_reason": "project rule: this port has no deletion logic, so every fresh scratch dir is left in place",
         "child_rc": prim["rc"],
         "child_timed_out": prim["timed_out"],
         "instrument_red": False,
@@ -900,7 +900,7 @@ def assemble(tc, plan, runs, spec_sha, env, canon_extra=None, emit=None):
                                                    "this port only)" % (mv, dv))
         rec["longpath_mechanism_basis"] = (
             "requested plain path is %d code units (>259) and this entry created it, while "
-            "LongPathsEnabled=%s on this run and evidence/S00/env-facts-windows-local.json found "
+            "LongPathsEnabled=%s on this run and evidence/freeze/env-facts-windows-local.json found "
             "no longPathAware token in any of the three java binaries (raw-byte scan, not a PE "
             "manifest parse); dot leg verdict %s; device-name leg verdict %s"
             % (tpl, env.get("LongPathsEnabled"), mv, dv))
@@ -972,7 +972,7 @@ def assemble(tc, plan, runs, spec_sha, env, canon_extra=None, emit=None):
         pl, pb, pe = paired_rung_claim(plan, head, spec_sha)
         rec["spread_pair"] = pe
         rec["why_this_cell_exists"] = (
-            "SG-F2 part 1: the twelve pinned length rungs were recorded through Files.write only, "
+            "F2 part 1: the twelve pinned length rungs were recorded through Files.write only, "
             "with the java.io answer kept as a leg inside that cell. The java.io answer is now "
             "published as its own extra cell so a stranger can compare the two entries of this "
             "port as cells, not as a note. api_entry is not an equality dimension "
@@ -1063,7 +1063,7 @@ def main():
     log = []
     cases_path = os.path.join(REPO, "spec", "cases.yaml")
     cases, api, ctrl_ids, csamples = load_cases(cases_path)
-    blind = json.loads(io.open(os.path.join(REPO, "evidence", "S00", "blind-map.json"),
+    blind = json.loads(io.open(os.path.join(REPO, "evidence", "freeze", "blind-map.json"),
                                encoding="utf-8").read())["entries"]
     java_entries = api["java"]
     req_path = os.path.join(REPO, "spec", "cells-required.json")
@@ -1105,7 +1105,7 @@ def main():
                 or any(e["case_id"] in want for e in p["emits"])
                 or p.get("tapi_entry_under_test") in want]
     if a.only_row_tag:
-        # SG-F2 runs append-only: the 44 required Files.write cells were measured and published
+        # F2 runs append-only: the 44 required Files.write cells were measured and published
         # already, and the ticket says not to re-answer them. A filtered run must therefore NOT
         # overwrite the facts face the record cites, hence --facts-out.
         wantt = set(x.strip() for x in a.only_row_tag.split(","))
@@ -1198,7 +1198,7 @@ def main():
                 "canon_instruments_agree": same,
                 "canon_payload_sha256": hashlib.sha256(PAYLOAD).hexdigest(),
                 "canon_baseline_crosscheck": {
-                    "baseline_field": "evidence/S00-ctrl-baseline.md sha256_on_disk for T-CTRL-ASCII",
+                    "baseline_field": "evidence/ctrl-baseline.md sha256_on_disk for T-CTRL-ASCII",
                     "baseline_value": BASELINE_SHA,
                     "baseline_value_hex_chars": len(BASELINE_SHA),
                     "baseline_publishes_payload_bytes": False,
@@ -1297,7 +1297,7 @@ def main():
             "required_cells_not_in_this_run": len(required_names) - len(
                 set(produced) & required_names),
             "note": "append-only run. The required Files.write cells this run did not touch were "
-                    "measured by the earlier full run and are deliberately NOT re-answered: SG-F2 "
+                    "measured by the earlier full run and are deliberately NOT re-answered: F2 "
                     "orders it, and rewriting them would move faces the derived docs already quote. "
                     "This facts file therefore describes THIS run only; the full-matrix face is "
                     "run-facts.json.",

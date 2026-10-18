@@ -12,11 +12,11 @@
   "os": "windows",
   "os_version": "",
   "arch": "",
-  "locale": "zh-CN console cp936; python default encoding cp936; see evidence/S00/env-facts-windows-local.json",
+  "locale": "zh-CN console cp936; python default encoding cp936; see evidence/freeze/env-facts-windows-local.json",
   "api_entry": "std::fs::OpenOptions",
   "primary": false,
   "attempt": 1,
-  "harness_version": "S02-rust-seat-2",
+  "harness_version": "S02-rust-local-2",
   "implementation_id": "rust-port",
   "started_at": "2026-10-12T15:44:20.159+08:00",
   "spec_sha256": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261",
@@ -121,5 +121,5 @@
   "instrument_conflict": false,
   "scratch_removed_empty": false,
   "cleanup_failed": true,
-  "cleanup_reason": "scratch holds entries left by the measurement; this port carries no deletion logic (M19)"
+  "cleanup_reason": "scratch holds entries left by the measurement; this port carries no deletion logic (project rule)"
 }

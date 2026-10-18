@@ -10,7 +10,7 @@ Discipline this file implements (it does not interpret the contract freely):
   - reserved device names are created and listed, never opened for content; their cells
     get a ZERO-LENGTH payload so no bytes are ever pushed into a live device.
   - the cell scratch dir is a fresh uuid dir, verified empty by the child before any attempt.
-  - no deletion logic anywhere (M19): scratch dirs are left in place.
+  - no deletion logic anywhere (project rule): scratch dirs are left in place.
   - dir_view (bytes_on_disk authority) is taken by THIS process in Python, not by the
     measured language, so path_view and dir_view can actually disagree.
 
@@ -152,7 +152,7 @@ def read_spec():
 
 
 def read_blind_map():
-    p = os.path.join(REPO, "evidence", "S00", "blind-map.json")
+    p = os.path.join(REPO, "evidence", "freeze", "blind-map.json")
     with io.open(p, encoding="utf-8") as f:
         doc = json.load(f)
     return [(int(e["blind_id"]), e["name_utf8_hex"].lower()) for e in doc["entries"]], doc
@@ -1107,7 +1107,7 @@ def cell_filename(spec):
 
 CONTROL_STAMP = r"D:\sg-cs-scratch\controls-green.json"
 CONTROL_EXPECTATIONS = {
-    # evidence/S00-ctrl-baseline.md is the ONLY allowed source of these (spec/cases.yaml s31)
+    # evidence/ctrl-baseline.md is the ONLY allowed source of these (spec/cases.yaml s31)
     "T-CTRL-NAMETOOLONG": {"create_result": "err_at_syscall", "error_stage": "syscall"},
     "T-CTRL-ASCII": {"create_result": "ok", "bytes_written": 28, "bytes_on_disk": 28,
                      "read_result": "ok", "roundtrip_ok": True},
@@ -1216,7 +1216,7 @@ def main():
                 continue
             cell, cdir = build_cell("controls", spec, cases, blind_doc, env, ctx)
             fails = evaluate_control(cell)
-            cell["control_expectation_source"] = "evidence/S00-ctrl-baseline.md"
+            cell["control_expectation_source"] = "evidence/ctrl-baseline.md"
             cell["required_manifest_sha256"] = hashlib.sha256(
                 open(REQUIRED_MANIFEST, "rb").read()).hexdigest()
             cell["control_expectation_fails"] = fails
@@ -1276,7 +1276,7 @@ def main():
     req_ids = required_identities(manifest)
     planned_ids = {identity_key(s): cell_filename(s) for s in plan}
     # cells on disk that this round's plan no longer produces are superseded, not deleted: the
-    # harness never deletes anything (M19), it only names what it replaced so the cleanup is an
+    # harness never deletes anything (project rule), it only names what it replaced so the cleanup is an
     # operator decision with a list in hand.
     stale = []
     for p in sorted(glob.glob(os.path.join(RESULTS_DIR, "*.json"))):

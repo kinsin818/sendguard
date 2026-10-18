@@ -10,11 +10,11 @@
   "os": "windows",
   "os_version": "",
   "arch": "",
-  "locale": "zh-CN console cp936; python default encoding cp936; see evidence/S00/env-facts-windows-local.json",
+  "locale": "zh-CN console cp936; python default encoding cp936; see evidence/freeze/env-facts-windows-local.json",
   "api_entry": "std::fs::File::create",
   "primary": true,
   "attempt": 1,
-  "harness_version": "S02-rust-seat-2",
+  "harness_version": "S02-rust-local-2",
   "implementation_id": "rust-port",
   "started_at": "2026-10-12T15:44:19.205+08:00",
   "spec_sha256": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261",
@@ -39,11 +39,11 @@
   "contract_role": "required",
   "extra": false,
   "contract_key": "[\"blind\", \"B1\", []]",
-  "blind_source": "evidence/S00/blind-map.json",
+  "blind_source": "evidence/freeze/blind-map.json",
   "blind_map_sha256": "4b322b8dcadb1846488337057e823fb05f5e078af8444c031fbfa49ecd6b2168",
   "blind_map_self_sha256": "289188cfbc6a1efe460e9548380fc3aa4d18901c0bd39c134570e228792d574c",
   "blind_map_sealed_at": "2026-10-10T12:58:57.360737Z",
-  "blind_opened_by": "NOTICE-rev6 item 2 orders these five cells and names this file as their source; the seal was not lifted by this seat's own choice",
+  "blind_opened_by": "NOTICE-rev6 item 2 orders these five cells and names this file as their source; the seal was not lifted by this local's own choice",
   "contract_sha256": "ed8a8a29c0eea99925659f6d0f2f63b94469654e1f793ab027b6e55a4a1a8cb8",
   "scratch_verified_empty": true,
   "scratch_pre_entries": 0,
@@ -112,7 +112,7 @@
     "toolchain": "rustc 1.98.0 (88d9e12ae178fab0fb5cc050a94da85685d449ea) host=x86_64-pc-windows-msvc LLVM=22.1.8; PATH rustc is the rustup shim C:\\Users\\Administrator\\.cargo\\bin\\rustc.EXE, resolved toolchain binary C:\\Users\\Administrator\\.rustup\\toolchains\\stable-x86_64-pc-windows-msvc\\bin\\rustc.exe",
     "LongPathsEnabled": 0,
     "max_component": 255,
-    "locale": "zh-CN console cp936; python default encoding cp936; see evidence/S00/env-facts-windows-local.json"
+    "locale": "zh-CN console cp936; python default encoding cp936; see evidence/freeze/env-facts-windows-local.json"
   },
   "elapsed_ms": 2,
   "elapsed_ms_harness": 9,
@@ -124,5 +124,5 @@
   "instrument_conflict": false,
   "scratch_removed_empty": false,
   "cleanup_failed": true,
-  "cleanup_reason": "scratch holds entries left by the measurement; this port carries no deletion logic (M19)"
+  "cleanup_reason": "scratch holds entries left by the measurement; this port carries no deletion logic (project rule)"
 }

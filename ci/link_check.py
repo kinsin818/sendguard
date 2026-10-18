@@ -5,7 +5,7 @@ Run:  python ci/link_check.py [--selftest]
 Why. The repository became public at 15:14, which changes what a broken reference costs: a path that does not
 resolve is no longer a private annoyance, it is a 404 in front of a buyer. Measuring it the obvious way is how
 you get a gate that cries wolf - the one "broken link" found on the first sweep was `](:GRID[-_)`, a regular
-expression inside `evidence/S02/rust-selfcheck.md`, not a link at all. So code spans and fenced blocks are
+expression inside `evidence/judgement/rust-selfcheck.md`, not a link at all. So code spans and fenced blocks are
 excluded before the link pattern is applied, and that exclusion is one of the arms.
 
 Exit codes: 0 = every link resolves; 1 = at least one link does not, or a link escapes the repository; 3 = the

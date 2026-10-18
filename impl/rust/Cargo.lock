@@ -3,7 +3,7 @@
 version = 4
 
 [[package]]
-name = "sendguard-rust-seat"
+name = "sendguard-rust-local"
 version = "0.1.0"
 dependencies = [
  "unicode-normalization",

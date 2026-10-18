@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""SENDGUARD rust seat driver (harness side, python stdlib only).
+"""SENDGUARD rust local driver (harness side, python stdlib only).
 
 Order is deliberate: the five control cells run first and are judged against
-evidence/S00-ctrl-baseline.md - the only allowed source of control expectations - because a
+evidence/ctrl-baseline.md - the only allowed source of control expectations - because a
 control mismatch means the ruler is broken and no further cell may be produced.
 
 Per cell:
@@ -12,7 +12,7 @@ Per cell:
   * the probe writes its own face to a temp path; this driver re-reads it, checks it parses,
     stamps harness fields, writes the published cell file once, then reads the published face
     back and hashes it
-  * nothing is deleted (M19). Where a scratch directory cannot be removed because it holds
+  * nothing is deleted (project rule). Where a scratch directory cannot be removed because it holds
     entries, the cell records cleanup_failed.
 
 Usage:
@@ -44,8 +44,8 @@ FROZEN = os.path.join(REPO, "spec", "FROZEN.md")
 RUNS_ROOT = r"D:\sg-rust-scratch"
 SHALLOW_ROOT = r"D:\sgc"
 TIMEOUT_S = 5
-HARNESS = "S02-rust-seat-2"
-BLIND_MAP = os.path.join(REPO, "evidence", "S00", "blind-map.json")
+HARNESS = "S02-rust-local-2"
+BLIND_MAP = os.path.join(REPO, "evidence", "freeze", "blind-map.json")
 IMPLEMENTATION_ID = "rust-port"
 ARCH = "x64"
 BASELINE_CANON_SHA = "c9fe45b2fee8ea846f0cf4f2cacc2a891e7b082e7719923502d12a9813e21994"
@@ -256,8 +256,8 @@ def toolchain_facts():
     f["LongPathsEnabled_face"] = out.strip()
     wv = sys.getwindowsversion()
     f["os_version"] = "Windows %d.%d build %d" % (wv.major, wv.minor, wv.build)
-    f["locale"] = "zh-CN console cp936; python default encoding cp936; see evidence/S00/env-facts-windows-local.json"
-    f["locale"] = "zh-CN console cp936; python default encoding cp936; see evidence/S00/env-facts-windows-local.json"
+    f["locale"] = "zh-CN console cp936; python default encoding cp936; see evidence/freeze/env-facts-windows-local.json"
+    f["locale"] = "zh-CN console cp936; python default encoding cp936; see evidence/freeze/env-facts-windows-local.json"
     f["toolchain_line"] = "rustc %s (%s) host=%s LLVM=%s; PATH rustc is the rustup shim %s, resolved toolchain binary %s" % (
         f["rustc_release"], f["rustc_commit_hash"], f["rustc_host"], f["rustc_llvm"], f["path_rustc"], f["resolved_rustc"])
     return f
@@ -321,7 +321,7 @@ def build_probes():
     pkgs = []
     if os.path.isfile(lock):
         pkgs = re.findall(r'(?m)^name = "(.*)"$', io.open(lock, encoding="utf-8").read())
-    pkgs = [p for p in pkgs if p != "sendguard-rust-seat"]
+    pkgs = [p for p in pkgs if p != "sendguard-rust-local"]
     out["cargo_lock_packages"] = pkgs
     out["deps_total_norm"] = len(pkgs)
     toml = io.open(os.path.join(IMPL, "Cargo.toml"), encoding="utf-8").read()
@@ -423,9 +423,9 @@ def sub_of(s):
 def load_blind(path):
     """The five blind samples.
 
-    sealed_at says "sealed until audit completes" and part 1 of the self-check records this seat
+    sealed_at says "sealed until audit completes" and part 1 of the self-check records this local
     refusing to open it. NOTICE-rev6 item 2 is the contract owner ordering the five cells and naming
-    this file as their source, so the seal is lifted by that order, not by this seat's choice. The
+    this file as their source, so the seal is lifted by that order, not by this local's choice. The
     file's own sha256 and its inner sha256_self field are recorded in every blind cell: the two are
     different numbers, because a self-hash cannot cover the line that carries it.
     """
@@ -453,7 +453,7 @@ def load_required(path):
 
 def build_plan(cases, api_rust, primary_entry, base_ladder, required_keys, controls=None, blind=None,
                len_fill=None):
-    """Required rows first, then this seat's own extras, each with its own file and gate identity."""
+    """Required rows first, then this local's own extras, each with its own file and gate identity."""
     plan, seen = [], {}
 
     def is_trap(c):
@@ -501,7 +501,7 @@ def build_plan(cases, api_rust, primary_entry, base_ladder, required_keys, contr
                      "generated-measured-name", "component_length_limit", "windows,macos,ubuntu", form,
                      "widest created name", sub=sub_of("ceiling-%s" % form), mode="bisect", bisect=kind,
                      bisect_range=(64, 33000) if kind == "path" else (64, 400), spec_sample=LEN_NAME[cid],
-                     variant_of=cid, range_basis="this seat's own pre-flight ladder, re-measured inside the cell",
+                     variant_of=cid, range_basis="this local's own pre-flight ladder, re-measured inside the cell",
                      note="ceiling leg at the fresh uuid scratch, not on the contract ladder"))
     # ---- required len rows: one per (case, base_len, path_form) on the contract's ladder.
     # rev7 pins the component, so these are create cells now: the name is len_fill.unit_hex repeated to
@@ -595,12 +595,12 @@ def decode_or(h, cid):
         return "<undecodable frozen sample %s of %s: %s>" % (h, cid, e)
 # ----------------------------------------------------------------- run
 class Driver(object):
-    def __init__(self, env, deps, faces, tier_roots, contract_sha, required_keys, ledger, blind_meta=None,
+    def __init__(self, env, deps, faces, tier_roots, contract_sha, required_keys, record, blind_meta=None,
                  len_fill=None):
         self.env, self.deps, self.faces, self.tier_roots = env, deps, faces, tier_roots
         self.blind_meta = blind_meta
         self.len_fill = len_fill
-        self.contract_sha, self.required_keys, self.ledger = contract_sha, required_keys, ledger
+        self.contract_sha, self.required_keys, self.record = contract_sha, required_keys, record
         self.runs_root = tier_roots["runs"]
         self.prior = {}          # scratch dir -> set of hex-encoded names already claimed there
         self.ceilings = {}       # (case_id, path_form) -> the ceiling the bisection converged to, this run
@@ -649,7 +649,7 @@ class Driver(object):
             total = cell.bisect_range[1]
             lp = "prefix_rewrite" if cell.path_form == "extended" else "unknown"
             lpev = ("bisection cell: the plain face is deliberately probed past 259 code units, and no declared "
-                    "mechanism name fits what was observed (see the longpath section of evidence/S02/rust-selfcheck.md)")
+                    "mechanism name fits what was observed (see the longpath section of evidence/judgement/rust-selfcheck.md)")
         else:
             total = wide_len(scratch) + 1 + wide_len(cell.name_text or "")
             if cell.path_form == "extended":
@@ -874,14 +874,14 @@ class Driver(object):
             rec["sha256_python_hashlib"] = sha_hex(CANON_PAYLOAD)
             rec["python_instrument"] = "hashlib.sha256 over the same payload bytes, python %s" % sys.version.split()[0]
             rec["baseline_expected_sha256"] = BASELINE_CANON_SHA
-            rec["baseline_source"] = "evidence/S00-ctrl-baseline.md:14 (payload defined at harness/ctrl-baseline.mjs:15)"
+            rec["baseline_source"] = "evidence/ctrl-baseline.md:14 (payload defined at harness/ctrl-baseline.mjs:15)"
 
     def publish(self, rec, cell):
         self.stamp_pre(rec, cell)
         rec["control_pass"] = rec.get("control_pass", True)
         rec["instrument_red"] = rec.get("instrument_red", False)
         rec["instrument_conflict"] = rec.get("instrument_conflict", False)
-        # M19: no deletion logic. Only an empty directory this driver created is removed.
+        # project rule: no deletion logic. Only an empty directory this driver created is removed.
         cleanup_failed, reason = True, ""
         try:
             if os.path.isdir(cell.scratch) and not os.listdir(cell.scratch):
@@ -890,7 +890,7 @@ class Driver(object):
                 cleanup_failed = False
             else:
                 rec["scratch_removed_empty"] = False
-                reason = "scratch holds entries left by the measurement; this port carries no deletion logic (M19)"
+                reason = "scratch holds entries left by the measurement; this port carries no deletion logic (project rule)"
         except OSError as ex:
             reason = "rmdir refused: %s" % ex
         rec["cleanup_failed"] = cleanup_failed
@@ -971,7 +971,7 @@ def emit_blocked_rows(runs, contract, answered_keys=None, blind_meta=None):
             "command_face": (p.stdout or b"").decode("utf-8", "replace").strip().splitlines()[-1:],
             "attempted_fix": subprocess.list2cmdline(fix_cmd), "attempted_fix_exit_code": fix.returncode,
             "attempted_fix_face": (fix.stdout or b"").decode("utf-8", "replace").strip().splitlines()[-1:],
-            "reason": "spec/cases.yaml publishes no blind sample hex and evidence/S00/blind-map.json is "
+            "reason": "spec/cases.yaml publishes no blind sample hex and evidence/freeze/blind-map.json is "
                       "sealed until after the S03 audit; opening it would prefill this port's own answer (M17)",
         })
     body = (json.dumps(rows, indent=2, ensure_ascii=True) + chr(10)).encode("utf-8")
@@ -993,11 +993,11 @@ def emit_blocked_rows(runs, contract, answered_keys=None, blind_meta=None):
     return rows
 
 
-def retire_stale(results_dir, keep_names, runs, ledger):
-    """Retire published faces this seat no longer produces.
+def retire_stale(results_dir, keep_names, runs, record):
+    """Retire published faces this local no longer produces.
 
-    A face is retired only if it is inside this seat's results directory, is not in the current plan,
-    and names this seat as its author inside the file. It is copied to a quarantine tree outside the
+    A face is retired only if it is inside this local's results directory, is not in the current plan,
+    and names this local as its author inside the file. It is copied to a quarantine tree outside the
     repo before the published path is removed, and every step is recorded with the file's sha256, so
     the retirement is auditable rather than a deletion.
     """
@@ -1014,26 +1014,26 @@ def retire_stale(results_dir, keep_names, runs, ledger):
         try:
             d = json.loads(raw.decode("utf-8"))
         except ValueError:
-            ledger["skipped_not_mine"].append({"name": name, "sha256": sha_hex(raw), "reason": "unparseable, not touching it"})
+            record["skipped_not_mine"].append({"name": name, "sha256": sha_hex(raw), "reason": "unparseable, not touching it"})
             notmine += 1
             continue
         if d.get("implementation_id") != IMPLEMENTATION_ID or d.get("language") != "rust":
-            ledger["skipped_not_mine"].append({"name": name, "sha256": sha_hex(raw),
+            record["skipped_not_mine"].append({"name": name, "sha256": sha_hex(raw),
                                                "reason": "not authored by this lane (implementation_id=%r language=%r)" % (d.get("implementation_id"), d.get("language"))})
             notmine += 1
             continue
         dst = os.path.join(qdir, name)
         shutil.copyfile(p, dst)
         if sha_hex(open(dst, "rb").read()) != sha_hex(raw):
-            ledger["skipped_not_mine"].append({"name": name, "reason": "quarantine copy did not match, keeping the published face"})
+            record["skipped_not_mine"].append({"name": name, "reason": "quarantine copy did not match, keeping the published face"})
             notmine += 1
             continue
         os.remove(p)
         moved += 1
-        ledger["retired"].append({"name": name, "sha256": sha_hex(raw), "bytes": len(raw),
+        record["retired"].append({"name": name, "sha256": sha_hex(raw), "bytes": len(raw),
                                   "quarantine": dst,
                                   "reason": "the contract re-ids this face (see its successor's case_id), so the stale file would sit in results/ with pre-rev3 fields"})
-    ledger["retired_count"] = moved
+    record["retired_count"] = moved
     return moved, notmine
 
 
@@ -1063,7 +1063,7 @@ def main():
                      str(blind_meta["sha256_self_field"])[:16]))
             print("those two are different numbers by construction: a self-hash cannot cover the line that carries it")
         print("authority for opening it: NOTICE-rev6 item 2 names this file as the source of blind/B1..B5; "
-              "before that order this seat refused (part 1 section 6 of the self-check records the refusal)")
+              "before that order this local refused (part 1 section 6 of the self-check records the refusal)")
         if args.allow_sealed_map:
             print("no refusal is required: the samples are ordered by the contract and are not expectation-bearing")
             return 0
@@ -1178,8 +1178,8 @@ def main():
           % (deps["deps_direct_norm"], deps["deps_total_norm"], deps["cargo_lock_packages"]))
     print("cells_expected=%d planned_by_group=%s" % (len(plan), json.dumps(by_group, sort_keys=True)))
 
-    ledger = {"run_id": run_id, "results_dir": RESULTS, "retired": [], "skipped_not_mine": []}
-    drv = Driver(env, deps, faces, tier_roots, contract_sha, required_keys, ledger, blind_meta, len_fill)
+    record = {"run_id": run_id, "results_dir": RESULTS, "retired": [], "skipped_not_mine": []}
+    drv = Driver(env, deps, faces, tier_roots, contract_sha, required_keys, record, blind_meta, len_fill)
     exp = control_expectations()
     controls = [c for c in plan if c.group == "ctrl"]
     rest = [c for c in plan if c.group != "ctrl"]
@@ -1207,7 +1207,7 @@ def main():
                 if okv:
                     break
     controls_pass = len([v for v in verdicts if v[1] == "PASS"]) == len(controls) and len(controls) > 0
-    print("== control verdicts (expectations only from evidence/S00-ctrl-baseline.md)")
+    print("== control verdicts (expectations only from evidence/ctrl-baseline.md)")
     for v in verdicts:
         print("   %-22s %-8s attempt=%d %s" % (v[0], v[1], v[3], v[2]))
     print("controls_pass=%s" % controls_pass)
@@ -1222,7 +1222,7 @@ def main():
         return 1
 
     if args.phase in ("all", "rest"):
-        retired, notmine = retire_stale(RESULTS, [c.filename() for c in plan], runs, ledger)
+        retired, notmine = retire_stale(RESULTS, [c.filename() for c in plan], runs, record)
         print("retired_stale_faces=%d copied_to=%s skipped_not_this_seat=%d" % (retired, os.path.join(runs, "retired-from-results"), notmine))
         todo = rest if args.phase == "all" or args.phase == "rest" else []
         for cell in todo:
@@ -1255,7 +1255,7 @@ def main():
                      "primary_entry": primary, "base_len_ladder": list(ladder),
                      "generated_by": contract.get("generated_by"), "withdraws": contract.get("withdraws")},
         "cells_required_rows": len(required_keys),
-        "retirement_ledger": ledger,
+        "retirement_ledger": record,
         "cells_expected": len(plan), "cells_produced": len(drv.produced),
         "planned_by_group": by_group, "problems": drv.problems,
         "controls_pass": controls_pass, "control_verdicts": [list(v) for v in verdicts],
@@ -1269,8 +1269,8 @@ def main():
     spath = os.path.join(IMPL, "run-summary.json")
     with open(spath, "wb") as fh:
         fh.write((json.dumps(summary, indent=2, ensure_ascii=True) + "\n").encode("utf-8"))
-    # a second run used to overwrite the only summary face, so a retirement ledger existed only until
-    # the next run; keep one copy per run id outside the repo so every ledger stays hashable later.
+    # a second run used to overwrite the only summary face, so a retirement record existed only until
+    # the next run; keep one copy per run id outside the repo so every record stays hashable later.
     rpath = os.path.join(runs, "run-summary.%s.json" % run_id)
     with open(rpath, "wb") as fh:
         fh.write((json.dumps(summary, indent=2, ensure_ascii=True) + "\n").encode("utf-8"))

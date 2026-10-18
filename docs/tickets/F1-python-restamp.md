@@ -1,4 +1,4 @@
-# SG-F1 — Python lane: re-stamp the 27 cells that still carry the previous spec fingerprint
+# F1 — Python lane: re-stamp the 27 cells that still carry the previous spec fingerprint
 
 **Race guard first.** Before writing anything, check whether this surface is already owned: does
 `results/python.windows.x64/` contain files with an mtime newer than this ticket's dispatch (13:0x +0800 on
@@ -19,7 +19,7 @@ outward document has to carry the caveat "237 of 264 records are stamped current
 ## Allowed surface (prefixes, smallest set that covers the write)
 
 - `results/python.windows.x64/`
-- `evidence/S02/python-selfcheck.md`
+- `evidence/judgement/python-selfcheck.md`
 
 Nothing else. **`spec/`, `ci/`, `docs/`, `tool/`, and every other port's `results/` face are out of bounds**;
 if you believe one of them must change, write the case in your report instead of editing it. `impl/python/` is
@@ -43,7 +43,7 @@ work on the next batch.
 3. `python ci/validate_cells.py` → **rc=0, `invalid=0`** (unchanged).
 4. `python ci/gap_report.py` → `total_missing=0` for all six ports, and Python's matched count stays 44/44.
 5. `git status --porcelain -uall -- results/python.windows.x64` → 0 lines after your last commit (the cells
-   must be in history, not only on disk — `evidence/S10/cold-clone-20261011b.md` shows what an uncommitted
+   must be in history, not only on disk — `evidence/clone-tool/cold-clone-20261011b.md` shows what an uncommitted
    face does to a stranger's reading).
 
 **If criterion 2 moves in either direction, stop and report it as a finding, do not reconcile it.** A re-stamp
@@ -65,15 +65,15 @@ list. Those are contract round 9 and are written up as a proposal in `docs/NOTIC
 the owner's word. A port that "helpfully" edits the spec while re-stamping its cells would turn a
 bookkeeping fix into an unauthorised contract change.
 
-## Amendment, written after acceptance (`evidence/S11/SG-F1-acceptance.md`) — the dispatcher's defect
+## Amendment, written after acceptance (`evidence/closing/F1-acceptance.md`) — the dispatcher's defect
 
-The lane completed this ticket at 13:20 (`e0d80a8`) and all five criteria passed. One thing it reported back is
+The lane completed this ticket at 13:20 (`157efdb`) and all five criteria passed. One thing it reported back is
 a fault in the ticket, not in the work: the Allowed-surface list named `results/python.windows.x64/` and
-`evidence/S02/python-selfcheck.md`, but `spec/cell-identity.md` §3 says instrument dumps belong under
+`evidence/judgement/python-selfcheck.md`, but `spec/cell-identity.md` §3 says instrument dumps belong under
 `evidence/`, and this ticket did not grant that path. The worker chose to put its dumps under `impl/` and
 **say so** rather than quietly break either rule - correct behaviour, wrong ticket.
 
 Standing lesson for whoever writes the next one: **an Allowed-surface list must cover every path the
 project's own rules require the deliverable to touch.** A list that doesn't is not stricter, it just hands the
-worker a rule conflict and lets whichever reading is convenient win. `docs/tickets/SG-F2-*.md` and the F3
+worker a rule conflict and lets whichever reading is convenient win. `docs/tickets/F2-*.md` and the F3
 shape were written with the evidence path included for that reason.

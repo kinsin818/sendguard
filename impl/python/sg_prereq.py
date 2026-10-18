@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
-"""SENDGUARD S02 python port - prerequisite recon (run by the parent seat only).
+"""SENDGUARD S02 python port - prerequisite recon (run by the parent local only).
 
 Checks, before any cell is planned:
-  1. the control payload provenance (sha256 must equal evidence/S00-ctrl-baseline.md)
+  1. the control payload provenance (sha256 must equal evidence/ctrl-baseline.md)
   2. which scratch roots are writable and how short a directory path can be built
      (the frozen G1/G3 grid asks for base_len == 13, which the documented
      %TEMP%\\sendguard-run root cannot reach)
   3. the interpreter identity actually executed
 
-ASCII source, stdlib only, no deletion anywhere (red line M19).
+ASCII source, stdlib only, no deletion anywhere (red line project rule).
 """
 import hashlib
 import os
@@ -27,7 +27,7 @@ def main() -> int:
     out.append("cwd=%s" % os.getcwd())
     out.append("repo=%s" % REPO)
 
-    baseline = os.path.join(REPO, "evidence", "S00-ctrl-baseline.md")
+    baseline = os.path.join(REPO, "evidence", "ctrl-baseline.md")
     txt = open(baseline, "rb").read().decode("utf-8")
     m = re.search(r"c9fe[0-9a-f]{60}", txt)
     out.append("baseline_sha_token_found=%s" % bool(m))

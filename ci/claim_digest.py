@@ -2,7 +2,7 @@
 
 Run:  python ci/claim_digest.py --scratch-root ../sg-claims [--quick]
 
-Why this leg exists. On 2026-10-11 this seat published four stale numbers in documents that were otherwise
+Why this leg exists. On 2026-10-11 this local published four stale numbers in documents that were otherwise
 correct: a README that said `lint 18` after the suite had grown to 24, a paragraph that said the parity leg has 8
 arms the same afternoon it gained four more, a sentence calling 121 the expanded blank count while the table
 beside it summed to 258, and a commit-ahead count that expired at the next commit. Each sentence was true when it
@@ -19,7 +19,7 @@ What it checks, and what it refuses to claim:
                      Excluded with the reason printed, because a gate that flags those lines is a gate that gets
                      ignored - and this repository has already been warned that a blanket clause reading its own
                      text is unsatisfiable.
-  - `pairing` (SG-F11, not a numbered claim but a property of a paragraph) - a number that is only true next to
+  - `pairing` (F11, not a numbered claim but a property of a paragraph) - a number that is only true next to
                      its qualifier must not be publishable without it. Every paragraph of every face this leg
                      reads is checked; the classes it does not fatal on (`evidence/**` captured runs, and
                      `docs/tickets/**`, where the ticket quoting a bare number is quoting the defect it names)
@@ -44,14 +44,14 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
-VPATH = os.path.join(REPO, "evidence", "S02", "equality-verdict.json")
+VPATH = os.path.join(REPO, "evidence", "judgement", "equality-verdict.json")
 
 # A closed list, so an auditor can see which tree the claims were checked in. Generated faces are NOT in it: they
 # are produced from the artifact and cannot be stale, and scanning them would flag the gate's own output.
 LIVE_FACES = ["README.md", "docs/claim-boundary.md", "docs/whitepaper.md"]
 GENERATED_FACES = ["docs/STATUS.md", "docs/coverage.md", "docs/evidence.md", "docs/delivery-form.md",
                   "docs/matrix.md", "docs/spec-drift.md", "docs/cell-validation.md", "docs/expected-summary.md",
-                  "docs/acceptance-S02.md", "docs/GAP.md", "docs/tapi.md"]
+                  "docs/acceptance.md", "docs/GAP.md", "docs/tapi.md"]
 
 # (id, face, regex with one group, kind, source)
 CLAIMS = [
@@ -82,7 +82,7 @@ GATE_KEYS = ["verdict_disagreements", "verdict_not_recorded_pairs", "required_ce
              "cells_compared", "channel_abstentions", "probe_cells_differing", "truncated_values",
              "unpinned_input", "cells_excluded"]
 
-# SG-F11 criterion 3: a number that survives publication only while welded to its qualifier must not be
+# F11 criterion 3: a number that survives publication only while welded to its qualifier must not be
 # emittable bare. `verdict_identical_cells=24/44` counts cells where an abstention made a contradiction
 # impossible; the honest cell count is `cells_fully_recorded_and_identical`. The rule is mechanical and
 # paragraph-scoped, because that is where a reader meets the pair.
@@ -96,7 +96,7 @@ PAIR_RULES = [
 
 # Two face classes are named, counted and excluded rather than silently skipped, per this repository's rule
 # that an exclusion which prints no denominator is blind: `evidence/**` is a captured run and a capture is not
-# prose this seat may re-word, and `docs/tickets/**` is the text that *names* the defect, which would condemn
+# prose this local may re-word, and `docs/tickets/**` is the text that *names* the defect, which would condemn
 # itself if policed by its own rule.
 EXCLUDED_DIRS = ["evidence", os.path.join("docs", "tickets")]
 EXCLUDED_DIRS_N = ["evidence", "docs/tickets"]  # the same two, in index form, for path comparison
@@ -210,7 +210,7 @@ def pair_violations(texts):
         for bi, block in enumerate(blocks):
             for needle, qual, why in PAIR_RULES:
                 if needle in block and qual not in block:
-                    out.append("%s block %d/%d: `%s` is published without `%s` - %s (SG-F11)"
+                    out.append("%s block %d/%d: `%s` is published without `%s` - %s (F11)"
                                % (face, bi + 1, len(blocks), needle, qual, why))
     return out
 
@@ -465,7 +465,7 @@ def main(argv=None):
     instrument += instr2
     total, unreached, examples = quote_coverage(texts, spans)
 
-    # SG-F11: the pairing rule is measured over the live prose faces *and* the generated faces, because the
+    # F11: the pairing rule is measured over the live prose faces *and* the generated faces, because the
     # sentence that needed correcting lived in a generated face. Generated faces are not claim anchors - their
     # numbers come from the artifact, so only the pairing (a property of the sentence, not of the number) is
     # checked there.
@@ -530,7 +530,7 @@ def main(argv=None):
     # The same rule this leg enforces on other faces applies to its own verdict line: a CLEAN that is only
     # clean over a subset must say which subset, because "no face has the defect" and "the faces I read have
     # no defect" are two different claims.
-    scope = ("policed-only(blind_bare_blocks=%d,unpoliced_faces_with_bare=%d - SG-F13 owns the widening)"
+    scope = ("policed-only(blind_bare_blocks=%d,unpoliced_faces_with_bare=%d - F13 owns the widening)"
              % (up_hits, up_faces)) if up_hits else "tracked_md_covered=%d" % len(all_md)
     # a partial check must not read as a pass: quick mode skips the arm counts, and says so on the verdict line
     print("OUTCOME=CLEAN stale_claims=0 unpaired_claims=0 pairing_scope=%s coverage=%s"

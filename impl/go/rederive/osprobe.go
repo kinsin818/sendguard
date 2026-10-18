@@ -116,7 +116,7 @@ func legalityProbe(dir, name string) Legality {
 // file system actually stored with the name that was asked for.
 //
 // It never writes and never reads contents, so a reserved device name is created at most
-// (which is what the seat order allows) and nothing is ever transferred into it.
+// (which is what the local order allows) and nothing is ever transferred into it.
 func legalityCreateProbe(dir string, name string, extended bool, corroborating int) (map[string]any, Legality) {
 	res := map[string]any{
 		"probe":     "kernel32!CreateFileW(CREATE_NEW) + directory listing",
@@ -302,7 +302,7 @@ func extendedProbe(absDir, name string, payload []byte) map[string]any {
 	if werr != nil {
 		out["write_error"] = truncate(werr.Error(), 400)
 	}
-	out["note"] = "created in extended form; no deletion is attempted (M19), the entry is left in place"
+	out["note"] = "created in extended form; no deletion is attempted (project rule), the entry is left in place"
 	return out
 }
 

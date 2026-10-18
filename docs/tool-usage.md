@@ -87,7 +87,7 @@ The report ends with a `LIMITS` block, and it is not boilerplate to skim:
   bits, so a `.zip` in the folder can still unpack into a name that fails.
 * The tool sees names **as the filesystem reports them**. What a browser, cloud drive or mail
   gateway rewrites on the way out is not measured here. Two of the cases in the self-check
-  never reached the tool at all for exactly this reason (see `evidence/S10/tool-selfcheck.md`).
+  never reached the tool at all for exactly this reason (see `evidence/clone-tool/tool-selfcheck.md`).
 * exFAT/FAT32 volumes, phone storage, and whether the recipient has long paths enabled are
   per-machine. The 260 figure is the classic plain-form budget, and the tool measures the path
   **at the location you scanned**.

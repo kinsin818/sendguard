@@ -19,8 +19,8 @@ Thumbs.db
 *.env
 *.local
 
-# W-GO: raw control files contain illegal names (M19/B4) - never commit originals
-evidence/S02/ctrl-go/
+# W-GO: raw control files contain illegal names (project rule/B4) - never commit originals
+evidence/judgement/ctrl-go/
 _pilot_scratch/
 
 # instrument side-effects: a gate run leaves byte-coded caches next to its own source

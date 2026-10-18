@@ -13,7 +13,7 @@
     "(240, 'extended')": "D:\\zg51b343df\\t240qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq"
   },
   "contract": {
-    "path": "D:\\sendguard-work\\seat-qoder\\spec\\cells-required.json",
+    "path": "D:\\work\\session-token\\spec\\cells-required.json",
     "sha256": "ed8a8a29c0eea99925659f6d0f2f63b94469654e1f793ab027b6e55a4a1a8cb8",
     "rows_for_rust": 48,
     "primary_entry": "std::fs::File::create",
@@ -28,7 +28,7 @@
   "cells_required_rows": 48,
   "retirement_ledger": {
     "run_id": "51b343df0cc3",
-    "results_dir": "D:\\sendguard-work\\seat-qoder\\results\\rust.windows.x64",
+    "results_dir": "D:\\work\\session-token\\results\\rust.windows.x64",
     "retired": [],
     "skipped_not_mine": [],
     "retired_count": 0
@@ -120,10 +120,10 @@
     "LongPathsEnabled_rc": 0,
     "LongPathsEnabled_face": "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\FileSystem\r\n    LongPathsEnabled    REG_DWORD    0x0",
     "os_version": "Windows 10.0 build 19041",
-    "locale": "zh-CN console cp936; python default encoding cp936; see evidence/S00/env-facts-windows-local.json",
+    "locale": "zh-CN console cp936; python default encoding cp936; see evidence/freeze/env-facts-windows-local.json",
     "toolchain_line": "rustc 1.98.0 (88d9e12ae178fab0fb5cc050a94da85685d449ea) host=x86_64-pc-windows-msvc LLVM=22.1.8; PATH rustc is the rustup shim C:\\Users\\Administrator\\.cargo\\bin\\rustc.EXE, resolved toolchain binary C:\\Users\\Administrator\\.rustup\\toolchains\\stable-x86_64-pc-windows-msvc\\bin\\rustc.exe",
     "env_face_rc": 0,
-    "env_face_command": "D:\\sendguard-work\\seat-qoder\\impl\\rust\\target\\release\\sg_probe.exe --mode env --out D:\\sg-rust-scratch\\run-51b343df0cc3\\env-face.json --mark \"\" --volume-root D:\\ --dos-device-names CON,NUL,AUX,PRN,COM1,LPT9,CONIN$,trail.,a<b.txt",
+    "env_face_command": "D:\\work\\session-token\\impl\\rust\\target\\release\\sg_probe.exe --mode env --out D:\\sg-rust-scratch\\run-51b343df0cc3\\env-face.json --mark \"\" --volume-root D:\\ --dos-device-names CON,NUL,AUX,PRN,COM1,LPT9,CONIN$,trail.,a<b.txt",
     "max_component": 255,
     "filesystem": "NTFS",
     "dos_devices": [
@@ -185,16 +185,16 @@
   },
   "deps": {
     "build_std_rc": 0,
-    "build_std_face": "   |     ^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_prior_claimed`\n     |\n     = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default\n\nwarning: `sendguard-rust-seat` (bin \"sg_probe\") generated 1 warning (run `cargo fix --bin \"sg_probe\" -p sendguard-rust-seat` to apply 1 suggestion)\n    Finished `release` profile [optimized] target(s) in 3.90s",
+    "build_std_face": "   |     ^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_prior_claimed`\n     |\n     = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default\n\nwarning: `sendguard-rust-local` (bin \"sg_probe\") generated 1 warning (run `cargo fix --bin \"sg_probe\" -p sendguard-rust-local` to apply 1 suggestion)\n    Finished `release` profile [optimized] target(s) in 3.90s",
     "build_norm_rc": 0,
-    "build_norm_face": "ior_claimed`\n     |\n     = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default\n\nwarning: `sendguard-rust-seat` (bin \"sg_probe\") generated 1 warning (run `cargo fix --bin \"sg_probe\" -p sendguard-rust-seat` to apply 1 suggestion)\nwarning: `sendguard-rust-seat` (bin \"sg_probe_norm\") generated 1 warning (1 duplicate)\n    Finished `release` profile [optimized] target(s) in 2.75s",
-    "sg_probe_path": "D:\\sendguard-work\\seat-qoder\\impl\\rust\\target\\release\\sg_probe.exe",
+    "build_norm_face": "ior_claimed`\n     |\n     = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default\n\nwarning: `sendguard-rust-local` (bin \"sg_probe\") generated 1 warning (run `cargo fix --bin \"sg_probe\" -p sendguard-rust-local` to apply 1 suggestion)\nwarning: `sendguard-rust-local` (bin \"sg_probe_norm\") generated 1 warning (1 duplicate)\n    Finished `release` profile [optimized] target(s) in 2.75s",
+    "sg_probe_path": "D:\\work\\session-token\\impl\\rust\\target\\release\\sg_probe.exe",
     "sg_probe_sha256": "d993909ee2986be85a153a1bd209248289df6b8e08d3671f714d4c8cbf9f2645",
     "sg_probe_bytes": 450560,
     "sg_probe_longPathAware_hits": 0,
     "sg_probe_mtime": "2026-10-12T15:44:14",
     "sg_probe_unchanged_by_this_build": false,
-    "sg_probe_norm_path": "D:\\sendguard-work\\seat-qoder\\impl\\rust\\target\\release\\sg_probe_norm.exe",
+    "sg_probe_norm_path": "D:\\work\\session-token\\impl\\rust\\target\\release\\sg_probe_norm.exe",
     "sg_probe_norm_sha256": "f10b450e89b192f1fa103485cf4fc4b21a8270500d7a003c7c15048a55d58cbb",
     "sg_probe_norm_bytes": 450560,
     "sg_probe_norm_longPathAware_hits": 0,

@@ -1,6 +1,6 @@
-# SG-F7 - the deliverable carries no version, so "which artifact did you audit" has no answer
+# F7 - the deliverable carries no version, so "which artifact did you audit" has no answer
 
-Opened 2026-10-11 16:1x +0800 by the seat that owns `ci/`, prompted by the owner's question "then you update the
+Opened 2026-10-11 16:1x +0800 by the local that owns `ci/`, prompted by the owner's question "then you update the
 version after the audit". Answering it required measuring what "the version" would refer to. It refers to
 nothing that exists.
 
@@ -18,7 +18,7 @@ nothing that exists.
 
 ## Owner input required — this is why the ticket is not executed
 
-1. **The version string itself.** Its shape is product identity, not a technical constant, and this seat does
+1. **The version string itself.** Its shape is product identity, not a technical constant, and this local does
    not invent identifiers for things the owner sells. One string, and the ticket is executable as written.
 2. **Whether the contract round moves with it.** Those are two different objects: `spec/` re-sealing cascades
    (manifest regenerated, `spec/FROZEN.md` digests re-pinned, every cell's `spec_sha256` stale until all six
@@ -50,7 +50,7 @@ nothing that exists.
 ## Do not
 
 - Do not bump `freeze_revision` or touch `spec/` as part of this ticket.
-- Do not add deletion logic to any leg (rule `M19`, `docs/cleanup-notice.md`).
+- Do not add deletion logic to any leg (rule `project rule`, `docs/cleanup-notice.md`).
 - Do not put the version into the gate's scored field list; the version is provenance about the artifact, not a
   verdict about a name.
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""SENDGUARD name pre-flight check (S10 tool seat).
+"""SENDGUARD name pre-flight check (S10 tool local).
 
     python tool/check.py <folder> [--target windows|macos|ubuntu|all]
     python tool/check.py --name "CON.txt"          # ask this machine, right now
@@ -23,7 +23,7 @@ Safety: folder mode never opens, reads, writes or stats a scanned name; it only
 enumerates.  Name mode does create a file, in a fresh scratch directory outside
 the repository, inside a child process with an external 5 s timeout, and it
 NEVER reads back the contents of a reserved device name (CON/NUL/AUX/COM1..9/
-LPT1..9) because that can block.  It has no deletion logic (M19): every name
+LPT1..9) because that can block.  It has no deletion logic (project rule): every name
 probe leaves its scratch directory behind and says so.
 
 Exit codes: 0 = no risk | 1 = risk found | 2 = could not run the scan/probe
@@ -1104,7 +1104,7 @@ def print_verdict_block(name, engine, results_dir, extended, payload_hex, spec_i
         print("  TRUNCATED shown=8 total=%d" % len(cells))
     print("")
     print("SCRATCH left behind: %s" % escape_path(obs["_scratch"]))
-    print("  no deletion logic (M19): every name probe leaves one directory holding the file it created.")
+    print("  no deletion logic (project rule): every name probe leaves one directory holding the file it created.")
     risky = (v["os_legality_verdict"] != "legal" or v["name_mutated"] == "true"
              or v["phantom"] == "true" or bool(rule_findings))
     return EXIT_RISK if risky else EXIT_NO_RISK
@@ -1378,7 +1378,7 @@ def selftest_spec(engine, cases, targets, spec_info):
     return 0 if flagged else 1
 
 
-# Expectations below are QUOTED from evidence/S00-ctrl-baseline.md, which FROZEN.md names as the only
+# Expectations below are QUOTED from evidence/ctrl-baseline.md, which FROZEN.md names as the only
 # allowed source of control expectations.  Nothing here is an expectation this tool invented.  The
 # columns compared are probe-class fields on purpose: a control cell calibrates the ruler (spec/gate.md
 # section 8), so what it pins is what the runtime did -- not the answer about a name.
@@ -1426,7 +1426,7 @@ def selftest_controls(engine, samples, root, spec_info, extended):
     mismatch = [r for r in results if r[3]]
     print("SENDGUARD control-cell self-test -- the five pinned samples, asked once on this machine")
     print("INSTRUMENT-RED" if mismatch else "CONTROLS-OK")
-    print("   (evidence/S00-ctrl-baseline.md is the only allowed source of control expectations; the "
+    print("   (evidence/ctrl-baseline.md is the only allowed source of control expectations; the "
           "comparison columns are probe-class fields because a control cell calibrates the ruler, "
           "spec/gate.md section 8)")
     print("rules: spec/cases.yaml freeze_revision=%s sha256=%s  path_form=%s" % (
@@ -1456,7 +1456,7 @@ def selftest_controls(engine, samples, root, spec_info, extended):
     print("DENOMINATORS")
     print("  controls_pinned_in_spec=%d  controls_probed=%d  controls_match_baseline=%d  "
           "controls_mismatch=%d" % (len(samples), len(results), len(results) - len(mismatch), len(mismatch)))
-    print("  external_timeout_s=%d per cell; every cell left its scratch directory behind (M19, no deletion)"
+    print("  external_timeout_s=%d per cell; every cell left its scratch directory behind (project rule, no deletion)"
           % PROBE_TIMEOUT_S)
     return EXIT_RISK if mismatch else EXIT_NO_RISK
 
@@ -1498,7 +1498,7 @@ def main(argv=None):
                                        "the shell cannot carry")
     ap.add_argument("--controls", action="store_true",
                     help="probe the five pinned control_samples in spec/cases.yaml against the sealed "
-                         "control baseline in evidence/S00-ctrl-baseline.md")
+                         "control baseline in evidence/ctrl-baseline.md")
     ap.add_argument("--extended", action="store_true",
                     help="ask through the \\\\?\\ prefix (path_form=extended) instead of the plain form")
     ap.add_argument("--target", default="all", type=parse_targets,

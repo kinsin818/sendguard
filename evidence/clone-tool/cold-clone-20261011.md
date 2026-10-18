@@ -1,13 +1,13 @@
 # Cold-clone verification - 2026-10-11 10:2x +0800
 
 The repository's central outward promise is "clone it and re-run it". That was checked from a stranger's
-tree rather than asserted, because the seat that wrote the gates also owns their inputs and a green run in
+tree rather than asserted, because the local that wrote the gates also owns their inputs and a green run in
 the author's own working tree proves less than it looks like it proves.
 
 ## What was done
 
 ```
-git clone --no-local D:/sendguard-work/seat-qoder stranger-clone      # a real clone, not a copy
+git clone --no-local D:/work/session-token stranger-clone      # a real clone, not a copy
 cd stranger-clone
 git status --porcelain -uall | wc -l                                 # 0
 python ci/selftest.py --scratch-root <a different directory>         # arms=18 passed=18 failed=0

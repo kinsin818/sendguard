@@ -11,7 +11,7 @@
   "arms_total": 35,
   "arms_failed": [],
   "contract": {
-    "path": "D:\\sendguard-work\\seat-qoder\\spec\\cells-required.json",
+    "path": "D:\\work\\session-token\\spec\\cells-required.json",
     "sha256": "ed8a8a29c0eea99925659f6d0f2f63b94469654e1f793ab027b6e55a4a1a8cb8",
     "rows_for_rust": 48,
     "primary_entry": "std::fs::File::create",

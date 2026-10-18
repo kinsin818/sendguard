@@ -1,11 +1,11 @@
-// SENDGUARD rust seat - one measurement cell per child process.
+// SENDGUARD rust local - one measurement cell per child process.
 //
 //   sg_probe       std-only, no crates linked into the measured process
 //   sg_probe_norm  same source + unicode-normalization, built with --features normalization
 //
 // The probe performs one pinned entry action on one frozen hex sample inside one scratch
 // directory, observes it through the permitted channels, writes one schema-shaped JSON
-// object to --out and exits. Nothing here deletes anything (M19).
+// object to --out and exits. Nothing here deletes anything (project rule).
 #![allow(dead_code)]
 
 use std::collections::BTreeMap;
@@ -839,7 +839,7 @@ fn main() {
         puts(&mut f, "blind_map_sha256", &a.get("blind-map-sha256"));
         puts(&mut f, "blind_map_self_sha256", &a.get("blind-map-self-sha256"));
         puts(&mut f, "blind_map_sealed_at", &a.get("blind-sealed-at"));
-        puts(&mut f, "blind_opened_by", "NOTICE-rev6 item 2 orders these five cells and names this file as their source; the seal was not lifted by this seat's own choice");
+        puts(&mut f, "blind_opened_by", "NOTICE-rev6 item 2 orders these five cells and names this file as their source; the seal was not lifted by this local's own choice");
     }
     puts(&mut f, "contract_sha256", &a.get("contract-sha256"));
 

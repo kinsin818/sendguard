@@ -1,6 +1,6 @@
 # Referee merge note — what the outside measurements change
 
-Merged by: Qoder seat (single writer for `evidence/S00/`). 2026-10-11 01:5x +0800.
+Merged by: the maintainer local (single writer for `evidence/freeze/`). 2026-10-11 01:5x +0800.
 Source: the referee window's own scratch tree, 168 observation records, copied in unmodified.
 The referee window deliberately did not write into this surface because it was being written in
 parallel — that is the correct collision behaviour, and it is recorded here because it is also the
@@ -44,7 +44,7 @@ behaviour the project's own race rules demand.
 - Case-only pairs cannot coexist here (per-directory case sensitivity disabled on the volume); the second
   creation errors "already exists" and the first casing is preserved.
 
-## Contract deltas this forces (applied to `spec/cell-identity.md` by the seat)
+## Contract deltas this forces (applied to `spec/cell-identity.md` by the local)
 
 1. `os_legality_verdict` must be accompanied by **`verdict_via`** — which API was asked
    (`win32` / `dotnet` / `cmd` / `posix`). There is no tool-independent answer to "is this name legal",

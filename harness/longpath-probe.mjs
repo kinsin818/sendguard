@@ -9,7 +9,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const BASE = path.join(__dirname, "..", "evidence", "S00", "_longrun");
+const BASE = path.join(__dirname, "..", "evidence", "freeze", "_longrun");
 const DEEP = path.join(
   BASE,
   "0123456789abcdef0123456789abcdef",
@@ -67,7 +67,7 @@ function classify(lpe, plain, ext) {
 const lpeNow = readLPE();
 const r0 = rowsFor(lpeNow);
 const out = [];
-out.push("# SENDGUARD S00 longpath 2x2 sub-experiment (Node probe)");
+out.push("# SENDGUARD longpath 2x2 sub-experiment (Node probe)");
 out.push("");
 out.push(`- date: ${new Date().toISOString()}`);
 out.push(`- LongPathsEnabled (before): ${lpeNow}`);

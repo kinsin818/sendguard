@@ -25,7 +25,7 @@
  "enum_api_entry": "os.ReadDir",
  "os_legality_verdict": "legal",
  "mechanism_class": "control",
- "worker_id": "W-GO/qianwen",
+ "worker_id": "port-go",
  "harness_version": "",
  "sha256_self": "c9fe45b2fee8ea846f0cf4f2cacc2a891e7b082e7719923502d12a9813e21994",
  "started_at": "2026-10-10T15:00:35.5448537Z",

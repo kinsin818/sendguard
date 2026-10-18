@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Generate the SG-F2 record section with every number read off the artifacts, so the record cannot
+"""Generate the F2 record section with every number read off the artifacts, so the record cannot
 quote a value that is not on the disk. Writes markdown to stdout; run it redirected.
 
-    python impl/java/tools/gen_sg_f2_appendix.py > impl/java/tools/record-appendix-sg-f2.txt
+    python impl/java/tools/gen_f2_appendix.py > impl/java/tools/record-appendix-f2.txt
 """
 import glob
 import hashlib
@@ -46,7 +46,7 @@ def main():
     old_facts = json.loads(io.open(os.path.join(HERE, "run-facts.json"), encoding="utf-8").read())
     _, head = sh("git", "rev-parse", "--short", "HEAD")
     import datetime
-    print("## SG-F2 (dispatched 13:0x): the twelve `java.io` legs and the five stamped controls")
+    print("## F2 (dispatched 13:0x): the twelve `java.io` legs and the five stamped controls")
     print("")
     print("Written "
           + datetime.datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S %z")
@@ -97,7 +97,7 @@ def main():
     print("### Part 2 - five of five controls stamped, from the readings already on the disk")
     print("")
     print("`impl/java/tools/stamp_controls.py` reads each control cell, applies the criterion table "
-          "quoted from `evidence/S00-ctrl-baseline.md` **through `impl/java/tools/selfcheck.py`** "
+          "quoted from `evidence/ctrl-baseline.md` **through `impl/java/tools/selfcheck.py`** "
           "(no second copy of the criteria), and writes `control_pass` plus `control_pass_rule`, "
           "`control_pass_observed`, `control_pass_command`, `control_pass_tool`, "
           "`control_pass_basis`, `control_pass_stamped_at` and where relevant "
@@ -136,11 +136,11 @@ def main():
     print("")
     print("### The five criteria, as commands, with the reading each produced")
     print("")
-    print("Taken from the transcript `impl/java/tools/sg-f2-criteria.txt` (one command per block, "
+    print("Taken from the transcript `impl/java/tools/f2-criteria.txt` (one command per block, "
           "rc printed immediately after it); the numbers below are read out of that file, not "
           "retyped:")
     print("")
-    tx = io.open(os.path.join(HERE, "sg-f2-criteria.txt"), encoding="utf-8").read().splitlines()
+    tx = io.open(os.path.join(HERE, "f2-criteria.txt"), encoding="utf-8").read().splitlines()
 
     def find(needle, want=1):
         hits = [l.strip() for l in tx if needle in l]
@@ -162,7 +162,7 @@ def main():
           "moment this section is generated (%d modified control cells + %d uncommitted spread "
           "cells), git rc=%d. The criterion asks for 0 *after this lane's commit*, so this line is "
           "the before-reading; the after-reading is printed by the same command in the reply, and "
-          "`verify_sg_f2.py` flips to `mode=post-commit` at the same moment, which is the check that "
+          "`verify_f2.py` flips to `mode=post-commit` at the same moment, which is the check that "
           "the commit carried exactly these 17 files and nothing else."
           % (len(lines), len([l for l in lines if l.startswith(" M")]),
              len([l for l in lines if l.startswith("??")]), rcg))
@@ -170,7 +170,7 @@ def main():
     rcv, sout = sh("python", "impl/java/tools/selfcheck.py")
     rcs, stout = sh("python", "impl/java/tools/selfcheck.py", "--selftest")
     rct, ttout = sh("python", "impl/java/tools/stamp_controls.py", "--selftest")
-    rcv2, vout = sh("python", "impl/java/tools/verify_sg_f2.py")
+    rcv2, vout = sh("python", "impl/java/tools/verify_f2.py")
     vnotes = [l.strip() for l in vout.splitlines() if l.startswith("NOTE")]
 
     def arms_of(text):
@@ -181,9 +181,9 @@ def main():
     print("")
     print("This window's own gates after the change, with every count read out of the run that "
           "produced it rather than written down beforehand: `selfcheck.py` rc=%d, "
-          "`selfcheck.py --selftest` rc=%d (%s arms, %s problems - 39 arms before SG-F2, the ten "
+          "`selfcheck.py --selftest` rc=%d (%s arms, %s problems - 39 arms before F2, the ten "
           "new ones about the spread cells and the entry-substitution rule), "
-          "`stamp_controls.py --selftest` rc=%d (%s arms, %s problems), `verify_sg_f2.py` rc=%d, "
+          "`stamp_controls.py --selftest` rc=%d (%s arms, %s problems), `verify_f2.py` rc=%d, "
           "and that verifier's own arithmetic lines, printed from its stdout:"
           % (rcv, rcs, sa, sp, rct, ta, tp, rcv2))
     print("")
@@ -194,7 +194,7 @@ def main():
     print("")
     print("1. **`harness_version` is now split across the face.** The %d cells from the 07:22 full "
           "run read `%s`; the %d new cells read `%s`. That is the cost of an append-only ticket: a "
-          "re-run would have re-measured the 44 compared records, which SG-F2 forbids. The split is "
+          "re-run would have re-measured the 44 compared records, which F2 forbids. The split is "
           "in every cell's own field, and `spread_pair.paired_cell_harness_version` names the older "
           "value on the twin, so a reader cannot mistake the two for one run."
           % (old_facts["cells_produced"], old_facts["harness_version"], len(io_cells),
@@ -209,10 +209,10 @@ def main():
           "ticket says not to re-answer them; the six are untouched.")
     print("3. **The three `docs/` faces moved, and it was the gate tools that moved them.** "
           "`ci/validate_cells.py`, `ci/acceptance.py` and `ci/length_report.py` each write their "
-          "own repository face (`docs/cell-validation.md`, `docs/acceptance-S02.md`, "
+          "own repository face (`docs/cell-validation.md`, `docs/acceptance.md`, "
           "`docs/length-family.md`). This window edited no file under `docs/`, `spec/`, `ci/` or "
           "`harness/`; it ran the commands the criteria name, and those commands write.")
-    print("4. **The scratch pile is the price of M19, and the counter is shared.** The io run's facts "
+    print("4. **The scratch pile is the price of project rule, and the counter is shared.** The io run's facts "
           "record `scratch_parent=%s`, `scratch_dirs_retained=%s`, `child_result_files_retained=%s`. "
           "Those two counts are every entry of the parent directory, which all six ports scratch into "
           "- this window cannot attribute them to itself and does not claim it can (reading another "
@@ -225,15 +225,15 @@ def main():
     print("")
     print("### Files this ticket added to the java lane")
     print("")
-    for rel in ("impl/java/tools/stamp_controls.py", "impl/java/tools/verify_sg_f2.py",
-                "impl/java/tools/gen_sg_f2_appendix.py", "impl/java/tools/sg-f2-criteria.txt",
+    for rel in ("impl/java/tools/stamp_controls.py", "impl/java/tools/verify_f2.py",
+                "impl/java/tools/gen_f2_appendix.py", "impl/java/tools/f2-criteria.txt",
                 "impl/java/tools/run-facts-io-spread.json", "impl/java/tools/run-output-io-spread.txt",
                 "impl/java/tools/run-output-io-spread-2.txt", "impl/java/tools/selfcheck-output.txt",
-                "impl/java/tools/selftest-output.txt", "impl/java/tools/verify-sg-f2-output.txt"):
+                "impl/java/tools/selftest-output.txt", "impl/java/tools/verify-f2-output.txt"):
         print("- `%s` (%d B, sha256 %s)" % (rel, size(rel), sha(rel)[:12]))
     print("")
     print("Sizes and digests are of those files as they stand at the moment this section is "
-          "generated; `impl/java/tools/record-appendix-sg-f2.txt` is deliberately not listed, "
+          "generated; `impl/java/tools/record-appendix-f2.txt` is deliberately not listed, "
           "because this section is being written into it and its digest would be a self-reference.")
 
 

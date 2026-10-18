@@ -187,7 +187,7 @@ corrupted by bsdtar on a GBK host.
 
 - Base-length buckets **13 and 60** for item 4 were **not reachable**: the shortest
   legal base is the scratch root (~53 chars); drive roots and paths outside
-  `D:\sendguard-work\referee-scratch\…` are forbidden by the task. Measured bases were
+  `D:\work\referee-scratch\…` are forbidden by the task. Measured bases were
   78/120/200 instead.
 - **GNU tar could not extract a `.zip`** (returns "does not look like a tar archive",
   rc=2) — recorded as an unavailable extractor for that format, not guessed around.

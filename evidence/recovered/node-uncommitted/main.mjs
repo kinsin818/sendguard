@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * SENDGUARD Node measurement implementation (W-NODE seat, S02).
+ * SENDGUARD Node measurement implementation (W-NODE local, S02).
  * Measurement pilot: this file sets the per-language pattern for S02.
  *
  * Reads the frozen spec (spec/cases.yaml) and measures every frozen trap,
@@ -20,7 +20,7 @@
  *   M4 : dependency count per cell = 0 (this file is Node built-ins only).
  *   M9 : every probe action has a 5s timeout -> 'hang'.
  *   M16: errno / winerror stored verbatim.
- *   M19: this harness performs NO delete action (no unlink/rm). Run dirs are
+ *   project rule: this harness performs NO delete action (no unlink/rm). Run dirs are
  *        one-shot uuid subdirs; never removed.
  *   M21: English only (comments, strings, paths).
  *   N12: samples referenced by hex only; scratch run dirs live OUTSIDE the repo.
@@ -50,7 +50,7 @@ const PROBE_TIMEOUT_MS = 5000;
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const REPO = path.resolve(__dirname, "..", "..");
 const SPEC_CASES = path.join(REPO, "spec", "cases.yaml");
-const BLIND_MAP = path.join(REPO, "evidence", "S00", "blind-map.json");
+const BLIND_MAP = path.join(REPO, "evidence", "freeze", "blind-map.json");
 const NODE_CTR_BASELINE_SHA = "c9fe45b2fee8ea846f0cf4f2cacc2a891e7b082e7719923502d12a9813e21994";
 const AUDIT_EXE = path.join(REPO, "harness", "audit.exe");
 const RESULTS = path.join(REPO, "results");
@@ -272,7 +272,7 @@ function truthEnum(d) {
   for (const e of obj.entries || []) {
     const isDir = !!e.is_dir;
     // audit.go does NOT yet emit an explicit is_device flag (instrument gap,
-    // raised with the audit seat). The reliable device signature is: the entry
+    // raised with the audit local). The reliable device signature is: the entry
     // is present but its sha256 is empty "" (audit could not hash a device) and
     // size is 0. We surface that as `unreadable_device` here.
     const sha = isDir ? null : e.sha256;
@@ -314,7 +314,7 @@ function readLPE() {
   }
   // fallback: read the S00 env snapshot
   try {
-    const j = JSON.parse(readFileSync(path.join(REPO, "evidence", "S00", "env-windows.json"), "utf-8"));
+    const j = JSON.parse(readFileSync(path.join(REPO, "evidence", "freeze", "env-windows.json"), "utf-8"));
     if (j && j.LongPathsEnabled_hex) return parseInt(j.LongPathsEnabled_hex, 16);
   } catch {}
   return null;
@@ -494,7 +494,7 @@ function osArch() {
 }
 
 // ---------------------------------------------------------------------------
-// control cells (expectations ONLY from evidence/S00-ctrl-baseline.md)
+// control cells (expectations ONLY from evidence/ctrl-baseline.md)
 // ---------------------------------------------------------------------------
 const CONTROLS = [
   { id: "T-CTRL-NAMETOOLONG", hex: "61".repeat(256), exp: "err_at_syscall", mech: "component_length_limit" },
@@ -701,7 +701,7 @@ async function main() {
   const phantom = cells.filter((c) => c.create_result === "ok" && c.bytes_on_disk === null && c.truth_is_device !== true);
   writeFileSync(path.join(RESULTS, "node", "phantom.windows.json"), JSON.stringify({ count: phantom.length, cells: phantom }, null, 2));
 
-  writeFileSync(path.join(EVID, "defects", "sample-corruption.json"), JSON.stringify({ count: defects.length, defects, note: "cases.yaml was P0 freeze-blocking-fixed at rev2 (2026-10-10): 9 corrupted sample hex (T06/T07/T09a/T09b/T12/T13/T15/T19a/T19b) replaced with correct UTF-8 hex per evidence/S02/defects/sample-corruption.md. Re-validation this run: 0 remaining corrupted samples. (Historical Python defect report captured the PRE-fix state.)" }, null, 2));
+  writeFileSync(path.join(EVID, "defects", "sample-corruption.json"), JSON.stringify({ count: defects.length, defects, note: "cases.yaml was P0 freeze-blocking-fixed at rev2 (2026-10-10): 9 corrupted sample hex (T06/T07/T09a/T09b/T12/T13/T15/T19a/T19b) replaced with correct UTF-8 hex per evidence/judgement/defects/sample-corruption.md. Re-validation this run: 0 remaining corrupted samples. (Historical Python defect report captured the PRE-fix state.)" }, null, 2));
 
   const conflicts = cells.filter((c) => c.instrument_conflict);
   for (const c of conflicts) {

@@ -10,7 +10,7 @@ green side was reachable only on the host whose stamp was committed. Four outsid
 2026-10-11/12 and reported `differing=1` on a line that describes a machine, not a measurement. The fix chosen
 here is the one that removes the tolerance instead of widening it: host-dependent values live in this face,
 which the parity leg names as host-bound and does not compare, and every other face is byte-identical on any
-interpreter. Recorded in `docs/tickets/SG-F10-parity-leg-host-bound.md`.
+interpreter. Recorded in `docs/tickets/F10-parity-leg-host-bound.md`.
 
 Exit codes: 0 = the face was written · 3 = instrument failure (the face could not be written or read back).
 This leg judges nothing, so it has no rc=1 path, and an absent denominator is a VOID run.

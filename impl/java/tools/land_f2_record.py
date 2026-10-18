@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Land the SG-F2 section into this lane's record: a current-state block at the top (so the gate's
+"""Land the F2 section into this lane's record: a current-state block at the top (so the gate's
 `self-reported` column reads the live counts, which is what ci/acceptance.py parses with a FIRST
 match) and the generated section at the end. History is not rewritten; both edits are verified by
 re-reading the file and counting headings before and after.
@@ -16,10 +16,10 @@ import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(HERE)))
-RECORD = os.path.join(REPO, "evidence", "S02", "java-selfcheck.md")
-APPENDIX = os.path.join(HERE, "record-appendix-sg-f2.txt")
+RECORD = os.path.join(REPO, "evidence", "judgement", "java-selfcheck.md")
+APPENDIX = os.path.join(HERE, "record-appendix-f2.txt")
 
-TOP = """**Current state of this lane's face (SG-F2, 2026-10-11): the counts below are the live ones, and
+TOP = """**Current state of this lane's face (F2, 2026-10-11): the counts below are the live ones, and
 `ci/acceptance.py` reads them because they are the first `cells_required=` line in this file. The
 sections underneath stay as the record of what was true when each was written; none of them is
 retouched.**
@@ -28,9 +28,9 @@ cells_required=48 cells_produced=86 cells_valid=86 blocked=0 extra=38 controls_p
 
 44/44 required identities matched. 69 cells byte-identical to the pre-ticket face, 5 control cells
 carrying only added `control_pass_*` fields, 12 new `java.io` spread cells marked `extra: true`
-(`impl/java/tools/verify_sg_f2.py` prints that arithmetic off the disk). Rulers: `selfcheck.py`
+(`impl/java/tools/verify_f2.py` prints that arithmetic off the disk). Rulers: `selfcheck.py`
 rc=0, `selfcheck.py --selftest` 49 arms / 0 problems, `stamp_controls.py --selftest` 8 arms /
-0 problems, `verify_sg_f2.py` rc=0.
+0 problems, `verify_f2.py` rc=0.
 
 """
 
@@ -56,9 +56,9 @@ def main():
         print("REFUSED the record does not open with an H1 title")
         return 3
     if app in before:
-        print("REFUSED the SG-F2 section is already in the record (idempotence guard)")
+        print("REFUSED the F2 section is already in the record (idempotence guard)")
         return 3
-    if not app.startswith("## SG-F2"):
+    if not app.startswith("## F2"):
         print("REFUSED the appendix does not start with its own H2: %r" % app[:40])
         return 3
     nl = before.index("\n")
@@ -121,7 +121,7 @@ def is_subsequence(old_lines, new_lines):
 
 def verify_only():
     """Re-run the history-preservation check against the committed face, writing nothing."""
-    head = subprocess.run(["git", "-C", REPO, "show", "HEAD:evidence/S02/java-selfcheck.md"],
+    head = subprocess.run(["git", "-C", REPO, "show", "HEAD:evidence/judgement/java-selfcheck.md"],
                           capture_output=True)
     if head.returncode != 0:
         print("cannot read the committed record: " + head.stderr.decode("utf-8", "replace")[:200])

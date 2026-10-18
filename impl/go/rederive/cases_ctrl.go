@@ -5,7 +5,7 @@ import (
 )
 
 // Control cells. Their names come from harness/ctrl-baseline.mjs, which
-// evidence/S00-ctrl-baseline.md declares the only allowed source of control
+// evidence/ctrl-baseline.md declares the only allowed source of control
 // expectations; their stored form is hex like every other sample (N12), so no
 // forbidden name is ever typed into this port or landed in the repo.
 type ctrlDef struct {

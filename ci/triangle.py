@@ -175,7 +175,7 @@ def main():
                  sorted(set(vals.values()))[0]))
 
     # referee cross-check: where the machine's own tools contradict the sealed expectation
-    ref = os.path.join(REPO, "evidence", "S00", "referee-windows.json")
+    ref = os.path.join(REPO, "evidence", "freeze", "referee-windows.json")
     if os.path.isfile(ref):
         d = json.load(io.open(ref, encoding="utf-8"))
         obs = d.get("observations", [])

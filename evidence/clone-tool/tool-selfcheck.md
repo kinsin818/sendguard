@@ -17,7 +17,7 @@ seats are working in this same working tree and a path-scoped commit here moves 
 
 Synthetic folder (created, **not deleted** — see CLEANUP at the end):
 
-    D:\sendguard-work\tool-selfcheck-68b75721b2ac        (root path = 45 characters)
+    D:\work\tool-selfcheck-68b75721b2ac        (root path = 45 characters)
 
 It is outside the repository (N12: forbidden names are never materialised inside the repo).
 
@@ -279,16 +279,16 @@ in the frozen table, not in the tool, and the tool prints it instead of working 
 
 **Not deleted, per the order.** Left on disk:
 
-    D:\sendguard-work\tool-selfcheck-68b75721b2ac\   (52 enumerated entries, ~1 KB payloads)
-    D:\sendguard-work\sg-probe-x1\                   (scratch from the API probes: CON.txt, trail., trailsp , photo, e1-e3.txt, e4dir)
-    D:\sendguard-work\s10-plant.json  s10-plant2.json  s10-runs.json  s10-accounting.json  s10-lines.json  s10-final.json
-    D:\sendguard-work\s10-run-*.txt  s10-final-*.txt  s10-out-all.txt  s10-selftest.txt
+    D:\work\tool-selfcheck-68b75721b2ac\   (52 enumerated entries, ~1 KB payloads)
+    D:\work\sg-probe-x1\                   (scratch from the API probes: CON.txt, trail., trailsp , photo, e1-e3.txt, e4dir)
+    D:\work\s10-plant.json  s10-plant2.json  s10-runs.json  s10-accounting.json  s10-lines.json  s10-final.json
+    D:\work\s10-run-*.txt  s10-final-*.txt  s10-out-all.txt  s10-selftest.txt
 
 `cleanup_failed` does **not** apply: no cleanup was attempted, so there is nothing to fail. Both
 folders contain orphan names that Windows tools cannot remove by ordinary means; if you want them
 gone, the deletion needs the same extended prefix that created them:
 
-    python -c "import os,shutil; shutil.rmtree('\\\\?\\D:\\sendguard-work\\tool-selfcheck-68b75721b2ac')"
+    python -c "import os,shutil; shutil.rmtree('\\\\?\\D:\\work\\tool-selfcheck-68b75721b2ac')"
 
 I did not run that, and I did not test it. `CON.txt` in the probe folder is a real orphan file:
 `dir` shows it, and Explorer will not delete it without the same trick.
@@ -299,9 +299,9 @@ not cover `__pycache__`, so it would otherwise have been offered to the next com
 ## Reproduce
 
 ```
-python tool/check.py D:\sendguard-work\tool-selfcheck-68b75721b2ac
-python tool/check.py D:\sendguard-work\tool-selfcheck-68b75721b2ac --target windows
-python tool/check.py D:\sendguard-work\tool-selfcheck-68b75721b2ac\sub     # exit code 0
+python tool/check.py D:\work\tool-selfcheck-68b75721b2ac
+python tool/check.py D:\work\tool-selfcheck-68b75721b2ac --target windows
+python tool/check.py D:\work\tool-selfcheck-68b75721b2ac\sub     # exit code 0
 python tool/check.py --selftest-spec
 ```
 
@@ -327,7 +327,7 @@ never silently absorbed into a claim.
 
 **Not committed, again on purpose.** Six seats are working in this tree and a path-scoped commit moves the
 shared index. `git status` over my areas: `?? tool/check.py`, `?? tool/sendguard.bat`, `?? tool/USAGE.md`,
-`?? docs/tool-usage.md`, `?? evidence/S10/tool-selfcheck.md`.
+`?? docs/tool-usage.md`, `?? evidence/clone-tool/tool-selfcheck.md`.
 
 ## Deliverable (a): one name in, verdict block out
 
@@ -384,7 +384,7 @@ samples_flagged=14 samples_not_flagged=8`, with the misses listed instead of tun
 ## `--controls`: the five pinned samples against the sealed baseline
 
 `CONTROLS-OK`, rc=0, `controls_pinned_in_spec=5 controls_probed=5 controls_match_baseline=5
-controls_mismatch=0`. Compared only against `evidence/S00-ctrl-baseline.md`, the file FROZEN.md names as the
+controls_mismatch=0`. Compared only against `evidence/ctrl-baseline.md`, the file FROZEN.md names as the
 only allowed source of control expectations; sample bytes come from `spec/cases.yaml` `control_samples`, so
 no name here is invented. Per-cell readings: ASCII `ok / 28 / 28 / roundtrip true / legal`; ILLEGAL-CHAR
 `err_at_syscall` → illegal; PARSE `err_at_parse` → **unknown** (the OS was never asked, so the verdict word
@@ -458,14 +458,14 @@ Printed by `--name` itself, not assembled here.
   baseline mismatch caused by my own instrument. The child is now always sent `true_hex()`, the block prints
   both tokens with a SPELLING WARNING, and folder mode counts the affected names (`10 of the 51 enumerated
   names ...` in the planted folder).
-* Scratch left behind, because there is no deletion logic (M19): **70 probe directories, 37 files inside**. The
+* Scratch left behind, because there is no deletion logic (project rule): **70 probe directories, 37 files inside**. The
   difference is the probes that correctly produced nothing (reserved, illegal, too-long, embedded NUL). Root:
   `%TEMP%\sendguard-tool\probe-<uuid>`, overridable with `SENDGUARD_TOOL_RUN_ROOT`.
 * `tool/__pycache__/` was removed by me - my own `py_compile` artifact; `.gitignore` does not cover
   `__pycache__`, so it would otherwise have been offered to the next commit. Nothing else deleted, including
   the rev5 planted folder and the probe folder named above. `cleanup_failed` does not apply: no cleanup was
   attempted.
-* My own documentation edit ate its own anchor line, the same failure as the ledger appends (replace-by-anchor
+* My own documentation edit ate its own anchor line, the same failure as the record appends (replace-by-anchor
   silently drops the heading it matched). Noticed on re-read, restored in the same session; this addendum was
   appended at end-of-file instead, with the anchor repeated rather than consumed.
 
@@ -493,5 +493,5 @@ Printed by `--name` itself, not assembled here.
     python tool/check.py --name "CON.txt"
     python tool/check.py --name "a<b.txt"
     python tool/check.py --controls
-    python tool/check.py D:\sendguard-work\tool-selfcheck-68b75721b2ac --target all
-    python tool/check.py D:\sendguard-work\tool-selfcheck-68b75721b2ac\sub
+    python tool/check.py D:\work\tool-selfcheck-68b75721b2ac --target all
+    python tool/check.py D:\work\tool-selfcheck-68b75721b2ac\sub

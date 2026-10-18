@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SENDGUARD Node S02 out-of-process instrument passes (W-NODE seat).
+# SENDGUARD Node S02 out-of-process instrument passes (W-NODE local).
 # Drives the two INDEPENDENT instruments via the shell (Node spawnSync of .exe
 # is blocked with EBUSY inside this sandbox, so Node cannot launch them itself):
 #   1) audit.exe  -> results/node/windows/_audit-truth.ndjson   (TRUTH instrument)

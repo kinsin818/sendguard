@@ -1,6 +1,6 @@
-# S02 rust seat - self-check record
+# S02 rust local - self-check record
 
-- seat: `seat-qoder`, port `rust`, face `windows/x64`
+- local: `session-token`, port `rust`, face `windows/x64`
 - **the tree now published is described in Part 2 (sections 12-18), after contract rev3 and rev4;
   sections 1-11 are the earlier run and are kept unedited**
 - run: this file records run `a0b2599debab`; every number below was re-read from the published
@@ -20,7 +20,7 @@
 
 ```
 python impl/rust/selfcheck.py          -> exit 0
-root=D:\sendguard-work\seat-qoder\results\rust.windows.x64
+root=D:\work\session-token\results\rust.windows.x64
 files_scanned=146
 cells_expected=146
 cells_produced=146
@@ -63,9 +63,9 @@ Per group: `trap 25, ctrl 5, tapi 88, len 28` = 146. Plus 5 blocked (blind, sect
   - `sg_probe_norm.exe` sha256 `f4e78c99ffbc4b0045e7458227c5bfac7df48e7a85663d7fd5bbaec3ef787406`, 423,936 bytes, mtime `2026-10-11T02:59:31`
   - both are newer than `src/probe.rs` (mtime `2026-10-11T02:58:23`), which the driver asserts before it
     measures anything; each cell publishes the sha of the face that produced it
-- OS face re-measured by this seat: `Windows 10.0 build 19041`, `LongPathsEnabled=0` (HKLM, `reg query` rc=0),
+- OS face re-measured by this local: `Windows 10.0 build 19041`, `LongPathsEnabled=0` (HKLM, `reg query` rc=0),
   `GetVolumeInformationW("D:\\")` -> `max_component=255`, `filesystem=NTFS` (asked from the probe through
-  std FFI, agreeing with `evidence/S00/env-facts-windows-local.json`).
+  std FFI, agreeing with `evidence/freeze/env-facts-windows-local.json`).
 
 ## 3. Spec face
 
@@ -97,7 +97,7 @@ carried per cell, not per port.
   all`, which is recorded in every std-face cell as `norm_face="not-a-normalisation-cell"` and, on the
   normalisation face, replaced by measured values from the crate: `norm_nfc_hex`, `norm_nfd_hex`,
   `norm_is_nfc`, `norm_is_nfd`, `norm_equivalent_to_peer`.
-- Side effect worth recording: `evidence/S00/env-facts-windows-local.json` lists
+- Side effect worth recording: `evidence/freeze/env-facts-windows-local.json` lists
   `other_runtime_rustc_unicode_version: "not-obtainable-here"`. Through this crate the 35 normalisation
   faces do answer it: `env.unicode_version = 17.0.0` (`unicode_normalization::UNICODE_VERSION`).
   The other 111 faces keep the value `not-obtainable-here`, because the std-only face cannot ask.
@@ -112,7 +112,7 @@ carried per cell, not per port.
 | externally enforced 5 s timeout | `communicate(timeout=5)` in the driver, `kill()` on expiry; the measured process cannot time itself out | `cells_hang=0`; the slowest face is `elapsed_ms_harness=1723` (the T17 path bisection), median 10 ms |
 | `hang` legitimate | a timeout is published as a cell with `create_result="hang"`, and the marker face (`before-create` / `after-create` / `before-read` …) names the leg the child had entered | no hang in this run, so no such face; the code path is exercised by `hang_record()` |
 | never open or read the contents of a reserved device name | driver predicate: frozen category `reserved_device_name`, or the name matching `^(CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9]|CONIN$|CONOUT$)(\..*)$`, or an interior U+0000 -> `--no-content-read true`; the probe then performs create + parent-directory enumeration only, using `DirEntry::metadata()` (data cached by the enumeration, no name-targeted open) | 36 device faces all carry `read_channel="none: reserved device name, create and list only"`, `content_read_performed=false`; no face opened `CON`/`NUL`/`AUX`/`COM1`/`PRN`/`LPT*` for reading |
-| no deletion logic (M19) | neither the probe nor the driver removes any file; the driver removes only a scratch directory it created **and** can prove empty | `scratch_removed_empty` true on 39 faces, `cleanup_failed=true` on 107 faces with reason "scratch holds entries left by the measurement; this port carries no deletion logic (M19)" |
+| no deletion logic (project rule) | neither the probe nor the driver removes any file; the driver removes only a scratch directory it created **and** can prove empty | `scratch_removed_empty` true on 39 faces, `cleanup_failed=true` on 107 faces with reason "scratch holds entries left by the measurement; this port carries no deletion logic (project rule)" |
 | fresh uuid scratch per cell, verified empty | `os.makedirs(run/scratch/<label>/<uuid4>)`, and the probe re-lists it as its first action: `scratch_pre_entries` + `scratch_verified_empty` | `scratch_verified_empty=true` on 118 faces; 28 faces share a directory by design (18 `len` grid faces inside a width-pinned tier, 8 `tapi` and 2 `trap` coexistence faces) |
 | two declared exceptions, not silent | T09/T19 members share one directory per group and entry (the frozen case says "NFC/NFD coexistence in one directory"); the T-LEN grid shares a directory whose **width is the measurement**, so a uuid directory cannot also be 13 code units wide; plain and verbatim faces of the same width get **separate** directories so neither overwrites the other | `scratch_scope` states which of the three applies on every face; co-resident siblings are reported in `co_resident_names_present` and `same_name_hits`; each cell registers the names it created, by name, for the next cell in the same directory |
 | unclaimed extra entries -> INSTRUMENT-RED (gate 8) | probe lists the directory, then calls an entry claimed iff its name equals this cell's requested name, its mutated landing, its declared `rename` helper source, or a name an earlier cell in the same directory registered (`--prior-claim-hexes`); `unclaimed_names` is published so the claim is checkable, not just the count | `cells_with_unclaimed_extras=0`, and no face reports a negative count |
@@ -130,15 +130,15 @@ face               "blind sample rows published in spec/cases.yaml: 0"
                    "OUTCOME=blocked cells=B1..B5 reason=frozen_table_publishes_no_blind_samples"
 attempted fix      python impl/rust/run_cells.py --plan-blind --allow-sealed-map
 its exit code      2
-its face           "REFUSED: evidence/S00/blind-map.json is sealed until after the S03 audit (FROZEN.md) ..."
+its face           "REFUSED: evidence/freeze/blind-map.json is sealed until after the S03 audit (FROZEN.md) ..."
 ```
 
 The frozen table records `seed_blind_samples` and `blind_map_ref` but publishes **no blind sample hex**,
-and the referenced map is sealed until after the S03 audit. A measuring seat that opened it would be
+and the referenced map is sealed until after the S03 audit. A measuring local that opened it would be
 prefilling its own answer (gate 7.1, M17), so the fix was attempted, refused by design, and the rows
 stay blocked. Nothing else in the plan is blocked: `cells_hang=0`, `problems=0`.
 
-## 7. Control cells (expectations only from `evidence/S00-ctrl-baseline.md`)
+## 7. Control cells (expectations only from `evidence/ctrl-baseline.md`)
 
 | cell | baseline expectation | rust reading | verdict |
 |---|---|---|---|
@@ -150,10 +150,10 @@ stay blocked. Nothing else in the plan is blocked: `cells_hang=0`, `problems=0`.
 
 `controls_pass=True`, one attempt each in the recorded run (`control_attempt=1` on all five faces).
 The 3-attempt re-run the gate asks for (gate 8: mismatch -> re-run to verify the instrument) was
-exercised in two earlier runs of this seat, and both times the mismatch was real and pointed at this
-seat's own instrument, not at the language - see section 8.
+exercised in two earlier runs of this local, and both times the mismatch was real and pointed at this
+local's own instrument, not at the language - see section 8.
 
-## 8. What this seat got wrong, and what caught it
+## 8. What this local got wrong, and what caught it
 
 Recorded because a green batch that was not always green is the thing the gate exists to find.
 
@@ -170,7 +170,7 @@ Recorded because a green batch that was not always green is the thing the gate e
    have published old measurements under a new run id. Caught while the driver reported success with a
    binary that did not compile. Fixed: build rc, exe sha256 before/after, and `source_newer_than_exe`
    are all checked, and each is `INSTRUMENT-RED` with exit 4.
-4. **The seat's own validator refused 146 honest cells** because its closed-set scan matched lowercase
+4. **The local's own validator refused 146 honest cells** because its closed-set scan matched lowercase
    words only, so `attribution_layer` (`L1/L2/L3/L3_interaction`) parsed as an empty set. Caught by the
    validator's **green arm** (`arms_failed=1`), which is exactly why the arms exist. Fixed, and a new arm
    now refuses to grade with any rule whose set came back empty.
@@ -244,28 +244,28 @@ Recorded because a green batch that was not always green is the thing the gate e
   never reaches the OS.
 - T-API hit count is **7**, so gate 2's `hit count == 0 -> instrument_failure` does not fire on this port.
 
-## 10. Defects outside this seat's write scope (filed, not patched)
+## 10. Defects outside this local's write scope (filed, not patched)
 
 1. `spec/schema.json` fixes `format_version` as `{"const": "1"}` (a string) while `spec/validate.py`
    asserts `!= 1` (an integer). The two cannot both be satisfied, so a port that obeys the frozen schema
-   is VOID to the shipped validator. This seat obeys the schema and reports the collision, measured:
+   is VOID to the shipped validator. This local obeys the schema and reports the collision, measured:
    `python spec/validate.py results/rust.windows.x64` -> `summary: 0 valid / 146 void`, every line the
    same single reason `format_version must be 1, got '1'`. Not patched: `spec/` is frozen and outside
-   this seat's write set.
+   this local's write set.
 2. `spec/cases.yaml` gives T17/T18 a `sample_hex` that is not hex (`"T-LEN-PATH (length bisection, G1-G4)"`).
    The plan detects it (`frozen_sample_not_hex=2`), publishes that string verbatim as `name_source` and
    records the actually created width separately (`generated_name_hex`), so no cell pretends a sentence
    decoded as UTF-8 hex.
-3. `spec/cases.yaml` freezes no blind samples, and `evidence/S00/blind-map.json` is sealed -> section 6.
+3. `spec/cases.yaml` freezes no blind samples, and `evidence/freeze/blind-map.json` is sealed -> section 6.
 4. `ci/export_aggregate.py`, named by `spec/cell-identity.md` section 3 as the only writer of the
-   aggregate face, does not exist in `ci/`. This seat therefore publishes **no** aggregate file at all -
+   aggregate face, does not exist in `ci/`. This local therefore publishes **no** aggregate file at all -
    hand-writing one is exactly what that section forbids, and creating the missing generator would mean
    editing `ci/`.
 5. The control-cell samples live only in `harness/ctrl-baseline.mjs`, not in the frozen table, so a fresh
    port must read the generator to know what the control names are. Each control cell records
    `name_source_kind="derived-from-S00-baseline-generator"` plus the line it came from.
 6. `spec/cell-identity.md` section 2 lists the rust primary as `File::create` + write while
-   `spec/FROZEN.md` pins the string `std::fs::File::create`. This seat treats them as the same entry and
+   `spec/FROZEN.md` pins the string `std::fs::File::create`. This local treats them as the same entry and
    publishes the pinned spelling verbatim.
 
 ## 11. Reproduction
@@ -340,7 +340,7 @@ because the gate has only now grown the exclusion the rev3 notice already promis
 ## 13. rev4 arrived while this was running, and what was adopted from it
 
 Commit `298d6e4` ("Contract rev4: make the two rulers agree, and stop treating agreement as failure")
-changed four things this seat consumes:
+changed four things this local consumes:
 
 1. **`read_result` gained a fifth word `not_applicable`**, requiring `read_skipped_reason`. My first
    rev3 pass published 57 faces as `eof` for a read that never happened - the honest compromise I
@@ -349,7 +349,7 @@ changed four things this seat consumes:
    read returned zero bytes anywhere it performed no read. Every `not_applicable` carries its reason
    (`cells` with `not_applicable` and no `read_skipped_reason`: 0, checked by an arm).
 2. **Two rulers now agree.** The collision I reported in section 10.1 is closed: `spec/validate.py` run
-   over this seat's 169 faces now prints `summary: 169 valid / 0 void` and exits 0, where it printed
+   over this local's 169 faces now prints `summary: 169 valid / 0 void` and exits 0, where it printed
    `0 valid / 146 void` an hour earlier. Both rulers now carry `not_applicable`, so the schema
    `enum` check and `validate.py`'s closed set no longer contradict each other.
 3. **T-API invariance is no longer a failure** (gate section 2 rewritten). My four T-API rows disagree
@@ -397,7 +397,7 @@ and a trailing dot is still stripped at 4 000+ code units, which rules out a ver
 Other census over the 169 faces: `create_result` ok 134 / err_at_syscall 34 / err_at_parse 1;
 `os_legality_verdict` unchanged in shape from part 1; `longpath_mechanism` none 133 / unknown 19 /
 prefix_rewrite 17; `phantom` 24 faces; `name_mutated` 10; faces with unclaimed extra entries **0**
-(was 9, see 15.3); `cleanup_failed` 118 (M19); `deps_direct=1` on 39 faces (the 35 normalisation cells
+(was 9, see 15.3); `cleanup_failed` 118 (project rule); `deps_direct=1` on 39 faces (the 35 normalisation cells
 plus four that borrow it), `deps_direct=0` on 130.
 
 ## 15. Instrument self-corrections in this round
@@ -423,26 +423,26 @@ plus four that borrow it), `deps_direct=0` on 130.
 
 ## 16. Filed against the contract, not fixed here
 
-**16.1 Measured with the gate's own code, over this seat's faces only:**
+**16.1 Measured with the gate's own code, over this local's faces only:**
 
 - **One required identity holds four faces and they disagree on verdict fields.**
   `key_of` gives all four T-API rows `('tapi','T-API',())` because `api_entry` is not one of
   `SUB_FIELDS`, while `spec/cells-required.json` defines those very rows by `api_entry`. The four rows
   differ in `phantom` and `bytes_written`, both in `VERDICT_FIELDS`, so the ambiguous-entry path fires on
   a key the manifest itself created. It affects every port that obeys the manifest; the fix is in
-  `ci/`+`spec/`, both outside this seat's write set.
+  `ci/`+`spec/`, both outside this local's write set.
 - Eleven further keys share a required identity with **extras** of mine (the grid points at bases 120/200
   and the `T09a`-style spellings). Those are harmless today only because `ci/equality.py` skips
   `extra: true` before comparing - and `canonical_case_id` folds `trap__T09a.json` onto `T09-m1`, which
   is the folding I want for a superseded spelling.
-- `ci/gen_cells_required.py` at HEAD does read `evidence/S00/blind-map.json` to name B1..B5. That is the
-  contract seat's own act; a measuring seat may not copy it, so this port still refuses to open the
+- `ci/gen_cells_required.py` at HEAD does read `evidence/freeze/blind-map.json` to name B1..B5. That is the
+  contract local's own act; a measuring local may not copy it, so this port still refuses to open the
   sealed map and emits the blind rows as blocked instead.
 
 **16.2 Still open from part 1, restated:** `spec/cases.yaml` writes T17/T18 `sample_hex` as a sentence,
 not hex (cells publish that sentence in `spec_sample_string` and carry the created name's hex in
 `name_source`, so no cell claims a sentence decoded as hex); `ci/export_aggregate.py` still does not
-exist, so **no aggregate file was hand-written by this seat**; the control-cell samples live only in
+exist, so **no aggregate file was hand-written by this local**; the control-cell samples live only in
 `harness/ctrl-baseline.mjs`.
 
 **16.3 Blocked rows, emitted as required by the NOTICE.** Five rows, command, exit code, and one
@@ -455,7 +455,7 @@ B1..B5 (case_group blind)
   command               python impl/rust/run_cells.py --plan-blind            -> exit 3
   face                  "OUTCOME=blocked cells=B1..B5 reason=frozen_table_publishes_no_blind_samples"
   attempted fix         python impl/rust/run_cells.py --plan-blind --allow-sealed-map -> exit 2
-  fix face              "REFUSED: evidence/S00/blind-map.json is sealed until after the S03 audit ..."
+  fix face              "REFUSED: evidence/freeze/blind-map.json is sealed until after the S03 audit ..."
 ```
 
 ## 17. Published-tree changes during this round, and how they are auditable
@@ -464,7 +464,7 @@ Renumbering an extra changes its filename, and a stale pre-rev3 face left in `re
 a current one. The driver therefore retires faces it no longer produces: it copies the file to a
 quarantine tree **outside the repo**, verifies the copy's sha256 equals what it read, and only then
 removes the published path - recording name, sha256 and byte count in
-`run-summary.json -> retirement_ledger`. Files whose `worker_id`/`language` do not name this seat are
+`run-summary.json -> retirement_ledger`. Files whose `worker_id`/`language` do not name this local are
 skipped and listed separately; none were touched.
 
 ```
@@ -479,7 +479,7 @@ Final run `4728ef3865fc`, repo HEAD `298d6e4b268366595bbd67419a1d5aceda22ecd6`, 
 
 ```
 python impl/rust/selfcheck.py        -> exit 0
-results_root=D:\sendguard-work\seat-qoder\results\rust.windows.x64
+results_root=D:\work\session-token\results\rust.windows.x64
 files_scanned=169
 cells_required=48
 cells_required_answered=48
@@ -503,7 +503,7 @@ purpose - the difference is the contract defect, not a rounding error in my acco
 Reproduction is unchanged from section 11, plus `python spec/validate.py results/rust.windows.x64`
 (which now agrees: 169 valid / 0 void).
 
-## 19. rev5 and rev6 landed mid-round; what this seat re-read
+## 19. rev5 and rev6 landed mid-round; what this local re-read
 
 The contract moved twice more while this part was being written: `ci/equality.py` grew the VERDICT/PROBE
 split and the identity folding labelled rev5, and `f15b399` re-sealed `spec/cases.yaml` with a
@@ -530,11 +530,11 @@ CANON three-way digest agreement - and `controls_pass=True`, one attempt each.
 the table carried them as parsable rows, my planner briefly emitted them as 5 trap faces plus 20 T-API
 faces - 25 faces asking a question the contract asks once, under the wrong group. The planner now filters
 them out of the trap and per-entry loops (`is_trap`), and the 25 stale faces were retired through the
-section-17 path (quarantined outside the repo with their sha256 recorded, none of them another seat's
-file). Retirement totals across the round: **119 + 24 + 25 = 168** faces, all this seat's own.
+section-17 path (quarantined outside the repo with their sha256 recorded, none of them another local's
+file). Retirement totals across the round: **119 + 24 + 25 = 168** faces, all this local's own.
 
 **19.3 Measured against the gate's own code, not my copy of it** (`ci/equality.py` imported and run over
-this seat's 169 faces only - no other port's directory was read):
+this local's 169 faces only - no other port's directory was read):
 
 - `_contract_defects` on **0** faces: `sub_identity` is published as an object of the varying
   dimensions, which is what that gate now requires. My first rev3 pass published a list and would have
@@ -574,7 +574,7 @@ control duplicates and the re-measured CANON face. `read_result` on this port is
 # Part 3 - rev6 final round (2026-10-11 05:0x): blind cells, pinned controls, and one written answer
 
 Run `7e65ccb45140`, repo HEAD `f15b399`, `docs/NOTICE-rev6.md`, my block in `docs/GAP.md`
-(read, not run: `ci/gap_report.py` writes `docs/`, which this seat may not touch).
+(read, not run: `ci/gap_report.py` writes `docs/`, which this local may not touch).
 
 ## 20. The three rev6 items
 
@@ -595,11 +595,11 @@ digest is `c9fe45b2fee8ea846f0cf4f2cacc2a891e7b082e7719923502d12a9813e21994`.
 | T-CTRL-NAMETOOLONG | err_at_syscall (123) | not_applicable | true | 1 |
 | T-CTRL-CANON | ok | ok, `sha256_truth = c9fe45b2…` | true | 1 |
 
-`controls_pass=true`, and the sealed baseline (`evidence/S00-ctrl-baseline.md`) is what each expectation
+`controls_pass=true`, and the sealed baseline (`evidence/ctrl-baseline.md`) is what each expectation
 was read from. No re-run was needed, so nothing here is a repaired mismatch.
 
 **20.2 The five blind cells exist now.** `blind/B1..B5` on the primary entry, `blind_id` and the sample
-hex from `evidence/S00/blind-map.json`:
+hex from `evidence/freeze/blind-map.json`:
 
 ```
 B1 invoice_FINAL_2026.xlsx   B2 photo_2_.jpg   B3 Copy_of_report.docx
@@ -609,10 +609,10 @@ all five: create_result=ok, bytes_written=28, bytes_on_disk=28, read_result=ok,
           assigns no mechanism to a blind sample), one fresh uuid scratch each, verified empty
 ```
 
-On opening the file: part 1 section 6 records this seat **refusing** to read it, because FROZEN.md sealed
+On opening the file: part 1 section 6 records this local **refusing** to read it, because FROZEN.md sealed
 it until after the S03 audit and opening it would have prefilled an answer. rev6 item 2 is the contract
 owner ordering the five cells and naming that file as their source, so the seal was lifted by that order
-and not by this seat's choice; the fact is written into every blind face as `blind_opened_by`. Two hashes
+and not by this local's choice; the fact is written into every blind face as `blind_opened_by`. Two hashes
 are recorded per face and they are deliberately different numbers: whole file
 `4b322b8dcadb1846…` (828 bytes) versus the file's own `sha256_self` field `289188cfbc6a1efe…`, which is
 what FROZEN.md used to quote - a self-hash cannot cover the line carrying it.
@@ -692,7 +692,7 @@ smoothed to match.
   read_skipped_reason]`. It fails in the dangerous direction - a misspelled status word is silently
   accepted instead of voided. My parser now takes one token per table row's leading cell and refuses the
   field name, with an arm for each of the five real words and one for the impostor; `ci/` is outside this
-  seat's write set, so the gate's copy is reported, not patched.
+  local's write set, so the gate's copy is reported, not patched.
 - **`spec/schema.json` still lists four words in the nested `cross_reader.read_result` enum** while the
   top-level one carries five (rev4 updated the top level). This port emits no `cross_reader` object, so
   nothing of mine is voided by it.
@@ -701,7 +701,7 @@ smoothed to match.
   having compared nothing. Rewritten to parse through the driver's own table reader and to print
   `rows checked: 5` beside the verdict; every count quoted in sections 20-21 now names the rows it read.
 
-## 23. Final state of this seat's tree
+## 23. Final state of this local's tree
 
 ```
 python impl/rust/run_cells.py --phase all   -> controls_pass=True, cells_produced=174, problems=0
@@ -710,15 +710,15 @@ python impl/rust/selfcheck.py               -> exit 0
   cells_blocked=0  cells_unanswered_and_unblocked=0  extra=126  cells_void=0  cells_hang=0
   controls_pass=True  arms_total=29  arms_failed=0  OUTCOME=OK
 python spec/validate.py results/rust.windows.x64   ->  174 valid / 0 void   (exit 0)
-match, computed with ci/equality.py's own key_of over this seat's faces only:
+match, computed with ci/equality.py's own key_of over this local's faces only:
   required_cells 44 matched 44 missing 0;  rust T-API rows 4 present 4
 python impl/rust/run_cells.py --plan-blind -> exit 0, "OUTCOME=runnable cells=B1..B5"
 ```
 
-`cells_required` is 48 here because this seat also publishes the 4 rust rows of
+`cells_required` is 48 here because this local also publishes the 4 rust rows of
 `tapi_cells_per_language`; against the boss's 44-row framing the answer is **44/44**. Extras stay at 126
-and are marked, not deleted: this round added 5 faces and retired 0, so the retirement ledger still reads
-168 across the evening, all of them this seat's own files, each quarantined outside the repo with its
+and are marked, not deleted: this round added 5 faces and retired 0, so the retirement record still reads
+168 across the evening, all of them this local's own files, each quarantined outside the repo with its
 sha256 before its published path was removed. Nothing was pushed, nothing is committed, and no cell of
 another port's tree was read at any point.
 
@@ -726,7 +726,7 @@ another port's tree was read at any point.
 
 **`docs/GAP.md` was regenerated by my hand.** To read my own port block I ran `python ci/gap_report.py`,
 which is also the writer of that file - so at 05:15:40 I replaced a generated artifact in a directory
-this seat may not touch. The content is a truthful, newer snapshot of the same generator's rules (it
+this local may not touch. The content is a truthful, newer snapshot of the same generator's rules (it
 also shows `java` moving from 33/44 to 44/44, which is another port's real progress, not my edit), and I
 did not revert it: silently rolling back would have erased that other port's state, and the file is a
 derived report with no hand-written content in it. The right handling was to read `docs/GAP.md` (allowed)
@@ -736,9 +736,9 @@ and never invoke the generator; this paragraph is the record of that mistake.
 both mine, neither present when I last checked `ci/` clean) was removed. Later gate-identity checks in
 this round import `ci/equality.py` with `sys.dont_write_bytecode = True` for that reason.
 
-Nothing else outside `impl/rust/`, `results/rust.windows.x64/` and `evidence/S02/rust-selfcheck.md` was
+Nothing else outside `impl/rust/`, `results/rust.windows.x64/` and `evidence/judgement/rust-selfcheck.md` was
 written; no `git add`, no commit, no push, and no other port's `impl/` or `results/` face was read at any
-point - the only cross-port numbers quoted above are the ones the contract seat published in its own notice
+point - the only cross-port numbers quoted above are the ones the contract local published in its own notice
 and gap report.
 
 # Part 4 — rev7 (2026-10-11): the twelve length rungs now describe the bytes they passed
@@ -869,7 +869,7 @@ The results directory was not cleared, deleted, recreated, or moved at any point
 * runs 2 and 3 (`5df0a44338b5`, `faac2b29d425`): `retired_stale_faces=0`, `files_in_results=174`,
   `non_json=[]`. The file set is stable; each publish is a write-then-read-back-then-byte-compare, and a
   face that does not read back identical is a recorded problem (`problems=0` in all three runs).
-* No `rm`, no `rmdir` on a non-empty directory, no deletion logic (M19): `cleanup_failed=true` on 129 faces
+* No `rm`, no `rmdir` on a non-empty directory, no deletion logic (project rule): `cleanup_failed=true` on 129 faces
   for exactly that reason, and `scratch_removed_empty` only where the directory this driver created was
   provably empty.
 
@@ -881,13 +881,13 @@ The results directory was not cleared, deleted, recreated, or moved at any point
    old file standing. Fixed: the old rows are archived to the run tree (`sha256=290b4c2e3755d718…`) and the
    live file is emptied (`[]`), so "blocked" can only mean "blocked by this run".
 2. **`run-summary.json` claimed B1..B5 were blocked.** The `blocked` field was a hardcoded literal from
-   the first run of this seat, not a derived value. It now carries `emit_blocked_rows()`'s actual rows
+   the first run of this local, not a derived value. It now carries `emit_blocked_rows()`'s actual rows
    (`[]`) plus a one-line note that rev6 lifted the seal.
-3. **A run could erase the previous run's ledger.** `impl/rust/run-summary.json` is overwritten each run,
-   so the twelve-row retirement ledger quoted in 25.4 was gone after run 2. Fixed forward: every run now
+3. **A run could erase the previous run's record.** `impl/rust/run-summary.json` is overwritten each run,
+   so the twelve-row retirement record quoted in 25.4 was gone after run 2. Fixed forward: every run now
    also writes `run-summary.<run_id>.json` into its own tree outside the repo. The hashes in 25.4 are from
    the surviving quarantine copies, re-hashed and re-printed, so the retirement stays checkable even though
-   its ledger row was transient.
+   its record row was transient.
 
 ## 25.6 Validators
 
@@ -908,7 +908,7 @@ The results directory was not cleared, deleted, recreated, or moved at any point
 * Controls: `controls_pass=True`, five of five PASS at attempt 1, `T-CTRL-CANON` payload digest
   `c9fe45b2fee8ea846f0cf4f2cacc2a891e7b082e7719923502d12a9813e21994` in memory, on disk, and from python
   `hashlib` — the instrument was not red at any point tonight.
-* The gate's own report, regenerated by the contract seat at 10:57:51, reads for this port:
+* The gate's own report, regenerated by the contract local at 10:57:51, reads for this port:
   `## rust - matched 44/44, missing 0, outside-list 0, extra-flagged 126` — the twelve rungs now key onto
   required identities instead of being excluded as `unpinned_input`.
 
@@ -916,7 +916,7 @@ The results directory was not cleared, deleted, recreated, or moved at any point
 
 Written this turn: `impl/rust/src/probe.rs`, `impl/rust/run_cells.py`, `impl/rust/selfcheck.py`,
 `impl/rust/blocked-rows.json`, `impl/rust/run-summary.json`, `impl/rust/selfcheck-summary.json`,
-`results/rust.windows.x64/` (my port's faces), `evidence/S02/rust-selfcheck.md` (append-only), plus scratch
+`results/rust.windows.x64/` (my port's faces), `evidence/judgement/rust-selfcheck.md` (append-only), plus scratch
 and log trees outside the repo under `D:\sg-rust-scratch\` and the new `D:\sgc\` rung-scratch root.
 
 Not written by me, and named here rather than left for someone else to find: `docs/GAP.md`,

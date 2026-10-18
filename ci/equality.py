@@ -937,10 +937,10 @@ def main(argv):
     }
     # The artifact path is an argument, not a constant. Measured reason: ci/selftest.py runs this gate
     # against small fixture trees, and with a hardcoded path each fixture run overwrote the real verdict
-    # in evidence/S02/ - so docs/matrix.md, which reads that file, was judging a fixture for a while.
+    # in evidence/judgement/ - so docs/matrix.md, which reads that file, was judging a fixture for a while.
     # A test that writes into the evidence face is a defect even when the test itself passes.
     vpath = os.environ.get("SG_VERDICT_OUT") or os.path.join(
-        REPO, "evidence", "S02", "equality-verdict.json")
+        REPO, "evidence", "judgement", "equality-verdict.json")
     verdict["source_results"] = rel(RESULTS)
     verdict["source_required_list"] = rel(REQUIRED)
     verdict["written_at"] = time.strftime("%Y-%m-%dT%H:%M:%S%z")

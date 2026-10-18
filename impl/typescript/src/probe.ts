@@ -8,7 +8,7 @@
  * leaves behind the stages it had already recorded.
  *
  * Nothing here creates or deletes a directory: the parent owns the scratch tree
- * (project red line M19 -- the port carries no removal path at all).
+ * (project red line project rule -- the port carries no removal path at all).
  */
 import {
   writeFileSync,

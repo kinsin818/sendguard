@@ -5,7 +5,7 @@ no file on disk carries a superseded field set. `docs/NOTICE-rev3.md` asked for 
 three are done, and commit `298d6e4` (rev4) landed mid-round, which forced one more re-emission
 because rev4 gave the java port the honest word this record had been asking for.
 
-- seat: `seat-qoder` (java port window)
+- local: `session-token` (java port window)
 - contract read: `docs/NOTICE-rev3.md`, `spec/cells-required.json`, `spec/schema.json`,
   `spec/validate.py`, `spec/canonical.md`, `spec/gate.md` at HEAD `298d6e4b26`
 - run: 2026-10-11T04:57:50 host-local (UTC+08:00), harness `sg-java-S02-r3-rev4`
@@ -89,7 +89,7 @@ required list names none), `len__T17/T18__G1..G4` (the FROZEN tier identity), `t
 pre-rev3 id), `trap__T09/T14/T19` (whole-case cells). Each carries `extra: true` + `extra_reason`;
 an unmarked extra is VOID and a required cell that marks itself extra is VOID.
 
-## 4. Control cells (expectations only from `evidence/S00-ctrl-baseline.md`)
+## 4. Control cells (expectations only from `evidence/ctrl-baseline.md`)
 
 | cell | expectation quoted from the baseline | java measured | verdict |
 |---|---|---|---|
@@ -215,7 +215,7 @@ arms this round:
    bare booleans. Console here is cp936 and the JVM self-reports `file.encoding=GBK`, so every cell
    is written as ASCII bytes with `\uXXXX` escapes and the validator rejects any non-ASCII byte in a
    cell face.
-6. **`evidence/S00-ctrl-baseline.md` publishes a hash but not the payload bytes** it hashed, so
+6. **`evidence/ctrl-baseline.md` publishes a hash but not the payload bytes** it hashed, so
    cross-port canon agreement is not determinable from it; the CANON cell says so and
    `control_pass` reports agreement between this port's own two instruments.
 7. **`applicable: [macos, ubuntu]` on T07/T08/T09 vs a required list that names them for every
@@ -230,7 +230,7 @@ entry (185), external 5 s timeout owned by the driver, `hang` never needed. Rese
 created and listed only - no open, no content read, no content stat (`stat_status:
 "skipped-reserved-name (list only; no open)"`); the pinned create-and-write entries do hand 28
 payload bytes to a device, which is what the pinned primary entry *is*, disclosed rather than dodged
-by substituting another entry. No deletion anywhere (M19): every cell carries `cleanup_failed=true`,
+by substituting another entry. No deletion anywhere (project rule): every cell carries `cleanup_failed=true`,
 and the honest side effect is 2744 retained fresh scratch directories plus their child result
 documents under `D:\s\`, and 629 directories left at `D:\j*` by runs made before that root was
 fixed. Fresh uuid directory per run, verified empty before use and recounted after; `base_len` is
@@ -239,7 +239,7 @@ the JVM (78/120/200 confirmed). Zero third-party dependencies: one `.java` compi
 driver and validator on the Python standard library. Writes limited to `impl/java/`,
 `results/java.windows.x64/` and this file - nothing under `spec/`, `ci/`, `harness/`, `docs/` was
 modified, and the one `ci/__pycache__` byproduct of calling the gate's own function was removed;
-`D:\sendguard` was never opened; no commit, no push, no tag. No other port was read: nothing under
+`D:\local-dir` was never opened; no commit, no push, no tag. No other port was read: nothing under
 another language's `impl/` and nothing under any port's `results/` was opened in this round.
 
 ## 9. Disclosure against audit check 1 (`spec/gate.md` 7)

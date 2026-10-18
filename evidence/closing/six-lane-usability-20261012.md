@@ -1,6 +1,6 @@
 # Six-lane usability - built, run and compared in a `--no-local` clone, 2026-10-12
 
-Recorded by the seat that owns `ci/`, against the order "can the six ports actually be downloaded and used".
+Recorded by the local that owns `ci/`, against the order "can the six ports actually be downloaded and used".
 Everything below was executed in a fresh clone made with `git clone --no-local --no-hardlinks` from this repository
 at the tip commit, into a scratch directory outside the repository. Nothing in this face is remembered from an
 earlier run: each `rc` is from the command printed on its own row.
@@ -30,7 +30,7 @@ the product of this project rather than an obstacle to it.
 | python | `python impl/python/sg_run.py` | 0 | `cells_written=123 covered_required=48 extra=75 missing_required=0`, `control_all_ok=True`, `implementation_id_present=123/123` | `sg_selfcheck.py` rc=0, `cells_produced=123 cells_valid=123` |
 | rust | `python impl/rust/run_cells.py --phase controls` | 0 | `controls_pass=True cells_produced=5 problems=0` | `selfcheck.py` rc=0, `OUTCOME=OK` |
 | go | `<rederive binary> run --repo clone-1 --results clone-1/results/go.windows.x64` | 0 | `cells_planned=137 cells_written=49 controls_pass=true` | `rederive/selfcheck.py` rc=0, `OUTCOME=PASS` |
-| java | `python impl/java/tools/run_cells.py` | 0 | `cells_produced=86 cells_blocked=0 extra=38 missing_required=0`, five `ctrl` rows printed | **none exists** - see `docs/tickets/SG-F16-java-lane-selfcheck.md` |
+| java | `python impl/java/tools/run_cells.py` | 0 | `cells_produced=86 cells_blocked=0 extra=38 missing_required=0`, five `ctrl` rows printed | **none exists** - see `docs/tickets/F16-java-lane-selfcheck.md` |
 | typescript | `node impl/typescript/src/runner.ts` | 0 | `written=84 cells_expected=84 cells_measured=84 cells_blocked=0 controls_pass=true` | `selfcheck.py` rc=0, `language_enum_gap_cells=0` |
 | csharp | `python impl/csharp/run_csharp.py --all` | 0 | `cells_run=45 required_ids=48 produced_ids=50 missing=0 extra=2` | `selfcheck_csharp.py` rc=0, `controls=GREEN(5)` |
 
@@ -73,7 +73,7 @@ So: **a stranger who clones this repository can build all six ports, run all six
 committed faces give.** The columns that moved are timestamps, elapsed milliseconds, scratch and holder directory
 fields, enumeration-spread details and re-derivation notes - the parts of a record that describe the run rather
 than the answer. That is the sentence §1 of this README has always meant, now checked by the path a stranger
-actually takes instead of by this seat's own leg.
+actually takes instead of by this local's own leg.
 
 ## What was missing for a stranger, and is now fixed
 
@@ -81,6 +81,6 @@ actually takes instead of by this seat's own leg.
 reader following only what was published could verify the *legs* but not the *ports*. §7 ("Running a port yourself -
 the stranger's path") is the fix, written from the commands above, with the three caveats a reader would otherwise
 discover alone: rust's normalisation dependencies are not vendored so a cold machine needs registry access once;
-the java lane has no lane-authored self-check (ticketed as SG-F16, with its five acceptance criteria and both arms);
+the java lane has no lane-authored self-check (ticketed as F16, with its five acceptance criteria and both arms);
 and everything here is one host on one Windows edition, which `docs/host-stamp.md` declares and the cold-clone leg
 quarantines by name rather than comparing.

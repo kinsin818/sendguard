@@ -67,7 +67,7 @@ NULLABLE_OK = {"error_code", "error_message", "bytes_written", "roundtrip_ok",
                "regime_unresolved_reason", "extra_reason", "error_code", "extended_corroboration",
                "error_code", "supersedes_candidates", "nested_chain_depth", "max_component_len"}
 
-# expectations come from evidence/S00-ctrl-baseline.md, the only allowed source (spec/cases.yaml)
+# expectations come from evidence/ctrl-baseline.md, the only allowed source (spec/cases.yaml)
 CTRL_EXPECT = {
     "T-CTRL-NAMETOOLONG": {"create_result": "err_at_syscall", "error_stage": "syscall"},
     "T-CTRL-ASCII": {"create_result": "ok", "bytes_written": 28, "bytes_on_disk": 28,

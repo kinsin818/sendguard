@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""SENDGUARD rust seat self-check - the seat's own validator, not spec/validate.py.
+"""SENDGUARD rust local self-check - the local's own validator, not spec/validate.py.
 
 Checks four things and prints its denominators:
   1. every published face against the frozen spec/schema.json (required fields, types, enums),
@@ -74,7 +74,7 @@ def load_closed_sets():
         # `not_applicable` and its meaning column says "Requires `read_skipped_reason`", and a
         # whole-block scan harvests that field name as a legal read_result value - which silently
         # accepts a typo instead of voiding it. ci/equality.py's load_closed_sets has the same
-        # over-grab (measured: its read_result set carries read_skipped_reason); this seat reads
+        # over-grab (measured: its read_result set carries read_skipped_reason); this local reads
         # one token per table row's leading cell, and every non-table line's backticked words.
         words = set()
         for line in block.splitlines():
@@ -233,7 +233,7 @@ def check_cell(cell, schema, sets, pinned_entries, require_verdict_via=True):
             elif minimum is not None and cell[f] < minimum:
                 errs.append("%s=%r below the floor %r" % (f, cell[f], minimum))
     if cell.get("language") != "rust":
-        errs.append("language=%r is not this seat's language" % cell.get("language"))
+        errs.append("language=%r is not this local's language" % cell.get("language"))
     if cell.get("os") != "windows":
         errs.append("os=%r is not the os this face measured" % cell.get("os"))
     if cell.get("api_entry") not in pinned_entries:
@@ -273,7 +273,7 @@ BASE_FACE = {
     "api_entry": "std::fs::File::create", "attempt": 1, "name_source": "434f4e2e747874",
     "length_unit": "utf16_code_units", "name_encoding": "hex_raw_bytes", "verdict_via": "win32",
     "path_form": "plain", "longpath_mechanism": "none", "create_result": "ok", "error_stage": "null",
-    "read_result": "eof", "os_legality_verdict": "illegal", "harness_version": "S02-rust-seat-1",
+    "read_result": "eof", "os_legality_verdict": "illegal", "harness_version": "S02-rust-local-1",
     "started_at": "2026-10-11T04:30:00+08:00", "elapsed_ms": 3, "mechanism_class": "reserved_device_name",
     "attribution_layer": "L1", "bytes_written": 28, "bytes_on_disk": 0, "deps_direct": 0, "deps_total": 0,
     "sha256_self": "0" * 64, "phantom": True, "name_len": 7, "total_path_len": 90,
@@ -293,7 +293,7 @@ GOOD_RUNG = {
 
 
 def read_len_fill(path):
-    """The pin is read from the frozen table; a rule this seat retypes is a rule this seat can drift."""
+    """The pin is read from the frozen table; a rule this local retypes is a rule this local can drift."""
     text = io.open(path, encoding="utf-8").read()
     m = re.search(r"(?m)^len_fill:\s*$", text)
     if not m:
@@ -508,7 +508,7 @@ def main():
             if b.get(need) in (None, ""):
                 blocked_problems.append("%s: blocked row without %s" % (b.get("case_id"), need))
     sys.path.insert(0, HERE)
-    import run_cells  # the seat's own driver, reused only to recompute the plan and the pinned list
+    import run_cells  # the local's own driver, reused only to recompute the plan and the pinned list
 
     parsed = run_cells.parse_cases(CASES)
     cases, api_rust = parsed[0], parsed[1]

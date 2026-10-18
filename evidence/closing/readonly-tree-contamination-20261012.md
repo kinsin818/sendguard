@@ -1,16 +1,16 @@
 # Contamination record - this session rewrote tracked faces in the read-only tree, and nothing was reverted
 
-Recorded 2026-10-12 by the seat that owns `ci/`. The owner's ruling the same day was explicit: **do not restore
+Recorded 2026-10-12 by the local that owns `ci/`. The owner's rule the same day was explicit: **do not restore
 that tree, record the contamination only.** This file is that record. It changes nothing outside this repository,
-and it is not a fix - the fix to the cause is `docs/tickets/SG-F15-go-lane-hardcoded-root.md`, which landed after
+and it is not a fix - the fix to the cause is `docs/tickets/F15-go-lane-hardcoded-root.md`, which landed after
 this event.
 
 ## What happened, in one paragraph
 
-To re-emit the go lane's versioned data face, this seat ran that lane's own runner. It did not first read where
+To re-emit the go lane's versioned data face, this local ran that lane's own runner. It did not first read where
 the runner writes. The runner resolves its project root from a string written into its source - `impl/go/main.go`
-carried `repo = <a checkout path>` - and that path is a **second checkout of this project**, `D:\sendguard`, which
-the standing order declares read-only evidence for this seat (no checkout, reset, clean, stash or write there). The
+carried `repo = <a checkout path>` - and that path is a **second checkout of this project**, `D:\local-dir`, which
+the project rules declares read-only evidence for this local (no checkout, reset, clean, stash or write there). The
 run completed normally, printed `go-port run complete`, and rewrote tracked faces inside that tree.
 
 ## Measured, from that tree's own status, read-only
@@ -22,12 +22,12 @@ run completed normally, printed `go-port run complete`, and rewrote tracked face
 | tracked faces already modified before this session | 124 (mtimes in the 2026-10-10 23:xx and 22:xx buckets) - **not** this session's work |
 | its `git status --porcelain -uall` line count | 254 before this session's run, 254 after (the 129 newly written are inside that set) |
 | files deleted there | 0 |
-| revert attempted | **none** - that tree is not this seat's to restore, and `git checkout <ref> -- path` would additionally rewrite line endings under autocrlf, which is a second defect laid on the first |
+| revert attempted | **none** - that tree is not this local's to restore, and `git checkout <ref> -- path` would additionally rewrite line endings under autocrlf, which is a second defect laid on the first |
 
-Two corrections to what this seat said earlier the same day, recorded here rather than quietly edited:
+Two corrections to what this local said earlier the same day, recorded here rather than quietly edited:
 
 1. the commit message of the six-lane re-emit attributed a modification of
-   `evidence/S02/defects/sample-corruption.json` to this run. It did not. That file's mtime falls in the
+   `evidence/judgement/defects/sample-corruption.json` to this run. It did not. That file's mtime falls in the
    2026-10-10 buckets, so it belongs to the 124 faces that were already dirty. The run's footprint is exactly the
    129 names below, one directory, nothing else.
 2. that message also implied the frozen-contract check that printed a stale digest was part of the same invocation.
@@ -37,7 +37,7 @@ Two corrections to what this seat said earlier the same day, recorded here rathe
 
 ## The 129 faces, named
 
-The list is this seat's reading of that tree's `git status` filtered to the hour this session ran, captured to a
+The list is this local's reading of that tree's `git status` filtered to the hour this session ran, captured to a
 file outside the repository and inserted by name - not retyped.
 
 ```
@@ -177,7 +177,7 @@ results/go.windows.go1.23.5/TAPI-T01__os_WriteFile.json
 The same hardcoded root made the lane's contract check meaningless: `verify` compared the other checkout's frozen
 files against the other checkout's own `FROZEN.md` and printed `VERIFY PASS: frozen artifacts intact`, while this
 repository's sealed `spec/schema.json` digest was different. A reader of that line would have concluded the lanes
-were shipped against the contract they were told to satisfy. After `SG-F15`, the same binary behaves like this:
+were shipped against the contract they were told to satisfy. After `F15`, the same binary behaves like this:
 
 ```
 $ sg-go verify                                     # invoked where no contract root is above the cwd
@@ -207,22 +207,22 @@ which is the CLI capture above.
 
 ## What still needs an owner's decision
 
-Whoever owns `D:\sendguard` decides what becomes of its 129 newly rewritten faces and its 124 older ones. This
-seat will not touch that tree again. If a revert is wanted, it belongs in a ticket to the window that holds it,
+Whoever owns `D:\local-dir` decides what becomes of its 129 newly rewritten faces and its 124 older ones. This
+local will not touch that tree again. If a revert is wanted, it belongs in a ticket to the window that holds it,
 with the list above as its scope - and the window that takes it should know that restoring tracked faces there by
 `git checkout` changes line endings, so the byte comparison has to name which face it measured.
 
-## Owner's ruling, 2026-10-12 evening: no restore, and this record is the authority
+## Owner's rule, 2026-10-12 evening: no restore, and this record is the authority
 
 The owner read this face and ruled: **neither the 129 faces this session rewrote nor the 124 that were already
 dirty in that tree are to be restored.** His reason is the one that matters for an evidence tree - its value is a
 complete record of who changed what and when, not a clean `git status`; and a restore would introduce new
 contamination of its own (line-ending rewriting under autocrlf), which is a worse trade than the dirt.
 
-This therefore closes the item. The seat that owns `ci/` will not touch that tree again: no checkout, no reset, no
+This therefore closes the item. The local that owns `ci/` will not touch that tree again: no checkout, no reset, no
 restore, no clean, no write. The list above stands as the account, and any later action on that tree belongs to
 whoever holds it, taken with this record as the citation.
 
-The same ruling covers the sibling-directory artefacts this session produced while the defect was still live - the
+The same rule covers the sibling-directory artefacts this session produced while the defect was still live - the
 moved-aside output and the scratch copies of the lane binary. They stay where they are, named here, un-deleted
-(M19), outside the repository, and they are not part of the deliverable.
+(project rule), outside the repository, and they are not part of the deliverable.

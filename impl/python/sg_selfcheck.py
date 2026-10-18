@@ -149,7 +149,7 @@ def check_order_terms(cell, spec_sha):
     if "shell=False" not in str(cell.get("child_spawn_form", "")):
         p.append("child_spawn_form does not name shell=False")
     if cell.get("cleanup_attempted") is not False:
-        p.append("cleanup_attempted=%r (M19 forbids deletion)" % cell.get("cleanup_attempted"))
+        p.append("cleanup_attempted=%r (project rule forbids deletion)" % cell.get("cleanup_attempted"))
     if cell.get("rev3_migrated"):
         # a migrated record keeps the spec face ITS PROBE READ, and must name the
         # face it was restamped under -- overwriting it would fake provenance
@@ -265,7 +265,7 @@ def gate_digest(cell):
 
 
 def parse_baseline(blob):
-    """evidence/S00-ctrl-baseline.md table -> control expectations.
+    """evidence/ctrl-baseline.md table -> control expectations.
 
     `null` means two different things in that table: in the error_stage column it
     is the canonical status word (spec/canonical.md section 4 lists null among the
@@ -405,7 +405,7 @@ def selftest(schema, canon, base_blob, cases_blob):
     add("red: probe without the 5s cap is flagged",
         any("probe_timeout_s" in x for x in check_order_terms(green_cell(probe_timeout_s=30), "0" * 64)))
     add("red: attempted deletion is flagged",
-        any("M19" in x for x in check_order_terms(green_cell(cleanup_attempted=True), "0" * 64)))
+        any("project rule" in x for x in check_order_terms(green_cell(cleanup_attempted=True), "0" * 64)))
     add("red: length_unit equal to name_encoding is flagged (rev3 split not applied)",
         any("rev3 split" in x for x in check_order_terms(
             green_cell(length_unit="code_points", name_encoding="code_points"), "0" * 64)))
@@ -429,7 +429,7 @@ def selftest(schema, canon, base_blob, cases_blob):
         canon.get("attribution_layer") == {"L1", "L2", "L3", "L3_interaction"},
         str(canon.get("attribution_layer")))
     der, mem = derive_from_cases(cases_blob,
-                                 json.loads(git_blob("evidence/S00/blind-map.json").decode("utf-8")))
+                                 json.loads(git_blob("evidence/freeze/blind-map.json").decode("utf-8")))
     add("green: member counts derived from the frozen hex lists are 2/3/2",
         mem.get("T09") == 2 and mem.get("T14") == 3 and mem.get("T19") == 2, str(mem)[:120])
     len_rows = [r for r in der if r[0] == "len"]
@@ -476,7 +476,7 @@ def derive_from_cases(cases_blob, blind_doc):
     This is not a copy of ci/gen_cells_required.py: member counts come straight
     off the frozen hex lists, the len group per canonical section 2, the rung
     ladder and the two path forms from the manifest itself, and the blind cells
-    from evidence/S00/blind-map.json. If the manifest and the frozen table
+    from evidence/freeze/blind-map.json. If the manifest and the frozen table
     disagree, one of them is wrong and the ports cannot both be right.
     """
     text = cases_blob.decode("utf-8")
@@ -624,7 +624,7 @@ def main():
     canon = load_canonical(git_blob("spec/canonical.md"))
     cases_blob = git_blob("spec/cases.yaml")
     spec_sha = hashlib.sha256(cases_blob).hexdigest()
-    base_blob = git_blob("evidence/S00-ctrl-baseline.md")
+    base_blob = git_blob("evidence/ctrl-baseline.md")
     frozen = git_blob("spec/FROZEN.md").decode("utf-8")
 
     print("ruler_faces_read=git cat-file blob HEAD (not the disk copy)")
@@ -689,7 +689,7 @@ def main():
     # required-list coverage
     req_doc, req_keys, tapi_keys, req_sha = load_required()
     derived, members = derive_from_cases(
-        cases_blob, json.loads(git_blob("evidence/S00/blind-map.json").decode("utf-8")))
+        cases_blob, json.loads(git_blob("evidence/freeze/blind-map.json").decode("utf-8")))
     dset = set(derived)
     mset = set((g, c, tuple(s)) for (g, c, s, _e) in
                [(k[0], k[1], k[2], None) for k in req_keys if k[0] != "tapi"])

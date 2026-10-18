@@ -6,10 +6,10 @@ whether it answers the same way there. A buyer's sentence is "the checker reprod
 transcripts reproduce", so that gap was the last flattering-but-unverified claim in the delivery story.
 
 ```
-clone| D:\sendguard-work\sg-parity\parity-3 (created) head=c54aa63e806a status_before=0 pipeline_rc=1
+clone| D:\work\sg-parity\parity-3 (created) head=c54aa63e806a status_before=0 pipeline_rc=1
 declared| docs/evidence.md - 1 line(s) inside the declared shape: - repository commit: `8f04c391ac49` (working tree carries 13 uncommitted faces at generation time). That is the HEAD thi
 tool| names=5 fields_compared=55 differing=0
-OUTCOME=CLEAN faces_compared=12 identical=11 declared=1 differing=0 missing=0 clone=D:\sendguard-work\sg-parity\parity-3
+OUTCOME=CLEAN faces_compared=12 identical=11 declared=1 differing=0 missing=0 clone=D:\work\sg-parity\parity-3
 ```
 
 ## What was asked
@@ -35,7 +35,7 @@ working copy at `c54aa63` and a `--no-local` clone of the same commit.
 It proves the deliverable does not depend on the working copy: the clone's checkout contains everything the
 checker needs (a missing tracked file would have shown as a non-answer code, which this leg reports as
 `OUTCOME=INSTRUMENT-RED` rather than as a difference), and the answer it gives about these names is a property of
-the commit plus this machine, not of whichever files the seat happened to have lying around.
+the commit plus this machine, not of whichever files the local happened to have lying around.
 
 It does **not** prove cross-machine or cross-OS reproducibility: both runs are on the same Windows host with the
 same Python 3.14.7 interpreter, and several of these names are exactly the ones whose answer depends on the OS
@@ -52,14 +52,14 @@ agreement), and the checker's own failure codes are never read as answers (`A12`
 
 ## Second reading, 14:34 +0800 - the checker's own spec self-test, in both trees
 
-Five names and eleven fields is this seat choosing what to ask. The deliverable has a self-test that asks what the
+Five names and eleven fields is this local choosing what to ask. The deliverable has a self-test that asks what the
 *spec* says to ask: `python tool/check.py --selftest-spec` walks every frozen sample in `spec/cases.yaml` through
-the same rules. It was run in the working copy and in the cold clone `D:\sendguard-work\sg-parity\parity-5`
+the same rules. It was run in the working copy and in the cold clone `D:\work\sg-parity\parity-5`
 (a `--no-local` clone of `2e67e84` produced by the parity leg seconds earlier; the leg had regenerated the
 generated faces inside it, which does not touch `tool/` or `spec/`):
 
 ```
-seat  rc=0  bytes=3086   lines=44
+local  rc=0  bytes=3086   lines=44
 clone rc=0  bytes=3086   lines=44
 byte-identical output: True
 rc equal: True
@@ -77,7 +77,7 @@ generated document.
 The `samples_not_decodable=2` line is the self-test's own published denominator: `tool/check.py` adds to that
 count when a frozen case's sample hex cannot be decoded into a name, or when the case carries no sample at all,
 and it lists the misses instead of tuning them away - the same reading the morning's tool record already carries
-(`evidence/S10/tool-selfcheck.md`: `traps_in_spec=20 samples_decoded=22 samples_not_decodable=2
+(`evidence/clone-tool/tool-selfcheck.md`: `traps_in_spec=20 samples_decoded=22 samples_not_decodable=2
 samples_flagged=14 samples_not_flagged=8`). What is established here is not that the two are benign but that the
 number is a property of the committed spec: it is identical on both sides of the clone, and it is not being read
 as a pass.

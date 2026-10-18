@@ -1,4 +1,4 @@
-# S02 — Python seat run report (windows, local) — freeze revision 2
+# S02 — Python local run report (windows, local) — freeze revision 2
 
 - date: 2026-10-10
 - worker: W-PY
@@ -7,7 +7,7 @@
 - interpreter: `C:\Python314\python.exe` — Python 3.14.7
 - OS: Microsoft Windows 10.0.19041 (AMD64), NTFS, max_component=255, LongPathsEnabled=0
 - instrument: `harness/audit.exe` v0.1.0-s00 (independent Go enumerator) + self enumeration
-- scratch: `%TEMP%\sendguard-run\` (OUTSIDE the repo, N12); harness deletes nothing (M19)
+- scratch: `%TEMP%\sendguard-run\` (OUTSIDE the repo, N12); harness deletes nothing (project rule)
 
 ## 1. Coverage (full, rev2)
 
@@ -77,18 +77,18 @@ Same trap name -> different verdict depending on API entry. This is exactly the
 - extended path (`\\?\`, prefix_rewrite): component boundary = **255** (base_len 69).
 - plain path: component boundary = **177** (base 71 -> full path 259 = 260-1).
 
-### 3.7 Controls (expectations from `evidence/S00-ctrl-baseline.md`)
+### 3.7 Controls (expectations from `evidence/ctrl-baseline.md`)
 `T-CTRL-ASCII=ok`, `T-CTRL-PARSE=err_at_parse(ValueError)`,
 `T-CTRL-ILLEGAL-CHAR=err_at_syscall`, `T-CTRL-NAMETOOLONG=err_at_syscall`,
 `T-CTRL-CANON` python sha == node sha `c9fe45b2…21994` -> all pass.
 
-## 4. DoD status
+## 4. acceptance status
 
 - full 22-trap coverage on rev2; schema-valid; 0 conflicts.
 - existence from **directory enumeration** (audit + scandir), `path_view` + `dir_view`
   both recorded (M2). `exists()/stat()` never used as sole truth (they lie — see S02 defect notes).
 - errors verbatim (`winerror:` / exception name) (M16); 5 s timeout -> `hang` (M9);
-  no delete anywhere (M19); English only (M21).
+  no delete anywhere (project rule); English only (M21).
 - **Rev1 was blocked on the freeze defect; rev2 is unblocked.**
 
 ## 5. Artifacts
@@ -98,7 +98,7 @@ Same trap name -> different verdict depending on API entry. This is exactly the
   `results/python.windows.3.14.7.json`, `results/python/phantom.windows.json`,
   `results/python/api-entry.windows.json`
 - `results/python/_superseded_rev1/` (4 stale T14 api cells from rev1, kept not deleted)
-- `evidence/S02/defects/sample-corruption.{md,json}`, `evidence/S02/conflicts/` (empty)
+- `evidence/judgement/defects/sample-corruption.{md,json}`, `evidence/judgement/conflicts/` (empty)
 
 ## 6. Instrument caveat
 
@@ -110,5 +110,5 @@ Always pair with the enumeration truth.
 ## 7. Next
 
 1. Propagate the same harness to the Node/Go seats and the CI columns (macOS/ubuntu).
-2. Deferred sub-items for this seat: T16 zip round-trip body, T17 full-path bisection
+2. Deferred sub-items for this local: T16 zip round-trip body, T17 full-path bisection
    (G1–G4), cross-language read-back (S04).

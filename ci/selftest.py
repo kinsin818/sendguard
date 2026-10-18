@@ -110,7 +110,7 @@ def run_gate(results_dir, manifest=None, verdict_out=None):
     if manifest:
         env["SG_REQUIRED_CELLS"] = manifest
     # a fixture run must not write into the real evidence face; the gate would otherwise overwrite
-    # evidence/S02/equality-verdict.json with a two-port toy verdict every time this file is run
+    # evidence/judgement/equality-verdict.json with a two-port toy verdict every time this file is run
     if verdict_out:
         env["SG_VERDICT_OUT"] = verdict_out
     r = subprocess.run([sys.executable, GATE, "--results-dir", results_dir],

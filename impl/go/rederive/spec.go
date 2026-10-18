@@ -289,7 +289,7 @@ func LoadSpec(path string) (*FrozenSpec, map[string]*CaseDef, error) {
 	}
 	// spec.BlindMap was captured while scanning the top level of the file
 	if spec.BlindMap == "" {
-		spec.BlindMap = "evidence/S00/blind-map.json"
+		spec.BlindMap = "evidence/freeze/blind-map.json"
 	}
 	spec.Blind = LoadBlind(filepath.Join(filepath.Dir(filepath.Dir(path)), spec.BlindMap))
 	if len(spec.Blind) != 5 {
@@ -300,7 +300,7 @@ func LoadSpec(path string) (*FrozenSpec, map[string]*CaseDef, error) {
 
 // LoadBlind reads the sealed blind map spec/cases.yaml names. rev6 requires the five
 // blind cells, so the seal is opened by the contract owner's instruction, not by this
-// seat deciding to unseal it.
+// local deciding to unseal it.
 func LoadBlind(path string) []BlindSample {
 	raw, err := os.ReadFile(path)
 	if err != nil {

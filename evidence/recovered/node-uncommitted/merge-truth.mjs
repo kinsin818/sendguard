@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// SENDGUARD Node S02 merge pass (W-NODE seat).
+// SENDGUARD Node S02 merge pass (W-NODE local).
 // Folds the two independent out-of-process instruments back into the per-cell
 // JSON and the bundle:
 //   - audit.exe  truth  (results/node/windows/_audit-truth.ndjson)  -> is_device, bytes_on_disk_truth, sha256_truth

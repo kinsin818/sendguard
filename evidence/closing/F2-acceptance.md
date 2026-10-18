@@ -1,12 +1,12 @@
-# Acceptance record — SG-F2 (Java lane: the `java.io` spread, and the control-cell stamps)
+# Acceptance record — F2 (Java lane: the `java.io` spread, and the control-cell stamps)
 
-Seat: delivery (`d9242392`). Host clock 2026-10-11 13:34 +0800.
-Ticket: `docs/tickets/SG-F2-java-io-spread-and-control-stamps.md`, dispatched 13:05. Lane's commit:
-`b56e9c4` ("Land SG-F2 in the java lane: twelve java.io legs as cells, five of five controls stamped"), plus
-its own transcript `impl/java/tools/verify-sg-f2-output.txt` (one command per block, `rc` printed after each —
+Session: delivery (`d9242392`). Host clock 2026-10-11 13:34 +0800.
+Ticket: `docs/tickets/F2-java-io-spread-and-control-stamps.md`, dispatched 13:05. Lane's commit:
+`b56e9c4` ("Land F2 in the java lane: twelve java.io legs as cells, five of five controls stamped"), plus
+its own transcript `impl/java/tools/verify-f2-output.txt` (one command per block, `rc` printed after each —
 including a `3b rc of equality alone` block, because it noticed its first reading came through a pipe).
 
-## Verdict: ACCEPTED on all five criteria, read by this seat's instruments
+## Verdict: ACCEPTED on all five criteria, read by this local's instruments
 
 | # | criterion | expected | read at 13:33, tree = HEAD `b56e9c4` | rc |
 |---|---|---|---|---|
@@ -14,7 +14,7 @@ including a `3b rc of equality alone` block, because it noticed its first readin
 | 2 | `python ci/acceptance.py`, java row | `pass (5/5 stamped)`, `44/44`, `extra >= 38` | java row: 86 faces, 44/44, **38 extra**, `pass (5/5 stamped)`, schema-invalid 0 | 0 |
 | 3 | `python ci/equality.py` must not move | 54 / 44 / 4 | `verdict_disagreements=54 cells_compared=44(24/44 identical) cells_fully_recorded_and_identical=4 verdict_not_recorded_pairs=121 required_cells_missing=0` | 1 (RED = the measurement) |
 | 4 | spread cells carry their own runtime identity, and the pinned filler | every new cell | 12/12 carry `toolchain` **and** `jvm_self_report`; `name_source` is 240 hex characters = 120 × `61` (the `len_fill` unit), and `sub_identity` uses the contract's existing `builder` dimension with `extra: true` | - |
-| 5 | nothing left uncommitted in the lane | 0 lines | `git status --porcelain -uall -- results/java.windows.x64` → 0, and `docs/acceptance-S02.md` prints `faces_ahead_of_head=0` | 0 |
+| 5 | nothing left uncommitted in the lane | 0 lines | `git status --porcelain -uall -- results/java.windows.x64` → 0, and `docs/acceptance.md` prints `faces_ahead_of_head=0` | 0 |
 
 ## The finding the ticket was actually after, now sitting in cells rather than in prose
 

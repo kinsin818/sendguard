@@ -31,7 +31,7 @@ import java.util.zip.ZipOutputStream;
 
 /**
  * SENDGUARD java port probe. One invocation = one (cell x entry) observation.
- * Writes an ASCII-only JSON document to --out. Performs no deletion of anything (M19).
+ * Writes an ASCII-only JSON document to --out. Performs no deletion of anything (project rule).
  */
 public final class CellProbe {
 

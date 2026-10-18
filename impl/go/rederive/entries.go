@@ -234,7 +234,7 @@ func runChild(planPath, outOverride string) error {
 	case res.Blocked:
 		o.ReadLegReason = "entry blocked, nothing to read"
 	case reserved:
-		o.ReadLegReason = "not executed: reserved device name; seat order allows create and list only"
+		o.ReadLegReason = "not executed: reserved device name; local order allows create and list only"
 	case res.CreateResult != "ok":
 		o.ReadLegReason = "not executed: create did not produce an object"
 	case p.Entry == "os.Mkdir":
@@ -438,7 +438,7 @@ func attemptEntry(entry, target string, payload []byte, reserved, nulName bool) 
 			return failFrom(&r, err, nulName)
 		}
 		if reserved {
-			r.EntryHalf = "open-half only: content transfer suppressed (seat order: reserved device names are created and listed, never written)"
+			r.EntryHalf = "open-half only: content transfer suppressed (local order: reserved device names are created and listed, never written)"
 			_ = f.Close()
 			return r
 		}
@@ -452,7 +452,7 @@ func attemptEntry(entry, target string, payload []byte, reserved, nulName bool) 
 			return failFrom(&r, err, nulName)
 		}
 		if reserved {
-			r.EntryHalf = "open-half only: content transfer suppressed (seat order: reserved device names are created and listed, never written)"
+			r.EntryHalf = "open-half only: content transfer suppressed (local order: reserved device names are created and listed, never written)"
 			_ = f.Close()
 			return r
 		}
@@ -469,7 +469,7 @@ func attemptEntry(entry, target string, payload []byte, reserved, nulName bool) 
 			r.BlockReason = "os.WriteFile is a single open+write call; running it as pinned would transfer 28 bytes into the device behind the name (PRN would queue a print job, COM1 would drive a serial port). Splitting it would substitute another entry, which spec/FROZEN.md forbids."
 			r.AttemptedFix = "ran the same name through os.Create and os.OpenFile (open half only, bytes suppressed) and recorded those as sibling tapi cells; os.WriteFile itself was not attempted."
 			r.ErrorCode = "not-attempted"
-			r.ErrorMessage = "blocked before the syscall by the seat safety order"
+			r.ErrorMessage = "blocked before the syscall by the local safety order"
 			r.Sha256Self = ""
 			return r
 		}

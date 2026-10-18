@@ -33,7 +33,7 @@ read the output: **the verdict is the answer about your name; the probe is what 
 library happened to do**, which is allowed to differ between ports (spec/cell-identity.md 9.3). The field
 names and the spellings of `name_landed_as` and `len_triple` are the gate's own: `canon_name` and
 `canon_triple` are mirrored in this file and were checked against the gate's functions (36 comparisons,
-0 mismatches — see `evidence/S10/tool-selfcheck.md`).
+0 mismatches — see `evidence/clone-tool/tool-selfcheck.md`).
 
 Three things the block always prints, on purpose:
 
@@ -75,7 +75,7 @@ python tool/check.py --controls       # the five pinned control_samples in spec/
 python tool/check.py --selftest-spec  # every frozen trap sample through the rules, no disk writes
 ```
 
-`--controls` compares against `evidence/S00-ctrl-baseline.md`, which FROZEN.md names as the only allowed
+`--controls` compares against `evidence/ctrl-baseline.md`, which FROZEN.md names as the only allowed
 source of control expectations; nothing there is a criterion this tool invented. The columns it checks are
 probe-class fields **on purpose**: a control cell calibrates the ruler (spec/gate.md 8). It prints
 `INSTRUMENT-RED` at the top and exits 1 if any control misses the baseline, `CONTROLS-OK` and exits 0
@@ -105,12 +105,12 @@ A bug in the tool must never read as a verdict about your folder.
   and the field prints `roundtrip_ok=NOT-RECORDED` with the reason. An orphan `CON.txt` sits in the test
   folder and this tool has been run over it without hanging.
 * **Delete anything.** Folder mode never writes. Name mode leaves one scratch directory per probe and prints
-  its path (M19: no deletion logic). Expect litter after `--controls`: five directories.
+  its path (project rule: no deletion logic). Expect litter after `--controls`: five directories.
 * **Invent a status word.** Words come from spec/canonical.md (closed sets) and an unmeasured field prints
   `NOT-RECORDED`, which is spec/cell-identity.md 9.1's word for an absence — not a value, not a zero.
 * **Speak anything but ASCII.** Every name is printed escaped (`\u202e`, `\x20`, `\U0001f600`), so a bidi or
   zero-width name cannot reorder the report line it appears in, and a cp936 console cannot garble it.
-  Measured: zero bytes above 0x7F in every output captured in `evidence/S10/tool-selfcheck.md`.
+  Measured: zero bytes above 0x7F in every output captured in `evidence/clone-tool/tool-selfcheck.md`.
 * **Claim a verdict for a name it could not address.** `os.path.abspath` on `…\CON.txt` returns `\\.\CON`
   on this machine — Python hands your argument to the console device — so the tool splits the argument by
   hand and tells you when the canonicaliser disagreed with the path you typed.

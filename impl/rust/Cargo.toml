@@ -1,10 +1,10 @@
-# SENDGUARD rust seat. Two faces of one source file, so the dependency face of every
+# SENDGUARD rust local. Two faces of one source file, so the dependency face of every
 # cell is declared rather than implied:
 #   sg_probe        - std-only, no crates linked into the measured process
 #   sg_probe_norm   - same source, additionally linked against unicode-normalization,
 #                     built only with --features normalization
 [package]
-name = "sendguard-rust-seat"
+name = "sendguard-rust-local"
 version = "0.1.0"
 edition = "2021"
 publish = false

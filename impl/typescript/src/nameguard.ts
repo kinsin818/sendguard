@@ -31,10 +31,10 @@ export function isReservedDeviceName(name: string): boolean {
  * Reason the extended-prefix (`\\?\`) OS-legality probe must not run for this name,
  * or null when it may. A `\\?\` create of a reserved name lands a REAL NTFS entry
  * that plain-path tools then open as a device; leaving it inside a shared clone is a
- * hazard for the next lane and M19 forbids this port from deleting it.
+ * hazard for the next lane and project rule forbids this port from deleting it.
  */
 export function extendedProbeRefusal(name: string): string | null {
   return isReservedDeviceName(name)
-    ? "not-probed: reserved device name; an extended-prefix create would land a real entry that plain-path tools open as a device, and M19 forbids deletion by this port"
+    ? "not-probed: reserved device name; an extended-prefix create would land a real entry that plain-path tools open as a device, and project rule forbids deletion by this port"
     : null;
 }

@@ -8,24 +8,24 @@ This leg writes nothing, so it takes no --scratch-root; handing it one is refuse
 and one of the arms below asserts exactly that.
 
 Why this leg exists. On 2026-10-12 a census of the published tree found 1,150 occurrences of a schema property
-whose values named sessions, seats and engines rather than artifacts - the data contract was carrying the studio.
+whose values named sessions, seats and engines rather than artifacts - the data contract was carrying the project.
 Nothing in the existing apparatus could see that: `ci/lint.py` judges file names, `ci/claim_digest.py` judges
 numbers, `ci/link_check.py` judges references. A project that sells verification has to verify its own boundary,
 and a boundary is not a feeling.
 
 Five classes, counted separately and never blended:
 
-  RETIRED    the retired producer-metadata key, renamed forward by SG-F8. Assembled at run time, because a rule
+  RETIRED    the retired producer-metadata key, renamed forward by F8. Assembled at run time, because a rule
              that prints its own needle makes the needle unfindable and the scan unverifiable.
   IDENTITY   a value for a producer identity field that does not match the product-side shape
-             `[a-z][a-z0-9-]{0,15}-port`. Session names, seat codes and engine personas all fail this shape,
+             `[a-z][a-z0-9-]{0,15}-port`. Session names, local codes and engine personas all fail this shape,
              and they fail it structurally, so the rule survives a rename of the field itself.
   LOGIN      a path under the current user's profile root. Computed from the environment at run time, never
              spelled into a face: this is the class that must never appear in a distributable artifact.
   HOSTROOT   the absolute path of the tree being scanned, quoted inside a face of that same tree. Tells a
              stranger nothing and discloses the host's layout; the public instruction is the published URL.
   TOOLPATH   any other absolute path - a recorded executable, a toolchain root, a runtime location. This is
-             **product-side provenance** and the owner's ruling keeps it: the runtime is what made several
+             **product-side provenance** and the owner's rule keeps it: the runtime is what made several
              verdicts flip, so hiding it would destroy the more valuable claim. Counted, printed, never fatal.
 
 A hit inside a face whose job is to state the rule is `MENTIONED`, not fatal, and the exemption binds the pair
@@ -188,7 +188,7 @@ def selftest():
     rf = _escaped_forms("C:" + SEP + "fake" + SEP + "tree") | _escaped_forms(root)
     hf = _escaped_forms("C:" + SEP + "Users" + SEP + "alice")
     chk(classify("results/python.windows.x64/cell.json") == "distributable", "green: a result face is distributable")
-    chk(classify("docs/tickets/SG-F8-public-interface-process-metadata.md") == "rule", "green: a ticket is a rule face")
+    chk(classify("docs/tickets/F8-public-interface-process-metadata.md") == "rule", "green: a ticket is a rule face")
     chk(classify("notes/scratch.md") == "other", "green: an undiscussed directory is neither")
     chk("RETIRED" in [c for c, _, _ in scan_face('{"%s": "x"}' % RETIRED_KEY, root_forms=rf, home_forms=hf)],
         "red: the retired key is recognised when assembled at run time")
@@ -197,14 +197,14 @@ def selftest():
         "green: needle detection is content-based, not path-based")
     chk([c for c, _, _ in scan_face('{"case_id": "T-CTRL-PARSE"}', root_forms=rf, home_forms=hf)] == [],
         "green: a non-producer identifier is not judged by the shape rule")
-    chk(any(c == "IDENTITY" for c, _, _ in scan_face('{"implementation_id": "seat-qoder-rust"}', root_forms=rf,
+    chk(any(c == "IDENTITY" for c, _, _ in scan_face('{"implementation_id": "session-token-rust"}', root_forms=rf,
                                                       home_forms=hf)),
         "red: the new field name carrying a session value is still caught")
     chk([c for c, _, _ in scan_face('{"implementation_id": "rust-port"}', root_forms=rf, home_forms=hf)] == [],
         "green: the new field name with a product value passes")
-    chk(any(c == "IDENTITY" for c, _, _ in scan_face('{"%s": "W-GO/qianwen"}' % RETIRED_KEY, root_forms=rf,
+    chk(any(c == "IDENTITY" for c, _, _ in scan_face('{"%s": "port-go"}' % RETIRED_KEY, root_forms=rf,
                                                      home_forms=hf)),
-        "red: a seat code with an engine name is shape-rejected")
+        "red: a producer code with a tool name is shape-rejected")
     chk(any(c == "LOGIN" for c, _, _ in scan_face('out = "C:' + SEP + 'Users' + SEP + 'alice' + SEP + 'x.txt"',
                                                   root_forms=rf, home_forms=hf)),
         "red: a user-profile path is caught as LOGIN")
@@ -235,7 +235,7 @@ def selftest():
         "green: route() is the single decision - distributable faces block, rule faces may name a needle, "
         "non-fatal classes never block, and an undiscussed face is counted but not condemned")
     chk(classify("docs" + chr(92) + "coverage.md") == "distributable"
-        and classify("docs" + chr(92) + "tickets" + chr(92) + "SG-F1.md") == "rule"
+        and classify("docs" + chr(92) + "tickets" + chr(92) + "F1.md") == "rule"
         and classify("notes" + chr(92) + "x.md") == "other",
         "red: a Windows-spelled face name is not reclassified as an undiscussed directory, which would silently "
         "down-grade a fatal hit to a count")

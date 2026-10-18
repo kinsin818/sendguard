@@ -62,16 +62,16 @@ rejection is not this window's argument check. One command, on this host, no fil
 
 | input passed to the same call | chars | JDK 17.0.17 | what JDK 21.0.6 does with the same string |
 |---|---|---|---|
-| `D:\Qoder` | 8 | OK | OK |
+| `D:\probe` | 8 | OK | OK |
 | the plain rung string, `base_len=78` | 141 | OK | OK |
 | the plain rung string, `base_len=200` (total 263 > 259) | 263 | OK | OK |
-| `\\?\D:\Qoder` | 12 | **InvalidPathException, index 2** | OK, prefix stripped -> `D:\Qoder` |
+| `\\?\D:\probe` | 12 | **InvalidPathException, index 2** | OK, prefix stripped -> `D:\probe` |
 | `\\?\C:\` | 7 | **index 2** | OK -> `C:\` |
 | the extended rung string, `base_len=78` | 145 | **index 2** | OK, prefix stripped |
 | the extended rung string, `base_len=200` | 267 | **index 2** | OK, prefix stripped |
 | `\\?\UNC\server\share\x.txt` | 26 | **index 2** | OK -> `\\server\share\x.txt` |
-| `//?/D:/Qoder` | 12 | index 2 | index 2 |
-| `\?\D:\Qoder` | 11 | `Illegal char <?> at index 1` | same |
+| `//?/D:/the maintainer` | 12 | index 2 | index 2 |
+| `\?\D:\probe` | 11 | `Illegal char <?> at index 1` | same |
 | `\\.\PhysicalDrive0` | 18 | OK | OK |
 
 So on 17.0.17 the answer is unconditional: every string whose third character is `?` in the server

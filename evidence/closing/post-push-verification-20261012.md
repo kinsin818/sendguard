@@ -2,7 +2,7 @@
 
 The order was: scrub the unpublished messages, push, then verify from the stranger's side and report what the
 stranger actually finds. Every reading below was taken either from a clone made from the public URL or with needles
-assembled at run time from this seat's own tree - so the check asks "what did the public side get", not "what does
+assembled at run time from this local's own tree - so the check asks "what did the public side get", not "what does
 my working copy look like". Absolute host paths are quoted by class, not by bytes: a verification face that
 re-publishes the paths it was written to disown is the defect twice, and the leg prints them itself when it runs.
 
@@ -27,7 +27,7 @@ preflight-messages| checked=12 blocked=0
 OUTCOME=CLEAN
 ```
 
-and a direct needle census over the same 12 messages, with the needles taken from this seat's tree at run time
+and a direct needle census over the same 12 messages, with the needles taken from this local's tree at run time
 (so the census cannot be satisfied by a rule that was edited to match):
 
 | needle | occurrences in the 12 pushed messages |
@@ -70,8 +70,8 @@ Two things a reader should not be allowed to confuse:
 - **HOSTROOT reads 0 in a clone and that is not a clean bill of health.** The leg builds that needle from the tree it
   is standing in, so the class is zero by construction for any clone - it can only ever fire on the machine that
   produced the faces. What a stranger actually receives was therefore counted directly, face by face, with needles
-  assembled from this seat's tree: of 1,212 tracked faces in the clone, **301 carry the host profile login name**
-  and **267 carry the host profile root**, concentrated in `evidence/S00/` (the environment captures) and the
+  assembled from this local's tree: of 1,212 tracked faces in the clone, **301 carry the host profile login name**
+  and **267 carry the host profile root**, concentrated in `evidence/freeze/` (the environment captures) and the
   `evidence/recovered/…` result copies. That is the exposure already admitted in
   `exposure-rescan-20261012.md`; what this push changed about that set was measured rather than asserted - the same
   census run over the blobs of the previous published tip and of the new one:
@@ -93,12 +93,12 @@ Two things a reader should not be allowed to confuse:
 
 `git rev-list bd0c430` = 127 commits. **10 commit messages carry 11 drive-letter path shapes**, in `f67eeb9 0186b8e
 98d549c aa793da a00ee80 b6f863c 8900037 d6994fd e3c1acd 1d0e2ba`; one of them (`e3c1acd`, line 3) names this working
-copy's own directory. Those commits are on the published side, so under the standing order they stay exactly as
+copy's own directory. Those commits are on the published side, so under the project rules they stay exactly as
 they are. A stranger who greps public history finds this admission before finding them.
 
 ## 6. What the CI says about this push
 
-The push triggered `sendguard-matrix`. The third job's conclusion is **still unread from this seat**: reading
+The push triggered `sendguard-matrix`. The third job's conclusion is **still unread from this local**: reading
 Actions requires the read-only token the owner said he would supply, and until it lands the honest state of that
 cell is `NOT-REACHED(reason=no token for the log reader)`, not green and not red. The two legs this pass added to
 the workflow (`face_preflight --selftest`, `process_leak_scan --selftest`, and the message mode over

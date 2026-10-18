@@ -19,7 +19,7 @@
   "control_expectation": {
     "create_result": "err_at_parse",
     "error_stage": "parse",
-    "source": "evidence/S00-ctrl-baseline.md"
+    "source": "evidence/ctrl-baseline.md"
   },
   "control_match": true,
   "control_observed": {
@@ -43,7 +43,7 @@
     "dot3name": "disabled",
     "eight_dot_three_c": "enabled",
     "eight_dot_three_d": "disabled",
-    "env_block_source": "evidence/S00/env-facts-windows-local.json",
+    "env_block_source": "evidence/freeze/env-facts-windows-local.json",
     "interpreter_matches_record": true,
     "locale": "cp936",
     "max_component": 255,
@@ -90,7 +90,7 @@
       "expectation_policy": "expectations in the frozen table stay null; spec/expectations.sealed.md was not opened by this port",
       "hash_matches_lock": "no lock line found",
       "locked_in_frozen_md": null,
-      "source": "evidence/S00/blind-map.json"
+      "source": "evidence/freeze/blind-map.json"
     },
     "canon_payload_sha256": "c9fe45b2fee8ea846f0cf4f2cacc2a891e7b082e7719923502d12a9813e21994",
     "canon_payload_source": "control_samples payload_hex in spec/cases.yaml (rev6 pin); sha256 of the 28 bytes",
@@ -125,7 +125,7 @@
       "D": "disabled"
     },
     "implementation_language": "typescript",
-    "instrument_c2": "node:fs did not apply the Win32 name-parsing layer to the plain absolute paths this port passed: a real CON.txt and a real 'trail.' (trailing dot kept) were created, and totals above 259 characters were accepted. Controlled on the same volume in the same directory: cmd.exe mapped CON.txt to the device (no file listed), wrote 'trail.' as 'trail', and refused a 309-char path (rc=1 ERROR_PATH_NOT_FOUND), as did python 3.14 (rc=1) while LongPathsEnabled=0. Measured, not inferred. See evidence/S02/typescript-selfcheck.md C-2.",
+    "instrument_c2": "node:fs did not apply the Win32 name-parsing layer to the plain absolute paths this port passed: a real CON.txt and a real 'trail.' (trailing dot kept) were created, and totals above 259 characters were accepted. Controlled on the same volume in the same directory: cmd.exe mapped CON.txt to the device (no file listed), wrote 'trail.' as 'trail', and refused a 309-char path (rc=1 ERROR_PATH_NOT_FOUND), as did python 3.14 (rc=1) while LongPathsEnabled=0. Measured, not inferred. See evidence/judgement/typescript-selfcheck.md C-2.",
     "len_fill": {
       "applies_to": [
         "T17",
@@ -138,7 +138,7 @@
     },
     "locale": "cp936",
     "node_manifest_longPathAware": false,
-    "node_manifest_longPathAware_basis": "evidence/S00/env-facts-windows-local.json manifest_scan: node.exe hit_count=0",
+    "node_manifest_longPathAware_basis": "evidence/freeze/env-facts-windows-local.json manifest_scan: node.exe hit_count=0",
     "os": "windows",
     "os_version": "Windows-10-10.0.19041-SP0",
     "port": "typescript",
@@ -148,8 +148,8 @@
     "scratch_carrier": {
       "drive": "S:",
       "mapped": true,
-      "note": "mapped S: -> D:\\sendguard-work\\seat-qoder\\.sgscratch for this run; the port removes nothing (M19)",
-      "target": "D:\\sendguard-work\\seat-qoder\\.sgscratch"
+      "note": "mapped S: -> D:\\work\\session-token\\.sgscratch for this run; the port removes nothing (project rule)",
+      "target": "D:\\work\\session-token\\.sgscratch"
     },
     "spec_sha256": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261",
     "spec_sha256_basis": "git cat-file blob HEAD:spec/cases.yaml, hashed (committed blob face, not the disk file)",
@@ -200,8 +200,8 @@
   "roundtrip_ok_not_observable_reason": "no bytes came back to compare with the bytes written (nothing landed, so no read was attempted); spec/schema.json types this field boolean, so the honest record is an absent key, not true or false",
   "scratch": {
     "cell_root": "S:\\dee6d81",
-    "cell_root_real": "D:\\sendguard-work\\seat-qoder\\.sgscratch\\dee6d81",
-    "cleanup": "not attempted by the port (M19 forbids deletion logic in this port); the path is recorded for the operator",
+    "cell_root_real": "D:\\work\\session-token\\.sgscratch\\dee6d81",
+    "cleanup": "not attempted by the port (project rule forbids deletion logic in this port); the path is recorded for the operator",
     "verified_empty_before_use": true
   },
   "sha256_self": "79661917da074ffe8ee4611115807f732e44bdeed7452a46cad811e8fa3cd065",

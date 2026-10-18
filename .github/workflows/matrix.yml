@@ -1,6 +1,6 @@
-# SENDGUARD CI matrix (S00 skeleton).
-# Frozen images only; *-latest floating labels are FORBIDDEN (M20).
-# os list: windows-2025 (S00 pick; fall back windows-2022 if unavailable),
+# SENDGUARD CI matrix (matrix skeleton).
+# Frozen images only; *-latest floating labels are FORBIDDEN (project rule).
+# os list: windows-2025 (initial pick; fall back windows-2022 if unavailable),
 #          macos-15, ubuntu-24.04. arch NOT preset (macos-15 has x64/arm64 pools).
 name: sendguard-matrix
 
@@ -30,8 +30,8 @@ jobs:
           if [ "$RUNNER_OS" = "Windows" ]; then
             reg query "HKLM\\SYSTEM\\CurrentControlSet\\Control\\FileSystem" /v LongPathsEnabled 2>/dev/null || echo "LongPathsEnabled=missing"
           fi
-          mkdir -p evidence/S00/ci-probe
-          echo "probe-$(date +%s)" > evidence/S00/ci-probe/env.txt
+          mkdir -p evidence/freeze/ci-probe
+          echo "probe-$(date +%s)" > evidence/freeze/ci-probe/env.txt
 
       - uses: actions/setup-go@v5
         with:
@@ -45,13 +45,13 @@ jobs:
         run: |
           if [ "$RUNNER_OS" = "Windows" ]; then
             (cd harness && CGO_ENABLED=0 go build -trimpath -o audit.exe audit.go)
-            ./harness/audit.exe evidence/S00/ci-probe > evidence/S00/ci-probe/audit.json
+            ./harness/audit.exe evidence/freeze/ci-probe > evidence/freeze/ci-probe/audit.json
           else
             (cd harness && CGO_ENABLED=0 go build -trimpath -o audit.bin audit.go)
-            ./harness/audit.bin evidence/S00/ci-probe > evidence/S00/ci-probe/audit.json
+            ./harness/audit.bin evidence/freeze/ci-probe > evidence/freeze/ci-probe/audit.json
           fi
           python3 spec/validate.py --schema > /dev/null
-          python3 -c "import json;d=json.load(open('evidence/S00/ci-probe/audit.json'));assert d['tool']=='sendguard-audit';print('audit json OK, entries=',len(d['entries']))"
+          python3 -c "import json;d=json.load(open('evidence/freeze/ci-probe/audit.json'));assert d['tool']=='sendguard-audit';print('audit json OK, entries=',len(d['entries']))"
 
       - name: CI lint (3-piece, with red/green arms)
         shell: bash
@@ -73,18 +73,18 @@ jobs:
       - name: Node writes, Python reads (empty-run interop)
         shell: bash
         run: |
-          mkdir -p evidence/S00/crossread
-          node -e "require('fs').writeFileSync('evidence/S00/crossread/from-node.txt','node->python')"
-          python3 -c "print('python read:', open('evidence/S00/crossread/from-node.txt').read())"
-          python3 -c "open('evidence/S00/crossread/from-python.txt','w').write('python->node')"
-          node -e "console.log('node read:', require('fs').readFileSync('evidence/S00/crossread/from-python.txt','utf8'))"
+          mkdir -p evidence/freeze/crossread
+          node -e "require('fs').writeFileSync('evidence/freeze/crossread/from-node.txt','node->python')"
+          python3 -c "print('python read:', open('evidence/freeze/crossread/from-node.txt').read())"
+          python3 -c "open('evidence/freeze/crossread/from-python.txt','w').write('python->node')"
+          node -e "console.log('node read:', require('fs').readFileSync('evidence/freeze/crossread/from-python.txt','utf8'))"
           echo "crossread OK"
   # The instrument itself, on all three frozen OS labels. This job is the only thing this repository can
   # honestly claim CI proves on macOS and Ubuntu: the five pure-Python legs, the equality gate over the
   # committed Windows faces, and the generated documents as an artifact. It does NOT produce result faces -
   # the six port harnesses write `results/<port>.windows.x64/` by hard-coded path and probe Windows-only
   # semantics (measured 13:10 today across impl/*), so the macOS and Linux rows need the portability work in
-  # docs/tickets/SG-F3-os-portability.md before a runner can emit them. Saying that here, in the file that a
+  # docs/tickets/F3-os-portability.md before a runner can emit them. Saying that here, in the file that a
   # reader would otherwise trust to be doing the work, is the point of this job's last step.
   instrument:
     name: instrument-${{ matrix.os }}
@@ -108,7 +108,7 @@ jobs:
             echo "port runners write results/<port>.windows.x64 by hard-coded path: see impl/python/sg_run.py, impl/csharp/run_csharp.py, impl/rust/run_cells.py"
             echo "no macOS or Ubuntu result face is produced by this workflow"
           else
-            echo "PORT-HARNESS: faces are produced on the six worker seats' hosts, not in CI; this job re-judges them"
+            echo "PORT-HARNESS: faces are produced on the six port lanes' hosts, not in CI; this job re-judges them"
           fi
 
       - name: Gate self-test (every leg must be able to say yes and no)
@@ -121,7 +121,7 @@ jobs:
           python ci/face_preflight.py --selftest
           python ci/process_leak_scan.py --selftest
         # Deliberately NOT a whole-history message scan: the published segment is already recorded RED by
-        # evidence/S11/msg-scrub-20261012.md and cannot be rewritten under the standing order, so a history-wide
+        # evidence/closing/msg-scrub-20261012.md and cannot be rewritten under the project rules, so a history-wide
         # leg here would be permanently red and would be ignored - which is how gates die. The enforcement point
         # for a message is the moment it is written, which is ci/hooks/commit-msg.
 

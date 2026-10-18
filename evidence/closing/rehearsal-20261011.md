@@ -1,7 +1,7 @@
 # Acceptance rehearsal — README's own command list, run by a stranger's clone
 
-Seat: delivery (`d9242392`). Host clock 2026-10-11 13:23 +0800.
-Clone: `git clone --no-local file:///D:/sendguard-work/seat-qoder rehearse` → HEAD `0c7c098`, `clone_rc=0`.
+Session: delivery (`d9242392`). Host clock 2026-10-11 13:23 +0800.
+Clone: `git clone --no-local file:///D:/work/session-token rehearse` → HEAD `0c7c098`, `clone_rc=0`.
 Scratch root passed in by the caller (`../rehearse-st`); no instrument chose its own landing place.
 
 This is the list the README tells a reader to run, executed exactly as printed - no `refresh_all` shortcut, no
@@ -27,7 +27,7 @@ added to the list at 13:22) without anyone running the new sequence end to end.
 
 ## What the rehearsal establishes
 
-- **Nothing in the acceptance path depends on this seat's working directory.** Two exit codes are non-zero and
+- **Nothing in the acceptance path depends on this local's working directory.** Two exit codes are non-zero and
   both are the documented outcome of a measurement, not of a tool: the equality gate's RED is the finding
   (54 conflicting facts), and the deliverable's 1 is the risk it exists to report.
 - **`faces_ahead_of_head=0` in the clone** while the work tree was carrying a lane's in-flight Java faces - the
@@ -42,12 +42,12 @@ added to the list at 13:22) without anyone running the new sequence end to end.
   to run this same list on three operating systems, and **it has never run**: nothing has been pushed, and no
   document claims otherwise.
 - No port harness was rebuilt here. The six faces are read as committed; a clean-room build of all six from
-  source is a different act and is claimed nowhere in the repository. `docs/acceptance-S02.md` records what
+  source is a different act and is claimed nowhere in the repository. `docs/acceptance.md` records what
   each lane *said* and what its face holds, which is not the same statement - and the first version of this
   paragraph credited `docs/STATUS.md` with carrying lane re-run facts, which it does not. Corrected at
   13:24 rather than left, because a rehearsal record that points at the wrong sheet is worse than one that
   says nothing.
-- The Java lane's SG-F2 work was in flight while this ran (its tool files modified, nothing committed); it is
+- The Java lane's F2 work was in flight while this ran (its tool files modified, nothing committed); it is
   not part of this reading, and nothing here accepts it on the lane's behalf.
 
 
@@ -60,11 +60,11 @@ the owner ordered the push and neither survives it:
   to `28562e2` - a fast-forward, 87 commits, no `--force`, no tags. Before it, `git merge-base --is-ancestor
   github/main HEAD` was verified true and `HEAD..github/main` was 0 commits, i.e. the public branch carried
   nothing this tree lacked; `git ls-remote` after the push reads `28562e2`, and `ahead=0 behind=0` now.
-- **The workflow has been triggered.** I cannot read its conclusion from this seat: the GitHub API answers
+- **The workflow has been triggered.** I cannot read its conclusion from this local: the GitHub API answers
   `403 rate limit exceeded` without a token, and `gh` is not installed here, so the honest statement is *triggered,
-  outcome unread from this seat* - not "it passed" and not "it never ran". The Actions page visible without a
+  outcome unread from this local* - not "it passed" and not "it never ran". The Actions page visible without a
   token also shows completed runs on earlier commits (`7151f58`, `eb5c0d8`), which means the sentence "nothing has
-  been pushed" was already wrong before today, written by a window that had not looked at the remote.
+  been pushed" was already wrong before today, written by a session that had not looked at the remote.
 
 What the disclosure scan said before the push, since publishing covers the whole ancestor set and not just these
 commits: **zero** credential-class strings anywhere in the 230,155 added lines of the unpushed range - no key-shaped

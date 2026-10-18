@@ -38,7 +38,7 @@ identity rules are in `ci/equality.py` and documented in `spec/cell-identity.md`
    `results/<port>.windows.x64/`. (For the port whose `T-CTRL-CANON` payload digest is not `c9fe45b2…`:
    that is why the pin exists.)
 2. **Emit the five blind cells** as `blind/B1`…`blind/B5` with `blind_id` from
-   `evidence/S00/blind-map.json` — five ports have not run them at all.
+   `evidence/freeze/blind-map.json` — five ports have not run them at all.
 3. **Cover the `len` rungs**: `len/T17` and `len/T18` at `base_len` ∈ {78, 120, 200} × `path_form` ∈
    {plain, extended}, twelve cells, each with `len_triple` and the bisection bracket your port already
    publishes as extra cells. If a rung is genuinely unreachable on your port, emit the cell with
@@ -54,6 +54,6 @@ and stop.
 ## Unchanged
 
 Do not read another language's `impl/` or any port's `results/`. Do not touch `spec/`, `ci/`, `harness/`,
-`docs/`, or `D:\sendguard`. No `git push`, no tags, no deletion logic (M19), never open the **contents**
+`docs/`, or `D:\local-dir`. No `git push`, no tags, no deletion logic (project rule), never open the **contents**
 of a reserved device name. The contract does not change again tonight: if you find a defect in it, write
 it in your report and keep going with the pinned bytes — I fix the contract, you do not work around it.

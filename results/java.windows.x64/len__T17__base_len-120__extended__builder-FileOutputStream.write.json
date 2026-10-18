@@ -22,7 +22,7 @@
  "path_form": "extended",
  "run_status": "ok",
  "longpath_mechanism": "prefix_rewrite",
- "harness_version": "sg-java-S02-r5-SG-F2",
+ "harness_version": "sg-java-S02-r5-F2",
  "implementation_id": "java-port",
  "started_at": "2026-10-12T15:51:04.971235",
  "elapsed_ms": 247,
@@ -39,7 +39,7 @@
   "dot3name_generation": "disabled",
   "dot3name_state_meaning": "fsutil prints <n> (8dot3 name creation ...); 0=enabled 1=disabled",
   "dot3name_verbatim_excerpt": "\u9519\u8bef:  \u7cfb\u7edf\u627e\u4e0d\u5230\u6307\u5b9a\u7684\u8def\u5f84\u3002 | \u6b63\u5728\u5c1d\u8bd5\u6253\u5f00\u5177\u6709\u5377 GUID \u8def\u5f84\u7684\u5377\u3002 | \u5377\u72b6\u6001\u4e3a: 1 (8dot3 \u540d\u79f0\u521b\u5efa\u88ab\u7981\u7528)\u3002 | \u6ce8\u518c\u8868\u72b6\u6001\u4e3a: 2 (\u6309\u5377\u8bbe\u7f6e - \u9ed8\u8ba4\u503c)\u3002 |  | \u57fa\u4e8e\u4e0a\u8ff0\u8bbe\u7f6e\uff0c\u5728 D:\\ \u4e0a\u7981\u7528 8dot3 \u540d\u79f0\u521b\u5efa",
-  "fsutil_decoded_as": "cp936 (console code page recorded in evidence/S00/env-facts-windows-local.json)",
+  "fsutil_decoded_as": "cp936 (console code page recorded in evidence/freeze/env-facts-windows-local.json)",
   "max_component": 255,
   "max_component_basis": "NTFS; GetVolumeInformationW measured 255 at S00 (env-facts-windows-local.json), same host and same D: volume",
   "unicode_version": "not-obtainable-here",
@@ -945,7 +945,7 @@
  "scratch_entry_count_before": 0,
  "scratch_entry_count_after": 6,
  "cleanup_failed": true,
- "cleanup_reason": "M19: this port has no deletion logic, so every fresh scratch dir is left in place",
+ "cleanup_reason": "project rule: this port has no deletion logic, so every fresh scratch dir is left in place",
  "child_rc": 0,
  "child_timed_out": false,
  "instrument_red": false,
@@ -986,7 +986,7 @@
   ],
   "paired_cell_api_entry": "Files.write",
   "paired_cell_spec_sha256_matches_this_run": true,
-  "paired_cell_harness_version": "sg-java-S02-r5-SG-F2",
+  "paired_cell_harness_version": "sg-java-S02-r5-F2",
   "paired_answer": [
    "err_at_parse",
    "parse"
@@ -996,10 +996,10 @@
    "null"
   ]
  },
- "why_this_cell_exists": "SG-F2 part 1: the twelve pinned length rungs were recorded through Files.write only, with the java.io answer kept as a leg inside that cell. The java.io answer is now published as its own extra cell so a stranger can compare the two entries of this port as cells, not as a note. api_entry is not an equality dimension (spec/cell-identity.md section 1), so this cell is extra and is never compared.",
+ "why_this_cell_exists": "F2 part 1: the twelve pinned length rungs were recorded through Files.write only, with the java.io answer kept as a leg inside that cell. The java.io answer is now published as its own extra cell so a stranger can compare the two entries of this port as cells, not as a note. api_entry is not an equality dimension (spec/cell-identity.md section 1), so this cell is extra and is never compared.",
  "attribution_layer": "L2",
  "attribution_basis": "R1 across two published cells of this port: for this same rung the paired len__T17__base_len-120__extended.json cell (entry Files.write) answered err_at_parse/parse and this cell (entry FileOutputStream.write) answered ok/null, so switching a stdlib entry of the SAME language removes the difference - an L2 fact about java on this machine, not a Windows fact",
  "dir_view_contains_probe_created_files": false,
  "extra": true,
- "extra_reason": "SG-F2 part 1: the java.io leg of this pinned rung published as its own cell on the contract's own `builder` dimension. Extra because api_entry is not part of the equality key (spec/cell-identity.md section 1), so it is published and never compared; the required Files.write answer for the same rung is the paired cell len__T17__base_len-120__extended.json"
+ "extra_reason": "F2 part 1: the java.io leg of this pinned rung published as its own cell on the contract's own `builder` dimension. Extra because api_entry is not part of the equality key (spec/cell-identity.md section 1), so it is published and never compared; the required Files.write answer for the same rung is the paired cell len__T17__base_len-120__extended.json"
 }

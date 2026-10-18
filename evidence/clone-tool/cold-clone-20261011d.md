@@ -1,15 +1,15 @@
 # S10 - cold clone rehearsal of `2c9b89c` (2026-10-11)
 
-Run by the delivery seat at 13:58-13:59 +0800. Method: `git clone --no-local` of the seat repository into
-`D:\sendguard-work\cold-5`, then every judging leg and every generator re-run inside that clone, then each
+Run by the delivery local at 13:58-13:59 +0800. Method: `git clone --no-local` of the local repository into
+`D:\work\cold-5`, then every judging leg and every generator re-run inside that clone, then each
 regenerated face compared against the blob the clone checked out (`git show HEAD:<path>`), with only the
-timestamp patterns normalised. Nothing in the seat tree was touched by this run, and nothing in the clone was
+timestamp patterns normalised. Nothing in the local tree was touched by this run, and nothing in the clone was
 deleted.
 
 One honest disclosure about the carrier: the first attempt at this runner died on its own line 75 (an
 `AttributeError` unpacking a helper's return value) *after* the clone had completed and before any leg ran. The
 second attempt reused `cold-5` instead of deleting it, and the capture below shows that reuse being re-verified
-- HEAD equal to the seat's HEAD, status empty - before anything was measured. An aborted clone that was then
+- HEAD equal to the local's HEAD, status empty - before anything was measured. An aborted clone that was then
 verified clean is the same starting condition as a fresh one; that is the claim, and the two lines that prove it
 are in the raw block.
 
@@ -17,16 +17,16 @@ are in the raw block.
 
 ```
 host| git version 2.53.0.windows.2
-seat HEAD| 2c9b89c674e3332c03ef17e5fb857c161461282c
-seat status rc=0 lines=1
-   seat dirty| ?? impl/python/sg_restamp_note.txt
-NOTE: D:\sendguard-work\cold-5 already exists - reusing it instead of deleting anything. It is re-verified below (HEAD must equal the seat's HEAD and status must be empty) or this run means nothing.
-clone HEAD| 2c9b89c674e3332c03ef17e5fb857c161461282c  equals seat HEAD: True
+local HEAD| 2c9b89c674e3332c03ef17e5fb857c161461282c
+local status rc=0 lines=1
+   local dirty| ?? impl/python/sg_restamp_note.txt
+NOTE: D:\work\cold-5 already exists - reusing it instead of deleting anything. It is re-verified below (HEAD must equal the local's HEAD and status must be empty) or this run means nothing.
+clone HEAD| 2c9b89c674e3332c03ef17e5fb857c161461282c  equals local HEAD: True
 clone status rc=0 lines=0 (a cold clone must start clean)
 clone tracked paths| 1166 (git ls-files rc=0)
 ```
 
-The single dirty face in the seat belongs to the Python lane and is not this seat's work; it is left alone.
+The single dirty face in the local belongs to the Python lane and is not this local's work; it is left alone.
 `1166` is the denominator the delivery leg needs to agree with.
 
 ## Judging legs, run inside the clone
@@ -41,7 +41,7 @@ LEG| equality                 rc=1  OUTCOME=RED verdict_disagreements=54 verdict
 LEG| triangle                 rc=0  OUTCOME=CLEAN
 ```
 
-Every number matches the seat's own run at the same commit: the arms (21 self-test arms reported through
+Every number matches the local's own run at the same commit: the arms (21 self-test arms reported through
 `evidence_table`, 24 lint, 24 validate_cells, 15 spec_drift, 14 delivery_form) and the verdict, which is RED by
 design - 54 disagreements, 24 of 44 cells identical, 4 fully recorded, 121 blanks. A clone that reproduced a
 *quiet* verdict would be the alarming result.
@@ -54,7 +54,7 @@ SAME| docs/matrix.md                   11921 bytes regenerated identically modul
 SAME| docs/expected-summary.md         14521 bytes regenerated identically modulo timestamps
 SAME| docs/cell-validation.md          3882 bytes regenerated identically modulo timestamps
 SAME| docs/tapi.md                     2326 bytes regenerated identically modulo timestamps
-SAME| docs/acceptance-S02.md           5394 bytes regenerated identically modulo timestamps
+SAME| docs/acceptance.md           5394 bytes regenerated identically modulo timestamps
 SAME| docs/STATUS.md                   4455 bytes regenerated identically modulo timestamps
 SAME| docs/coverage.md                 3846 bytes regenerated identically modulo timestamps
 SAME| docs/spec-drift.md               1761 bytes regenerated identically modulo timestamps
@@ -66,7 +66,7 @@ DIFF| docs/delivery-form.md            head=32 lines disk=32 lines differing=2
 DIFF| docs/evidence.md                 head=24 lines disk=24 lines differing=1
    L5    HEAD | - repository commit: `56d66cadd48e` (working tree carries 14 uncommitted faces at generation time). That is the HEAD this file was generated **under**, not the commit tha
    L5    DISK | - repository commit: `2c9b89c674e3` (working tree carries 11 uncommitted faces at generation time). That is the HEAD this file was generated **under**, not the commit tha
-SAME| evidence/S02/equality-verdict.json 59200 bytes regenerated identically modulo timestamps
+SAME| evidence/judgement/equality-verdict.json 59200 bytes regenerated identically modulo timestamps
 parity| faces identical=10 differing=2 of 12
 ```
 
@@ -79,14 +79,14 @@ quoted lines stop mid-sentence - the comparison itself was over the whole bytes.
 
 The fixed leg had removed the *bytes* of untracked build output from the published table, and that part worked:
 all six artifact columns read identically in the clone. What it had left in the table was the column counting
-what the filter dropped, and a drop can only be counted from files that are present. The seat's disk holds rust's
+what the filter dropped, and a drop can only be counted from files that are present. The local's disk holds rust's
 two release executables and the java lane's four `.class` files; a clone of the same commit holds none of them,
-so the same honest code reads `2` in the seat's rust row and `0` in the clone's, and the total sentence reads 14
+so the same honest code reads `2` in the local's rust row and `0` in the clone's, and the total sentence reads 14
 against 12.
 
 That is not drift in the repository; it is a machine fact wearing a repository column. The delivery form is the
 face a buyer reads, so the disk-dependent count was taken out of it and kept in the run line, where it is still
-published and still per-port - this is the seat's own run at 14:02, after the change:
+published and still per-port - this is the local's own run at 14:02, after the change:
 
 ```
 wrote docs/delivery-form.md bytes=4734 ports=6 cells_total=569 installers_found=0 not_measured_cells=3
@@ -120,11 +120,11 @@ description of the current file.
 
 - It does not rebuild any port harness. The six faces are read exactly as committed; compiling all six from
   source on a clean machine is a different act with its own gap, recorded in `docs/STATUS.md` and
-  `docs/acceptance-S02.md`.
+  `docs/acceptance.md`.
 - It does not put a macOS or Linux row on the board. No port harness runs on those systems here, and the
   instrument job in `.github/workflows/matrix.yml` has never executed, because nothing has been pushed.
 - It normalises timestamps and says so. Everything else is compared byte-wise.
-- The seat's work tree still carries one face that is not this seat's (`impl/python/sg_restamp_note.txt`, the
+- The local's work tree still carries one face that is not this local's (`impl/python/sg_restamp_note.txt`, the
   Python lane's own note, untracked); this run neither read nor moved it.
 - The run measured `2c9b89c`, whose published face still had the drop column. This file therefore proves the
   *finding*, not the fix: the face without the column is what a later clone has to reproduce, and if that reading
@@ -140,7 +140,7 @@ about the repository, because the classifier that produced them was wrong.
 `glob` keeps whatever separator was typed inside the pattern:
 
 ```
-G| 'D:\\sendguard-work\\seat-qoder\\impl/java/build\\CellProbe.class' in? False
+G| 'D:\\work\\session-token\\impl/java/build\\CellProbe.class' in? False
 ```
 
 So four committed `.class` files, the tracked `impl/python/sg_run.py` and seven tracked TypeScript sources were
@@ -168,7 +168,7 @@ Corrected readings, same command, this time with leg and witness in agreement
 (`instrument_problems=0`, `arms=18 passed=18`, generator rc=0):
 
 ```
-seat  14:12  untracked_ignored=2 tracked_paths=1167 drops=csharp:0,go:0,java:0,python:0,rust:2,typescript:0
+local  14:12  untracked_ignored=2 tracked_paths=1167 drops=csharp:0,go:0,java:0,python:0,rust:2,typescript:0
 ```
 
 The artifact columns of the published table after the fix, which is what a buyer reads (the import-count and
@@ -188,8 +188,8 @@ was right.
 ## Fourth run, 14:13 +0800 — clone of `d6994fd`, the corrected table reproduces
 
 ```
-seat HEAD| d6994fd9cf8fded589fcfc080b7750e558961b01
-clone HEAD| d6994fd9cf8fded589fcfc080b7750e558961b01  equals seat HEAD: True
+local HEAD| d6994fd9cf8fded589fcfc080b7750e558961b01
+clone HEAD| d6994fd9cf8fded589fcfc080b7750e558961b01  equals local HEAD: True
 clone status rc=0 lines=0 (a cold clone must start clean)
 clone tracked paths| 1167 (git ls-files rc=0)
 ```
@@ -235,6 +235,6 @@ generated it; it states its own basis and is the exception this file has carried
 Two limits in this file said the instrument job "has never executed, because nothing has been pushed". They were
 true at the runs they record. At 15:14 the owner ordered the push and it went through (public `main`
 `7151f58` -> `28562e2`, fast-forward, 87 commits, no force, no tags), so the job has now been triggered; its
-conclusion is not readable from this seat without a token, and the accurate status word is *triggered, outcome
+conclusion is not readable from this local without a token, and the accurate status word is *triggered, outcome
 unread here*. The full correction, with the disclosure scan that preceded the push, is in
-`evidence/S11/rehearsal-20261011.md`.
+`evidence/closing/rehearsal-20261011.md`.

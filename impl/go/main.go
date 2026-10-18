@@ -2,7 +2,7 @@
 // Contract: spec/cases.yaml + schema.json + canonical.md + gate.md (frozen at S01).
 // Red lines honored here: M1 path_view+dir_view dual record; M2 no exists()/no
 // return-code-only verdicts; M15 cell=(lang x api_entry x trap); M16 errno raw;
-// M9 5s external kill (re-exec self per action); M19 zero deletions; M8 zero cash.
+// M9 5s external kill (re-exec self per action); project rule zero deletions; M8 zero cash.
 package main
 
 import (
@@ -44,7 +44,7 @@ var (
 	// repo is resolved at start-up by resolveRepo(); it is never a path written into this file. A lane whose
 	// root names a particular checkout verifies, measures and then reports on a tree its reader cannot see -
 	// and this one did: `verify` printed "frozen artifacts intact" while reading a second checkout whose
-	// spec/schema.json is at an older digest than the contract in this repository. See SG-F15.
+	// spec/schema.json is at an older digest than the contract in this repository. See F15.
 	repo      string
 	goEntries = []string{"os.Create", "os.WriteFile", "os.OpenFile", "os.Mkdir"}
 )
@@ -546,7 +546,7 @@ func runControls() bool {
 		"T-CTRL-ILLEGAL-CHAR": {"err_at_syscall", "syscall"},
 		"T-CTRL-PARSE":        {"err_at_parse", "parse"},
 	}
-	ctrlDir := filepath.Join(repo, "evidence", "S02", "ctrl-go")
+	ctrlDir := filepath.Join(repo, "evidence", "judgement", "ctrl-go")
 	os.MkdirAll(ctrlDir, 0o755)
 	pass := true
 	runs := map[string]func() cellOut{
@@ -594,8 +594,8 @@ func ctrlCell(id, name string) cellOut {
 		ReadResult: "eof", EnumAPIEntry: "os.ReadDir", Mechanism: "control",
 		ImplementationID: implementationID, StartedAt: started,
 		Env:     map[string]any{"LongPathsEnabled": nil, "toolchain": runtime.Version()},
-		RootLen: len([]rune(filepath.Join(repo, "evidence", "S02", "ctrl-go")))}
-	d := filepath.Join(repo, "evidence", "S02", "ctrl-go")
+		RootLen: len([]rune(filepath.Join(repo, "evidence", "judgement", "ctrl-go")))}
+	d := filepath.Join(repo, "evidence", "judgement", "ctrl-go")
 	os.MkdirAll(d, 0o755)
 	p := filepath.Join(d, name)
 	err := os.WriteFile(p, []byte(payloadCanon), 0o644)

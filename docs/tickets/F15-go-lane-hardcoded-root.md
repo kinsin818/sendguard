@@ -1,6 +1,6 @@
-# SG-F15 - the go lane's runner verifies and writes a *different* checkout, hardcoded
+# F15 - the go lane's runner verifies and writes a *different* checkout, hardcoded
 
-Opened 2026-10-12 by the seat that owns `ci/`, during SG-F8's six-lane re-emit. This is the most consequential
+Opened 2026-10-12 by the local that owns `ci/`, during F8's six-lane re-emit. This is the most consequential
 finding of the re-emit and it was found by my own hand, because I ran the harness before reading where it
 writes.
 
@@ -9,12 +9,12 @@ writes.
 `impl/go/main.go:44`:
 
 ```go
-	repo      = `D:\sendguard`
+	repo      = `D:\local-dir`
 ```
 
 The lane's `run` and `verify` modes both resolve `spec/`, `results/` and `evidence/` under that constant. This
-repository lives at `D:\sendguard-work\seat-qoder`; `D:\sendguard` is a **second checkout of the same project that
-the standing order declares read-only evidence for this seat** (no checkout, reset, clean, stash or write). The
+repository lives at `D:\work\session-token`; `D:\local-dir` is a **second checkout of the same project that
+the project rules declares read-only evidence for this local** (no checkout, reset, clean, stash or write). The
 constant predates the re-emit and is not a scratch directory, an output path or a caller-supplied root - it is the
 project root, written into the source of one lane.
 
@@ -33,10 +33,10 @@ PY
 
 So: **129 tracked faces in the read-only tree were rewritten by my run**, on top of 124 faces that tree already
 carried modified from 2026-10-10 (not mine). HEAD did not move; no commit was made there; nothing was deleted. The
-rewritten faces are `results/go.windows.go1.23.5/*.json` plus one `evidence/S02/defects/sample-corruption.json`
+rewritten faces are `results/go.windows.go1.23.5/*.json` plus one `evidence/judgement/defects/sample-corruption.json`
 whose only change is a `note` field appended by that older runner.
 
-**No revert was attempted here.** That tree is not this seat's to restore, and a `git checkout <ref> -- path`
+**No revert was attempted here.** That tree is not this local's to restore, and a `git checkout <ref> -- path`
 there would also rewrite line endings (autocrlf), which is a second defect on top of the first. Both faces are
 reported; restoration belongs to whoever owns that tree.
 
@@ -51,7 +51,7 @@ VERIFY PASS: frozen artifacts intact
 
 while this repository's `spec/schema.json` hashes to `c1a5097ce4a7...` on disk, in `git show HEAD:` and in the
 sealed table of `spec/FROZEN.md` (freeze revision 4). The verifier is not wrong about the tree it reads - it is
-reading **the other tree**, whose schema is at the pre-SG-F8 digest. A lane whose `verify` passes against a stale
+reading **the other tree**, whose schema is at the pre-F8 digest. A lane whose `verify` passes against a stale
 checkout is a lane that reports the contract intact while the contract it is shipped against has moved. This is
 the same class as `M10` (an instrument whose green side depends on the host) one level deeper: the green side here
 depends on *which directory the source names*.
@@ -61,7 +61,7 @@ depends on *which directory the source names*.
 1. `repo` is derived, not hardcoded: `--repo` flag (required, refused if absent) defaulting to the directory the
    runner is invoked from, so `python ci/... ` style callers name the tree - the rule already in
    `docs/AUDIT-KIT.md` and enforced for the legs ("an instrument may not create a directory at a drive root, and
-   the caller supplies the location"). The string `D:\sendguard` must not appear anywhere in `impl/` afterwards,
+   the caller supplies the location"). The string `D:\local-dir` must not appear anywhere in `impl/` afterwards,
    with the grep printed and its `rc=0` asserted;
 2. both `run` and `verify` print `repo=<resolved absolute path>` on every invocation, so a future reader can see
    which tree answered;
@@ -74,32 +74,32 @@ depends on *which directory the source names*.
 5. the four gate readings unchanged (`verdict_disagreements=54`, `verdict_identical_cells=24/44`,
    `cells_fully_recorded_and_identical=4`, `verdict_not_recorded_pairs=121`), and `RETIRED` for this repository
    dropping by the go1.23.5 block with the count printed before/after;
-6. whoever owns `D:\sendguard` is told, in one row, which 129 faces this session rewrote and that no revert was
+6. whoever owns `D:\local-dir` is told, in one row, which 129 faces this session rewrote and that no revert was
    attempted. The list is reproducible from `git -C /d/sendguard status --porcelain -uall` filtered to mtimes in
    the 15:00 hour of 2026-10-12.
 
 ## Do not
 
-- Do not revert, restore, clean or stash anything inside `D:\sendguard` from this seat. Report both faces.
+- Do not revert, restore, clean or stash anything inside `D:\local-dir` from this local. Report both faces.
 - Do not delete the 129 modified faces or the untracked note in this repository (`impl/python/sg_restamp_note.txt`,
   mtime 2026-10-11 13:08, another lane's work note carrying a host profile path, untracked so the leak leg cannot
-  see it). M19.
+  see it). project rule.
 - No history rewriting, no `spec/` edit, no bucket change in the gate.
 
 ## Allowed surface
 
 `impl/go/main.go` (the `repo` constant, its two entry modes, and its prints), `impl/go/rederive/*` if it shares the
-constant, the lane's self-check, and the acceptance row in `evidence/S11/`.
+constant, the lane's self-check, and the acceptance row in `evidence/closing/`.
 
 ## Clock
 
-24 h from dispatch. Queue position: **in front of** the remaining SG-F8 residue work, because every later go run
+24 h from dispatch. Queue position: **in front of** the remaining F8 residue work, because every later go run
 repeats the breach until this lands.
 
 ## Landed 2026-10-12, same session
 
 Criterion 1: the literal is gone; `resolveRepo()` takes `-repo`/`--repo` or walks up to a directory carrying
-`spec/FROZEN.md`, and refuses with `rc=2` (capture in `evidence/S11/readonly-tree-contamination-20261012.md`).
+`spec/FROZEN.md`, and refuses with `rc=2` (capture in `evidence/closing/readonly-tree-contamination-20261012.md`).
 Criterion 2: `repo=` prints on every invocation, parent and child. Criterion 3: seven arms in `impl/go/root_test.go`
 - planted false tree must fail, this repository must pass, foreign `-repo` refused, no contract root refused,
 walk-up lands above the module directory, and the source-carrying-no-checkout-literal arm. Criterion 4: the

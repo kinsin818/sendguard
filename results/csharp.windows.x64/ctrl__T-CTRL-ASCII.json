@@ -14,7 +14,7 @@
   "cell_dir_hex": "443a5c73672d63732d736372617463685c63656c6c735c63343163396566353366386564",
   "child_elapsed_ms": 56,
   "control_expectation_fails": [],
-  "control_expectation_source": "evidence/S00-ctrl-baseline.md",
+  "control_expectation_source": "evidence/ctrl-baseline.md",
   "control_pass": true,
   "control_payload_bytes": 28,
   "control_payload_pin": "53454e4447554152442d43414e4f4e2d5041594c4f41442d32303236",

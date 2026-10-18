@@ -125,7 +125,7 @@
   "locale": "console_code_page=936 (the label around it is cp936 text; non-ASCII bytes are dropped, never guessed)",
   "go_exe_resolved": "C:\\Program Files\\Go\\bin\\go.exe",
   "go_version": "go version go1.23.5 windows/amd64",
-  "runner_exe": "D:\\sendguard-work\\sg-rederive.exe",
+  "runner_exe": "D:\\work\\sg-rederive.exe",
   "runner_manifest_scan": {
    "bytes_scanned": 4648448,
    "disclaimer": "proves the string is present, not that the loader honours it; absence is recorded, not assumed",

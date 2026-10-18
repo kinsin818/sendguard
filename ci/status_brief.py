@@ -14,7 +14,7 @@ import time
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(HERE)
-VPATH = os.path.join(REPO, "evidence", "S02", "equality-verdict.json")
+VPATH = os.path.join(REPO, "evidence", "judgement", "equality-verdict.json")
 
 
 def main():
@@ -34,7 +34,7 @@ def main():
     # the clean set is derived, never remembered: required cells the gate compared and found no conflict in
     compared = v["cells_compared"]
     lines = ["# Status - the numbers, generated", "",
-             "From `evidence/S02/equality-verdict.json`, written by `ci/equality.py` at %s; this file is "
+             "From `evidence/judgement/equality-verdict.json`, written by `ci/equality.py` at %s; this file is "
              "written by `ci/status_brief.py` at %s. Any other document quoting these counts is stale by "
              "construction - re-run the two commands instead of trusting the prose."
              % (v.get("written_at", "(no timestamp in the artifact)"),

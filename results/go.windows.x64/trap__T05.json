@@ -19,7 +19,7 @@
   "case_locale": "en-US",
   "cell_dir": "D:\\sendguard-run\\03a18fa3-028b-4546-b650-080606ab3bcb\\t",
   "child_command": [
-    "D:\\sendguard-work\\sg-rederive.exe",
+    "D:\\work\\sg-rederive.exe",
     "cell",
     "--plan",
     "D:\\sendguard-run\\03a18fa3-028b-4546-b650-080606ab3bcb\\_plan.json"
@@ -31,7 +31,7 @@
   "child_timeout_ms_enforced": 5000,
   "cleanup_attempted": false,
   "cleanup_failed": false,
-  "cleanup_note": "M19: this port contains no delete/unlink call anywhere; cleanup_failed is true only if a directory that had to be reused was not already empty, which is reported instead of cleaned",
+  "cleanup_note": "project rule: this port contains no delete/unlink call anywhere; cleanup_failed is true only if a directory that had to be reused was not already empty, which is reported instead of cleaned",
   "control_pass": true,
   "create_result": "ok",
   "deps_direct": 0,
@@ -72,7 +72,7 @@
       "token": "the needle is assembled at run time and is not stored as a literal in this binary"
     },
     "sandbox_root": "D:\\sendguard-run",
-    "toolchain": "go version go1.23.5 windows/amd64 | builder=C:\\Program Files\\Go\\bin\\go.exe | runner=D:\\sendguard-work\\sg-rederive.exe",
+    "toolchain": "go version go1.23.5 windows/amd64 | builder=C:\\Program Files\\Go\\bin\\go.exe | runner=D:\\work\\sg-rederive.exe",
     "unicode_version": "not-obtainable-here"
   },
   "error_code": "",
@@ -189,9 +189,9 @@
     "go_exe_resolved": "C:\\Program Files\\Go\\bin\\go.exe",
     "go_version_string": "go version go1.23.5 windows/amd64",
     "harness_source": "impl/go/rederive/",
-    "independence": "no file under results/ and no other language under impl/ was opened by this seat",
+    "independence": "no file under results/ and no other language under impl/ was opened by this local",
     "independent_enumerator": "harness/audit.go is the audit instrument; this port shares no code with it and never invoked it",
-    "runner_exe": "D:\\sendguard-work\\sg-rederive.exe",
+    "runner_exe": "D:\\work\\sg-rederive.exe",
     "sg_exe_sha256_before": "7647d02835b33feb195ccc20cbaef526411ca022f0e42a5d2eae587396ab142b",
     "spec_sha256": "8650a1863578231ef75af28f22322ac8375aed7fdfc62a3b09f01cd496453261",
     "spec_sha256_face": "git cat-file blob HEAD:spec/cases.yaml",

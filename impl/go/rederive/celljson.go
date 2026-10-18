@@ -265,7 +265,7 @@ func assembleCell(p *planRow, o *Observation, spec *FrozenSpec, env *envFace,
 	})
 	c.set("cleanup_attempted", false)
 	c.set("cleanup_failed", p.CleanupFailed)
-	c.set("cleanup_note", "M19: this port contains no delete/unlink call anywhere; cleanup_failed is true only if a directory that had to be reused was not already empty, which is reported instead of cleaned")
+	c.set("cleanup_note", "project rule: this port contains no delete/unlink call anywhere; cleanup_failed is true only if a directory that had to be reused was not already empty, which is reported instead of cleaned")
 	c.set("sandbox_dir", p.Sandbox)
 	c.set("cell_dir", p.Dir)
 	c.set("child_command", p.CommandFace)
@@ -312,7 +312,7 @@ func assembleCell(p *planRow, o *Observation, spec *FrozenSpec, env *envFace,
 		"sg_exe_sha256_before":   env.ExeSHA,
 		"harness_source":         "impl/go/rederive/",
 		"independent_enumerator": "harness/audit.go is the audit instrument; this port shares no code with it and never invoked it",
-		"independence":           "no file under results/ and no other language under impl/ was opened by this seat",
+		"independence":           "no file under results/ and no other language under impl/ was opened by this local",
 	})
 	c.set("normalization_dependency", p.NormalizationDep)
 	c.set("payload_hex", payloadHex)

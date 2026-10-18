@@ -1,6 +1,6 @@
 # S02 python port -- self-check, contract rev7 (final tonight)
 
-## SG-F1 re-stamp (ticket `docs/tickets/SG-F1-python-restamp.md`, executed 13:0x-13:2x +0800)
+## F1 re-stamp (ticket `docs/tickets/F1-python-restamp.md`, executed 13:0x-13:2x +0800)
 
 Race guard ran first and passed: `git status --porcelain -uall --
 results/python.windows.x64` was empty, and the newest mtime in the directory was
@@ -60,7 +60,7 @@ round-9 proposal items, out of scope here and untouched.
 Scope of this ticket's writes: `results/python.windows.x64/` (50 cells rewritten,
 0 deleted) and this file. The derived faces `docs/spec-drift.md`,
 `docs/cell-validation.md`, `docs/GAP.md` and
-`evidence/S02/equality-verdict.json` moved only because the criteria commands
+`evidence/judgement/equality-verdict.json` moved only because the criteria commands
 regenerated them; none was edited by hand, and none is staged in my commit.
 
 ## Rev7 headline (unchanged by the re-stamp)
@@ -74,7 +74,7 @@ cells_required=44 cells_matched=44 blocked=0 extra=75   (123 files, 123 valid / 
 Rev7 is the last contract change tonight, and this section is the only one it
 invalidated: the twelve length cells. **Landed late -- the host clock read 07:57
 when the focused re-run started and ~08:10 when both rulers came back clean, so
-the 07:30 deadline was missed by this seat.** The prior rev6 state of the corpus
+the 07:30 deadline was missed by this local.** The prior rev6 state of the corpus
 was already published and is unchanged except for those twelve files plus the five
 controls, which were re-measured alongside them to keep `controls_pass` a fresh
 reading rather than a carried-over one.
@@ -152,7 +152,7 @@ bisections. My grid cells are *not* re-recorded under `len_fill`, so their
 ## 0. The three rev6 actions, as measured
 
 detail: 123 cell files published, 123 valid / 0 void under **both** rulers (this
-seat's `sg_selfcheck.py`, and the shipped `spec/validate.py` at
+local's `sg_selfcheck.py`, and the shipped `spec/validate.py` at
 `summary: 123 valid / 0 void (of 123)`, exit 0); python's 4 T-API rows 4/4; 0
 control mismatches; 0 hangs; 0 cells that could not run. Not
 `INSTRUMENT-RED`. Self-test: `selftest_arms=29 passed=29 failed=0`.
@@ -160,7 +160,7 @@ control mismatches; 0 hangs; 0 cells that could not run. Not
 HEAD at measurement time: `f15b399`. Manifest matched: the committed blob
 `3742747dd412e8a9` of `spec/cells-required.json` (44 rows + 26 T-API rows, of
 which 4 are python's). Nothing was committed, pushed, tagged or deleted by this
-seat; no tracked file was modified; nothing was written outside
+local; no tracked file was modified; nothing was written outside
 `impl/python/`, `results/python.windows.x64/` and this file.
 
 ## 0. The three rev6 actions, as measured
@@ -193,7 +193,7 @@ holds both directions of that rule.
 
 **(2) The five blind cells are `blind/B1..B5` and they are now matched.** They
 were already published with the right identity; what made them "missing" is
-section 3, defect R-1 -- they were flagged `extra` against the manifest this seat
+section 3, defect R-1 -- they were flagged `extra` against the manifest this local
 had loaded at the time (33 rows, no blind rows), and `ci/equality.py`'s
 `discover()` drops an extra cell *before* it is keyed. Re-reconciled against the
 44-row manifest, `extra` is false on all five and `gap_report`'s own path matches
@@ -247,7 +247,7 @@ section 5 below checkable.
 61 records from the rev2 run were **migrated in place** rather than re-measured
 (`rev3_migrated: true` with per-record notes naming every field added), and the 11
 whose identity rev3 renamed are marked `superseded_by` pointing at the new file.
-Nothing was deleted: this port contains no deletion logic (M19), and dropping a
+Nothing was deleted: this port contains no deletion logic (project rule), and dropping a
 published measurement to tidy a count would be the same act with better wording.
 
 **(3) Re-run and reported** in the notice's shape (top of this file).
@@ -294,7 +294,7 @@ I reported broken under rev2 is fixed upstream and verified here.
 Independent manifest check (not a copy of `ci/gen_cells_required.py`): I re-derive
 the required set from the committed faces -- member counts off the frozen hex
 lists, `len` for T17/T18 per canonical section 2, the rung ladder times both path
-forms, the five blind cells from `evidence/S00/blind-map.json` -- and compare it to
+forms, the five blind cells from `evidence/freeze/blind-map.json` -- and compare it to
 the published manifest: `manifest_rows=44 derived_rows=44 only_in_manifest=0
 only_in_cases_yaml=0`. Under rev3 this comparison failed (the committed generator
 derived 20 rows, all `trap`, no members); `b0a2dc3` fixed it, and this round it
@@ -349,7 +349,7 @@ a collision to the ambiguity leg. Suggested wording: `tapi` cells are keyed by
 **R-4 -- base 13 is still not reachable by a compliant instrument on this box.**
 gate.md section 5 now permits base 13 "as extra", reachable "inside a copy through
 a mapped drive (`subst`)". Creating a drive map is a machine-level change, not
-something a probe seat should do unasked, so my 48 grid cells at base 13 remain
+something a probe local should do unasked, so my 48 grid cells at base 13 remain
 what they are: real measurements, taken earlier under a drive-root directory, now
 labelled `instrument_base_noncompliant` against cell-identity section 6, kept as
 extras, and used for nothing in the rung coverage above.
@@ -482,7 +482,7 @@ member cells, each carrying its own `pre_existing_entries` 0 and 1). Names are
 decoded at run time from committed hex -- including the control names, which are
 hex in my source and whose 256-unit component is built from a repeat count read out
 of `harness/ctrl-baseline.mjs`. Verified by scanning, not asserted: no plaintext
-sample name appears in any of the 111 records or any file this seat wrote. Zero
+sample name appears in any of the 111 records or any file this local wrote. Zero
 third-party dependencies. Writes stayed inside `impl/python/`,
 `results/python.windows.x64/` and this file.
 
@@ -507,7 +507,7 @@ third-party dependencies. Writes stayed inside `impl/python/`,
    anyway and each record carries `spec_provenance.applicable`, because a silent
    drop loses the comparison and the answer is still a fact about this box.
 
-## 9. Files written by this seat
+## 9. Files written by this local
 
 `impl/python/sg_run.py` (runner, rev3/rev4 reconciliation, migration),
 `impl/python/sg_probe.py`, `impl/python/sg_probe_zip.py`,
@@ -515,5 +515,5 @@ third-party dependencies. Writes stayed inside `impl/python/`,
 `impl/python/sg_run_log.txt`, `sg_selfcheck_log.txt`, `sg_validate_py_log.txt`,
 `sg_run_summary.json`, `results/python.windows.x64/*.json` (111 cell files),
 and this report. Instrument dumps sit under `impl/` because the only evidence path
-this seat may write is this single file, while cell-identity section 3 says dumps
+this local may write is this single file, while cell-identity section 3 says dumps
 belong in `evidence/` -- noted, not resolved by me.

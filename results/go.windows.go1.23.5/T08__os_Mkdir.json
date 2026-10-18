@@ -37,7 +37,7 @@
   "unicode_version": "unavailable-no-api"
  },
  "notes": [
-  "SCHEMA-GAP: read_result closed set lacks err_open; raw=ROOT-REFUSED (child): no spec/FROZEN.md above D:\\sendguard-work: pass -repo \u003crepository root\u003e; this lane will not guess a checkout"
+  "SCHEMA-GAP: read_result closed set lacks err_open; raw=ROOT-REFUSED (child): no spec/FROZEN.md above D:\\work: pass -repo \u003crepository root\u003e; this lane will not guess a checkout"
  ],
  "members": [
   {
@@ -49,7 +49,7 @@
    "path_size": 0,
    "read_result": "eof",
    "read_bytes": null,
-   "read_error": "mapped-from:ROOT-REFUSED (child): no spec/FROZEN.md above D:\\sendguard-work: pass -repo \u003crepository root\u003e; this lane will not guess a checkout",
+   "read_error": "mapped-from:ROOT-REFUSED (child): no spec/FROZEN.md above D:\\work: pass -repo \u003crepository root\u003e; this lane will not guess a checkout",
    "view_divergence": false,
    "same_name_hits": 1
   }

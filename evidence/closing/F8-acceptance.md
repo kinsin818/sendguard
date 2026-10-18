@@ -1,7 +1,7 @@
-# SG-F8 acceptance - six lanes re-emitted, and what the purge could not reach
+# F8 acceptance - six lanes re-emitted, and what the purge could not reach
 
-Accepted 2026-10-12 by the seat that owns `ci/`, against `docs/tickets/SG-F8-public-interface-process-metadata.md`
-and `docs/tickets/SG-F8-dispatch-20261012.md`. Every number is from this session's captured output.
+Accepted 2026-10-12 by the local that owns `ci/`, against `docs/tickets/F8-public-interface-process-metadata.md`
+and `docs/tickets/F8-dispatch-20261012.md`. Every number is from this session's captured output.
 
 ## Per-lane report (the three lines the dispatch asked for, one block per lane)
 
@@ -49,7 +49,7 @@ a published key is not only the write:
   is its work; left alone it would have skipped every one of the lane's new records.
 - `impl/rust/run_cells.py:679` - the value passed to the child (`--worker` is now handed the lane value).
 - `impl/go/main.go:94` and its six `WorkerID:` construction sites - the published key lived in a struct tag, so the
-  Go field moved with it (`ImplementationID`), and the seat code `W-GO` was rewritten out of four comments and one
+  Go field moved with it (`ImplementationID`), and the local code `W-GO` was rewritten out of four comments and one
   emitted note string.
 - `impl/python/sg_run.py` `migrate()` - see the next section; without it the runner re-measures 50 records and
   carries the retired key forward in the other 73.
@@ -57,7 +57,7 @@ a published key is not only the write:
 ## The purge is a rename in the emitter, and the leg proves it
 
 `sg_run.py`'s migration path now renames the key on the way through, appends the reason to the record's existing
-`rev3_migration_notes`, and does **not** carry the superseded value forward (it named a seat, not a lane). The
+`rev3_migration_notes`, and does **not** carry the superseded value forward (it named a local, not a lane). The
 runner prints the result instead of being quoted:
 
 ```
@@ -83,17 +83,17 @@ Remaining `RETIRED`, by where it lives (the leg's own `scan_face`, counted per r
 
 | block | records | why it stands |
 |---|---|---|
-| `results/go.windows.go1.23.5/` | 154 | that face is written by `impl/go/main.go`, whose root is **hardcoded to a different checkout**; running it here is `SG-F15`, not this ticket |
+| `results/go.windows.go1.23.5/` | 154 | that face is written by `impl/go/main.go`, whose root is **hardcoded to a different checkout**; running it here is `F15`, not this ticket |
 | `results/python/` | 211 | written by `impl/python/sg_python.py`, whose `assert len(cases) == 20` now fails against the sealed spec (`parsed 25`); it is a superseded S02-era emitter and cannot re-answer 212 records at the current contract without an assertion change that is not a purge |
-| `evidence/recovered/` | 78 | recovered captures. A capture is not prose this seat may re-word |
+| `evidence/recovered/` | 78 | recovered captures. A capture is not prose this local may re-word |
 | `results/node.windows.22.22.2.json` + `results/node/` | 73 | the node lane's face, which the dispatch declares frozen history under an earlier contract; node is not one of the six |
-| `evidence/S02/` | 25 | captures, including the `VOID-run1/` records whose whole purpose is to preserve a bad run |
+| `evidence/judgement/` | 25 | captures, including the `VOID-run1/` records whose whole purpose is to preserve a bad run |
 | `results/typescript.windows.x64/` | 3 | `tapi__TAPI-T01__entry-{appendFileSync,createWriteStream,writeFileSync}.json` - records the current runner no longer produces; they carry no producer key of either name, so they are an unproduced stale face, not a mislabeled one |
 | rule/prose faces (`docs/tickets/`, `ci/`, `docs/claim-boundary.md`, `spec/`) | 13 | these are the sentences that **name** the retired key in order to retire it; the leg routes them to `mentioned`, not fatal |
 
-So `RETIRED=0` needs one of three things this seat is not authorised to do unilaterally: re-measure 365 records
+So `RETIRED=0` needs one of three things this local is not authorised to do unilaterally: re-measure 365 records
 with two emitters that no longer match the sealed contract, rewrite 103 captured evidence faces, or delete the
-node lane's frozen face. The route that does work is `SG-F15` (154 records, a real defect with a real fix) plus a
+node lane's frozen face. The route that does work is `F15` (154 records, a real defect with a real fix) plus a
 decision about `impl/python/sg_python.py` (211 records: retire the emitter's faces, or let it grow an assertion
 that matches the sealed spec). That decision is on the row below, not made here.
 
@@ -105,12 +105,12 @@ is treated as not done - which is the dispatch's own rule and the reason it exis
 `impl/python/sg_restamp_note.txt` (11,950 B, mtime 2026-10-11 13:08) is another lane's work note, left in the
 tree by an earlier session. It carries a host profile path in a `scratch_root=` line, and because
 `process_leak_scan.py` enumerates the **tracked** set, an untracked face is invisible to it: `files_scanned=1198`
-does not include it. Nothing was deleted (M19); it is named here so the next reader can see the blind spot has a
+does not include it. Nothing was deleted (project rule); it is named here so the next reader can see the blind spot has a
 name and a size.
 
 ## The needle fix, which is the finding I most want kept from this leg
 
-While attributing a `+3` movement for SG-F11, I found that `ANY_PATH`-style needles in
+While attributing a `+3` movement for F11, I found that `ANY_PATH`-style needles in
 `ci/process_leak_scan.py` compared the *unescaped* spelling of a path against faces that escape their
 separators. A `.json` face writes `C:\\Users\\x`, and the leg only looked for `C:\Users\x`, so every path inside a
 data face was invisible to it. `_paths_of()` now builds every separator spelling through `_escaped_forms()`, and
@@ -123,11 +123,11 @@ deliverable contained those paths this morning too; the leg could not see them. 
 the exposure by two orders of magnitude, and it is the second time this week a green leg was found to be reading
 a tree or a form it was not looking at.
 
-## Correction, appended after the same session's `SG-F15` landing
+## Correction, appended after the same session's `F15` landing
 
 The residue table above says `results/go.windows.go1.23.5/` holds 154 retired records and that the face cannot be
 re-emitted here because the lane's runner resolves its root to a different checkout. Both rows were true when
-written. `SG-F15` has now landed - the root is derived and the child inherits it - so that face has been
+written. `F15` has now landed - the root is derived and the child inherits it - so that face has been
 re-emitted in **this** repository and the block is **29**, not 154: the records the current runner no longer
 produces under its rev3 identity spelling (`T09-m*/T14-m*/T19-m*`, member position folded into `case_id` by the
 contract). They are stale faces in a non-canonical directory, superseded by rev3 rather than mislabeled; the node

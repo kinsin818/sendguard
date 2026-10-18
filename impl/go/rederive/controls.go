@@ -6,7 +6,7 @@ import (
 	"strconv"
 )
 
-// ControlResult is one control cell judged against evidence/S00-ctrl-baseline.md.
+// ControlResult is one control cell judged against evidence/ctrl-baseline.md.
 // Control cells verify the ruler; they are not data (spec/gate.md §8).
 type ControlResult struct {
 	ID       string            `json:"cell"`

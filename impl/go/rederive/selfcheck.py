@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""SENDGUARD Go port self-check (seat-qoder), re-derived against contract rev3.
+"""SENDGUARD Go port self-check (session-token), re-derived against contract rev3.
 
-Written by the Go seat and independent of the Go code it judges: it re-parses
+Written by the Go local and independent of the Go code it judges: it re-parses
 spec/cases.yaml, reads the required-cell list out of spec/cells-required.json, re-reads
 the closed words out of spec/canonical.md, re-reads the control expectations out of
-evidence/S00-ctrl-baseline.md, and validates every published cell against
+evidence/ctrl-baseline.md, and validates every published cell against
 spec/schema.json (the rev3 face) plus the three sentences the NOTICE of 04:21 adds.
 
 It prints the counters the NOTICE asks for and nothing else decides:
@@ -191,7 +191,7 @@ def pinned_control_samples(cases_yaml):
 
 
 def control_expectations(md):
-    """evidence/S00-ctrl-baseline.md is the only allowed source of control expectations."""
+    """evidence/ctrl-baseline.md is the only allowed source of control expectations."""
     txt = read_bytes(md).decode("utf-8")
     rows = {}
     for line in txt.splitlines():
@@ -364,7 +364,7 @@ def check_no_deletion(repo):
             if pat.search(line):
                 hits.append("%s:%d %s" % (name, i, line.strip()[:80]))
     return ["files_scanned=%d root=%s" % (files, root),
-            "deletion_calls_found=%d (M19 requires 0)" % len(hits)] + hits
+            "deletion_calls_found=%d (project rule requires 0)" % len(hits)] + hits
 
 
 def run_repo_gates(repo):
@@ -516,7 +516,7 @@ def main():
     cases_yaml = os.path.join(repo, "spec", "cases.yaml")
     schema_json = os.path.join(repo, "spec", "schema.json")
     required_json = os.path.join(repo, "spec", "cells-required.json")
-    ctrl_md = os.path.join(repo, "evidence", "S00-ctrl-baseline.md")
+    ctrl_md = os.path.join(repo, "evidence", "ctrl-baseline.md")
     for p in (canon_md, cases_yaml, schema_json, required_json, ctrl_md, resdir):
         if not os.path.exists(p):
             print("OUTCOME=VOID reason=missing-input %s" % p)
@@ -610,7 +610,7 @@ def main():
     print("   verdict_via='none' is in schema.json but not in spec/cell-identity.md s6; this port"
           " uses it only for the cell where no tool was asked at all")
 
-    print("== deletion logic (M19)")
+    print("== deletion logic (project rule)")
     for line in check_no_deletion(repo):
         print("   %s" % line)
     print("== repo gates this port may run but not edit")

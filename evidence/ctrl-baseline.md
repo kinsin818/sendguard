@@ -1,8 +1,8 @@
-# SENDGUARD S00 Control-Cell Baseline (measured on this machine)
+# SENDGUARD Control-Cell Baseline (measured on this machine)
 
 - date: 2026-10-10T12:53:47.806Z
 - os: win32 / node v22.23.2
-- run dir: D:\sendguard\evidence\S00\_ctrlrun
+- run dir: D:\local-dir\evidence\000\_ctrlrun
 - baseline is the ONLY allowed source of control expectations; hand-written expectations forbidden
 
 | cell | create_result | error_stage | error_code | bytes_written | bytes_on_disk | read_result | roundtrip_ok | sha256_on_disk |

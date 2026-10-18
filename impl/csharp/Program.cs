@@ -3,7 +3,7 @@
 // Contract discipline:
 //   - names travel as HEX only (N12): this probe never prints or stores a raw sample name.
 //   - reserved device names are CREATED and LISTED, never opened for content.
-//   - no deletion logic anywhere (M19).
+//   - no deletion logic anywhere (project rule).
 // Exit codes: 0 report written, 2 bad arguments, 3 instrument precondition failed.
 using System;
 using System.Collections.Generic;
@@ -223,7 +223,7 @@ namespace SendGuardProbe
         // The returned target dir is always UNPREFIXED: the prefix is applied per call site, and
         // baking it in here would double it on every later join.
         // Chain components use 'w' so a chain dir can never collide with a probed file name
-        // (nothing is deleted between probes, M19).
+        // (nothing is deleted between probes, project rule).
         private static Dictionary<string, object> Setup(Opts o, int x, out string targetDir)
         {
             targetDir = o.Dir;

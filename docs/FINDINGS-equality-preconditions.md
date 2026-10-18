@@ -57,7 +57,7 @@ anything.
 
 1. Spec patch: `primary_entry` per (port, trap), `base_len` in the cell identity, authoritative-storage rule,
    and a naming rule that keeps non-cell artifacts out of `results/`.
-2. Skeleton per port so a window fills only language behaviour and cannot invent its own identity.
+2. Skeleton per port so a session fills only language behaviour and cannot invent its own identity.
 3. `ci/selftest.py` with a green arm and a red arm for every gate, including this one — a gate that has only
    ever been seen refusing is not yet proven to work.
 4. Then the ports: TypeScript (Node runtime), Java, C#, Rust written fresh; Python and Go re-run against the

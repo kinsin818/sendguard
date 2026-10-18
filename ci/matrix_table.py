@@ -99,7 +99,7 @@ def main():
     # of the comparison rules. Measured reason: this table judged by plain string equality and disagreed
     # with ci/equality.py about the same data (15 agree / 29 differ against the gate's 24 / 54) - the
     # two-rulers defect this project has now caught in itself more than once.
-    vpath = os.path.join(REPO, "evidence", "S02", "equality-verdict.json")
+    vpath = os.path.join(REPO, "evidence", "judgement", "equality-verdict.json")
     if not os.path.isfile(vpath):
         print("REFUSING: the gate's verdict artifact is missing. Run `python ci/equality.py` first; "
               "re-judging with a second ruler is exactly what this file must not do")

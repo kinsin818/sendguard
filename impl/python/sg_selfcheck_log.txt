@@ -2,7 +2,7 @@ ruler_faces_read=git cat-file blob HEAD (not the disk copy)
 frozen_hash_claims=8 verified=8 mismatched=0
 canonical_sets={"Cell": 3, "attribution_layer": 4, "case_group": 5, "create_result": 4, "error_stage": 5, "longpath_mechanism": 4, "mechanism_class": 12, "os_legality_verdict": 3, "path_form": 2, "read_result": 5}
 rev3_words_with_no_canonical_section=['name_encoding', 'length_unit', 'verdict_via'] (spec/canonical.md line 1 makes any word outside that file void; these three are defined only in schema.json)
-cells_dir=D:\sendguard-work\seat-qoder\results\python.windows.x64 files_in_cells_dir=123 non_json=[]
+cells_dir=D:\work\session-token\results\python.windows.x64 files_in_cells_dir=123 non_json=[]
 cells_parsed=123 cells_unparseable_or_not_a_cell=0
 manifest_vs_frozen_table: manifest_rows=44 derived_rows=44 only_in_manifest=0 only_in_cases_yaml=0
 cells_required=44 (+python_tapi=4) blob_sha=ed8a8a29c0eea999

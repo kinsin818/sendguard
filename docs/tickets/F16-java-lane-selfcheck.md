@@ -1,12 +1,12 @@
-# SG-F16 - the java lane is the only port without a self-check of its own
+# F16 - the java lane is the only port without a self-check of its own
 
-Opened 2026-10-12 by the seat that owns `ci/`, found while writing `README.md` §7 (the stranger's path): five of
+Opened 2026-10-12 by the local that owns `ci/`, found while writing `README.md` §7 (the stranger's path): five of
 six lanes ship a lane-authored script that re-parses the contract and judges the lane's own face; the java lane does
 not. That asymmetry is not a published-number problem today - every java face passes the shared rulers - but it means
 the java lane's answer is checked only by rulers that every other lane also answers to, and this project's rule is
 that a claim needs an instrument the claimant did not write.
 
-## Measured, from the cold-clone run recorded in `evidence/S11/six-lane-usability-20261012.md`
+## Measured, from the cold-clone run recorded in `evidence/closing/six-lane-usability-20261012.md`
 
 | lane | lane-authored self-check | result in the clone |
 |---|---|---|
@@ -24,7 +24,7 @@ that a claim needs an instrument the claimant did not write.
 
 1. `impl/java/tools/selfcheck.py` exists and is lane-authored: it re-parses `spec/cases.yaml`, reads the required
    list out of `spec/cells-required.json`, re-reads the closed status words out of `spec/canonical.md`, re-reads the
-   control expectations from `evidence/S00-ctrl-baseline.md`, and validates every face under the canonical java
+   control expectations from `evidence/ctrl-baseline.md`, and validates every face under the canonical java
    directory against `spec/schema.json` - the same five inputs the other lanes' self-checks use, reached through
    the same kind of code, never by importing `ci/` (the shared ruler must stay the second ruler);
 2. it prints denominators, not adjectives: `cells_required=`, `cells_produced=`, `cells_valid=`, `cells_blocked=`,
@@ -41,11 +41,11 @@ that a claim needs an instrument the claimant did not write.
 
 - Do not weaken or alter `impl/java/tools/run_cells.py` to make the self-check pass - the runner's numbers are the
   subject, the self-check is a new judge.
-- Do not touch `spec/`, `ci/`, or another lane. No deletion (M19). No history rewriting.
+- Do not touch `spec/`, `ci/`, or another lane. No deletion (project rule). No history rewriting.
 
 ## Allowed surface
 
-`impl/java/tools/` plus the acceptance row in `evidence/S11/`.
+`impl/java/tools/` plus the acceptance row in `evidence/closing/`.
 
 ## Clock
 

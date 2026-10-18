@@ -5,7 +5,7 @@
  * timeout. Each probe is one child process (src/probe.ts); the parent never calls fs
  * on a sample name itself, so a blocked syscall can only cost that one probe.
  *
- * Nothing in this file deletes anything (project red line M19): the scratch tree is
+ * Nothing in this file deletes anything (project red line project rule): the scratch tree is
  * left in place and its paths are recorded in every cell for the operator to clear.
  */
 import { mkdirSync, readdirSync, writeFileSync, readFileSync, existsSync } from "node:fs";
@@ -145,7 +145,7 @@ function ensureDriveMapped(): { mapped: boolean; note: string } {
   } catch (err) {
     return { mapped: false, note: `subst mapping failed: ${String((err as Error).message).slice(0, 120)}` };
   }
-  return { mapped: true, note: `mapped ${DRIVE} -> ${SCRATCH_ROOT} for this run; the port removes nothing (M19)` };
+  return { mapped: true, note: `mapped ${DRIVE} -> ${SCRATCH_ROOT} for this run; the port removes nothing (project rule)` };
 }
 
 function makeScratch(stem: string, index: number): ScratchInfo {
@@ -255,7 +255,7 @@ function eventOf(outcome: JobOutcome, ev: string): Record<string, unknown> | nul
 }
 
 function readEnvFacts(): Record<string, unknown> {
-  const path = resolve(REPO_ROOT, "evidence", "S00", "env-facts-windows-local.json");
+  const path = resolve(REPO_ROOT, "evidence", "freeze", "env-facts-windows-local.json");
   const text = readFileSync(path, "utf8");
   const doc = JSON.parse(text) as Record<string, unknown>;
   return doc;
@@ -293,7 +293,7 @@ function buildEnvBlock(envFacts: Record<string>, mapped: boolean): Record<string
     max_component: num(d["max_component"]),
     unicode_version: "not-obtainable-here",
     toolchain: `node ${process.version} at ${process.execPath}; TypeScript run by native type stripping (no tsc on this host)`,
-    env_block_source: "evidence/S00/env-facts-windows-local.json",
+    env_block_source: "evidence/freeze/env-facts-windows-local.json",
     recorded_node_executable: (node?.["resolved_paths"] as string[] | undefined)?.[0] ?? null,
     recorded_node_version: str(probe?.["version_string"]),
     observed_node_executable: process.execPath,
@@ -331,7 +331,7 @@ function makeMeta(envFacts: Record<string>, spec: FrozenSpec, env: Record<string
     LongPathsEnabled: env["LongPathsEnabled"],
     eight_dot_three: { D: env["eight_dot_three_d"], C: env["eight_dot_three_c"] },
     node_manifest_longPathAware: false,
-    node_manifest_longPathAware_basis: "evidence/S00/env-facts-windows-local.json manifest_scan: node.exe hit_count=0",
+    node_manifest_longPathAware_basis: "evidence/freeze/env-facts-windows-local.json manifest_scan: node.exe hit_count=0",
     spec_sha256: spec.casesBlobSha256,
     spec_sha256_basis: "git cat-file blob HEAD:spec/cases.yaml, hashed (committed blob face, not the disk file)",
     canon_payload_sha256: spec.canonPayloadSha256,
@@ -354,7 +354,7 @@ function makeMeta(envFacts: Record<string>, spec: FrozenSpec, env: Record<string
       "node:fs did not apply the Win32 name-parsing layer to the plain absolute paths this port passed: " +
       "a real CON.txt and a real 'trail.' (trailing dot kept) were created, and totals above 259 characters were accepted. " +
       "Controlled on the same volume in the same directory: cmd.exe mapped CON.txt to the device (no file listed), wrote 'trail.' as 'trail', and refused a 309-char path (rc=1 ERROR_PATH_NOT_FOUND), " +
-      "as did python 3.14 (rc=1) while LongPathsEnabled=0. Measured, not inferred. See evidence/S02/typescript-selfcheck.md C-2.",
+      "as did python 3.14 (rc=1) while LongPathsEnabled=0. Measured, not inferred. See evidence/judgement/typescript-selfcheck.md C-2.",
     deps_direct: 0,
     deps_total: 0,
   };
@@ -510,7 +510,7 @@ function assembleCell(
       cell_root: scratch.cellRoot,
       cell_root_real: SCRATCH_ROOT + SEP + scratch.cellRoot.slice(DRIVE.length + 1),
       verified_empty_before_use: scratch.verifiedEmpty,
-      cleanup: "not attempted by the port (M19 forbids deletion logic in this port); the path is recorded for the operator",
+      cleanup: "not attempted by the port (project rule forbids deletion logic in this port); the path is recorded for the operator",
     },
     probe: {
       carrier: "one child process per probe: node built-in TypeScript type stripping of src/probe.ts",
@@ -737,7 +737,7 @@ function assembleCell(
     cell["control_expectation"] = {
       create_result: plan.controlExpectation.createResult,
       error_stage: plan.controlExpectation.errorStage,
-      source: "evidence/S00-ctrl-baseline.md",
+      source: "evidence/ctrl-baseline.md",
     };
     cell["control_observed"] = { create_result: str(cell["create_result"]), error_stage: str(cell["error_stage"]) };
     cell["control_match"] =
@@ -824,7 +824,7 @@ const PRIMARY_ENTRY = "writeFileSync";
 const PINNED: readonly string[] = [PRIMARY_ENTRY, "createWriteStream", "appendFileSync"];
 const BSDTAR = "C:\\Windows\\System32\\tar.exe";
 /** The rev3 base ladder named by spec/cells-required.json. 78 replaced the frozen 13 because
- * another seat judged base 13 unreachable; self-check C-1 shows it IS reachable inside this
+ * another local judged base 13 unreachable; self-check C-1 shows it IS reachable inside this
  * clone through the subst carrier, so the declared ladder runs as required and the frozen
  * base-13 points are kept as extra cells. */
 /** spec/cases.yaml len_fill.unit_hex, read through the spec face in loadLenFill(). */
@@ -1218,17 +1218,17 @@ interface BlindEntry {
 
 /**
  * rev6 instructs every port to emit blind/B1..B5 with `blind_id` taken from
- * evidence/S00/blind-map.json. spec/FROZEN.md locked that file's hash and said it is unsealed
+ * evidence/freeze/blind-map.json. spec/FROZEN.md locked that file's hash and said it is unsealed
  * after the S03 audit; the contract owner has now named it as the source for these five cells,
  * so the map is read and its locked hash is checked first. The samples are still not treated as
  * expectations: every `expectation` in the frozen table remains null and
  * spec/expectations.sealed.md was not opened by this port.
  */
 function loadBlindMap(spec: FrozenSpec): { entries: readonly BlindEntry[]; blobSha256: string; lockedHash: string | null } {
-  const bytes = execFileSync("git", ["-C", REPO_ROOT, "cat-file", "blob", "HEAD:evidence/S00/blind-map.json"], { encoding: "buffer" });
+  const bytes = execFileSync("git", ["-C", REPO_ROOT, "cat-file", "blob", "HEAD:evidence/freeze/blind-map.json"], { encoding: "buffer" });
   const blobSha256 = createHash("sha256").update(bytes).digest("hex");
   const doc = JSON.parse(bytes.toString("utf8")) as { entries?: { blind_id?: number; name_utf8_hex?: string }[] };
-  const locked = lockedHashInFrozenMd(REPO_ROOT, "evidence/S00/blind-map.json");
+  const locked = lockedHashInFrozenMd(REPO_ROOT, "evidence/freeze/blind-map.json");
   if (locked !== null && locked !== blobSha256) {
     throw new Error(`blind-map.json blob face ${blobSha256} does not match the hash locked in spec/FROZEN.md (${locked})`);
   }
@@ -1262,7 +1262,7 @@ function blindPlans(map: { entries: readonly BlindEntry[]; blobSha256: string; l
       inCell: { blind_id: e.blindId } as Record<string, number>,
       mechanismClass: "unknown" as MechanismClass,
       nameSourceHex: e.nameHex,
-      nameSourceBasis: `entry ${e.blindId} of evidence/S00/blind-map.json (blob face ${map.blobSha256.slice(0, 16)}…, the hash spec/FROZEN.md locks)`,
+      nameSourceBasis: `entry ${e.blindId} of evidence/freeze/blind-map.json (blob face ${map.blobSha256.slice(0, 16)}…, the hash spec/FROZEN.md locks)`,
       jobs,
       controlExpectation: null,
       frozenCase: null,
@@ -1313,7 +1313,7 @@ interface RequiredSet {
 }
 
 /**
- * spec/cells-required.json, regenerated for rev3 (the 03:4x version this seat consumed is
+ * spec/cells-required.json, regenerated for rev3 (the 03:4x version this local consumed is
  * withdrawn by name inside the file). 33 required identities: 22 trap cells with members
  * carried in case_id, 5 controls, and T17/T18 over the base ladder, each keyed by base_len
  * alone. T-API rows are per language and the generator derives them from cases.yaml, which
@@ -1527,7 +1527,7 @@ function provenanceProblem(cell: Record<string, unknown>): string | null {
   const env = cell["env"];
   const meta = cell["meta"];
   if (env === null || typeof env !== "object") return "env is not an object";
-  if ((env as Record<string, unknown>)["env_block_source"] !== "evidence/S00/env-facts-windows-local.json") {
+  if ((env as Record<string, unknown>)["env_block_source"] !== "evidence/freeze/env-facts-windows-local.json") {
     return "env is not the env-facts block (env_block_source missing)";
   }
   if (meta === null || typeof meta !== "object") return "meta is not an object";
@@ -1540,13 +1540,13 @@ function provenanceProblem(cell: Record<string, unknown>): string | null {
 /** Red and green arms for the guard above; run it with --selftest-provenance. */
 function selftestProvenance(): number {
   const good: Record<string, unknown> = {
-    env: { env_block_source: "evidence/S00/env-facts-windows-local.json" },
+    env: { env_block_source: "evidence/freeze/env-facts-windows-local.json" },
     meta: { spec_sha256: "a".repeat(64) },
     spec_sha256: "a".repeat(64),
   };
   const swapped: Record<string, unknown> = {
     env: { cases: [], controlCells: [] },
-    meta: { env_block_source: "evidence/S00/env-facts-windows-local.json" },
+    meta: { env_block_source: "evidence/freeze/env-facts-windows-local.json" },
     spec_sha256: null,
   };
   let failures = 0;
@@ -1621,7 +1621,7 @@ async function main(): Promise<number> {
   const blindMap = loadBlindMap(spec);
   const meta = makeMeta(envFacts, spec, env);
   meta["blind_map"] = {
-    source: "evidence/S00/blind-map.json",
+    source: "evidence/freeze/blind-map.json",
     blob_sha256: blindMap.blobSha256,
     locked_in_frozen_md: blindMap.lockedHash,
     hash_matches_lock: blindMap.lockedHash === null ? "no lock line found" : blindMap.lockedHash === blindMap.blobSha256,

@@ -1,7 +1,7 @@
-# SG-F10 - the reproducibility leg cannot reach its green side on any host but the author's
+# F10 - the reproducibility leg cannot reach its green side on any host but the author's
 
-Opened 2026-10-12 by the seat that owns `ci/`. **Four outside reviewers reached this independently** (auditor-1 F-2,
-auditor-2 F-1, auditor-3 F-1, auditor-4 F-1), and a fifth seat reproduced the same divergence on a third
+Opened 2026-10-12 by the local that owns `ci/`. **Four outside reviewers reached this independently** (auditor-1 F-2,
+auditor-2 F-1, auditor-3 F-1, auditor-4 F-1), and a fifth local reproduced the same divergence on a third
 interpreter. A finding four blind implementers land on at once is not a nuisance report - it is the most
 important thing in the audit batch, because it is aimed at the one claim this repository exists to make.
 
@@ -20,7 +20,7 @@ inside a face the leg compares byte-for-byte. So the leg's result depends on the
 
 | who ran it | interpreter | reading |
 |---|---|---|
-| this seat, on this tree | 3.14.7 (the stamped value) | `OUTCOME=CLEAN faces_compared=12 identical=11 declared=1 differing=0 rc=0` |
+| this local, on this tree | 3.14.7 (the stamped value) | `OUTCOME=CLEAN faces_compared=12 identical=11 declared=1 differing=0 rc=0` |
 | auditor-1 / auditor-3 / auditor-4, own clones | 3.13.13 | `OUTCOME=RED ... differing=1`, the single differing face being the interpreter line of `docs/delivery-form.md` |
 | WorkBuddy cross-check | 3.13.12 | same divergence class, reported as the leg's green side being unreachable off-host |
 

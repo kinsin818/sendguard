@@ -9,7 +9,7 @@ Four jobs the runner cannot do for itself:
      a bad word hidden in a nested record is still a bad word;
   3. assert each record's shape claims about itself (an unattempted read may not be
      written in the same voice as a measurement);
-  4. judge the 5 control cells against evidence/S00-ctrl-baseline.md, the only allowed
+  4. judge the 5 control cells against evidence/ctrl-baseline.md, the only allowed
      source of control expectations. That file's table is a NODE measurement on the S00
      machine; its "expectation:" sentences are the criteria, so every control is reported
      on both layers and only the expectation layer can raise INSTRUMENT-RED.
@@ -51,7 +51,7 @@ PORT = os.path.dirname(HERE)
 REPO = os.path.dirname(os.path.dirname(PORT))
 RESULTS = os.path.join(REPO, "results", "java.windows.x64")
 SPEC = os.path.join(REPO, "spec")
-BASELINE = os.path.join(REPO, "evidence", "S00-ctrl-baseline.md")
+BASELINE = os.path.join(REPO, "evidence", "ctrl-baseline.md")
 SET_FIELDS = ("create_result", "read_result", "error_stage", "os_legality_verdict",
               "path_form", "longpath_mechanism", "case_group", "attribution_layer")
 NESTED_STATUS_FIELDS = ("create_result", "read_result", "error_stage", "os_legality_verdict")
@@ -71,7 +71,7 @@ INSTRUMENT_ARTIFACTS = [r"^sgsrc-[0-9a-f-]{36}\.tmp$", r"^preflight-base\.txt$",
 # contract owner's bug and schema.json now accepts both, so nothing is reported-not-void here
 # any more; the selftest keeps an arm for both accepted shapes.
 
-# Criteria quoted from evidence/S00-ctrl-baseline.md. The expectation layer decides PASS/FAIL;
+# Criteria quoted from evidence/ctrl-baseline.md. The expectation layer decides PASS/FAIL;
 # the table layer is node's observation on the S00 machine and is only reported as a
 # comparison - importing it as a mandate would grade one port against another port.
 CONTROL_CRITERIA = {
@@ -544,7 +544,7 @@ def check_cell(path, sets, schema, exp, sha_blob, pins=None):
                         "(spec/cell-identity.md section 1)"
                         % (obj.get("api_entry"), (obj.get("sub_identity") or {}).get("builder")))
     if is_io_spread:
-        # SG-F2 part 1 arms: this cell exists to publish a second instrument, so it must say which
+        # F2 part 1 arms: this cell exists to publish a second instrument, so it must say which
         # call answered, must not smuggle a random name into the pinned length family, and must name
         # the required cell it is paired with - otherwise it is a duplicate with extra steps.
         if "String" not in str(obj.get("instrument_face") or ""):
@@ -579,7 +579,7 @@ def check_cell(path, sets, schema, exp, sha_blob, pins=None):
     if obj.get("verdict_via") == "none" and obj.get("os_legality_verdict") != "unknown":
         errs.append("verdict_via=none but os_legality_verdict=%r (no tool was asked, so no "
                     "verdict may be claimed)" % obj.get("os_legality_verdict"))
-    # SG-F2 criterion 4: the 17-vs-21 flip is only checkable by a stranger if every cell names the
+    # F2 criterion 4: the 17-vs-21 flip is only checkable by a stranger if every cell names the
     # JVM that answered it. A blocked cell never started a JVM, so it is exempt on its face.
     if not obj.get("blocked"):
         if not (obj.get("jvm_self_report") or {}).get("java_version"):
@@ -790,14 +790,14 @@ def selftest(sets, schema, exp, sha_blob, pins):
             arms += 1
             if any("UNPINNED_INPUT" in e or "len_triple" in e or "len_ceiling" in e for e in errs):
                 problems.append("rev7 GREEN rung arm refused: %s" % errs[:3])
-        # SG-F2 arms: a java.io spread cell is a second instrument on a pinned rung. Every field that
+        # F2 arms: a java.io spread cell is a second instrument on a pinned rung. Every field that
         # makes it readable has to be shown able to refuse, and the cell itself has to pass.
         io_name, io_base = None, None
         for cand in sorted(glob.glob(os.path.join(RESULTS, "len__*__builder-*.json"))):
             io_name, io_base = os.path.basename(cand), json.loads(io.open(cand, encoding="utf-8").read())
             break
         if io_base is None:
-            problems.append("no java.io spread cell on disk to test the SG-F2 arms")
+            problems.append("no java.io spread cell on disk to test the F2 arms")
         else:
             obj, errs, conf = check_cell(write(io_base, name=io_name), sets, schema, exp,
                                          sha_blob, pins)
@@ -834,20 +834,20 @@ def selftest(sets, schema, exp, sha_blob, pins):
                                              sha_blob, pins)
                 arms += 1
                 if not any(needle in e for e in errs):
-                    problems.append("RED SG-F2 arm %s not caught: %s" % (name, errs[:2]))
+                    problems.append("RED F2 arm %s not caught: %s" % (name, errs[:2]))
             # a spread cell that dropped its instrument slot from the filename would sit on top of
             # the required rung record
             obj, errs, conf = check_cell(write(io_base, name="len__T17__base_len-78__plain.json"),
                                          sets, schema, exp, sha_blob, pins)
             arms += 1
             if not any("builder dimension" in e or "marks itself extra" in e for e in errs):
-                problems.append("RED SG-F2 arm filename-without-builder not caught: %s" % errs[:2])
+                problems.append("RED F2 arm filename-without-builder not caught: %s" % errs[:2])
             # a REQUIRED cell may never answer through a substituted entry
             obj, errs, conf = check_cell(write(mut(api_entry="FileOutputStream.write"),
                                                 name="trap__T04.json"), sets, schema, exp, sha_blob)
             arms += 1
             if not any("primary entry of this port" in e for e in errs):
-                problems.append("RED SG-F2 arm required-cell-entry-substitution not caught: %s"
+                problems.append("RED F2 arm required-cell-entry-substitution not caught: %s"
                                 % errs[:2])
         # rev6 arms on their own bases: a control cell that ignored the pinned sample,
         # and a blind cell whose id does not carry the blind_id the map gives
@@ -1001,7 +1001,7 @@ def main():
 
     lines = []
     fails = control_report(cells, lines)
-    print("== control cells (source: evidence/S00-ctrl-baseline.md)")
+    print("== control cells (source: evidence/ctrl-baseline.md)")
     for line in lines:
         print("   %s" % line)
     missing = sorted(set(exp) - set(files))

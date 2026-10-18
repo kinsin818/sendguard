@@ -1,8 +1,8 @@
-# SENDGUARD S00 Predictions (isolated archive)
+# SENDGUARD Predictions (isolated archive)
 
 Prediction table is ISOLATED: it never enters the data flow, never gates any
 judgment, and is NOT an expectation source. The ONLY expectation source for
-control cells is `evidence/S00-ctrl-baseline.md`. Where we guessed wrong and
+control cells is `evidence/ctrl-baseline.md`. Where we guessed wrong and
 measurement said otherwise, that gap is whitepaper gold ("we predicted X, the
 matrix shows Y").
 

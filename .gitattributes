@@ -1,4 +1,4 @@
 # Byte-stability is the product: one commit must check out to identical bytes on every OS.
 # Without this, a stranger's clone differs from the committed content and no declared hash
-# can be reproduced. Author: Qoder seat 2026-10-11.
+# can be reproduced. Author: kinsin818 2026-10-11.
 * -text

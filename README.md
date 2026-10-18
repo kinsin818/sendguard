@@ -59,13 +59,13 @@ author's tree. Twelve derived faces were then compared with the lines that are a
 first: eleven identical, the twelfth differing only in the commit and the working-copy count it names - a
 self-reference lag a generated file cannot avoid, so the generator now says so in that line. Runs with their
 limits and the numbers that moved between them:
-[`evidence/S10/cold-clone-20261011.md`](evidence/S10/cold-clone-20261011.md),
-[`evidence/S10/cold-clone-20261011b.md`](evidence/S10/cold-clone-20261011b.md),
-[`evidence/S10/cold-clone-20261011c.md`](evidence/S10/cold-clone-20261011c.md), and the two that found the
+[`evidence/clone-tool/cold-clone-20261011.md`](evidence/clone-tool/cold-clone-20261011.md),
+[`evidence/clone-tool/cold-clone-20261011b.md`](evidence/clone-tool/cold-clone-20261011b.md),
+[`evidence/clone-tool/cold-clone-20261011c.md`](evidence/clone-tool/cold-clone-20261011c.md), and the two that found the
 delivery form's four defects
-[`evidence/S10/cold-clone-20261011d.md`](evidence/S10/cold-clone-20261011d.md).
+[`evidence/clone-tool/cold-clone-20261011d.md`](evidence/clone-tool/cold-clone-20261011d.md).
 
-That rehearsal is no longer a habit of one window: `python ci/clone_parity.py --scratch-root ../sg-parity` does it
+That rehearsal is no longer a habit of one session: `python ci/clone_parity.py --scratch-root ../sg-parity` does it
 as a leg - `--no-local` clone, `ci/refresh_all.py` run inside the clone, then every generated face compared with
 the blob the clone checked out. It refuses a scratch root it did not get, refuses a drive root, refuses to nest a
 clone inside the repository, never deletes anything (an existing clone is adopted only if its HEAD equals the
@@ -76,18 +76,18 @@ own arms are 18, both-sided, and `--source` lets it verify the published reposit
 differing=0 missing=0`, where the one declared face is `docs/evidence.md` naming the commit it was generated
 under.
 Its red side was probed on a tampered generated face held in an unreachable probe commit, and it refused:
-`evidence/S11/parity-red-probe-20261011.md`. The same leg also asks the deliverable itself - `tool/check.py` run in the working copy
+`evidence/closing/parity-red-probe-20261011.md`. The same leg also asks the deliverable itself - `tool/check.py` run in the working copy
 and in the clone over five declared names, handed to the checker as hex so the probe cannot change which
 name is meant - and compares the eleven fields the gate scores: `tool| names=5
 fields_compared=55 differing=0`, on one host and one interpreter, which is what it says it proves
-(`evidence/S11/tool-coldrun-20261011.md`).
+(`evidence/closing/tool-coldrun-20261011.md`).
 
 The coverage report, which is the face that says who answered rather than who agreed, runs its own 9 arms
 both-sided (`python ci/coverage_report.py --selftest`), and it refuses to publish at all when the gate's
 artifact does not carry the per-port answer counts its blank attribution needs - it will not guess a
 coverage number from the raw faces, because a second ruler is this project's oldest defect.
 
-**Currently not evidenced, and therefore not claimed anywhere:** macOS and Linux rows - and the blocker is not `git push`. The sealed table already holds 22 macOS and 22 Ubuntu predictions, but no port harness can emit them: every runner writes `results/<port>.windows.x64/` by hard-coded path and probes Windows-only semantics (`docs/tickets/SG-F3-os-portability.md`). A new `instrument` job in `.github/workflows/matrix.yml` is written to re-verify the **instrument** on all three operating systems - **it has never run, because nothing has been pushed** - and the workflow file states in its own steps that it produces no result faces,
+**Currently not evidenced, and therefore not claimed anywhere:** macOS and Linux rows - and the blocker is not `git push`. The sealed table already holds 22 macOS and 22 Ubuntu predictions, but no port harness can emit them: every runner writes `results/<port>.windows.x64/` by hard-coded path and probes Windows-only semantics (`docs/tickets/F3-os-portability.md`). A new `instrument` job in `.github/workflows/matrix.yml` is written to re-verify the **instrument** on all three operating systems - it runs on every push, and its current result is the Actions tab - and the workflow file states in its own steps that it produces no result faces,
 mobile storage and download layers, cloud-drive and mail-attachment renaming, exFAT/FAT32 volumes,
 unsigned-executable launch behaviour, and any agreement between ports that the gate has not certified.
 
@@ -103,7 +103,7 @@ unsigned-executable launch behaviour, and any agreement between ports that the g
 This is a delivery process, not a vocabulary of six syntaxes. It does not declare success because code was
 generated: a port's committed results were **rejected by the gate** and sit unread in `results/node` (31 of
 their cells carried a self-declared instrument failure and a runtime crash message), the first version of a
-contract file published by this seat was withdrawn by name inside the file after it turned out to be derived
+contract file published by this local was withdrawn by name inside the file after it turned out to be derived
 from a mis-parse, and the equality gate reported 29 of 29 cells as failing until the disagreement was traced
 to how four ports had *written down* one fact - which was this repository's own defect, not the ports', and
 is recorded in `docs/FINDINGS-rev6.md` section M5 rather than smoothed over.
@@ -118,8 +118,8 @@ is recorded in `docs/FINDINGS-rev6.md` section M5 rather than smoothed over.
 | a required-cell list generated from the spec, not hand-typed | [`spec/cells-required.json`](spec/cells-required.json) | three ports answering three different questionnaires and calling it agreement |
 | independent enumerator, not the port's own report of itself | [`harness/audit.go`](harness/audit.go) | a program claiming it wrote a file the disk never received |
 | per-cell child process, external 5 s timeout, no in-process calls | `harness/` | one hung probe eating a whole run |
-| expectation table written by a window that wrote no port and no skeleton | [`spec/expectations.sealed.md`](spec/expectations.sealed.md) | six ports agreeing on a shared misreading |
-| outside referee: the machine's own tools | [`evidence/S00/referee-windows.md`](evidence/S00/referee-windows.md) | our code and our own expectations being each other's only witness |
+| expectation table written by a session that wrote no port and no skeleton | [`spec/expectations.sealed.md`](spec/expectations.sealed.md) | six ports agreeing on a shared misreading |
+| outside referee: the machine's own tools | [`evidence/freeze/referee-windows.md`](evidence/freeze/referee-windows.md) | our code and our own expectations being each other's only witness |
 | equality gate that refuses to compare unequal sets | [`ci/equality.py`](ci/equality.py) | comparing an intersection and reporting a pass |
 | representations folded before judging; absences never folded into answers | `ci/equality.py`, `spec/cell-identity.md` §9 | four spellings of one fact reported as four disagreements |
 | the checker's verdict separated from each language's own stdlib behaviour | `spec/cell-identity.md` §9.3 | calling the matrix a failure, or calling a shared bug agreement |
@@ -159,7 +159,7 @@ it**, not a property of the project forever. That is especially true of the disc
 `python ci/process_leak_scan.py --repo-root .` and it answers for the checkout you are standing in, printing each
 class with its own count and the denominator it scanned. On 2026-10-12 this project published a set of those
 numbers that its own needles could not see - paths written with escaped separators were invisible to the comparison
-- so the figures printed that day understated the tree they measured, and the errata ledger
+- so the figures printed that day understated the tree they measured, and the errata record
 ([`docs/FINDINGS-rev6.md`](docs/FINDINGS-rev6.md), entry M12) says by how much and which faces carried them. The
 rule for a reader is therefore the rule this repository applies to itself: **a count quoted without the command
 beside it is a count to re-measure before repeating.** Nothing was retro-fitted to make the published numbers look
@@ -189,7 +189,7 @@ python -V && node -v && go version && rustc -V && javac -version && dotnet --ver
 | `python-port` | none - standard library only | `python impl/python/sg_run.py` | `python impl/python/sg_run.py --len-only` (twelve length cells plus the five controls) | `cells_written=`, `control_all_ok=`, `producer_keys_purged=` and its own scratch root |
 | `rust-port` | `cargo build` inside `impl/rust` (the runner builds the two faces it needs) | `python impl/rust/run_cells.py` | `python impl/rust/run_cells.py --phase controls` | per-cell control verdicts, then `controls_pass=`, `cells_produced=`, `problems=` |
 | `typescript-port` | no transpile step - node strips the types; the load test is `node --experimental-strip-types --check impl/typescript/src/runner.ts` | `node impl/typescript/src/runner.ts` | same command; it plans and runs the whole grid | `written=`, `cells_expected=`, `controls_pass=` |
-| `go-port` | `go build ./...` in `impl/go`, `go build` in `impl/go/rederive`, and `go build audit.go` in `harness` (three modules, one per instrument) | build the re-derivation tool and run it against this tree, giving it the results directory explicitly: `go build -o <outside-the-tree>/sg-rederive.exe ./impl/go/rederive` then `<that binary> run --repo . --results results/go.windows.x64` | add `-only ctrl` to that run | `cells_planned=`, `cells_written=`, `controls_pass=`, and a manifest path it writes under `evidence/S02/` |
+| `go-port` | `go build ./...` in `impl/go`, `go build` in `impl/go/rederive`, and `go build audit.go` in `harness` (three modules, one per instrument) | build the re-derivation tool and run it against this tree, giving it the results directory explicitly: `go build -o <outside-the-tree>/sg-rederive.exe ./impl/go/rederive` then `<that binary> run --repo . --results results/go.windows.x64` | add `-only ctrl` to that run | `cells_planned=`, `cells_written=`, `controls_pass=`, and a manifest path it writes under `evidence/judgement/` |
 | `java-port` | `javac -nowarn -encoding US-ASCII -d impl/java/build impl/java/src/*.java` | `python impl/java/tools/run_cells.py` | add `--dry` for plan-only, no measurement | one `CELL` line per cell including the five `ctrl` rows, then `cells_produced=`, `missing_required=` |
 | `csharp-port` | `dotnet build` inside `impl/csharp` | `python impl/csharp/run_csharp.py --all` | `python impl/csharp/run_csharp.py --controls` - **and note this mode deliberately reports `missing=43`**: it runs the five controls only, and the harness prints the required list it did not cover instead of pretending | `cells_run=`, `required_ids=`, `missing=`, the dotnet version it found, and `stale_files_on_disk=` |
 
@@ -202,7 +202,7 @@ Three honest caveats, because this is the part a README usually omits and a read
 - **`java-port` has no lane-authored self-check file.** The other five lanes ship a `selfcheck` script that
   re-parses the contract and judges the lane's own face independently of the shared rulers; the Java lane's
   control assertions are its run output plus `ci/validate_cells.py` and `ci/equality.py`, which every face passes.
-  The asymmetry is real, is recorded in `docs/tickets/SG-F16-java-lane-selfcheck.md`, and does not currently
+  The asymmetry is real, is recorded in `docs/tickets/F16-java-lane-selfcheck.md`, and does not currently
   weaken any published reading.
 - **This is one host, one Windows edition, one set of toolchain versions.** `docs/host-stamp.md` prints what this
   machine is, the cold-clone leg quarantines it by name rather than comparing it, and the ports' disagreement about

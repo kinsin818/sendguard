@@ -31,7 +31,7 @@ different.
 1. **Work in a clone, never in the tree you were handed.** `python ci/refresh_all.py` regenerates tracked
    documentation faces as its last step, so running it where someone else is editing makes you a concurrent
    writer and your findings unattributable.
-   clone the tree the owner hands you a path to - the seat's working directory, addressed as `file:///<path you were given>` - and pass `--no-local`. The path is deliberately not spelled out here: this page is published, and an absolute path on one person's disk is a fact about their machine, not part of a reviewer's instructions. `--no-local` matters: a
+   clone the tree the owner hands you a path to - the local's working directory, addressed as `file:///<path you were given>` - and pass `--no-local`. The path is deliberately not spelled out here: this page is published, and an absolute path on one person's disk is a fact about their machine, not part of a reviewer's instructions. `--no-local` matters: a
    local clone hard-links objects and can read files the published tree does not contain.
    **Do not clone this kit from the published URL.** As measured by a reviewer on 2026-10-12, the public tip
    (`git ls-remote github refs/heads/main`, read live, not from a cached ref) is behind this tree and contains
@@ -40,20 +40,20 @@ different.
    page, so read it yourself with `git rev-list --count <published-tip>..HEAD`. A reviewer who follows that path
    reads a stale tree, cannot find this page's own claims to attack, and has nowhere to submit. Until the owner
    gives the word to push (pushing is a publishing act, and it is his alone), the kit reaches an off-host
-   reviewer only as text handed to them by the owner, and their packet comes back as text too - which the seat
+   reviewer only as text handed to them by the owner, and their packet comes back as text too - which the local
    lands in `evidence/audit-in/` unchanged, as it did for the 2026-10-11 batch.
 2. **Do not commit, branch, or push.** The remote named `origin` is a non-bare tree on the author's disk and
    refuses pushes by design; the remote named `github` is published, and pushing to it is the owner's act.
 3. **Do not clean up.** Scratch directories, run logs, and seeded fixtures are provenance. A removal that
    looks like tidying destroys the evidence that a reading was made. There is deliberately no deletion logic
-   in this project's harnesses (rule `M19`, see `docs/cleanup-notice.md`).
+   in this project's harnesses (rule `project rule`, see `docs/cleanup-notice.md`).
 4. **Never open or read the *contents* of a reserved device name** — `CON`, `NUL`, `AUX`, `COM1`..`COM9`,
    `PRN`, `LPT1`..`LPT9`, with or without an extension. Create and enumerate only. The read is undefined, and
    a finding built on one is void. If you accidentally read one, report that you did; do not quietly re-run.
 5. **`impl/**` belongs to six other authors.** Report a defect there by cell id and field name; do not edit it.
    Six ports' value is that they cannot see each other, so a cross-port edit also destroys the experiment.
 6. **Out of scope:** anything outside this repository — the author's secrets directory, the read-only evidence
-   tree `D:\sendguard`, other projects, other windows.
+   tree `D:\local-dir`, other projects, other windows.
 7. **Redact your own machine before submitting.** Captures you paste will contain a profile path under your own user directory and your
    drive letters. The repository's own disclosure leg treats a login-name path as a finding; your packet
    should not add one.
@@ -105,10 +105,10 @@ only job is to catch prose numbers going stale.
 | `python ci/coverage_report.py && cat docs/coverage.md` | who answered what, per port and per field, including the field-cells nobody answered at all |
 | `python ci/delivery_form.py && cat docs/delivery-form.md` | what a stranger actually receives, with an independent `git` enumeration cross-checking the leg's own file lists |
 | `python ci/claim_digest.py --scratch-root ../<your-dir>` | every number printed in the prose faces is re-measured against the artifact it came from; a stale number makes the leg RED. It also refuses a **paired** number published without its qualifier (`verdict_identical_cells` without `cells_fully_recorded_and_identical` is RED in the same paragraph), and prints which faces it read: the tracked markdown population is a verified partition of policed, named-excluded and unpoliced, and the verdict line says `pairing_scope=` so a CLEAN cannot be quoted beyond the subset it covers |
-| `python ci/clone_parity.py --scratch-root ../<your-dir>` | the whole pipeline re-run from a `--no-local` clone and compared face-by-face, with the lines allowed to differ declared before the comparison. **Its green side is host-bound until `docs/tickets/SG-F10-parity-leg-host-bound.md` lands**: one compared face carries the interpreter stamp of the machine that generated it, so a reviewer whose interpreter differs reads `RED differing=1` on the stamp line, not on a content difference. Four reviewers hit this independently on 2026-10-11/12 and their readings are on file in `evidence/audit-in/` |
-| `python ci/process_leak_scan.py --repo-root .` | does the deliverable describe the product, or the production line? Five classes counted separately, with the run-time-assembled needle for the retired producer-metadata key. It reads `RED` on this tree by design (the finding is ticketed as SG-F8/SG-F9), and `CLEAN` on a sibling repository - the positive control is the point |
+| `python ci/clone_parity.py --scratch-root ../<your-dir>` | the whole pipeline re-run from a `--no-local` clone and compared face-by-face, with the lines allowed to differ declared before the comparison. **Its green side is host-bound until `docs/tickets/F10-parity-leg-host-bound.md` lands**: one compared face carries the interpreter stamp of the machine that generated it, so a reviewer whose interpreter differs reads `RED differing=1` on the stamp line, not on a content difference. Four reviewers hit this independently on 2026-10-11/12 and their readings are on file in `evidence/audit-in/` |
+| `python ci/process_leak_scan.py --repo-root .` | does the deliverable describe the product, or the production line? Five classes counted separately, with the run-time-assembled needle for the retired producer-metadata key. It reads `RED` on this tree by design (the finding is ticketed as F8/F9), and `CLEAN` on a sibling repository - the positive control is the point |
 
-| `python ci/face_preflight.py --staged` or `--paths <face>` or `--message-file <draft>` or `--messages <range>` | the same disclosure question asked BEFORE a face lands, on the added lines only, and - in the two message modes - before metadata becomes immutable. It imports the scan leg's needles and its routing function rather than holding a second opinion about what counts as fatal, and it prints a class, a line, a length and a character-class count - never the path itself, because a record of a path leak that re-publishes the path is the defect twice. Probing it found that the whole-tree leg classified host-separated face names as an undiscussed directory, which silently downgraded fatal hits; that is fixed and pinned by an arm. A later probe found the message pattern reading the tail of a URL as a drive letter, and that a residual check run through a shell heredoc had lost its doubled backslashes and so never looked for the backslash spelling at all; both are pinned by arms (13 in total, both sides). For the history that was already published when those defects were found, see `evidence/S11/msg-scrub-20261012.md` |
+| `python ci/face_preflight.py --staged` or `--paths <face>` or `--message-file <draft>` or `--messages <range>` | the same disclosure question asked BEFORE a face lands, on the added lines only, and - in the two message modes - before metadata becomes immutable. It imports the scan leg's needles and its routing function rather than holding a second opinion about what counts as fatal, and it prints a class, a line, a length and a character-class count - never the path itself, because a record of a path leak that re-publishes the path is the defect twice. Probing it found that the whole-tree leg classified host-separated face names as an undiscussed directory, which silently downgraded fatal hits; that is fixed and pinned by an arm. A later probe found the message pattern reading the tail of a URL as a drive letter, and that a residual check run through a shell heredoc had lost its doubled backslashes and so never looked for the backslash spelling at all; both are pinned by arms (13 in total, both sides). For the history that was already published when those defects were found, see `evidence/closing/msg-scrub-20261012.md` |
 | `ci/hooks/commit-msg` | the enforcement point for a message, which has no after-the-fact remedy: install with `cp ci/hooks/commit-msg .git/hooks/commit-msg && chmod +x .git/hooks/commit-msg`, then watch it refuse a draft that names a host path. It holds no patterns of its own |
 To run the whole battery at once: `python ci/refresh_all.py`. It is the generator, so see rule 1.
 
@@ -168,25 +168,25 @@ Recorded with their raw output, not summarised away: `docs/FINDINGS-rev6.md` M1�
 
 What has **not** been fixed, and where you should push hardest:
 
-- Open tickets under `docs/tickets/` — `SG-F3` (OS portability of the collectors: the macOS and Linux result
-  rows are predicted, not measured, and no port has made its harness portable), `SG-F5` (the acceptance
-  sheet reads a partial tree status, and a quoted-path defect), `SG-F6` (the digest cannot police faces
-  outside the repository, such as the owner-facing status page), `SG-F7` (the deliverable has no version
+- Open tickets under `docs/tickets/` — `F3` (OS portability of the collectors: the macOS and Linux result
+  rows are predicted, not measured, and no port has made its harness portable), `F5` (the acceptance
+  sheet reads a partial tree status, and a quoted-path defect), `F6` (the digest cannot police faces
+  outside the repository, such as the owner-facing status page), `F7` (the deliverable has no version
   string at all, so a reviewer holding a zip cannot name what they audited — which is why the packet template
-  asks for a commit instead), `SG-F8` and `SG-F9` (the published data contract and narrative faces carry
+  asks for a commit instead), `F8` and `F9` (the published data contract and narrative faces carry
   production metadata rather than product provenance; the standing leg is
-  `python ci/process_leak_scan.py --repo-root .` and it reads `RED` here on purpose), and `SG-F10` (the
+  `python ci/process_leak_scan.py --repo-root .` and it reads `RED` here on purpose), and `F10` (the
   reproducibility leg cannot reach its green side on another interpreter — the finding four reviewers landed on
   independently, so read it before treating a `differing=1` from a foreign host as a content drift).
-- The third CI job in `.github/workflows/` has never run to completion from a tree this seat can read, so its
+- The third CI job in `.github/workflows/` has never run to completion from a tree this local can read, so its
   findings are unread rather than absent.
 - Three contract questions are unowned: whether "which executable answered" becomes a public field; which
   blanks are legal, as opposed to merely unpunished; and whether the deliverable is signed. Round 9 exists as
   a proposal (`docs/NOTICE-rev9-proposal.md`) and `spec/` is untouched by it.
-- Every narrative file under `evidence/` was written by the delivery seat — the same hand that wrote the
+- Every narrative file under `evidence/` was written by the delivery local — the same hand that wrote the
   claims you are auditing. Treat them as assertions to check. The artifacts that are not that hand's prose are
   `results/<port>.windows.x64/**` (written by six other authors, who could not see each other), the gate's own
-  `evidence/S02/equality-verdict.json`, and the generated `docs/*.md` faces.
+  `evidence/judgement/equality-verdict.json`, and the generated `docs/*.md` faces.
 
 ## 6. What the author expects to be wrong about
 
@@ -215,11 +215,11 @@ Write one file, `evidence/audit-in/<your-id>-<UTC-date>.md`, from `evidence/audi
 - If you find nothing, say which attacks you tried and what you saw. "No problems found" with no commands is
   the least useful possible packet.
 
-The owner's seat records the disposition of every finding in `evidence/audit-in/ADJUDICATION.md`, using five
+The owner's local records the disposition of every finding in `evidence/audit-in/ADJUDICATION.md`, using five
 words and no others: `ACCEPTED-FIXED`, `ACCEPTED-TICKETED`, `REJECTED` (with the reading that rebuts it),
-`READING-REQUIRED`, `PARKED` (pending an owner decision the seat is not authorised to make). Rejection will name
+`READING-REQUIRED`, `PARKED` (pending an owner decision the local is not authorised to make). Rejection will name
 your command and its output, never your competence. A disposition row is not allowed to be signed by whoever
-wrote the thing it judges, so a fix that needs the seat's own hands is landed and left `ACCEPTED-TICKETED`
+wrote the thing it judges, so a fix that needs the local's own hands is landed and left `ACCEPTED-TICKETED`
 until an independent leg reads it green.
 
 ## 8. What a good outcome looks like

@@ -1,4 +1,4 @@
-# Cleanup notice (M19)
+# Cleanup notice (project rule)
 
 The harness **never deletes anything** (no `rmtree` / `remove` / `unlink`).
 Probe run directories accumulate under `%TEMP%\sendguard-run\` (outside the repo).

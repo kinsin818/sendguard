@@ -1,17 +1,17 @@
 #!/usr/bin/env python3
-"""SENDGUARD Python measurement implementation (W-PY seat, S02).
+"""SENDGUARD Python measurement implementation (W-PY local, S02).
 
 Reads the frozen spec (spec/cases.yaml) and measures every frozen trap and
 control cell for the Python language on this machine, using the pinned API
 entries. Writes one schema-shaped JSON per cell plus bundle files.
 
-Discipline (frozen军令 M-rules):
+Discipline (frozenproject rule M-rules):
   - M2 : record both path_view and dir_view; bytes_on_disk authority = dir_view.
   - M3 : independent implementation, no cross-language calls.
   - M4 : dependency count per cell (this file is stdlib only -> deps_direct=0).
   - M9 : every probe action has a 5s timeout -> 'hang'.
   - M16: errno / winerror stored verbatim.
-  - M19: this harness performs NO delete action (no rmtree/remove/unlink).
+  - project rule: this harness performs NO delete action (no rmtree/remove/unlink).
   - M21: English only (comments, strings, paths).
   - N12: samples referenced by hex only; scratch run dirs live OUTSIDE the repo.
 
@@ -450,7 +450,7 @@ def measure_cell(case_id, group, name_hex, category, locale, entry=PRIMARY_ENTRY
 
 
 # --------------------------------------------------------------------------- #
-# control cells (expectations ONLY from evidence/S00-ctrl-baseline.md)
+# control cells (expectations ONLY from evidence/ctrl-baseline.md)
 # --------------------------------------------------------------------------- #
 CONTROLS = [
     ("T-CTRL-NAMETOOLONG", ("a" * 256).encode("utf-8").hex(), "ok->err_at_syscall"),

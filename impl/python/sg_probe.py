@@ -14,7 +14,7 @@ Sentences this file implements:
   * bytes_on_disk authority is dir_view, taken out of the enumeration record
     itself (DirEntry.stat(follow_symlinks=False) does not address the path, so
     it cannot hit a device either);
-  * no deletion anywhere (red line M19);
+  * no deletion anywhere (red line project rule);
   * the in-progress record is appended to the accumulator and flushed BEFORE
     and AFTER every phase that could block, so the parent's externally enforced
     5-second timeout still yields the create-side measurement and can name the

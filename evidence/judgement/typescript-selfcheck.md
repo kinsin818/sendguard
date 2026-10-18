@@ -1,4 +1,4 @@
-# S02 acceptance — TypeScript port (seat `qoder`), contract rev7
+# S02 acceptance — TypeScript port (local `the maintainer`), contract rev7
 
 Port label, fixed by the contract notices and not to be upgraded later:
 **TypeScript (Node 24 type-stripping; no type-checker on this host)**.
@@ -37,7 +37,7 @@ are the earlier record and their cell counts are the ones from that run; this se
 | rev6/rev7 item | what this port now does | verification |
 |---|---|---|
 | rev6-1 pinned control samples | all five control cells use `control_samples.sample_hex` and the one pinned 28-byte payload read from the committed spec face; `T-CTRL-CANON` is `canon-check.txt`, not `report-2026.txt`; the child **refuses to run** without `--payload-hex` rather than inventing bytes | `sha256_truth = c9fe45b2fee8…` on both cells that write (ASCII, CANON) — the sealed baseline's digest; 5/5 `control_match` |
-| rev6-2 blind cells | `blind/B1`…`B5` are **run**, with `blind_id` from `evidence/S00/blind-map.json`; the map's git blob face is compared against the hash `spec/FROZEN.md` locks before it is used, and `expectations.sealed.md`/predictions were still not opened | 5 measured cells, `blind_id` integer in each, `hash_matches_lock` recorded in `meta.blind_map` |
+| rev6-2 blind cells | `blind/B1`…`B5` are **run**, with `blind_id` from `evidence/freeze/blind-map.json`; the map's git blob face is compared against the hash `spec/FROZEN.md` locks before it is used, and `expectations.sealed.md`/predictions were still not opened | 5 measured cells, `blind_id` integer in each, `hash_matches_lock` recorded in `meta.blind_map` |
 | rev6-2 / rev7 rung identity | twelve cells keyed `base_len` x `path_form` (was six keyed `base_len` alone with the other regime hidden inside) | `missing=0` against the 44-cell manifest |
 | rev7-1 `name_source` | was the hex of **one** code unit (`"61"`, two characters — the defect NOTICE-rev7 quotes); now `unit_hex` repeated to exactly `base_len` code units, decoded by the child from that hex so the probe passes the same bytes the cell publishes | 12/12: `len(name_source) == 2 * base_len`, and the decoded width equals `base_len` |
 | rev7-2 `len_triple` | the three widths **of the passed name**; the pinned filler is ASCII so all three equal `base_len`. The child asserts its `--comp` against the decoded name instead of repeating a letter it chose | 12/12 `[B,B,B]`; recomputed independently in `selfcheck.py` from the hex, not copied from the cell |
@@ -66,7 +66,7 @@ validator — measured in S4, not argued.
 ## 1. How the port is executed
 
 **Run, not compiled.** `node src/runner.ts` on `C:\Program Files\nodejs\node.exe` v24.15.0 using
-Node's built-in TypeScript type stripping. `evidence/S00/env-facts-windows-local.json` records
+Node's built-in TypeScript type stripping. `evidence/freeze/env-facts-windows-local.json` records
 `runtimes.tsc = {candidates_found: 0, version_probe: {status: "no-candidate"}}` and
 `npx --no-install tsc --version` exits 1. Consequences, declared rather than hidden:
 
@@ -75,7 +75,7 @@ Node's built-in TypeScript type stripping. `evidence/S00/env-facts-windows-local
   positional argument is therefore a live risk and it actually happened (C-5a), which is why the port
   now validates its own output instead of assuming a compiler did.
 * Zero third-party dependencies; no `node_modules` in this port. `types/node-builtins.d.ts` declares
-  the Node surface used so a seat that installs `typescript` can run `tsc --noEmit` without pulling
+  the Node surface used so a local that installs `typescript` can run `tsc --noEmit` without pulling
   `@types/node`; delete that file if `@types/node` is ever added.
 * No cell needed `not-achievable-in-stdlib`: the T16 zip container is hand-built in `src/zip.ts`
   (stored entries, CRC-32 from `node:zlib`).
@@ -123,7 +123,7 @@ required rungs, which measure the whole boundary at base 78 instead of three pre
 
 **(3) Self-check re-run** — `python selfcheck.py` exits 0. Sections below.
 
-## 3. Control cells (expectations only from `evidence/S00-ctrl-baseline.md`)
+## 3. Control cells (expectations only from `evidence/ctrl-baseline.md`)
 
 | cell | expected | observed | pass |
 |---|---|---|---|
@@ -177,11 +177,11 @@ told me to conform to) and print the divergence rather than smoothing it. The re
 
 **C-1 — the carrier had to change to reach the frozen grid.** The order says write only inside the
 clone; its shortest directory is 30 characters, while the frozen grid needs `base_len` 13, and `D:\`
-has 8.3 short-name creation **disabled** per `evidence/S00/env-facts-windows-local.json`. I mapped
+has 8.3 short-name creation **disabled** per `evidence/freeze/env-facts-windows-local.json`. I mapped
 the scratch directory with `subst S: <clone>\.sgscratch` (no file outside the clone, reversible,
 recorded per cell as `meta.scratch_carrier`); `\\?\S:\…` resolves, so both regimes were testable on
-one carrier. rev3's ladder base 78 exists because another seat measured base 13 unreachable — that
-seat's own commit `1bccfe8` says so; I read it from `git log`, not from their cells. With this carrier
+one carrier. rev3's ladder base 78 exists because another local measured base 13 unreachable — that
+local's own commit `1bccfe8` says so; I read it from `git log`, not from their cells. With this carrier
 base 13 **is** reachable, so the frozen base-13 points are still delivered (marked extra) alongside
 the required 78/120/200 rungs.
 
@@ -242,7 +242,7 @@ in these cells.
 * **G-2 — STILL OPEN.** `read_result` is required and `canonical.md` §5 still offers only
   `ok/eof/err6/hang`, every one of which presupposes an attempted read. When a create does not land
   there is nothing to read; when the name is reserved this port refuses to open it at all. I record
-  JSON `null` plus `read_skipped_reason` — the precedent `evidence/S00-ctrl-baseline.md` itself sets —
+  JSON `null` plus `read_skipped_reason` — the precedent `evidence/ctrl-baseline.md` itself sets —
   and `ci/equality.py` tolerates `None`. Writing `eof` would paraphrase a verdict. 49 cells under
   `schema.json`, 54 under `validate.py` (the blocked cells add 5). The clean fix is a fifth word,
   e.g. `not_reached`, in `canonical.md` §5 — a frozen-file change I may not make.
@@ -265,7 +265,7 @@ in these cells.
   ports can name the same blind cell. Mine are declared placeholders `T-BLIND-1..5`.
 * **`attribution_layer` is not emitted.** Deciding L1/L2/L3 needs cross-port and cross-OS data
   (`attribution-tree.md` §1–2), which a single port on a single OS does not have; the field is not
-  schema-required, so I leave it to the arbitration seat instead of guessing. C-2's L2 reading above
+  schema-required, so I leave it to the arbitration local instead of guessing. C-2's L2 reading above
   is offered as the tree's own reasoning, in prose, not welded into cells.
 
 ## 7. Blocked cells (5 — the blind group only)
@@ -280,7 +280,7 @@ attempted_fix: probed with an empty --name-hex to confirm the sample really is u
                Not resolved by opening the sealed map.
 ```
 
-Reason: the five blind samples exist only in `evidence/S00/blind-map.json`, which `spec/FROZEN.md`
+Reason: the five blind samples exist only in `evidence/freeze/blind-map.json`, which `spec/FROZEN.md`
 seals until after the S03 audit; taking them now would be a prefilled expectation, which `gate.md` §7
 check 1 treats as an audit failure. I did not open that file. These 5 are not in the required list, so
 they are marked `extra` as well as `blocked`.
@@ -291,10 +291,10 @@ probe wall time.
 ## 8. Independence, restated
 
 * Not read: any other port's `impl/` or `results/`; `spec/expectations.sealed.md`
-  (`cell-identity.md` §5 — open only after the port digests are in); `evidence/S00-predictions.md`;
-  `evidence/S00/blind-map.json`. `harness/ctrl-baseline.mjs` deliberately not opened, to keep a
+  (`cell-identity.md` §5 — open only after the port digests are in); `evidence/predictions.md`;
+  `evidence/freeze/blind-map.json`. `harness/ctrl-baseline.mjs` deliberately not opened, to keep a
   Node-flavoured instrument's error classification out of my head; control expectations came only
-  from `evidence/S00-ctrl-baseline.md`.
+  from `evidence/ctrl-baseline.md`.
 * **Standing disclosure (unchanged, because it still matters):** my first tool call this session was
   a repository file listing, which printed *path names* under `results/go.windows.go1.23.5/` and
   `results/node/windows/`. From names alone I saw that Go renders length sub-identities like
@@ -304,14 +304,14 @@ probe wall time.
 * This clone is shared and other seats commit into it: rev3 (`7548b9f`, 04:2x) and the gate change
   (`799d69d`) landed mid-session. Everything in this report was re-measured against the current faces.
 * The work is **uncommitted** — no instruction to commit, and the index is shared, so a `git add` here
-  risks sweeping another seat's in-flight rows. 11 port files, 74 cells and this report exist only on
+  risks sweeping another local's in-flight rows. 11 port files, 74 cells and this report exist only on
   this disk face right now.
 
 ## 9. Scratch state, and no deletion inside the port
 
 151 probes ran in fresh uuid-derived directories, one per cell, each verified empty before use
 (`scratch.verified_empty_before_use`); every cell records `scratch.cell_root` and
-`scratch.cell_root_real`. The port holds **no deletion path at all** (M19), so it never emits
+`scratch.cell_root_real`. The port holds **no deletion path at all** (project rule), so it never emits
 `cleanup_failed` — cleanup is an operator action outside the port, and it is worth two lines because
 it is C-2 again:
 
@@ -322,7 +322,7 @@ it is C-2 again:
   `impl/.sgscratch/` left by an early carrier test, and the `S:` mapping were all released.
 
 Cells therefore name directories that no longer exist: that is the provenance record of where each
-probe ran, not a dangling pointer. The tree was excluded from git through this seat's own
+probe ran, not a dangling pointer. The tree was excluded from git through this local's own
 `.git/info/exclude`, so no forbidden name ever entered the index (`ci/lint.py --repo-root .` rc=0).
 
 ## 10. Files
@@ -330,7 +330,7 @@ probe ran, not a dangling pointer. The tree was excluded from git through this s
 `impl/typescript/{package.json,tsconfig.json,selfcheck.py}`, `types/node-builtins.d.ts`,
 `src/{constants,spec,identity,nameguard,zip,probe,runner}.ts`; 80 cells in
 `results/typescript.windows.x64/`; this report; `impl/typescript/repair_sub_identity_object.py`
-(the in-place repair described in S11, which is a tool that only rewrites files this seat owns).
+(the in-place repair described in S11, which is a tool that only rewrites files this local owns).
 Four throwaway instrument-check files created during the session were removed before the no-deletion
 instruction took effect; the C-2 controls they performed are reproduced in S5. Nothing outside the
 clone was written. No commit, no tag, no push.
@@ -371,13 +371,13 @@ of that name in the three units, `len_ceiling=255` with first fail 256, and the 
 `name_mutated=false` findings and the T-API rows are byte-for-byte as recorded.
 
 Status of the work: **all of it is still uncommitted**, so the face is perishable until the contract
-owner folds it into a commit. That is not this seat's action to take — `git push` is forbidden and the
+owner folds it into a commit. That is not this local's action to take — `git push` is forbidden and the
 integration commit is the owner's.
 
 ## 12. ENTRY-GAP closed: the three pinned entries were driven all night and filed where the leg could not see them
 
 `docs/tapi.md` read this port as `1/3 pinned entries seen, 0 T-API rows landed`, and
-`docs/acceptance-S02.md` repeated it. Both readings were **correct about the face and wrong about the
+`docs/acceptance.md` repeated it. Both readings were **correct about the face and wrong about the
 harness**: `trapPlans` (impl/typescript/src/runner.ts:880) has run `writeFileSync`,
 `createWriteStream` and `appendFileSync` as three separate child processes for *every* trap since the
 first run, and `tapiPlans` had run all three against T01. Two filing decisions of mine hid that:
@@ -431,7 +431,7 @@ publishing that as an entry divergence would have been a manufactured finding. T
 the `osprobe` job with the leg's own entry and produced `legal`, matching its sibling.
 
 Read back through the gate's own code (in memory — `ci/tapi_report.py` and `ci/acceptance.py` write
-into `docs/`, which this seat may not touch, so neither was run):
+into `docs/`, which this local may not touch, so neither was run):
 
 ```
 pinned=3 seen=3 covered=[appendFileSync, createWriteStream, writeFileSync] missing=[] rows_landed=3
@@ -458,7 +458,7 @@ Two things the contract owner should know they will not get from the face:
    `tapi__TAPI-T01__entry-{writeFileSync,createWriteStream,appendFileSync}.json`. They stay `extra: true`
    and therefore invisible to the gate, they contradict nothing, and `selfcheck.py` now prints
    `superseded_cells_left_on_face=3` with a pointer from each to the pinned row that replaces it
-   (`present=True`). Removing them is the owner's call, not mine, under M19 and the additive-landing
+   (`present=True`). Removing them is the owner's call, not mine, under project rule and the additive-landing
    order. `denominator_disagree` compares `produced - superseded` to the recomputed expectation
    (87 − 3 = 84), so leaving them there cannot silently inflate a count.
 

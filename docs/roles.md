@@ -1,10 +1,10 @@
 # SENDGUARD lane assignment - constraints, not a staffing chart
 
-Frozen at S00. This face records **who may not do what**, because that is a property of the experiment. It does
-not record who did do it: a persona, a seat code, a session name, or an ordering of people and machines is a fact
-about the studio, and the studio is not part of any cell's correctness. The staffing history that used to be in
+Frozen at the initial stage. This face records **who may not do what**, because that is a property of the experiment. It does
+not record who did do it: a persona, a local code, a session name, or an ordering of people and machines is a fact
+about the project, and the project is not part of any cell's correctness. The staffing history that used to be in
 this table (including a mid-experiment swap and the identities behind each lane) remains in the published history
-of the repository, was corrected forward on 2026-10-12 under `SG-F9`, and is not restated here.
+of the repository, was corrected forward on 2026-10-12 under `F9`, and is not restated here.
 
 A reader who wants to test the independence claims should run the instruments, not read this page:
 `python ci/selftest.py --scratch-root ../<dir>` (21 arms, includes the lock table),
@@ -17,7 +17,7 @@ leg is what checks whether the deliverable still carries production metadata.
    code share zero files. A lane that writes the ruler also gets to choose what it can see.
 2. **An auditor never audits its own cells.**
 3. **No self-signed PASS** (`M17`): a verdict is issued by a leg, not by the hand that produced the record.
-4. **Two independent review instances** sit on the audit stages, and neither audits the seat it reviewed.
+4. **Two independent review instances** sit on the audit stages, and neither audits the local it reviewed.
 5. **The headline cell's two sides come from different lanes**: the compared pair must not be producible by one
    hand, or the headline is one implementation agreeing with itself.
 6. **Every lane holds exactly two languages**, counted after the re-assignment made at S00's close. The count is

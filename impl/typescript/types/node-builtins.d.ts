@@ -2,11 +2,11 @@
  * Narrow ambient declarations for the Node built-ins this port uses.
  *
  * The project rule is zero third-party dependencies, and `@types/node` is a
- * third-party package, so the surface used here is declared locally. If a seat
+ * third-party package, so the surface used here is declared locally. If a local
  * installs `@types/node`, delete this file rather than keeping two copies.
  *
  * These declarations describe the runtime that actually executes the port:
- * node v24.15.0 at the path recorded in evidence/S00/env-facts-windows-local.json.
+ * node v24.15.0 at the path recorded in evidence/freeze/env-facts-windows-local.json.
  */
 
 declare module "node:fs" {

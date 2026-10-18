@@ -31,7 +31,7 @@
   "control_pass": true,
   "instrument_red": false,
   "harness_version": "0.2.0-s02",
-  "worker_id": "W-NODE",
+  "worker_id": "port-node",
   "started_at": "2026-10-10T15:51:05.689Z",
   "elapsed_ms": 1,
   "deps_direct": 0,

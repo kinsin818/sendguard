@@ -1,6 +1,6 @@
-# SG-F11 acceptance - the blank sentence now carries its arithmetic
+# F11 acceptance - the blank sentence now carries its arithmetic
 
-Accepted by the seat that owns `ci/`, 2026-10-12, against `docs/tickets/SG-F11-blank-count-sentence.md`.
+Accepted by the local that owns `ci/`, 2026-10-12, against `docs/tickets/F11-blank-count-sentence.md`.
 Every number below is from this run's captured output, not from prose.
 
 ## Commands and readings (before / after)
@@ -12,13 +12,13 @@ Every number below is from this run's captured output, not from prose.
 | 3 | `python ci/coverage_report.py --selftest` | 0 | `arms=9 passed=9` |
 | 4 | `python ci/coverage_report.py` | 0 | `wrote docs/coverage.md bytes=6123 fields=10 ports=6 cells_compared=44 recorded=2281/2640 fully_recorded=4 clean_and_fully_recorded=4 blanks_by_everybody=10` |
 | 5 | `python ci/claim_digest.py --selftest` | 0 | `arms=13 passed=13` (was 6; the printed literal `SELFTEST_ARMS = 6` is gone, the count is collected from the arm labels and A13 refuses a gap) |
-| 6 | `python ci/claim_digest.py --scratch-root ../sg-claims-judge` | 0 | `OUTCOME=CLEAN stale_claims=0 unpaired_claims=0 pairing_scope=policed-only(blind_bare_blocks=1,unpoliced_faces_with_bare=1 - SG-F13 owns the widening) coverage=full` |
+| 6 | `python ci/claim_digest.py --scratch-root ../sg-claims-judge` | 0 | `OUTCOME=CLEAN stale_claims=0 unpaired_claims=0 pairing_scope=policed-only(blind_bare_blocks=1,unpoliced_faces_with_bare=1 - F13 owns the widening) coverage=full` |
 | 7 | `python ci/link_check.py` | 0 | `OUTCOME=CLEAN markdown_faces=84 links_checked=25 resolved=25 external=0 broken=0 unreadable=0` |
 | 8 | `python ci/selftest.py --scratch-root ../sg-selftest` | 0 | `arms=21 passed=21 failed=0` |
 
 ## The one-pass measurement behind the sentence
 
-Read from `evidence/S02/equality-verdict.json` in the same pass that writes the face, never from a remembered
+Read from `evidence/judgement/equality-verdict.json` in the same pass that writes the face, never from a remembered
 number: `blank_pairs=121`, `disagree_with_abstention=23`, `disagree_all_six_recorded=31`,
 `union=144`, pair universe `440` = cells x verdict fields, field-cell universe `2640` = pairs x ports, and
 `verdict_pairs_recorded=2281` is counted on the second one. Auditor-1's packet figure of `154 of 440` did not
@@ -48,10 +48,10 @@ face would be scanned by the leg it is testing): it lives one directory outside 
 `../f11_red_probe.py` and is run from there:
 
 ```
-baseline| rc=0 OUTCOME=CLEAN stale_claims=0 unpaired_claims=0 pairing_scope=policed-only(blind_bare_blocks=1,unpoliced_faces_with_bare=1 - SG-F13 owns the widening) coverage=full
+baseline| rc=0 OUTCOME=CLEAN stale_claims=0 unpaired_claims=0 pairing_scope=policed-only(blind_bare_blocks=1,unpoliced_faces_with_bare=1 - F13 owns the widening) coverage=full
 planted-bare| rc=1 OUTCOME=RED stale_claims=0 unpaired_claims=1
-planted-bare| unpaired| docs/claim-boundary.md block 7/7: `verdict_identical_cells` is published without `cells_fully_recorded_and_identical` - it counts cells where an abstention made a contradiction impossible, so alone it is not a correctness number (SG-F11)
-planted-paired| rc=0 OUTCOME=CLEAN stale_claims=0 unpaired_claims=0 pairing_scope=policed-only(blind_bare_blocks=1,unpoliced_faces_with_bare=1 - SG-F13 owns the widening) coverage=full
+planted-bare| unpaired| docs/claim-boundary.md block 7/7: `verdict_identical_cells` is published without `cells_fully_recorded_and_identical` - it counts cells where an abstention made a contradiction impossible, so alone it is not a correctness number (F11)
+planted-paired| rc=0 OUTCOME=CLEAN stale_claims=0 unpaired_claims=0 pairing_scope=policed-only(blind_bare_blocks=1,unpoliced_faces_with_bare=1 - F13 owns the widening) coverage=full
 restore| md5_before=c3e74d2cac93 md5_after=c3e74d2cac93 equal=True
 restore| git_status rc=0/0 before='M docs/claim-boundary.md' after='M docs/claim-boundary.md' unchanged_by_probe=True
 PROBE| OK
@@ -76,14 +76,14 @@ pairing| rules=1 faces_scanned=14 unpaired=0 | excluded_named=evidence,docs/tick
 blocks_with_bare_pair=2 faces=2 dirs_missing=0 disk_only=1 | tracked_md=86 policed=14 unpoliced=21
 unpoliced_bare_blocks=1 unpoliced_faces_with_bare=1
 OUTCOME=CLEAN stale_claims=0 unpaired_claims=0 pairing_scope=policed-only(blind_bare_blocks=1,
-unpoliced_faces_with_bare=1 - SG-F13 owns the widening) coverage=full
+unpoliced_faces_with_bare=1 - F13 owns the widening) coverage=full
 ```
 
 Two notes on reading that line, both of which this project has had to learn the hard way. The counts move with
 the index: the same command run before the two new faces were staged read `tracked_md=84, tracked=49`, and run
 after it reads `86, 51` - a captured line is a capture of one moment, and the moment is the face it belongs to.
-The `blocks_with_bare_pair=2` inside the excluded class are `docs/tickets/SG-F11-blank-count-sentence.md` and
-`docs/tickets/SG-F13-pairing-rule-scope.md`: the ticket that names the defect, and the ticket that widens the
+The `blocks_with_bare_pair=2` inside the excluded class are `docs/tickets/F11-blank-count-sentence.md` and
+`docs/tickets/F13-pairing-rule-scope.md`: the ticket that names the defect, and the ticket that widens the
 rule, both quote the bare number in order to explain why it must not be published bare.
 
 ## The leak leg, and one number this row refuses to attribute
@@ -108,23 +108,23 @@ and it is why the row above prints the leg's line verbatim instead of a derived 
 
 Reading `ANY_PATH` itself explains the shape of it: it is
 `[A-Za-z]:[\\ /]{1,2}(?![\\/]) | /[A-Za-z0-9_.-]+/`, so its second branch fires on any `/word/` fragment, which
-includes ordinary repo-relative references such as `docs/tickets/` and `evidence/S11/`. The leg's docstring calls
+includes ordinary repo-relative references such as `docs/tickets/` and `evidence/closing/`. The leg's docstring calls
 that class "any other **absolute** path"; the rule is looser than the word. That is harmless for a counted-not-
 fatal metric and load-bearing for nothing here, but it is a rule named by one thing and measuring another, so it
 gets its own ticket rather than being absorbed into this acceptance row:
-`docs/tickets/SG-F14-leak-leg-toolpath-rule-shape.md`.
+`docs/tickets/F14-leak-leg-toolpath-rule-shape.md`.
 
 Two properties of that line are the reason it can be quoted at all. The `CLEAN` carries its own scope, because
 "no face has the defect" and "the faces I read have no defect" are different claims - the rule this ticket adds
 to other faces is applied to the leg itself. And the population is a verified partition, asserted by arm A12:
 tracked markdown 86 = policed 14 + named-excluded 51 + unpoliced 21.
 
-The `blocks_with_bare_pair=2` inside the excluded class are the SG-F11 ticket and the SG-F13 ticket: the first
+The `blocks_with_bare_pair=2` inside the excluded class are the F11 ticket and the F13 ticket: the first
 quotes the bare number to explain why it is bare, the second quotes it to widen the rule that forbids it. Both
 are reported and left alone, not silenced and not "fixed", and that is why the excluded class prints a count
 rather than being skipped. The one offender in the *unpoliced* 21 is `docs/journey.md:53`, a faithful capture of a
 round whose gate did not yet emit the qualifier; it prints as `blind-not-fatal|`, it is not this ticket's surface,
-and `docs/tickets/SG-F13-pairing-rule-scope.md` now owns the widening with that face and its block number named.
+and `docs/tickets/F13-pairing-rule-scope.md` now owns the widening with that face and its block number named.
 
 ## What this ticket did not do
 

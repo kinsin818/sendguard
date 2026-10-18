@@ -25,7 +25,7 @@
   "bytes_on_disk": 28,
   "roundtrip_ok": true,
   "mechanism_class": "unknown",
-  "worker_id": "W-PY",
+  "worker_id": "port-python",
   "deps_direct": 0,
   "deps_total": 0
 }

@@ -87,12 +87,12 @@ public final class ExtPathOfRepro {
 
         one("1 plain rung base_len=78 (the harness plain string)", plain78);
         one("2 extended rung base_len=78 (the harness extended string)", ext78);
-        one("3 extended, SHORT, ordinary drive path", "\\\\?\\D:\\Qoder");
+        one("3 extended, SHORT, ordinary drive path", "\\\\?\\D:\\the maintainer");
         one("4 extended, drive root only", "\\\\?\\C:\\");
-        one("5 plain, SHORT, ordinary drive path", "D:\\Qoder");
+        one("5 plain, SHORT, ordinary drive path", "D:\\the maintainer");
         one("6 extended UNC variant", "\\\\?\\UNC\\server\\share\\x.txt");
-        one("7 single leading backslash then ?", "\\?\\D:\\Qoder");
-        one("8 extended written with forward slashes", "//?/D:/Qoder");
+        one("7 single leading backslash then ?", "\\?\\D:\\the maintainer");
+        one("8 extended written with forward slashes", "//?/D:/the maintainer");
         one("9 plain rung base_len=200 (plain total path > 259)", plain200);
         one("10 extended rung base_len=200", ext200);
         one("11 device-prefix variant", "\\\\.\\PhysicalDrive0");

@@ -25,7 +25,7 @@
  "enum_api_entry": "archive/zip (reader)",
  "os_legality_verdict": "",
  "mechanism_class": "zip_roundtrip",
- "worker_id": "W-GO/qianwen",
+ "worker_id": "port-go",
  "harness_version": "",
  "started_at": "2026-10-10T14:46:21.6597843Z",
  "elapsed_ms": 0,

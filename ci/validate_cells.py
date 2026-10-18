@@ -5,7 +5,7 @@ Run:  python ci/validate_cells.py            # prints and writes docs/cell-valid
       python ci/validate_cells.py --selftest  # 24 arms: it must refuse, and it must be able to say yes
 
 This leg takes no output path on purpose: it always writes the repository's own face, and any other
-argument is refused (rc=3) rather than ignored. Measured on 2026-10-11 11:46: the seat passed
+argument is refused (rc=3) rather than ignored. Measured on 2026-10-11 11:46: the local passed
 `--out-dir <scratch>` believing it was reading the ruler without writing, and it wrote anyway while
 reporting rc=0 - which is the silent-acceptance shape this project keeps having to relearn.
 
@@ -84,7 +84,7 @@ def check(cell, schema):
 def parse_args(argv):
     """This leg implements one flag. Anything else is reported as unknown, never ignored.
 
-    Measured 2026-10-11 11:46: the seat called this leg with `--out-dir <scratch>` intending to read the
+    Measured 2026-10-11 11:46: the local called this leg with `--out-dir <scratch>` intending to read the
     ruler without writing, and got rc=0 plus a rewritten `docs/cell-validation.md`. A leg that swallows an
     argument it has never implemented describes its own interface as bigger than it is.
     """
@@ -295,7 +295,7 @@ def selftest():
         "selftest A19 red: an omission must be counted per port with its total, got %r" % (ls[-2:],))
     chk(omission_lines({}, ["go"], []) == [],
         "selftest A20 green: no gap means no table, not a table of nothing")
-    # SG-F8: what discloses the studio is the producer field's VALUE, not its name. These arms read the pattern
+    # F8: what discloses the project is the producer field's VALUE, not its name. These arms read the pattern
     # from the real spec/schema.json instead of restating it, because a fixture that copies the rule is how a
     # validator passes while the rule itself is wrong.
     live = json.load(io.open(os.path.join(REPO, "spec", "schema.json"), encoding="utf-8"))
@@ -304,14 +304,14 @@ def selftest():
         "selftest A25 green: the frozen schema must carry the producer pattern, got %r" % (pat_spec.get("pattern"),))
     chk("worker_id" not in live.get("properties", {}),
         "selftest A26 red: the retired producer key must not come back into the schema")
-    p_bad = check({"case_id": "T01", "implementation_id": "seat-qoder-rust"},
+    p_bad = check({"case_id": "T01", "implementation_id": "session-token-rust"},
                   {"required": [], "properties": {"implementation_id": pat_spec}})
     chk(any("does not match the frozen pattern" in x for x in p_bad),
         "selftest A27 red: a session-shaped producer value must be refused, got %r" % (p_bad,))
     p_ok = check({"case_id": "T01", "implementation_id": "rust-port"},
                  {"required": [], "properties": {"implementation_id": pat_spec}})
     chk(p_ok == [], "selftest A28 green: a lane-shaped producer value must pass, got %r" % (p_ok,))
-    p_old = check({"case_id": "T01", "worker_id": "W-GO/qianwen"},
+    p_old = check({"case_id": "T01", "worker_id": "port-go"},
                   {"required": [], "properties": {"implementation_id": pat_spec}})
     chk(p_old == [], "selftest A29 green: the rename must not invalidate an old record - additionalProperties is "
                      "true by design, so a port that recorded extra fields is not punished for it; the disclosure "
@@ -391,7 +391,7 @@ def main():
                 ok += 1
         total_bad += len(problems)
         rep = "-"
-        sc = os.path.join(REPO, "evidence", "S02", "%s-selfcheck.md" % port)
+        sc = os.path.join(REPO, "evidence", "judgement", "%s-selfcheck.md" % port)
         if os.path.isfile(sc):
             t = io.open(sc, encoding="utf-8", errors="replace").read()
             m = re.search(r"cells_valid[= ]+(\d+)", t)

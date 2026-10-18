@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "SENDGUARD S00 outside referee - Windows file-name behaviour measured by the machine tools themselves",
-    "scratch_dir": "D:\\sendguard-work\\referee-scratch\\6f8647b6-30cb-4445-a179-60e0345ba17b",
+    "scratch_dir": "D:\\work\\referee-scratch\\6f8647b6-30cb-4445-a179-60e0345ba17b",
     "generated_utc": "2026-10-10T18:01:47Z",
     "no_project_code": true,
     "method": "Reserved+illegal+trailing create attempts run inside Start-Job child processes with an externally enforced 8s timeout (a device-open that blocks can never hang the controller). Listing via Get-ChildItem, cmd dir, System.IO.Directory and python os (NTFS wide enumeration). All non-ASCII names built from explicit code points so the typed name is unambiguous. On-disk names reported as UTF-16LE hex, not as typed. Zip bit-11 and stored name bytes parsed from the archive header bytes.",
@@ -174,7 +174,7 @@
       "name_shown": "CON",
       "action": "create",
       "outcome": "error",
-      "error_text": "无法处理路径“D:\\sendguard-work\\referee-scratch\\6f8647b6-30cb-4445-a179-60e0345ba17b\\w\\CON”，因为目标表示保留的设备名称。",
+      "error_text": "无法处理路径“D:\\work\\referee-scratch\\6f8647b6-30cb-4445-a179-60e0345ba17b\\w\\CON”，因为目标表示保留的设备名称。",
       "error_code": "CopyError,Microsoft.PowerShell.Commands.CopyItemCommand|cat=WriteError|",
       "exit_code": null,
       "observed_name_hex_utf16le": "",
@@ -230,7 +230,7 @@
       "name_shown": "CON.txt",
       "action": "create",
       "outcome": "error",
-      "error_text": "无法处理路径“D:\\sendguard-work\\referee-scratch\\6f8647b6-30cb-4445-a179-60e0345ba17b\\w\\CON.txt”，因为目标表示保留的设备名称。",
+      "error_text": "无法处理路径“D:\\work\\referee-scratch\\6f8647b6-30cb-4445-a179-60e0345ba17b\\w\\CON.txt”，因为目标表示保留的设备名称。",
       "error_code": "CopyError,Microsoft.PowerShell.Commands.CopyItemCommand|cat=WriteError|",
       "exit_code": null,
       "observed_name_hex_utf16le": "",
@@ -342,7 +342,7 @@
       "name_shown": "COM1.log",
       "action": "create",
       "outcome": "error",
-      "error_text": "无法处理路径“D:\\sendguard-work\\referee-scratch\\6f8647b6-30cb-4445-a179-60e0345ba17b\\w\\COM1.log”，因为目标表示保留的设备名称。",
+      "error_text": "无法处理路径“D:\\work\\referee-scratch\\6f8647b6-30cb-4445-a179-60e0345ba17b\\w\\COM1.log”，因为目标表示保留的设备名称。",
       "error_code": "CopyError,Microsoft.PowerShell.Commands.CopyItemCommand|cat=WriteError|",
       "exit_code": null,
       "observed_name_hex_utf16le": "",
@@ -398,7 +398,7 @@
       "name_shown": "PRN",
       "action": "create",
       "outcome": "error",
-      "error_text": "无法处理路径“D:\\sendguard-work\\referee-scratch\\6f8647b6-30cb-4445-a179-60e0345ba17b\\w\\PRN”，因为目标表示保留的设备名称。",
+      "error_text": "无法处理路径“D:\\work\\referee-scratch\\6f8647b6-30cb-4445-a179-60e0345ba17b\\w\\PRN”，因为目标表示保留的设备名称。",
       "error_code": "CopyError,Microsoft.PowerShell.Commands.CopyItemCommand|cat=WriteError|",
       "exit_code": null,
       "observed_name_hex_utf16le": "",
@@ -454,7 +454,7 @@
       "name_shown": "AUX.log",
       "action": "create",
       "outcome": "error",
-      "error_text": "无法处理路径“D:\\sendguard-work\\referee-scratch\\6f8647b6-30cb-4445-a179-60e0345ba17b\\w\\AUX.log”，因为目标表示保留的设备名称。",
+      "error_text": "无法处理路径“D:\\work\\referee-scratch\\6f8647b6-30cb-4445-a179-60e0345ba17b\\w\\AUX.log”，因为目标表示保留的设备名称。",
       "error_code": "CopyError,Microsoft.PowerShell.Commands.CopyItemCommand|cat=WriteError|",
       "exit_code": null,
       "observed_name_hex_utf16le": "",
@@ -510,7 +510,7 @@
       "name_shown": "LPT9",
       "action": "create",
       "outcome": "error",
-      "error_text": "无法处理路径“D:\\sendguard-work\\referee-scratch\\6f8647b6-30cb-4445-a179-60e0345ba17b\\w\\LPT9”，因为目标表示保留的设备名称。",
+      "error_text": "无法处理路径“D:\\work\\referee-scratch\\6f8647b6-30cb-4445-a179-60e0345ba17b\\w\\LPT9”，因为目标表示保留的设备名称。",
       "error_code": "CopyError,Microsoft.PowerShell.Commands.CopyItemCommand|cat=WriteError|",
       "exit_code": null,
       "observed_name_hex_utf16le": "",
@@ -1138,7 +1138,7 @@
       "step": "New-Item Report.txt then report.txt",
       "after_first": "Report.txt,_src.txt",
       "after_second": "Report.txt,_src.txt",
-      "second_error": "文件“D:\\sendguard-work\\referee-scratch\\6f8647b6-30cb-4445-a179-60e0345ba17b\\w6\\report.txt”已经存在。",
+      "second_error": "文件“D:\\work\\referee-scratch\\6f8647b6-30cb-4445-a179-60e0345ba17b\\w6\\report.txt”已经存在。",
       "note": "count=2"
     },
     {
@@ -1169,7 +1169,7 @@
       "group": "item6-case-only-pairs",
       "probe": "case-pair",
       "step": "fsutil queryCaseSensitiveInfo",
-      "output": "已禁用目录 D:\\sendguard-work\\referee-scratch\\6f8647b6-30cb-4445-a179-60e0345ba17b\\w6 的区分大小写属性。"
+      "output": "已禁用目录 D:\\work\\referee-scratch\\6f8647b6-30cb-4445-a179-60e0345ba17b\\w6 的区分大小写属性。"
     },
     {
       "group": "item4-path-length-normal",
@@ -1190,7 +1190,7 @@
       "max_component_len": 180,
       "total_at_max": 259,
       "total_at_first_fail": 260,
-      "fail_error": "未能找到路径“D:\\sendguard-work\\referee-scratch\\6f8647b6-30cb-4445-a179-60e0345ba17b\\len\\l13\\xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx”的一部分。",
+      "fail_error": "未能找到路径“D:\\work\\referee-scratch\\6f8647b6-30cb-4445-a179-60e0345ba17b\\len\\l13\\xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx”的一部分。",
       "fail_exit": null,
       "note": "binary-searched, not assumed"
     },
@@ -1204,7 +1204,7 @@
       "max_component_len": 180,
       "total_at_max": 259,
       "total_at_first_fail": 260,
-      "fail_error": "未能找到路径“D:\\sendguard-work\\referee-scratch\\6f8647b6-30cb-4445-a179-60e0345ba17b\\len\\l13\\xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx”的一部分。",
+      "fail_error": "未能找到路径“D:\\work\\referee-scratch\\6f8647b6-30cb-4445-a179-60e0345ba17b\\len\\l13\\xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx”的一部分。",
       "fail_exit": null,
       "note": "binary-searched, not assumed"
     },
@@ -1241,7 +1241,7 @@
       "max_component_len": 180,
       "total_at_max": 259,
       "total_at_first_fail": 260,
-      "fail_error": "未能找到路径“D:\\sendguard-work\\referee-scratch\\6f8647b6-30cb-4445-a179-60e0345ba17b\\len\\l60\\xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx”的一部分。",
+      "fail_error": "未能找到路径“D:\\work\\referee-scratch\\6f8647b6-30cb-4445-a179-60e0345ba17b\\len\\l60\\xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx”的一部分。",
       "fail_exit": null,
       "note": "binary-searched, not assumed"
     },
@@ -1255,7 +1255,7 @@
       "max_component_len": 180,
       "total_at_max": 259,
       "total_at_first_fail": 260,
-      "fail_error": "未能找到路径“D:\\sendguard-work\\referee-scratch\\6f8647b6-30cb-4445-a179-60e0345ba17b\\len\\l60\\xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx”的一部分。",
+      "fail_error": "未能找到路径“D:\\work\\referee-scratch\\6f8647b6-30cb-4445-a179-60e0345ba17b\\len\\l60\\xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx”的一部分。",
       "fail_exit": null,
       "note": "binary-searched, not assumed"
     },
@@ -1283,7 +1283,7 @@
       "max_component_len": 138,
       "total_at_max": 259,
       "total_at_first_fail": 260,
-      "fail_error": "未能找到路径“D:\\sendguard-work\\referee-scratch\\6f8647b6-30cb-4445-a179-60e0345ba17b\\len\\l120\\xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\\xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx”的一部分。",
+      "fail_error": "未能找到路径“D:\\work\\referee-scratch\\6f8647b6-30cb-4445-a179-60e0345ba17b\\len\\l120\\xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\\xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx”的一部分。",
       "fail_exit": null,
       "note": "binary-searched, not assumed"
     },
@@ -1297,7 +1297,7 @@
       "max_component_len": 138,
       "total_at_max": 259,
       "total_at_first_fail": 260,
-      "fail_error": "未能找到路径“D:\\sendguard-work\\referee-scratch\\6f8647b6-30cb-4445-a179-60e0345ba17b\\len\\l120\\xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\\xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx”的一部分。",
+      "fail_error": "未能找到路径“D:\\work\\referee-scratch\\6f8647b6-30cb-4445-a179-60e0345ba17b\\len\\l120\\xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\\xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx”的一部分。",
       "fail_exit": null,
       "note": "binary-searched, not assumed"
     },
@@ -1325,7 +1325,7 @@
       "max_component_len": 58,
       "total_at_max": 259,
       "total_at_first_fail": 260,
-      "fail_error": "未能找到路径“D:\\sendguard-work\\referee-scratch\\6f8647b6-30cb-4445-a179-60e0345ba17b\\len\\l200\\xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\\xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx”的一部分。",
+      "fail_error": "未能找到路径“D:\\work\\referee-scratch\\6f8647b6-30cb-4445-a179-60e0345ba17b\\len\\l200\\xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\\xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx”的一部分。",
       "fail_exit": null,
       "note": "binary-searched, not assumed"
     },
@@ -1339,7 +1339,7 @@
       "max_component_len": 58,
       "total_at_max": 259,
       "total_at_first_fail": 260,
-      "fail_error": "未能找到路径“D:\\sendguard-work\\referee-scratch\\6f8647b6-30cb-4445-a179-60e0345ba17b\\len\\l200\\xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\\xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx”的一部分。",
+      "fail_error": "未能找到路径“D:\\work\\referee-scratch\\6f8647b6-30cb-4445-a179-60e0345ba17b\\len\\l200\\xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\\xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx”的一部分。",
       "fail_exit": null,
       "note": "binary-searched, not assumed"
     },

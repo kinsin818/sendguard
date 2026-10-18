@@ -1,11 +1,11 @@
-# Acceptance record — SG-F1 (Python lane, spec-fingerprint re-stamp)
+# Acceptance record — F1 (Python lane, spec-fingerprint re-stamp)
 
-Seat: delivery (`d9242392`). Host clock 2026-10-11 13:20 +0800.
-Ticket: `docs/tickets/SG-F1-python-restamp.md`, dispatched 13:05. Worker return: committed its own work as
-`e0d80a8` ("SG-F1: re-stamp the python cells to the current spec fingerprint, no answer moved") and reported
-in `evidence/S02/python-selfcheck.md`.
+Session: delivery (`d9242392`). Host clock 2026-10-11 13:20 +0800.
+Ticket: `docs/tickets/F1-python-restamp.md`, dispatched 13:05. Worker return: committed its own work as
+`e0d80a8` ("F1: re-stamp the python cells to the current spec fingerprint, no answer moved") and reported
+in `evidence/judgement/python-selfcheck.md`.
 
-## Verdict: ACCEPTED on all five criteria, read by this seat's own instruments, not by the worker's summary
+## Verdict: ACCEPTED on all five criteria, read by this local's own instruments, not by the worker's summary
 
 | # | criterion (from the ticket) | expected | read at 13:20, work tree = HEAD `e0d80a8` | rc |
 |---|---|---|---|---|
@@ -23,16 +23,16 @@ tool_failures=0`, the single refusal being criterion 2's RED).
 ## What the ticket got wrong, which is my defect and not the lane's
 
 The Allowed-surface list named `results/python.windows.x64/` and
-`evidence/S02/python-selfcheck.md`, but the lane's own instrument dumps (`sg_run_summary.json`, the
+`evidence/judgement/python-selfcheck.md`, but the lane's own instrument dumps (`sg_run_summary.json`, the
 self-check logs) belong under `evidence/` per `spec/cell-identity.md` §3. The worker therefore had to choose
 between two of its rules and wrote: *"Instrument dumps sit under `impl/` because the only evidence path this
-seat may write is this single file, while cell-identity section 3 says dumps belong in `evidence/` — noted,
+local may write is this single file, while cell-identity section 3 says dumps belong in `evidence/` — noted,
 not resolved by me."*
 
 That is the correct behaviour by a worker (report, don't silently pick) and the correct lesson for a
 dispatcher: **an Allowed-surface list must cover the paths the project's own rules require the deliverable to
-touch, or the ticket hands the worker a rule conflict and gets whichever resolution is convenient.** SG-F1 is
-amended in place with that line; SG-F2 and the F3 shape were written with the evidence directory included.
+touch, or the ticket hands the worker a rule conflict and gets whichever resolution is convenient.** F1 is
+amended in place with that line; F2 and the F3 shape were written with the evidence directory included.
 
 ## Not accepted, deliberately left open
 
@@ -40,7 +40,7 @@ amended in place with that line; SG-F2 and the F3 shape were written with the ev
   they are the round-9 contract question (`docs/NOTICE-rev9-proposal.md`), not a lane's sloppiness.
 - The recording choice that keeps `name_landed_as` blank - "the component is already published as
   `name_source`, so stamping it twice is a recording decision, not missing evidence" - was raised by the
-  **TypeScript** lane at 12:02 about its own cells (`evidence/S02/typescript-selfcheck.md`), not by this one.
+  **TypeScript** lane at 12:02 about its own cells (`evidence/judgement/typescript-selfcheck.md`), not by this one.
   It belongs to the same round-9 question, and both lanes declined to answer it for the owner, which is right.
 - This ticket says nothing about Python's 33 extra cells or the 27 that were stamped `b1eb629c`: the latter is
   now 0, and `extra` publishing is by design (`docs/GAP.md` reads `total_missing=0`, and extra cells are

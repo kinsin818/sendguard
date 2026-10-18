@@ -1,6 +1,6 @@
 # env-facts notes — S00 (Windows local run)
 
-Artifact: `evidence/S00/env-facts-windows-local.json`
+Artifact: `evidence/freeze/env-facts-windows-local.json`
 Collector: `harness/envfacts.py` (stdlib-only, re-runnable: `python harness/envfacts.py <out.json>`)
 Run host: Windows 10 build 19041, AMD64, collected with Python 3.14.7 (`C:\Python314\python.exe`).
 

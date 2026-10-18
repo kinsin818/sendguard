@@ -48,7 +48,7 @@
   "toolchain": "C:\\Python314\\python.exe 3.14.7",
   "utf8_mode": 0,
   "longpath_manifest_on_interpreter": true,
-  "longpath_manifest_source": "evidence/S00/env-facts-windows-local.json manifest_scan: C:\\Python314\\python.exe found=true"
+  "longpath_manifest_source": "evidence/freeze/env-facts-windows-local.json manifest_scan: C:\\Python314\\python.exe found=true"
  },
  "deps_direct": 0,
  "deps_total": 0,
@@ -59,7 +59,7 @@
  "cleanup_attempted": false,
  "probe_timeout_s": 5.0,
  "child_spawn_form": "subprocess.run(argv list, shell=False, timeout=5.0); one child per probe",
- "cleanup_note": "M19: no deletion logic exists in this port; run dirs accumulate outside the repo",
+ "cleanup_note": "project rule: no deletion logic exists in this port; run dirs accumulate outside the repo",
  "instrument_red": false,
  "instrument_conflict": false,
  "entries_run": [
@@ -179,7 +179,7 @@
  "instrument_base_noncompliant": "this cell's base directory was built under D:\\g, a directory created at a drive root; spec/cell-identity.md section 6 (rev3) forbids that and states the shortest legal base measured is ~78. The measurement stands as recorded, the reachability method does not comply with the sentence added after it was taken.",
  "rev3_migrated": true,
  "rev3_migration_notes": [
-  "producer key renamed from the retired name under SG-F8; the measurement is unchanged and the superseded value is not carried forward because it identified a seat, not a lane"
+  "producer key renamed from the retired name under F8; the measurement is unchanged and the superseded value is not carried forward because it identified a local, not a lane"
  ],
  "extra": true,
  "read_result": "not_applicable",

@@ -1,6 +1,6 @@
 # SENDGUARD S02 - java port self-check record (rev6)
 
-**Current state of this lane's face (SG-F2, 2026-10-11): the counts below are the live ones, and
+**Current state of this lane's face (F2, 2026-10-11): the counts below are the live ones, and
 `ci/acceptance.py` reads them because they are the first `cells_required=` line in this file. The
 sections underneath stay as the record of what was true when each was written; none of them is
 retouched.**
@@ -9,15 +9,15 @@ cells_required=48 cells_produced=86 cells_valid=86 blocked=0 extra=38 controls_p
 
 44/44 required identities matched. 69 cells byte-identical to the pre-ticket face, 5 control cells
 carrying only added `control_pass_*` fields, 12 new `java.io` spread cells marked `extra: true`
-(`impl/java/tools/verify_sg_f2.py` prints that arithmetic off the disk). Rulers: `selfcheck.py`
+(`impl/java/tools/verify_f2.py` prints that arithmetic off the disk). Rulers: `selfcheck.py`
 rc=0, `selfcheck.py --selftest` 49 arms / 0 problems, `stamp_controls.py --selftest` 8 arms /
-0 problems, `verify_sg_f2.py` rc=0.
+0 problems, `verify_f2.py` rc=0.
 
 Supersedes the rev4 text at this path (kept as `impl/java/tools/prev-rev4-record.txt`). The whole
 matrix was re-emitted under rev6 in one run, so no cell on disk carries a superseded input or a
 superseded field set.
 
-- seat: `seat-qoder` (java port window)
+- local: `session-token` (java port window)
 - contract read: `docs/NOTICE-rev6.md`, `spec/cases.yaml` (`control_samples`), `spec/cell-identity.md`
   section 9, `spec/cells-required.json`, `spec/schema.json`, `spec/validate.py`, `spec/canonical.md`,
   `spec/gate.md` at HEAD `f15b399`
@@ -48,7 +48,7 @@ port. Reported as this window's own error, not as a contract gap.
 Payload: the port now writes the pinned 28 bytes
 `53454e4447554152442d43414e4f4e2d5041594c4f41442d32303236` = `SENDGUARD-CANON-PAYLOAD-2026`,
 sha256 `c9fe45b2fee8ea846f0cf4f2cacc2a891e7b082e7719923502d12a9813e21994` - the same digest
-`evidence/S00-ctrl-baseline.md` publishes for T-CTRL-ASCII. The driver asserts that equality at
+`evidence/ctrl-baseline.md` publishes for T-CTRL-ASCII. The driver asserts that equality at
 import, so payload drift stops the run instead of shipping a cell with a different digest. The rev4
 record's DEFECT-6 ("the baseline gives a hash but not the bytes it hashed") is closed by this pin,
 and the agreement is now checked by an arm rather than by prose.
@@ -66,7 +66,7 @@ reported, never used as a mandate):
 
 ## 2. Action 2 - blind cells
 
-`blind/B1`..`blind/B5` emitted from `evidence/S00/blind-map.json`, each carrying `blind_id` equal to
+`blind/B1`..`blind/B5` emitted from `evidence/freeze/blind-map.json`, each carrying `blind_id` equal to
 the id number (checked by an arm). All five created, wrote 28 bytes, read back 28, verdict `legal`:
 B1 `invoice_FINAL_2026.xlsx`, B2 `photo_2_.jpg`, B3 `Copy_of_report.docx`, B4 `data_v2_1_.csv`,
 B5 `weekend-report.txt`. The pre-rev6 spelling `blind/BLIND-1..5` stays on disk, marked
@@ -215,7 +215,7 @@ process per cell x entry (191), external 5 s timeout owned by the driver, `hang`
 Reserved device names: created and listed only - never opened, never read, never stat'd
 (`stat_status: "skipped-reserved-name (list only; no open)"`); the pinned create-and-write entries do
 hand the 28 payload bytes to a device, which is what the pinned entry *is*, disclosed instead of
-dodged by substituting another entry. No deletion logic anywhere (M19): every cell carries
+dodged by substituting another entry. No deletion logic anywhere (project rule): every cell carries
 `cleanup_failed=true`, and the honest side effect is 3711 retained fresh scratch directories plus
 their child result documents under `D:\s\` (accumulated across this session's runs) and 629
 directories left at `D:\j*` by runs made before that root was fixed. Fresh uuid directory per run,
@@ -224,7 +224,7 @@ trailing separator and `base_len_actual` is re-read inside the JVM (78/120/200 c
 third-party dependencies: one `.java` compiled by `javac`; driver and validator on the Python
 standard library. Writes limited to `impl/java/`, `results/java.windows.x64/` and this file; nothing
 under `spec/`, `ci/`, `harness/`, `docs/` was modified, and the one `ci/__pycache__` byproduct of
-calling the gate's own function was removed; `D:\sendguard` was never opened; no commit, no push, no
+calling the gate's own function was removed; `D:\local-dir` was never opened; no commit, no push, no
 tag. No other port's `impl/` or `results/` was read in this round, and no tool that enumerates them
 was run.
 
@@ -351,16 +351,16 @@ rejection is not this window's argument check. One command, on this host, no fil
 
 | input passed to the same call | chars | JDK 17.0.17 | what JDK 21.0.6 does with the same string |
 |---|---|---|---|
-| `D:\Qoder` | 8 | OK | OK |
+| `D:\probe` | 8 | OK | OK |
 | the plain rung string, `base_len=78` | 141 | OK | OK |
 | the plain rung string, `base_len=200` (total 263 > 259) | 263 | OK | OK |
-| `\\?\D:\Qoder` | 12 | **InvalidPathException, index 2** | OK, prefix stripped -> `D:\Qoder` |
+| `\\?\D:\probe` | 12 | **InvalidPathException, index 2** | OK, prefix stripped -> `D:\probe` |
 | `\\?\C:\` | 7 | **index 2** | OK -> `C:\` |
 | the extended rung string, `base_len=78` | 145 | **index 2** | OK, prefix stripped |
 | the extended rung string, `base_len=200` | 267 | **index 2** | OK, prefix stripped |
 | `\\?\UNC\server\share\x.txt` | 26 | **index 2** | OK -> `\\server\share\x.txt` |
-| `//?/D:/Qoder` | 12 | index 2 | index 2 |
-| `\?\D:\Qoder` | 11 | `Illegal char <?> at index 1` | same |
+| `//?/D:/the maintainer` | 12 | index 2 | index 2 |
+| `\?\D:\probe` | 11 | `Illegal char <?> at index 1` | same |
 | `\\.\PhysicalDrive0` | 18 | OK | OK |
 
 So on 17.0.17 the answer is unconditional: every string whose third character is `?` in the server
@@ -431,7 +431,7 @@ the OS accepted the name - both measured, both attributable to a named call.
    frozen and re-labelling is your word, not mine. Say the word and the fix is one tuple plus a
    re-emit of the six.
 
-## SG-F2 (dispatched 13:0x): the twelve `java.io` legs and the five stamped controls
+## F2 (dispatched 13:0x): the twelve `java.io` legs and the five stamped controls
 
 Written 2026-10-11 13:30:00 +0800 host clock, before the 15:30 +0800 deadline. HEAD at the time of the run: `6f6757f`.
 
@@ -460,7 +460,7 @@ The reading, in one sentence: through `java.io` **every** pinned rung creates an
 
 ### Part 2 - five of five controls stamped, from the readings already on the disk
 
-`impl/java/tools/stamp_controls.py` reads each control cell, applies the criterion table quoted from `evidence/S00-ctrl-baseline.md` **through `impl/java/tools/selfcheck.py`** (no second copy of the criteria), and writes `control_pass` plus `control_pass_rule`, `control_pass_observed`, `control_pass_command`, `control_pass_tool`, `control_pass_basis`, `control_pass_stamped_at` and where relevant `control_pass_partial`. No child process was started for the stamps and no measurement was re-taken; the tool refuses (exit 3) rather than stamping when the cell cites a spec face that is not the committed one, when the face is not the driver's own serialisation, when `name_source` is not the rev6 pinned sample, when the cell is not a control cell, and when a recorded field would move.
+`impl/java/tools/stamp_controls.py` reads each control cell, applies the criterion table quoted from `evidence/ctrl-baseline.md` **through `impl/java/tools/selfcheck.py`** (no second copy of the criteria), and writes `control_pass` plus `control_pass_rule`, `control_pass_observed`, `control_pass_command`, `control_pass_tool`, `control_pass_basis`, `control_pass_stamped_at` and where relevant `control_pass_partial`. No child process was started for the stamps and no measurement was re-taken; the tool refuses (exit 3) rather than stamping when the cell cites a spec face that is not the committed one, when the face is not the driver's own serialisation, when `name_source` is not the rev6 pinned sample, when the cell is not a control cell, and when a recorded field would move.
 
 | control | criterion (quoted) | observed in the cell | stamped |
 |---|---|---|---|
@@ -477,16 +477,16 @@ Two things about those stamps that are not flattering and are therefore in the r
 
 ### The five criteria, as commands, with the reading each produced
 
-Taken from the transcript `impl/java/tools/sg-f2-criteria.txt` (one command per block, rc printed immediately after it); the numbers below are read out of that file, not retyped:
+Taken from the transcript `impl/java/tools/f2-criteria.txt` (one command per block, rc printed immediately after it); the numbers below are read out of that file, not retyped:
 
 1. `python ci/validate_cells.py` -> wrote docs/cell-validation.md bytes=2647 invalid=0 missing_faces=0 verdict_fields_not_required=9 verdict_fields_undocumented=4 cells_omitting_a_compared_field=371
-2. `python ci/acceptance.py` -> the java row on the generated face: `| java | 86 | 44/44 | 0 | 0 | 38 | 4/4 | pass (5/5 stamped) | 0 | 74 | OK | `cells_required=44 cells_matched=48 cells_produced=74 cells_valid=74 bl` (evidence/S02/java-selfcheck.md) |`
+2. `python ci/acceptance.py` -> the java row on the generated face: `| java | 86 | 44/44 | 0 | 0 | 38 | 4/4 | pass (5/5 stamped) | 0 | 74 | OK | `cells_required=44 cells_matched=48 cells_produced=74 cells_valid=74 bl` (evidence/judgement/java-selfcheck.md) |`
 3. `python ci/equality.py` -> rc=1, `OUTCOME=RED verdict_disagreements=54 verdict_identical_cells=24/44 cells_fully_recorded_and_identical=4 verdict_not_recorded_pairs=121 verdict_pairs_recorded=2281/2640 probe_cells_differing=29 unpinned_input=0 cells_excluded=0 channel_abstentions=13 truncated_values=2 required_cells_missing=0`
 3b. its comparison line: `cells_compared=44 fields=10 fact_cells=430 agree=255 disagree=54 not_recorded=121 truncated_value=2 channel_abstentions=13 name_cross_form_agreements=12`
 4. `python ci/length_report.py` -> wrote docs/length-family.md bytes=7455 rows=84, and the java rows of the split still read: `| T17 | 78 | extended | java | err_at_parse | bytes(78 units) | 78/78/78 |` (extended still `err_at_parse`, plain still `ok`, triples unchanged)
-5. `git status --porcelain -uall -- results/java.windows.x64` -> **17 lines** at the moment this section is generated (5 modified control cells + 12 uncommitted spread cells), git rc=0. The criterion asks for 0 *after this lane's commit*, so this line is the before-reading; the after-reading is printed by the same command in the reply, and `verify_sg_f2.py` flips to `mode=post-commit` at the same moment, which is the check that the commit carried exactly these 17 files and nothing else.
+5. `git status --porcelain -uall -- results/java.windows.x64` -> **17 lines** at the moment this section is generated (5 modified control cells + 12 uncommitted spread cells), git rc=0. The criterion asks for 0 *after this lane's commit*, so this line is the before-reading; the after-reading is printed by the same command in the reply, and `verify_f2.py` flips to `mode=post-commit` at the same moment, which is the check that the commit carried exactly these 17 files and nothing else.
 
-This window's own gates after the change: `selfcheck.py` rc=0, `selfcheck.py --selftest` rc=0 (49 arms, 0 problems - 39 before SG-F2, ten of them about the spread cells and the entry-substitution rule), `stamp_controls.py --selftest` rc=1 (8 arms, 0 problems), `verify_sg_f2.py` rc=0, and that verifier's own arithmetic line, printed from its stdout rather than retyped here:
+This window's own gates after the change: `selfcheck.py` rc=0, `selfcheck.py --selftest` rc=0 (49 arms, 0 problems - 39 before F2, ten of them about the spread cells and the entry-substitution rule), `stamp_controls.py --selftest` rc=1 (8 arms, 0 problems), `verify_f2.py` rc=0, and that verifier's own arithmetic line, printed from its stdout rather than retyped here:
 
     NOTE cells_on_disk=86 spread_cells=12
     NOTE mode=pre-commit spread_committed=0/12
@@ -495,28 +495,28 @@ This window's own gates after the change: `selfcheck.py` rc=0, `selfcheck.py --s
 
 ### Four things this window is not going to smooth over
 
-1. **`harness_version` is now split across the face.** The 74 cells from the 07:22 full run read `sg-java-S02-r4-rev6`; the 12 new cells read `sg-java-S02-r5-SG-F2`. That is the cost of an append-only ticket: a re-run would have re-measured the 44 compared records, which SG-F2 forbids. The split is in every cell's own field, and `spread_pair.paired_cell_harness_version` names the older value on the twin, so a reader cannot mistake the two for one run.
+1. **`harness_version` is now split across the face.** The 74 cells from the 07:22 full run read `sg-java-S02-r4-rev6`; the 12 new cells read `sg-java-S02-r5-F2`. That is the cost of an append-only ticket: a re-run would have re-measured the 44 compared records, which F2 forbids. The split is in every cell's own field, and `spread_pair.paired_cell_harness_version` names the older value on the twin, so a reader cannot mistake the two for one run.
 2. **The six required extended rungs still read `attribution_layer=L3`** with the sentence "java.nio rejected the path string before any syscall and every entry of this port agrees", while the twin this ticket ordered for the same rung answered `ok` - the disagreement is now *published as a cell*, so the overclaim in that basis sentence is contradicted by its own pair on the same disk. `run_cells.py:attribute()` never saw the second leg, and the new cells go through `paired_rung_claim()` which names both files. Re-labelling the six needs your word, because the attribution tree is frozen and the ticket says not to re-answer them; the six are untouched.
-3. **The three `docs/` faces moved, and it was the gate tools that moved them.** `ci/validate_cells.py`, `ci/acceptance.py` and `ci/length_report.py` each write their own repository face (`docs/cell-validation.md`, `docs/acceptance-S02.md`, `docs/length-family.md`). This window edited no file under `docs/`, `spec/`, `ci/` or `harness/`; it ran the commands the criteria name, and those commands write.
-4. **The scratch pile is the price of M19, and the counter is shared.** The io run's facts record `scratch_parent=D:\s`, `scratch_dirs_retained=4122`, `child_result_files_retained=4117`. Those two counts are every entry of the parent directory, which all six ports scratch into - this window cannot attribute them to itself and does not claim it can (reading another port's faces is out of bounds). What IS this lane's own doing: 13 children in this run, each with a fresh uuid directory, and none of them deleted, because there is no deletion logic anywhere here. The disk cost of the rule is being paid and nobody has named who cleans it up at the end.
+3. **The three `docs/` faces moved, and it was the gate tools that moved them.** `ci/validate_cells.py`, `ci/acceptance.py` and `ci/length_report.py` each write their own repository face (`docs/cell-validation.md`, `docs/acceptance.md`, `docs/length-family.md`). This window edited no file under `docs/`, `spec/`, `ci/` or `harness/`; it ran the commands the criteria name, and those commands write.
+4. **The scratch pile is the price of project rule, and the counter is shared.** The io run's facts record `scratch_parent=D:\s`, `scratch_dirs_retained=4122`, `child_result_files_retained=4117`. Those two counts are every entry of the parent directory, which all six ports scratch into - this window cannot attribute them to itself and does not claim it can (reading another port's faces is out of bounds). What IS this lane's own doing: 13 children in this run, each with a fresh uuid directory, and none of them deleted, because there is no deletion logic anywhere here. The disk cost of the rule is being paid and nobody has named who cleans it up at the end.
 
 ### Files this ticket added to the java lane
 
 - `impl/java/tools/stamp_controls.py` (16774 B, sha256 cb63478fa163)
-- `impl/java/tools/verify_sg_f2.py` (10047 B, sha256 0a176ab9d2ec)
-- `impl/java/tools/gen_sg_f2_appendix.py` (14487 B, sha256 89367331b1fa)
-- `impl/java/tools/sg-f2-criteria.txt` (3434 B, sha256 89862acb3826)
+- `impl/java/tools/verify_f2.py` (10047 B, sha256 0a176ab9d2ec)
+- `impl/java/tools/gen_f2_appendix.py` (14487 B, sha256 89367331b1fa)
+- `impl/java/tools/f2-criteria.txt` (3434 B, sha256 89862acb3826)
 - `impl/java/tools/run-facts-io-spread.json` (12497 B, sha256 16ad239c1e44)
 - `impl/java/tools/run-output-io-spread.txt` (2676 B, sha256 e2fd8b5f1bfd)
 - `impl/java/tools/run-output-io-spread-2.txt` (2676 B, sha256 e2fd8b5f1bfd)
 - `impl/java/tools/selfcheck-output.txt` (7497 B, sha256 dd5fd808204a)
 - `impl/java/tools/selftest-output.txt` (337 B, sha256 63bfe84a283d)
-- `impl/java/tools/verify-sg-f2-output.txt` (252 B, sha256 44d38ff3e930)
+- `impl/java/tools/verify-f2-output.txt` (252 B, sha256 44d38ff3e930)
 
-Sizes and digests are of those files as they stand at the moment this section is generated; `impl/java/tools/record-appendix-sg-f2.txt` is deliberately not listed, because this section is being written into it and its digest would be a self-reference.
+Sizes and digests are of those files as they stand at the moment this section is generated; `impl/java/tools/record-appendix-f2.txt` is deliberately not listed, because this section is being written into it and its digest would be a self-reference.
 
 
-### SG-F2 addendum - the stamper's own arms went false, and one number above is now stale
+### F2 addendum - the stamper's own arms went false, and one number above is now stale
 
 The section above prints `stamp_controls.py --selftest` as **8 arms / 0 problems**. That was the true
 reading of a real run when it was captured. It then went false on its own ticket, for a reason worth
@@ -537,7 +537,7 @@ tool, not in the number:
 Reading after that fix, in the same capture as this addendum:
 `python impl/java/tools/stamp_controls.py --selftest` -> `arms_checked=10 problems=0`, rc=0.
 `python impl/java/tools/selfcheck.py --selftest` -> `arms_checked=49 problems=0`, rc=0.
-`python impl/java/tools/verify_sg_f2.py` -> `mode=post-commit spread_committed=12/12
+`python impl/java/tools/verify_f2.py` -> `mode=post-commit spread_committed=12/12
 cells=86 identical_to_HEAD=86 stamped_ctrl=0 rewritten=[] moved=0`, rc=0 - which is the commit-level
 proof that `b56e9c4` carried exactly this lane: after the commit every cell on the disk equals its
 own committed face.

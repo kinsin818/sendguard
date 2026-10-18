@@ -610,7 +610,7 @@ def main():
         for line in bad_claim:
             problems.setdefault("<reconciliation>", []).append(line)
 
-    print(f"\n== control cells (source: evidence/S00-ctrl-baseline.md)")
+    print(f"\n== control cells (source: evidence/ctrl-baseline.md)")
     ctrl_fail = []
     for stem, cell in sorted(cells.items()):
         if cell.get("case_group") != "ctrl":
@@ -632,7 +632,7 @@ def main():
     #   (a) the language enum, which does not list this port at all (report gap G-1)
     #   (b) a required closed-set field carrying null because the leg was never reached
     #       (report gap G-2; spec/canonical.md S5 names no word for it, and
-    #        evidence/S00-ctrl-baseline.md itself records null in exactly those columns)
+    #        evidence/ctrl-baseline.md itself records null in exactly those columns)
     #   (c) everything else, which is this port's own fault
     language_gap, not_reached, other_problems = {}, {}, {}
     for stem, ps in problems.items():
@@ -765,7 +765,7 @@ def main():
         return 1
 
     # A cell filed under a case_id the manifest does not pin is superseded, not produced: this port
-    # first published its T-API rows as `TAPI-T01`. Nothing is deleted here (M19, and the instruction
+    # first published its T-API rows as `TAPI-T01`. Nothing is deleted here (project rule, and the instruction
     # to land cells additively), so the three old files stay on the face and are counted separately
     # rather than quietly folded into the denominator.
     pinned_tapi_ids = {str(r.get("case_id")) for r in req2.get("tapi_rows", [])}

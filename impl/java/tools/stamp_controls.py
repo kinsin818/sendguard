@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """Stamp `control_pass` onto this port's five control cells, judged from the readings ALREADY on the
-disk. Ticket SG-F2 part 2.
+disk. Ticket F2 part 2.
 
 No child process and no re-measurement: for each `ctrl` cell this tool takes the recorded fields,
 runs the criterion impl/java/tools/selfcheck.py already prints (the table quoted from
-evidence/S00-ctrl-baseline.md), and writes the verdict plus the command that reproduces the
+evidence/ctrl-baseline.md), and writes the verdict plus the command that reproduces the
 judgement. Without --apply it changes nothing.
 
-Why it exists: docs/acceptance-S02.md reads `pass (1/5 stamped)` for java while every other port
+Why it exists: docs/acceptance.md reads `pass (1/5 stamped)` for java while every other port
 reads 5/5. Four cells carry no calibration result, so this port's own instrument claim cannot be
 read back by a stranger.
 

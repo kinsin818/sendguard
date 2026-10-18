@@ -25,7 +25,7 @@ func baseName(p string) string {
 
 // isReservedName reports whether the FINAL component addresses a Win32 device
 // rather than a file in a directory. Such names may be created and listed, never
-// opened or read (seat order), and no payload may be transferred to them.
+// opened or read (local order), and no payload may be transferred to them.
 func isReservedName(name string) bool {
 	return reservedRE.MatchString(baseName(name))
 }

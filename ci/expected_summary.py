@@ -2,7 +2,7 @@
 
 Run:  python ci/expected_summary.py            (prints and writes docs/expected-summary.md)
 
-The sealed expectation table (`spec/expectations.sealed.md`) was written by a window that read only the
+The sealed expectation table (`spec/expectations.sealed.md`) was written by a session that read only the
 spec - no port, no implementation, no result file - so that six ports agreeing on something the spec never
 said is detectable against it. This file is where that property becomes readable: one row per
 (case x field) the expectation predicted, with what the ports actually returned.
@@ -163,7 +163,7 @@ def main():
                    "hard-coded `results/<port>.windows.x64/` and probes Windows-only behaviour, so pushing this "
                    "tree",
                    "to CI would not create these rows; the harnesses need an OS-portability pass first "
-                   "(`docs/tickets/SG-F3-os-portability.md`).", ""]
+                   "(`docs/tickets/F3-os-portability.md`).", ""]
     shown_other = []
     for osn in sorted(other):
         items = sorted(other[osn])

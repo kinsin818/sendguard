@@ -67,7 +67,7 @@ func createFileWProc() (*syscall.Proc, error) {
 }
 
 // attemptCreate is the length predicate. It creates and closes; it never writes a
-// payload, never opens an existing entry, and never deletes anything (M19). The
+// payload, never opens an existing entry, and never deletes anything (project rule). The
 // face decides which layer is being asked:
 //
 //	face.Prefix   -> address the directory through the \\?\ form, which switches off

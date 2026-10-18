@@ -1,6 +1,6 @@
 package main
 
-// SG-F15 arms: the lane must resolve the tree it measures, and must fail loudly when it cannot.
+// F15 arms: the lane must resolve the tree it measures, and must fail loudly when it cannot.
 //
 // Two-sided by this repository's rule (a leg that only demonstrates refusal is the most diligently
 // looking useless leg there is), and every fixture is planted outside the repository in a directory this
@@ -58,7 +58,7 @@ func TestResolveRepoRefusesAForeignRepoFlag(t *testing.T) {
 }
 
 // A3 red: verifying a tree whose frozen face no longer matches the frozen table must return an error.
-// This is the arm that would have caught SG-F15: the lane reported "frozen artifacts intact" while reading
+// This is the arm that would have caught F15: the lane reported "frozen artifacts intact" while reading
 // a checkout at an older contract revision.
 func TestVerifyFrozenFailsOnAPlantedTree(t *testing.T) {
 	tmp := plantedRoot(t, strings.Repeat("0", 64))

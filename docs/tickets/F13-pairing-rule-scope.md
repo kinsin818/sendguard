@@ -1,6 +1,6 @@
-# SG-F13 - the pairing rule reads 14 faces; 21 more are published prose and nobody has looked at them
+# F13 - the pairing rule reads 14 faces; 21 more are published prose and nobody has looked at them
 
-Opened 2026-10-12 by the seat that owns `ci/`, arising from SG-F11 criterion 3. Not a defect in `claim_digest.py`
+Opened 2026-10-12 by the local that owns `ci/`, arising from F11 criterion 3. Not a defect in `claim_digest.py`
 - the leg now prints its own blind spot on purpose (`pairing| ... unpoliced=21 unpoliced_bare_blocks=1
 unpoliced_faces_with_bare=1`) and its verdict line says `pairing_scope=policed-only(...)`. This ticket is the
 widening.
@@ -14,13 +14,13 @@ unpoliced_bare_blocks=1  unpoliced_faces_with_bare=1
 ```
 
 Partition verified by arm A12 (`three == set(all_md)`, disjoint, every policed face in the index) - it is the
-same arithmetic the SG-F11 sentence had to learn to name.
+same arithmetic the F11 sentence had to learn to name.
 
 The one offender found in the unpoliced set:
 
 ```
 blind-not-fatal| docs/journey.md block 14/102: `verdict_identical_cells` is published without
-                 `cells_fully_recorded_and_identical` - ... (SG-F11)
+                 `cells_fully_recorded_and_identical` - ... (F11)
 ```
 
 `docs/journey.md` line 53 records an older round's stdout:
@@ -52,19 +52,19 @@ and it reads as a correctness claim to anyone who does not know the round it cam
 ## Do not
 
 - Do not touch `evidence/**`: captured runs are their own face class, they are counted and reported, and this
-  seat does not re-word someone else's capture.
-- Do not re-word `docs/tickets/SG-F11-blank-count-sentence.md` to make the count go to zero. That face quotes
+  local does not re-word someone else's capture.
+- Do not re-word `docs/tickets/F11-blank-count-sentence.md` to make the count go to zero. That face quotes
   the bare number **to explain why the bare number is wrong**; it is a ticket, and a ticket about a defect is
   allowed to describe it. If the widening has to reach `docs/tickets/**` at all, the answer is the named
   exemption in criterion 2, printed with its denominator - not an edit.
-- No bucket change in the gate, no deletion (M19), no `spec/`, no history rewriting.
+- No bucket change in the gate, no deletion (project rule), no `spec/`, no history rewriting.
 
 ## Allowed surface
 
 `ci/claim_digest.py` (the policed set, `PAIR_RULES`, its arms), `docs/journey.md` (one block, criterion 2 only),
-and the acceptance row in `evidence/S11/`.
+and the acceptance row in `evidence/closing/`.
 
 ## Clock
 
-24 h from dispatch. Queue position: behind SG-F8's six-lane re-emit and behind the CI-read leg; this ticket
+24 h from dispatch. Queue position: behind F8's six-lane re-emit and behind the CI-read leg; this ticket
 blocks nothing else.

@@ -92,7 +92,7 @@ VALID   trap__T19-m2.json
 VALID   trap__T19.json
 VALID   trap__T20.json
 cells_valid=86 cells_blocked=0 cells_void=0 cells_extra_marked=38
-== control cells (source: evidence/S00-ctrl-baseline.md)
+== control cells (source: evidence/ctrl-baseline.md)
    T-CTRL-NAMETOOLONG     PASS expectation(baseline): fail on all 3 OS after reaching FS (err_at_syscall, not parse) | observed: create_result='err_at_syscall' error_stage='fs'
    T-CTRL-NAMETOOLONG          node-table layer (reported, not a mandate): cell says error_stage='fs', S00 table said 'syscall'
    T-CTRL-ASCII           PASS expectation(baseline): ok on all languages/OS | observed: create_result='ok'

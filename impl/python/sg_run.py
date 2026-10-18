@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""SENDGUARD S02 python port -- planner + parent driver (the seat's runner).
+"""SENDGUARD S02 python port -- planner + parent driver (the local's runner).
 
     python impl/python/sg_run.py                 # full batch
     python impl/python/sg_run.py --plan          # print the plan, touch nothing
@@ -14,7 +14,7 @@ What it does:
     timeout (subprocess timeout, shell=False, argv list only);
   * assembles the cell record and writes results/python.windows.x64/*.json.
 
-It never deletes anything (red line M19), never reads another lane's code or
+It never deletes anything (red line project rule), never reads another lane's code or
 results, and has no third-party dependency.
 """
 import argparse
@@ -53,7 +53,7 @@ PINNED_ENTRIES = ["open_wb", "os.mkdir", "pathlib.write_bytes", "os.rename"]
 PRIMARY_ENTRY = "open_wb"
 
 # Control-cell names and payloads come from `control_samples` in spec/cases.yaml
-# (pinned by contract rev6). Before the pin, this seat took the CANON name from
+# (pinned by contract rev6). Before the pin, this local took the CANON name from
 # harness/ctrl-baseline.mjs -- which is exactly the hole rev6 closed: four ports
 # spelled four different names, and two different payloads were hashed under
 # T-CTRL-CANON. CTRL_NAMES is filled at run time from the committed blob face.
@@ -220,7 +220,7 @@ def audit_parse(cases, top, ctrl):
 
 # ---------------------------------------------------------------- scratch
 def fresh_dir(prefix_len=None, root=None):
-    """One fresh directory, verified empty. Never deleted (M19)."""
+    """One fresh directory, verified empty. Never deleted (project rule)."""
     root = root or SCRATCH_TEMP
     os.makedirs(root, exist_ok=True)
     for _ in range(6):
@@ -461,7 +461,7 @@ def base_fields(spec, run_meta):
         "cleanup_attempted": False,
         "probe_timeout_s": TIMEOUT_S,
         "child_spawn_form": "subprocess.run(argv list, shell=False, timeout=5.0); one child per probe",
-        "cleanup_note": "M19: no deletion logic exists in this port; run dirs accumulate outside the repo",
+        "cleanup_note": "project rule: no deletion logic exists in this port; run dirs accumulate outside the repo",
         "instrument_red": False,
         "instrument_conflict": False,
         "entries_run": spec.get("entries_run", [PRIMARY_ENTRY]),
@@ -559,7 +559,7 @@ def fill_from_record(cell, rec, spec, controls_ok):
 def attribute(cell, spec):
     """Layer per spec/attribution-tree.md, from one port on one OS.
 
-    varies_across_OS is NOT observable from this seat, so the layer is the
+    varies_across_OS is NOT observable from this local, so the layer is the
     tree's second pass only (same-language entry switch) plus the OS-direct
     verdict; the pending axis is named in the basis string.
     """
@@ -679,7 +679,7 @@ def plan_items(cases, blind):
                       "reserved": False, "mech": CTRL_MECH[cid], "path_form": "plain",
                       "lpm": "none", "locale": "en-US", "applicable": "windows",
                       "spec_source": "spec/cases.yaml control_samples (rev6 pin) + "
-                                     "evidence/S00-ctrl-baseline.md for the expectation",
+                                     "evidence/ctrl-baseline.md for the expectation",
                       "name_source_kind": "control_samples sample_hex, pinned by contract rev6 "
                                           "and decoded at run time",
                       "ctrl": cid})
@@ -698,8 +698,8 @@ def plan_items(cases, blind):
                       "name_hexes": [b["name_utf8_hex"]], "members": 1, "subs": [{}],
                       "reserved": False, "mech": "unknown", "path_form": "plain",
                       "lpm": "none", "locale": "en-US", "applicable": "windows",
-                      "spec_source": "evidence/S00/blind-map.json",
-                      "name_source_kind": "evidence/S00/blind-map.json name_utf8_hex"})
+                      "spec_source": "evidence/freeze/blind-map.json",
+                      "name_source_kind": "evidence/freeze/blind-map.json name_utf8_hex"})
 
     # rev7: the twelve required length cells. Identity is exactly
     # {base_len, path_form}; the INPUT is the pinned component -- one code unit
@@ -788,12 +788,12 @@ def dot3(root):
 def build_run_meta(problems):
     cases_blob, _ = git_blob("spec/cases.yaml")
     cases_text = cases_blob.decode("utf-8")
-    blind_blob, _ = git_blob("evidence/S00/blind-map.json")
+    blind_blob, _ = git_blob("evidence/freeze/blind-map.json")
     frozen = open(os.path.join(REPO, "spec", "FROZEN.md"), "rb").read().decode("utf-8")
     spec_sha = hashlib.sha256(cases_blob).hexdigest()
     blind_sha = hashlib.sha256(blind_blob).hexdigest()
     claims = dict(__import__("re").findall(
-        r"(?m)^\|\s*(spec/cases\.yaml|evidence/S00/blind-map\.json)\s*\|\s*([0-9a-f]{64})\s*\|",
+        r"(?m)^\|\s*(spec/cases\.yaml|evidence/freeze/blind-map\.json)\s*\|\s*([0-9a-f]{64})\s*\|",
         frozen))
     mjs = open(os.path.join(REPO, "harness", "ctrl-baseline.mjs"), "rb").read().decode("utf-8")
     import re as _re
@@ -823,7 +823,7 @@ def build_run_meta(problems):
         "blind_map_sha256": blind_sha,
         "frozen_claims": claims,
         "frozen_claim_matches_cases_blob": claims.get("spec/cases.yaml") == spec_sha,
-        "frozen_claim_matches_blind_map": claims.get("evidence/S00/blind-map.json") == blind_sha,
+        "frozen_claim_matches_blind_map": claims.get("evidence/freeze/blind-map.json") == blind_sha,
         "payload_hex": payload.hex(),
         "payload_len": len(payload),
         "payload_sha256": hashlib.sha256(payload).hexdigest(),
@@ -841,7 +841,7 @@ def build_run_meta(problems):
                 "toolchain": "%s %s" % (PY, sys.version.split()[0]),
                 "utf8_mode": int(sys.flags.utf8_mode),
                 "longpath_manifest_on_interpreter": True,
-                "longpath_manifest_source": "evidence/S00/env-facts-windows-local.json "
+                "longpath_manifest_source": "evidence/freeze/env-facts-windows-local.json "
                                             "manifest_scan: C:\\Python314\\python.exe found=true"},
         "interpreter": {"resolved_executable": PY, "version": sys.version.split()[0],
                         "basis": "sys.executable of the process that spawned every child; "
@@ -889,7 +889,7 @@ def parse_control_samples(cases_text):
 def build_ctrl_names(samples):
     """Decode the pinned control names; refuse to run when the pin is not there.
 
-    rev6 closed a real hole: before the pin, this seat took the CANON name out of
+    rev6 closed a real hole: before the pin, this local took the CANON name out of
     harness/ctrl-baseline.mjs, so T-CTRL-CANON asked a different question per port
     (canon-python.txt here, canon-go-arm.txt and canon-csharp.txt elsewhere).
     """
@@ -1308,7 +1308,7 @@ def cell_filename(cell):
 
 
 def check_ctrl(cell):
-    """Control expectation comes ONLY from evidence/S00-ctrl-baseline.md."""
+    """Control expectation comes ONLY from evidence/ctrl-baseline.md."""
     cid = cell["case_id"]
     exp = CTRL_EXPECT.get(cid)
     if not exp:
@@ -1391,13 +1391,13 @@ def migrate(cell, meta, remeasured):
     """Bring a record written before rev3 up to rev3 without touching its numbers."""
     notes = []
     if "worker_id" in cell:
-        # SG-F8: the producer key is renamed on the way through, so a re-emit purges the retired name from the
+        # F8: the producer key is renamed on the way through, so a re-emit purges the retired name from the
         # data face instead of carrying it forward. This renames a field in the record being written; it does not
-        # delete a file, which M19 forbids, and the old value is not preserved because it named a seat, not a lane.
+        # delete a file, which project rule forbids, and the old value is not preserved because it named a local, not a lane.
         del cell["worker_id"]
         cell["implementation_id"] = IMPLEMENTATION_ID
-        notes.append("producer key renamed from the retired name under SG-F8; the measurement is unchanged and "
-                     "the superseded value is not carried forward because it identified a seat, not a lane")
+        notes.append("producer key renamed from the retired name under F8; the measurement is unchanged and "
+                     "the superseded value is not carried forward because it identified a local, not a lane")
     if cell.get("name_encoding") == "utf16_code_units" or "length_unit" not in cell:
         notes.append("name_encoding=utf16_code_units (a length unit) split per rev3: "
                      "length_unit=code_points, name_encoding=hex_raw_bytes")
@@ -1482,7 +1482,7 @@ def legacy_equiv(c):
 
     rev3 moves member cells into the case_id (T09-m1) and T-API rows into
     api_entry, so the old nested-sub_identity spelling of the SAME measurement
-    still sits on disk. Nothing is deleted (M19); the older file is marked
+    still sits on disk. Nothing is deleted (project rule); the older file is marked
     superseded and points at the newer one.
     """
     sub = c.get("sub_identity") or {}
@@ -1628,7 +1628,7 @@ def main():
             c["superseded_reason"] = (
                 "rev3 spells this identity as %s/%s (member position lives in case_id, T-API entry "
                 "in api_entry); the measurement is unchanged and the older file is kept because "
-                "this port contains no deletion logic (M19)" % (sig[0], sig[1]))
+                "this port contains no deletion logic (project rule)" % (sig[0], sig[1]))
             n_super += 1
     everything = built + kept
     for c in everything:
@@ -1658,7 +1658,7 @@ def main():
            len(req_keys) - len(req_doc.get("required_cells", [])), req_sha[:16], req_rc))
     print("cells_remeasured=%d cells_migrated_from_disk=%d cells_total=%d" %
           (len(built), len(kept), len(everything)))
-    n_purge = len([c for c in everything if any("SG-F8" in x for x in (c.get("rev3_migration_notes") or []))])
+    n_purge = len([c for c in everything if any("F8" in x for x in (c.get("rev3_migration_notes") or []))])
     n_retired_left = len([c for c in everything if "worker_id" in c])
     print("producer_keys_purged=%d records_still_carrying_retired_key=%d "
           "implementation_id_present=%d/%d" % (n_purge, n_retired_left,

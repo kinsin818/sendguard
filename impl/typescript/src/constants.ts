@@ -61,7 +61,7 @@ export type NameEncoding = "utf16_code_units" | "code_points" | "utf8_bytes";
  * spec/canonical.md has no section for a per-cell execution status, and my order
  * requires `blocked` / `not-achievable-in-stdlib` to be recorded. It therefore
  * lives in an extra field (schema.json additionalProperties: true) and never in a
- * closed-set field. See evidence/S02/typescript-selfcheck.md, gap G-4.
+ * closed-set field. See evidence/judgement/typescript-selfcheck.md, gap G-4.
  */
 export type CellRunStatus = "measured" | "blocked" | "not-achievable-in-stdlib";
 
@@ -96,7 +96,7 @@ export const PROBE_TIMEOUT_MS = 5000;
 
 /**
  * The 28-byte write payload. Length matches bytes_written=28 recorded for
- * T-CTRL-ASCII in evidence/S00-ctrl-baseline.md. The baseline publishes the length
+ * T-CTRL-ASCII in evidence/ctrl-baseline.md. The baseline publishes the length
  * and the sha256 of the S00 payload but not its bytes, so content equality against
  * the S00 sha is not derivable from spec; the payload is declared here instead.
  * No newline: a probe that lands on the CON device writes its payload to the
@@ -108,7 +108,7 @@ export const PAYLOAD_TEXT = "sendguard-payload-0123456789";
 export const ENTRY_SUBDIR = (index: number): string => `p${index}`;
 export const OSPROBE_SUBDIR = "oz";
 
-/** Control-cell expectations, taken only from evidence/S00-ctrl-baseline.md. */
+/** Control-cell expectations, taken only from evidence/ctrl-baseline.md. */
 export interface CtrlExpectation {
   readonly caseId: string;
   readonly createResult: CreateResult;

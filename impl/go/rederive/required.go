@@ -215,5 +215,5 @@ func blindMapRef(spec *FrozenSpec) string {
 	if spec != nil && spec.BlindMap != "" {
 		return spec.BlindMap
 	}
-	return "evidence/S00/blind-map.json (path unread)"
+	return "evidence/freeze/blind-map.json (path unread)"
 }

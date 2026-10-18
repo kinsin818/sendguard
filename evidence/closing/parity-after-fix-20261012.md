@@ -26,7 +26,7 @@ HEAD it was generated under) absorbed by the narrow exception rather than by a w
 (`docs/host-stamp.md`) excluded by name because it holds machine facts.
 
 **It does not prove:** cross-machine reproducibility. The clone is on the same host, same drive, same interpreter
-(3.14.7). That limit is published in `docs/claim-boundary.md` and is the reason `SG-F3` exists.
+(3.14.7). That limit is published in `docs/claim-boundary.md` and is the reason `F3` exists.
 
 ## The sequence, including the reading that was red
 

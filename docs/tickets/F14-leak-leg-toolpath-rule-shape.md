@@ -1,6 +1,6 @@
 # F14 - the leak leg's TOOLPATH class is named "absolute path" and matches something looser
 
-Opened 2026-10-12 by the local that owns `ci/`, found while trying to attribute a +3 movement in
+Opened 2026-10-12 by the maintainer that owns `ci/`, found while trying to attribute a +3 movement in
 `python ci/process_leak_scan.py` for F11's acceptance row (`evidence/closing/F11-acceptance.md` prints the
 attempt and its failure).
 
@@ -62,7 +62,7 @@ every sentence containing `docs/tickets/` becomes a leak.
 
 ## Clock
 
-24 h from dispatch. Queue position: behind F8's six-lane re-emit; it blocks nothing.
+24 h from issuance. Queue position: behind F8's six-port re-emit; it blocks nothing.
 
 ## Erratum on the sentence "Nothing fatal moved"
 
@@ -74,7 +74,7 @@ non-firing arm, which is the habit that made the needle bug findable at all.
 
 ## One more measured cost of the over-match
 
-`evidence/closing/readonly-tree-contamination-20261012.md` lists the 129 faces that session rewrote in the other
+`evidence/closing/readonly-tree-contamination-20261012.md` lists the 129 faces that pass rewrote in the other
 checkout, by name, because a record that does not name its scope is not a record. The leg reads that face as
 **136 TOOLPATH lines** - every one of them a repo-relative path, none of them a host path, none of them fatal. A
 count that inflates by 136 because a face did its job is the clearest argument this ticket has: the class is named

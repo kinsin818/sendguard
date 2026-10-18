@@ -108,7 +108,7 @@ jobs:
             echo "port runners write results/<port>.windows.x64 by hard-coded path: see impl/python/sg_run.py, impl/csharp/run_csharp.py, impl/rust/run_cells.py"
             echo "no macOS or Ubuntu result face is produced by this workflow"
           else
-            echo "PORT-HARNESS: faces are produced on the six port lanes' hosts, not in CI; this job re-judges them"
+            echo "PORT-HARNESS: faces are produced on the six ports' hosts, not in CI; this job re-judges them"
           fi
 
       - name: Gate self-test (every leg must be able to say yes and no)

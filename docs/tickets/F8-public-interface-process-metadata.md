@@ -1,6 +1,6 @@
 # F8 - the public data contract must carry product identity, not production metadata
 
-Opened 2026-10-12 by the local that owns `ci/` and the contract, on the owner's rule of the same morning:
+Opened 2026-10-12 by the maintainer that owns `ci/` and the contract, on the maintainer's rule of the same morning:
 **do not rewrite this repository; fix the interface.** The measured blast radius is what makes that the cheap
 option, and it is printed here rather than asserted: 11 non-data faces, 17 lines, **zero** of them in the
 judging apparatus.
@@ -12,9 +12,9 @@ production side rather than the product side:
 
 | value in the public tree | occurrences | what it discloses |
 |---|---|---|
-| `session-token-rust`, `session-token-python-port`, `session-token/csharp-port`, `session-token-java`, `port-typescript`, `session-token` | 691 | session/window identifiers of the project |
+| `pass-token-rust`, `pass-token-python-port`, `pass-token/csharp-port`, `pass-token-java`, `port-typescript`, `pass-token` | 691 | pass/window identifiers of the project |
 | `port-go` | 161 | which producer wrote the faces |
-| `W-PY`, `W-NODE` | 404 | local codes from the role assignment table |
+| `W-PY`, `W-NODE` | 404 | internal codes from the role assignment table |
 | `test` | 1 | a fixture value that leaked into a result face |
 
 Total `worker_id` occurrences in the published tree: **1,150**, across 880 result faces and 63 evidence faces, all
@@ -23,8 +23,7 @@ answers a question the artifact was never meant to answer. The public tree shoul
 correct?", not "how was the work organised?".
 
 Two additional faces carry the same boundary error in narrative form and are handled by **F9**, not here:
-`docs/roles.md` (the roles table) and `spec/FROZEN.md` line 3 (`Frozen by: main agent (example-tool
-local) per project rule` - the seal record naming the project).
+`docs/roles.md` (the roles table) and `spec/FROZEN.md` line 3 (`Frozen by: the maintainer per project rule` - the seal record naming the project).
 
 ## What the field should become
 
@@ -34,12 +33,12 @@ A rename is not the fix; the fix is a policy about what an identity field may co
 `rust-port`, ...), toolchain/runtime version, harness version, the executable path already recorded by three
 ports, spec digest, input digest.
 
-**Remove** (production metadata): session and window identifiers, local codes, persona or engine names, any
+**Remove** (production metadata): pass and window identifiers, internal codes, role or engine names, any
 value that ties a cell to a staffing decision, internal project names.
 
 Structural rule for the new field, so this cannot rot again: `implementation_id` must match
 `^[a-z][a-z0-9-]{0,15}-port$`. A value containing a path separator, an underscore-prefixed handle, a capitalised
-persona name or a model name is rejected at validation time, not by review. The regex is the disclosure scan's
+role name or a model name is rejected at validation time, not by review. The regex is the disclosure scan's
 hook, and the scan itself is §4 below.
 
 ## Bundling requirement - this does not open a second contract round
@@ -54,13 +53,13 @@ the stale window honestly rather than hide it.
 ## Allowed surface
 
 - this ticket file only, until the seal: `docs/tickets/F8-public-interface-process-metadata.md`
-- at seal time, by the contract owner: `spec/schema.json`, `spec/FROZEN.md`, `docs/NOTICE-rev9-proposal.md`
-- by each port, in its own lane: the emit sites listed below
-- by the `ci/` owner: `ci/validate_cells.py` (the second ruler - it and `spec/schema.json` must read one closed
+- at seal time, by the contract maintainer: `spec/schema.json`, `spec/FROZEN.md`, `docs/NOTICE-rev9-proposal.md`
+- by each port, in its own directory: the emit sites listed below
+- by the `ci/` maintainer: `ci/validate_cells.py` (the second ruler - it and `spec/schema.json` must read one closed
   field dictionary, since they were once caught disagreeing), `ci/selftest.py` for the new arms, the new
   disclosure leg, and the generated faces that carry the field name
 
-Ports may not edit `spec/`, `ci/`, or another lane's files.
+Ports may not edit `spec/`, `ci/`, or another port's files.
 
 ## What the seal actually costs - and where this ticket's first version was wrong
 
@@ -84,14 +83,14 @@ send them.
 | value published today | occurrences | becomes |
 |---|---|---|
 | `W-PY` | 241 | `python-port` |
-| `session-token-rust` | 174 | `rust-port` |
+| `pass-token-rust` | 174 | `rust-port` |
 | `W-NODE` | 73 | `node-port` |
 | `port-go` | 154 | `go-port` |
-| `session-token-python-port` | 123 | `python-port` |
+| `pass-token-python-port` | 123 | `python-port` |
 | `port-typescript` | 87 | `typescript-port` |
-| `session-token-java` | 86 | `java-port` |
-| `session-token/csharp-port` | 50 | `csharp-port` |
-| `session-token` | 49 | the port that wrote it, named as a lane |
+| `pass-token-java` | 86 | `java-port` |
+| `pass-token/csharp-port` | 50 | `csharp-port` |
+| `pass-token` | 49 | the port that wrote it |
 | `test` | 1 | a fixture value that reached a result face; that port must say whether the cell is a real record |
 
 Total `worker_id` occurrences: **1,150**. A port re-emitting with any value outside
@@ -101,7 +100,7 @@ pattern and the fact that old records are not invalidated by the rename.
 ## Acceptance criteria
 
 1. the sealed schema declares `implementation_id` with the value regex above and **no** `worker_id`;
-   `ci/validate_cells.py` rejects a value outside the regex, with a red arm (a planted `session-token-x` value is
+   `ci/validate_cells.py` rejects a value outside the regex, with a red arm (a planted `pass-token-x` value is
    refused) and a green arm (`python-port` passes) - a validator that has only been seen refusing is the
    decoration this project has caught itself building three times already;
 2. each port re-emits its canonical face; the re-emit is by the port's own author, and the port's report names
@@ -114,7 +113,7 @@ pattern and the fact that old records are not invalidated by the rename.
    rename. The before/after pair is printed in the acceptance row, from the same batch;
 5. no `worker_id` remains in any *generated public* face at the new tip, asserted by a scan over `git ls-files`
    at the tip rather than over the work tree; the same scan prints its denominator
-   (`files_scanned=`, and `hits_by_class=` for the four classes: session id / local code / persona-engine name /
+   (`files_scanned=`, and `hits_by_class=` for the four classes: pass id / internal code / role-engine name /
    internal project name);
 6. the disclosure leg is standing, not one-off: it runs in `ci/refresh_all.py`, exits 3 on an unreadable tree
    (an instrument failure is never a measurement), and refuses to run without naming the root it scanned;

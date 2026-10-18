@@ -14,7 +14,7 @@ The columns from `tracked files matched` onward describe only files `git ls-file
 | typescript | 87 | 0 / 0 (n=87) | 129 / 280 / 608 (n=87) | 7 | ts | 0 | 141,514 | `impl/typescript/src/runner.ts` |
 
 **Ports with no tracked build output (`csharp`, `go`, `rust`): the repository carries none of their build product.**
-A customer who clones this tree gets their source and a toolchain command, not an artifact. Build output that a lane left on its own machine is in no commit, so it is not part of what is delivered, and it is counted in the run line rather than in this face because its size belongs to the machine that produced it. That is a delivery-form fact, not a size of zero, and it is why the byte column reads `-` instead of a number.
+A customer who clones this tree gets their source and a toolchain command, not an artifact. Build output that a port left on its own machine is in no commit, so it is not part of what is delivered, and it is counted in the run line rather than in this face because its size belongs to the machine that produced it. That is a delivery-form fact, not a size of zero, and it is why the byte column reads `-` instead of a number.
 
 ## The three questions a buyer asks, and what can honestly be said
 
@@ -22,7 +22,7 @@ A customer who clones this tree gets their source and a toolchain command, not a
 
 2. **How big is it?** The tracked answer is the table above: `10` artifact files carrying `226,537` bytes across the ports that commit any build output, and three ports that commit none. The checker itself is the file in item 1. No packaging step exists, and `0` installers of any format were found in the tree, so any size claim about a shipped product is unproven here and is not made.
 
-3. **How long does it take?** The per-cell timings above are what the harnesses recorded around their own probes on one host, not wall-clock for a scan: they exclude compile time, they were taken while other lanes were running against the same disk, and the deliverable's own timing is `NOT-MEASURED(wall clock not recorded in any face)`. Publishing them anyway is better than a 'fast' adjective nobody has to defend.
+3. **How long does it take?** The per-cell timings above are what the harnesses recorded around their own probes on one host, not wall-clock for a scan: they exclude compile time, they were taken while other ports were running against the same disk, and the deliverable's own timing is `NOT-MEASURED(wall clock not recorded in any face)`. Publishing them anyway is better than a 'fast' adjective nobody has to defend.
 
 ## What this leg refuses to say
 

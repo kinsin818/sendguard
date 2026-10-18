@@ -1,7 +1,7 @@
 # F8 acceptance - six lanes re-emitted, and what the purge could not reach
 
 Accepted 2026-10-12 by the local that owns `ci/`, against `docs/tickets/F8-public-interface-process-metadata.md`
-and `docs/tickets/F8-dispatch-20261012.md`. Every number is from this session's captured output.
+and `docs/tickets/F8-issuance-20261012.md`. Every number is from this session's captured output.
 
 ## Per-lane report (the three lines the dispatch asked for, one block per lane)
 

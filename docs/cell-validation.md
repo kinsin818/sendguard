@@ -65,7 +65,7 @@ cell can be **conforming and silent** at the same time. Both readings in this fi
 | typescript | 0 | 0 | 87 |
 
 **ports that ever declare applicability: `java`** (of 6)
-A convention kept by one port is not a contract. Either the field gains a rule (who must write it, on which case groups) or it should be dropped rather than left as one lane's habit.
+A convention kept by one port is not a contract. Either the field gains a rule (who must write it, on which case groups) or it should be dropped rather than left as one port's habit.
 
 Verdict fields the gate compares that `spec/schema.json` does not even document: `phantom`, `name_mutated`, `len_triple`, `name_landed_as`. They are legal extras today and unverifiable requirements tomorrow.
 

@@ -39,7 +39,7 @@ def tracked_files():
     """The set of paths git says the repository carries.
 
     The first version of this leg sized whatever was on this disk, which made the published byte counts
-    irreproducible: a lane's scratch build output, present in a working copy and absent in a clone, changed the
+    irreproducible: a port's scratch build output, present in a working copy and absent in a clone, changed the
     numbers by ~38 bytes of text and several hundred kilobytes of bytes. The check that found it is
     `evidence/clone-tool/cold-clone-20261011d.md`. A delivery form has to describe the artifact a customer receives
     from the repository, so it measures the tracked file set and prints what it dropped.
@@ -412,7 +412,7 @@ def main(argv=None):
         out += ["**Ports with no tracked build output (`%s`): the repository carries none of their build "
                 "product.**" % "`, `".join(zero),
                 "A customer who clones this tree gets their source and a toolchain command, not an artifact. "
-                "Build output that a lane left on its own machine is in no commit, so it is not part of what is "
+                "Build output that a port left on its own machine is in no commit, so it is not part of what is "
                 "delivered, and it is counted in the run line rather than in this face because its size belongs "
                 "to the machine that produced it. That is a delivery-form fact, not a size of zero, and it is why "
                 "the byte column reads `-` instead of a number.", ""]
@@ -437,7 +437,7 @@ def main(argv=None):
             "",
             "3. **How long does it take?** The per-cell timings above are what the harnesses recorded around "
             "their own probes on one host, not wall-clock for a scan: they exclude compile time, they were "
-            "taken while other lanes were running against the same disk, and the deliverable's own timing is "
+            "taken while other ports were running against the same disk, and the deliverable's own timing is "
             "`NOT-MEASURED(wall clock not recorded in any face)`. Publishing them anyway is better than a "
             "'fast' adjective nobody has to defend.",
             "",

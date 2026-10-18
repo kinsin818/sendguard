@@ -31,4 +31,4 @@ sender-side checker GUI unless a later stage finds a blocker.
 - Release binary size ~8.5MB before optimization (trimpath/upx out of
   scope for now).
 - Full bundle (installer) still needs real icons + signing decision (N2,
-  pending owner).
+  pending maintainer).

@@ -1,6 +1,6 @@
 # F4 - make `ci/clone_parity.py` able to verify a source other than this working copy
 
-Owner: the local that owns `ci/` (this local). Written 2026-10-11 15:26 +0800, from work already done by hand.
+Maintainer: this machine, which owns `ci/`. Written 2026-10-11 15:26 +0800, from work already done by hand.
 
 ## Why
 

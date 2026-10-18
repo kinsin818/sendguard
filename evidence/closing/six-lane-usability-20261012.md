@@ -30,7 +30,7 @@ the product of this project rather than an obstacle to it.
 | python | `python impl/python/sg_run.py` | 0 | `cells_written=123 covered_required=48 extra=75 missing_required=0`, `control_all_ok=True`, `implementation_id_present=123/123` | `sg_selfcheck.py` rc=0, `cells_produced=123 cells_valid=123` |
 | rust | `python impl/rust/run_cells.py --phase controls` | 0 | `controls_pass=True cells_produced=5 problems=0` | `selfcheck.py` rc=0, `OUTCOME=OK` |
 | go | `<rederive binary> run --repo clone-1 --results clone-1/results/go.windows.x64` | 0 | `cells_planned=137 cells_written=49 controls_pass=true` | `rederive/selfcheck.py` rc=0, `OUTCOME=PASS` |
-| java | `python impl/java/tools/run_cells.py` | 0 | `cells_produced=86 cells_blocked=0 extra=38 missing_required=0`, five `ctrl` rows printed | **none exists** - see `docs/tickets/F16-java-lane-selfcheck.md` |
+| java | `python impl/java/tools/run_cells.py` | 0 | `cells_produced=86 cells_blocked=0 extra=38 missing_required=0`, five `ctrl` rows printed | **none exists** - see `docs/tickets/F16-java-port-selfcheck.md` |
 | typescript | `node impl/typescript/src/runner.ts` | 0 | `written=84 cells_expected=84 cells_measured=84 cells_blocked=0 controls_pass=true` | `selfcheck.py` rc=0, `language_enum_gap_cells=0` |
 | csharp | `python impl/csharp/run_csharp.py --all` | 0 | `cells_run=45 required_ids=48 produced_ids=50 missing=0 extra=2` | `selfcheck_csharp.py` rc=0, `controls=GREEN(5)` |
 

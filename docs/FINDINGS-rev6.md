@@ -204,14 +204,14 @@ Three consequences, and they are the reason this is a finding rather than a foot
    three names and three shapes in half the ports and not at all in the other half — which means the gate
    cannot compare runtimes across ports even though M7 shows a verdict field flipping between two runtimes of
    one port. Naming that field is a contract change, and the current sealed round is the eighth, so it is not
-   this local's to make unilaterally;
+   this machine's to make unilaterally;
    until then every document that says "port X answered" must keep saying *with which executable*, which is
    what the row in `docs/whitepaper.md` §3 now does.
 3. **A third instrument is worth excluding in writing.** The 1.8 row is included even though it produced no
    measurement, because "we did not run it, here is why" is the difference between a controlled comparison and
    a lucky one. The same discipline is what caught M3's zip cell measuring three different archives.
 
-Clock honesty: the question was put to the java lane at 08:40 host clock and the capture is stamped
+Clock honesty: the question was put to the java port at 08:40 host clock and the capture is stamped
 10:53:14 +0800, so this finding landed 2h13m late; the delay is recorded here rather than in the numbers, and
 it does not change any verdict field — the gate's counts (`docs/STATUS.md`) are unaffected because the repro
 lives in `impl/java/`, not in `results/`. The same note in `evidence/judgement/java-selfcheck.md:286-288` states what
@@ -220,13 +220,13 @@ still open and "none of it is in the recorded cells". `docs/GAP.md` cannot carry
 from cell coverage, and Java is 44/44 there - so the unfinished work is listed in `docs/whitepaper.md` §6's
 未做 list instead of being closed here.
 
-**Landed 13:34** (`b56e9c4`): the lane recorded twelve `java.io` cells - `FileOutputStream.write` at every pinned
+**Landed 13:34** (`b56e9c4`): the port recorded twelve `java.io` cells - `FileOutputStream.write` at every pinned
 rung, plain and extended - and all twelve say `roundtrip_ok=true`, including the extended rungs where its own
 `Files.write` cells record the parse-layer refusal. The divergence is now data in the tree rather than a
 reproduction file a reader has to trust, and each of the twelve carries `toolchain` and `jvm_self_report`. What is
 still open is narrower than what was: the remaining `java.io` entries, and the second runtime's answer as a cell
-rather than as a capture. Acceptance - and one requirement this local wrote into a ticket that no contract round
-contains (`control_pass_evidence`; the new census shows 30 stamps across six ports and zero sources, in every lane
+rather than as a capture. Acceptance - and one requirement this machine wrote into a ticket that no contract round
+contains (`control_pass_evidence`; the new census shows 30 stamps across six ports and zero sources, in every port
 alike) - is recorded in `evidence/closing/F2-acceptance.md`.
 
 ## M8 - the contract's required list and the gate's verdict list are different sets
@@ -248,7 +248,7 @@ kinds of blank, which the contract cannot:
 
 `docs/coverage.md` (field x port) and `docs/cell-validation.md` (omissions x port) publish the two views of
 the same cells side by side; `docs/journey.md` 2.16 records what changed in the instruments. The decision
-this needs from the owner is one contract round: say which verdict fields apply to which case group, and give
+this needs from the maintainer is one contract round: say which verdict fields apply to which case group, and give
 the boolean fields the same `not_applicable` escape `read_result` already has. Tightening `required` without
 saying which blanks are legal would make every port fail on cells where the answer truly does not exist, and
 tightening it in neither direction leaves a tree that is simultaneously 0-invalid and 121-blank.
@@ -261,7 +261,7 @@ which nothing in `ci/` had ever measured. Four defects in roughly three hours, a
 leg, because each one produced a number that another honest-looking reading agreed with.
 
 1. **Disk as delivery.** The first version sized whatever `impl/**` build output existed on this disk, so a
-   lane's scratch artifacts were published as the size of the deliverable. A cold clone read 3,796 bytes of
+   port's scratch artifacts were published as the size of the deliverable. A cold clone read 3,796 bytes of
    generated face where the working copy read 3,834. Found by the clone, not by reading the code.
 2. **A filter that dropped everything, verified by the number it was supposed to verify.** The fix read
    `git ls-files -z`, but the splitter was written `split("SEP")` instead of `split(chr(0))`, so the "set" was one
@@ -326,16 +326,16 @@ it. The consequence is the worst kind for a leg whose entire job is "a stranger 
 fail loudly on a foreign host, it reports a **result difference** where there is only a machine difference, and
 the reader is trained to distrust the next genuine red.
 
-Readings, from the packets in `evidence/audit-in/` and from this local's own re-run:
+Readings, from the packets in `evidence/audit-in/` and from this machine's own re-run:
 
 | who | interpreter | reading |
 |---|---|---|
-| this local, before the fix | 3.14.7 | `OUTCOME=CLEAN faces_compared=12 identical=11 declared=1 differing=0 rc=0` |
+| this machine, before the fix | 3.14.7 | `OUTCOME=CLEAN faces_compared=12 identical=11 declared=1 differing=0 rc=0` |
 | auditor-1, own clone | 3.13.13 | `RED differing=1`, the differing line being the interpreter stamp |
 | auditor-3, own clone | 3.13.13 | same, characterised as "a foregone false positive on any interpreter other than the author's" |
 | auditor-4, own clone | not the stamped one | same, aimed at the `docs/claim-boundary.md` sentence about what a stranger gets |
 | WorkBuddy cross-check | 3.13.12 | reached the same divergence independently while confirming the headline numbers |
-| this local, after the fix | 3.14.7 | `OUTCOME=CLEAN faces_compared=13 identical=11 declared=1 differing=0 missing=0 host_bound=1(docs/host-stamp.md) rc=0` |
+| this machine, after the fix | 3.14.7 | `OUTCOME=CLEAN faces_compared=13 identical=11 declared=1 differing=0 missing=0 host_bound=1(docs/host-stamp.md) rc=0` |
 
 What fixed it, and what did not: adding a line pattern to the exception list would have "fixed" the reading while
 widening the blind spot, because a pattern tolerance inside a compared face admits **any** change on that line.
@@ -350,7 +350,7 @@ unprompted, in one night; that is the strongest argument in this project for the
 
 ## M11 - the sentence about blanks counted one bucket, and the reader heard the whole hole
 
-Closed 2026-10-12 by F11, from two audit packets that reached this local by different routes (auditor-1 F-1,
+Closed 2026-10-12 by F11, from two audit packets that reached this machine by different routes (auditor-1 F-1,
 auditor-4 F-2). The gate was not wrong: it charges a disagreement first and an abstention second, and prints
 both. Three **sentences** were wrong - `docs/coverage.md` assured the reader that "nothing is left unplaced",
 which is true of the table below it and false of the grid, and `docs/claim-boundary.md` called the 121 published
@@ -382,9 +382,9 @@ planted paired -> `rc=0`, face restored byte-identical (`evidence/closing/F11-ac
 The four verdict readings did not move, which is the point of a wording fix: `verdict_disagreements=54`,
 `verdict_identical_cells=24/44`, `cells_fully_recorded_and_identical=4`, `verdict_not_recorded_pairs=121`.
 
-## M12 - the leak leg could not see the paths it was built to find, and one lane verified a contract in another checkout
+## M12 - the leak leg could not see the paths it was built to find, and one port verified a contract in another checkout
 
-Erratum, appended 2026-10-12 under the owner's rule "the leak counts are corrected by erratum; the lane that
+Erratum, appended 2026-10-12 under the maintainer's rule "the leak counts are corrected by erratum; the port that
 verified the wrong contract must be fixed, re-verified, and written up". Two independent instrument failures,
 found the same afternoon, and both were green before they were found.
 
@@ -397,11 +397,11 @@ of the same tree is:
 | class | as published (blinded needles) | corrected (needles fixed) |
 |---|---|---|
 | `LOGIN` (host profile root in a shipped face) | 15 | **1111** |
-| `HOSTROOT` (this tree quoted in its own faces) | 13 | 274, later 389 as the go lane's records began naming the tree they were actually measured in |
-| `IDENTITY` (producer value failing the sealed pattern) | 1134 | 443 after the six-lane re-emit |
+| `HOSTROOT` (this tree quoted in its own faces) | 13 | 274, later 389 as the go port's records began naming the tree they were actually measured in |
+| `IDENTITY` (producer value failing the sealed pattern) | 1134 | 443 after the six-port re-emit |
 | `RETIRED` (the retired producer key still in a shipped face) | 1143 | 458 |
 
-Nothing in the deliverable changed between the two columns except what this local could see. Two dozen green arms
+Nothing in the deliverable changed between the two columns except what this machine could see. Two dozen green arms
 did not catch it because the fixture built its expected needle sets by hand and repeated the same omission - which
 is why the leg now builds them through `_escaped_forms()` and carries an arm asserting that the builder emits the
 doubled-separator spelling. Its arm count is deliberately not repeated here: `python ci/process_leak_scan.py --selftest`
@@ -412,25 +412,25 @@ The consequence for the exhibit is a sentence, not a number: when this repositor
 the countdown it printed was the count the leg was capable of seeing. Both readings are now in the faces that
 carry them, and the earlier figures must be quoted with that qualifier.
 
-**(b) A lane verified a contract in a different checkout.** `impl/go/main.go` held the project root as a string
+**(b) A port verified a contract in a different checkout.** `impl/go/main.go` held the project root as a string
 literal pointing at a second working copy. Its `verify` compared that copy's frozen files against that copy's
 frozen table, printed `VERIFY PASS: frozen artifacts intact`, and reported a `spec/schema.json` digest
 (`f387ec4b...`) that is **not** the contract this repository ships - this one is sealed at `c1a5097c...`, freeze
-revision 4 in `spec/FROZEN.md`. The same literal caused writes into a tree declared read-only for this local; that
+revision 4 in `spec/FROZEN.md`. The same literal caused writes into a tree declared read-only for this machine; that
 part is recorded, with the 129 affected faces named, in
 `evidence/closing/readonly-tree-contamination-20261012.md`.
 
 Fixed, re-verified, and armed: the root is resolved from `-repo` or by walking up to a directory carrying
-`spec/FROZEN.md`, and the lane refuses with `rc=2` rather than guessing; the child process inherits the resolved
+`spec/FROZEN.md`, and the port refuses with `rc=2` rather than guessing; the child process inherits the resolved
 root instead of deriving it from the operator's working directory (that is how 128 records once landed outside the
 repository, and the moved-aside directory is named in the contamination record); `verify` now prints `repo=` and
 compares work-tree bytes against the blob of the same path; and seven arms in `impl/go/root_test.go` include the
 planted false tree that must fail, the real tree that must pass, and an assertion that no checkout literal exists
-in the lane's source. Re-verified reading at this tip: `repo=` this repository, `spec/cases.yaml 8650a1863578`,
+in the port's source. Re-verified reading at this tip: `repo=` this repository, `spec/cases.yaml 8650a1863578`,
 `spec/schema.json c1a5097ce4a7`, eight rows `HASH-OK`, `rc=0`.
 
-**(c) A claim in this local's own commit message was wrong, and is corrected here rather than amended away.** The
-six-lane re-emit message attributed a modified `evidence/judgement/defects/sample-corruption.json` in the read-only tree
+**(c) A claim in this machine's own commit message was wrong, and is corrected here rather than amended away.** The
+six-port re-emit message attributed a modified `evidence/judgement/defects/sample-corruption.json` in the read-only tree
 to that run. The file's mtime puts it in the 2026-10-10 bucket - it was already dirty, and the run's footprint is
 129 files in one directory. Commit messages are permanent assertions; this is the record that one did not
 reproduce, and the arithmetic behind it is in the contamination record.

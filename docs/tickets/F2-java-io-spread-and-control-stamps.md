@@ -1,7 +1,7 @@
-# F2 — Java lane: finish the `java.io` spread you declared open, and stamp the four control cells that have no calibration result
+# F2 — Java port: finish the `java.io` spread you declared open, and stamp the four control cells that have no calibration result
 
 **Race guard first.** Before writing, check ownership of the surface: any file under
-`results/java.windows.x64/` with an mtime newer than this dispatch (13:0x +0800, 2026-10-11), and any line in
+`results/java.windows.x64/` with an mtime newer than this issuance (13:0x +0800, 2026-10-11), and any line in
 `git status --porcelain -uall -- results/java.windows.x64`. If a writer is live in there, **stop** and report
 `BLOCKED | reason=tree_already_owned | <faces you saw>`. Do not restore or "clean up" a face you find altered.
 
@@ -71,10 +71,10 @@ command that shows why - a blocked leg that says so is worth more than a green o
 
 ## Amendment after acceptance (`evidence/closing/F2-acceptance.md`)
 
-The lane met all five numbered criteria (`d781b83`). The one thing it did not carry is **this ticket's fault, not
+The port met all five numbered criteria (`d781b83`). The one thing it did not carry is **this ticket's fault, not
 its own**: it asked for `control_pass_evidence`, a field that appears in no contract round - and the census added
 to `ci/validate_cells.py` at 13:34 shows 30 control cells stamped across six ports with **zero** carrying any
-source, in every lane alike. Putting an uncontracted requirement into one worker's criteria and then treating its
-absence as that worker's remaining piece is a dispatcher defect: an unenforceable clause in a ticket is not a
+source, in every port alike. Putting an uncontracted requirement into one worker's criteria and then treating its
+absence as that worker's remaining piece is an issuer defect: an unenforceable clause in a ticket is not a
 standard, it is a trap. The requirement belongs to the contract question in
 `docs/NOTICE-rev9-proposal.md` (third item), which is where it now stands instead of in somebody's ticket.

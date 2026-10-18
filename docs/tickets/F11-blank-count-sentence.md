@@ -1,6 +1,6 @@
 # F11 - the published sentence about blanks counts one bucket, and the reader hears the whole hole
 
-Opened 2026-10-12 by the local that owns `ci/`, from two audit packets that reached it by different routes
+Opened 2026-10-12 by the maintainer that owns `ci/`, from two audit packets that reached it by different routes
 (auditor-1 F-1 and auditor-4 F-2, the latter also carried into F-3 of `docs/coverage.md`'s own wording row).
 
 ## The defect, measured

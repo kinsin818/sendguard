@@ -1,10 +1,10 @@
-# F3 — Six lanes: make the harnesses able to answer on macOS and Ubuntu at all
+# F3 — Six ports: make the harnesses able to answer on macOS and Ubuntu at all
 
-Status: **not dispatched to anyone yet, and deliberately unscheduled.** This file exists because the project's
+Status: **not issued to anyone yet, and deliberately unscheduled.** This file exists because the project's
 outward documents said "the macOS and Linux rows need CI to run", which is what a reader of
 `.github/workflows/matrix.yml` would reasonably conclude and what is not true. Writing the work down is the
 correction; nobody has agreed to do it, and no deadline is set, because whether it is worth six harness
-rewrites is the owner's call, not this local's.
+rewrites is the maintainer's call, not this machine's.
 
 ## The measured reason the rows do not exist
 
@@ -13,14 +13,14 @@ rewrites is the owner's call, not this local's.
 | The sealed expectation table already predicts non-Windows behaviour: 22 macOS rows and 22 Ubuntu rows (23 lines each, three of which fold to "same as macos row") | `spec/expectations.sealed.md`, published by `python ci/expected_summary.py` → `sealed_by_os=macos:22,ubuntu:22,windows:22` |
 | Every port's runner writes to a **hard-coded** `results/<port>.windows.x64/` | `impl/python/sg_run.py:32`, `impl/csharp/run_csharp.py:37`, `impl/rust/run_cells.py:41`, `impl/typescript/selfcheck.py:28`, and the same pattern in go/java |
 | Every cell record carries `"os": "windows"` as a produced value, not a derived one | any file under `results/*`, field `os` |
-| The traps are Windows semantics: reserved device names, trailing dot/space stripping, `\\?\` prefix handling, 8.3 short names, NTFS alternates | the six lanes' own findings (`docs/FINDINGS-rev6.md` M1-M3, `docs/length-family.md`) |
+| The traps are Windows semantics: reserved device names, trailing dot/space stripping, `\\?\` prefix handling, 8.3 short names, NTFS alternates | the six ports' own findings (`docs/FINDINGS-rev6.md` M1-M3, `docs/length-family.md`) |
 | Nothing in CI builds or runs a port harness on any OS | `.github/workflows/matrix.yml` before 13:14 today |
 
 So the missing rows are **not** a missing `git push`. The push gives you the instrument re-verified on three
 operating systems (which is what the new `instrument` job does, and it says so in the file); it does not give
 you six ports × two operating systems of measured behaviour.
 
-## What each lane would have to do (the honest shape, not a wish)
+## What each port would have to do (the honest shape, not a wish)
 
 1. **Derive the face name and the `os` field from the runner**, not from a constant:
    `results/<port>.<os>.<arch>/` where `<os>` comes from the host at run time. The gate's canonical-face

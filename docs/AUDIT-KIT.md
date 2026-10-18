@@ -1,6 +1,6 @@
 # Audit kit — how to attack this repository, and what your finding has to contain
 
-Written for outside reviewers at the owner's request. Nobody here is paying you to confirm that it works.
+Written for outside reviewers at the maintainer's request. Nobody here is paying you to confirm that it works.
 The useful product is a claim this repository cannot make good, stated precisely enough that it can be fixed.
 
 Everything below is true of the tree you cloned, not of the author's working directory. If the two disagree,
@@ -31,19 +31,19 @@ different.
 1. **Work in a clone, never in the tree you were handed.** `python ci/refresh_all.py` regenerates tracked
    documentation faces as its last step, so running it where someone else is editing makes you a concurrent
    writer and your findings unattributable.
-   clone the tree the owner hands you a path to - the local's working directory, addressed as `file:///<path you were given>` - and pass `--no-local`. The path is deliberately not spelled out here: this page is published, and an absolute path on one person's disk is a fact about their machine, not part of a reviewer's instructions. `--no-local` matters: a
+   clone the tree the maintainer hands you a path to - the machine's working directory, addressed as `file:///<path you were given>` - and pass `--no-local`. The path is deliberately not spelled out here: this page is published, and an absolute path on one person's disk is a fact about their machine, not part of a reviewer's instructions. `--no-local` matters: a
    local clone hard-links objects and can read files the published tree does not contain.
    **Do not clone this kit from the published URL.** As measured by a reviewer on 2026-10-12, the public tip
    (`git ls-remote github refs/heads/main`, read live, not from a cached ref) is behind this tree and contains
    neither `docs/AUDIT-KIT.md` nor `evidence/audit-in/` - `git cat-file -e <tip>:docs/AUDIT-KIT.md` returns
    fatal. How far behind is not written here on purpose: it changes with every commit and nothing polices this
    page, so read it yourself with `git rev-list --count <published-tip>..HEAD`. A reviewer who follows that path
-   reads a stale tree, cannot find this page's own claims to attack, and has nowhere to submit. Until the owner
+   reads a stale tree, cannot find this page's own claims to attack, and has nowhere to submit. Until the maintainer
    gives the word to push (pushing is a publishing act, and it is his alone), the kit reaches an off-host
-   reviewer only as text handed to them by the owner, and their packet comes back as text too - which the local
+   reviewer only as text handed to them by the maintainer, and their packet comes back as text too - which the machine
    lands in `evidence/audit-in/` unchanged, as it did for the 2026-10-11 batch.
 2. **Do not commit, branch, or push.** The remote named `origin` is a non-bare tree on the author's disk and
-   refuses pushes by design; the remote named `github` is published, and pushing to it is the owner's act.
+   refuses pushes by design; the remote named `github` is published, and pushing to it is the maintainer's act.
 3. **Do not clean up.** Scratch directories, run logs, and seeded fixtures are provenance. A removal that
    looks like tidying destroys the evidence that a reading was made. There is deliberately no deletion logic
    in this project's harnesses (rule `project rule`, see `docs/cleanup-notice.md`).
@@ -78,7 +78,7 @@ the contract's field list and the gate's field list turning out to be different 
 this project's own lesson about what one name for two rulers costs. `READING-REQUIRED` is not a rejection: it
 names a missing act, and the finding stays open.
 
-Three local conventions that will bite you if you ignore them:
+Three project conventions that will bite you if you ignore them:
 
 - **`rc=0` with no output is a contradiction, not a pass.** A leg that prints nothing either measured nothing
   or lost its stdout to a pipe.
@@ -171,19 +171,19 @@ What has **not** been fixed, and where you should push hardest:
 - Open tickets under `docs/tickets/` — `F3` (OS portability of the collectors: the macOS and Linux result
   rows are predicted, not measured, and no port has made its harness portable), `F5` (the acceptance
   sheet reads a partial tree status, and a quoted-path defect), `F6` (the digest cannot police faces
-  outside the repository, such as the owner-facing status page), `F7` (the deliverable has no version
+  outside the repository, such as the maintainer-facing status page), `F7` (the deliverable has no version
   string at all, so a reviewer holding a zip cannot name what they audited — which is why the packet template
   asks for a commit instead), `F8` and `F9` (the published data contract and narrative faces carry
   production metadata rather than product provenance; the standing leg is
   `python ci/process_leak_scan.py --repo-root .` and it reads `RED` here on purpose), and `F10` (the
   reproducibility leg cannot reach its green side on another interpreter — the finding four reviewers landed on
   independently, so read it before treating a `differing=1` from a foreign host as a content drift).
-- The third CI job in `.github/workflows/` has never run to completion from a tree this local can read, so its
+- The third CI job in `.github/workflows/` has never run to completion from a tree this machine can read, so its
   findings are unread rather than absent.
 - Three contract questions are unowned: whether "which executable answered" becomes a public field; which
   blanks are legal, as opposed to merely unpunished; and whether the deliverable is signed. Round 9 exists as
   a proposal (`docs/NOTICE-rev9-proposal.md`) and `spec/` is untouched by it.
-- Every narrative file under `evidence/` was written by the delivery local — the same hand that wrote the
+- Every narrative file under `evidence/` was written by the maintainer — the same hand that wrote the
   claims you are auditing. Treat them as assertions to check. The artifacts that are not that hand's prose are
   `results/<port>.windows.x64/**` (written by six other authors, who could not see each other), the gate's own
   `evidence/judgement/equality-verdict.json`, and the generated `docs/*.md` faces.
@@ -215,11 +215,11 @@ Write one file, `evidence/audit-in/<your-id>-<UTC-date>.md`, from `evidence/audi
 - If you find nothing, say which attacks you tried and what you saw. "No problems found" with no commands is
   the least useful possible packet.
 
-The owner's local records the disposition of every finding in `evidence/audit-in/ADJUDICATION.md`, using five
+The maintainer records the disposition of every finding in `evidence/audit-in/ADJUDICATION.md`, using five
 words and no others: `ACCEPTED-FIXED`, `ACCEPTED-TICKETED`, `REJECTED` (with the reading that rebuts it),
-`READING-REQUIRED`, `PARKED` (pending an owner decision the local is not authorised to make). Rejection will name
+`READING-REQUIRED`, `PARKED` (pending a maintainer decision the machine is not authorised to make). Rejection will name
 your command and its output, never your competence. A disposition row is not allowed to be signed by whoever
-wrote the thing it judges, so a fix that needs the local's own hands is landed and left `ACCEPTED-TICKETED`
+wrote the thing it judges, so a fix that needs the machine's own hands is landed and left `ACCEPTED-TICKETED`
 until an independent leg reads it green.
 
 ## 8. What a good outcome looks like

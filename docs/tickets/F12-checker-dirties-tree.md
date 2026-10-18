@@ -1,6 +1,6 @@
 # F12 - a leg that regenerates faces while checking them leaves the tree it just judged dirty
 
-Found by this local on 2026-10-12 while landing `F10`, not by a reviewer: after
+Found by this machine on 2026-10-12 while landing `F10`, not by a reviewer: after
 `python ci/claim_digest.py --scratch-root ../sg-cd-f10`, `git status` showed three tracked faces modified
 (`docs/spec-drift.md`, `docs/tapi.md`, `evidence/judgement/equality-verdict.json`), each by its own generation
 timestamp and nothing else. The digest executes other suites, and those suites write faces.
@@ -23,7 +23,7 @@ whose own file list was not cross-checked (M9): the ruler has to be blind to its
    with a red arm showing that a planted modification is reported - a self-clean claim with no red side is a
    preference;
 3. `ci/claim_digest.py` (and anything else that executes suites) prints which legs it ran and whether the tree
-   moved across the whole batch, so a later local can tell a stale face from a dirty one;
+   moved across the whole batch, so a later reader can tell a stale face from a dirty one;
 4. the two faces that moved today are committed as stamps-only, naming what moved and showing the judged
    readings did not: `compared=264 current=264 older=0` and `entry_gaps=0` before and after;
 5. `python ci/refresh_all.py --check` still reports the regeneration is stable, since that flag exists precisely

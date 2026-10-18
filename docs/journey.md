@@ -17,13 +17,13 @@ the recipient's machine. The project was also meant to be a portfolio piece - si
 operating systems, twenty traps - and the original construction order built its whole argument on
 **divergence**: six ports disagreeing proves the problem is real.
 
-The owner rejected that framing at 3 a.m. and replaced it with the opposite claim: *one frozen
+The maintainer rejected that framing at 3 a.m. and replaced it with the opposite claim: *one frozen
 specification, six implementations that have never seen each other's code, byte-identical output.* Divergence
 became an appendix that falls out for free.
 
 That reversal deleted more of the plan than it kept. Gone: the three-layer attribution tree (L1 OS / L2
 stdlib policy / L3 language semantics), the divergence-hit Go/No-Go gate, the counting statistics, and the
-blind-session ceremony around them. They were load-bearing only for a claim nobody was selling any more.
+blind-pass ceremony around them. They were load-bearing only for a claim nobody was selling any more.
 What replaced them is three legs: **the specification is one thing** (one frozen file, hashes published
 before any port ran), **the implementations are independent** (no cross-language calls, no shared helper),
 and **the result is checkable from outside** (the equality gate, a sealed expectation table, and the
@@ -71,7 +71,7 @@ WITHDRAWN: the 03:4x version of this list came from a mis-parse ... discard it a
 
 `spec/schema.json` and `spec/validate.py` enforce the same contract in two places. rev3 changed one and not
 the other, so a port's cells validated green under one ruler and failed under the other. Reported by the
-TypeScript session rather than smoothed by me:
+TypeScript pass rather than smoothed by me:
 
 ```
 cells_required=33 cells_produced=74 cells_valid=25 (strict, spec/schema.json rev3)
@@ -180,7 +180,7 @@ Correction to the previous commit message: five rows are NO-SUCH-CELL, not zero,
 
 A commit message is a permanent set of assertions. The wrong one stayed; the correction is a new commit.
 
-### 2.11 My own probe hung a session
+### 2.11 My own probe hung a pass
 
 Reading `CON.txt` to "see what happens" blocked for two minutes because reading a console device reads the
 console's input buffer. Two permanent rules came from that: print the case name and flush **before** the
@@ -218,7 +218,7 @@ The same genre, three times over, so they go in the record rather than into a fo
   temp directory on `C:` and the repository on `D:`, the gate died with rc=1 - which is this gate's word for
   "the ports disagree". Eight arms went falsely red until the path handling was made total. The self-test is
   now run against two scratch roots whenever anything about paths changes, and the morning document tells the
-  owner to do exactly that as a check on me.
+  maintainer to do exactly that as a check on me.
 
 Nothing was published between the first reading (29 of 29 cells failing) and the last (54 conflicting facts
 over 44 compared cells): every number that reached a document was regenerated from a tree that had been
@@ -227,7 +227,7 @@ re-checked, and the two documents that went stale mid-morning say which reading 
 ### 2.14 A sentence of mine filed one JVM's answer under a language's name
 
 The whitepaper's §3 length row read "一门 False（它在 parse 层就拒绝了这个前缀）" - one port rejects this prefix at
-its parse layer. The java session then reproduced the refusal against both JDKs installed on this host
+its parse layer. The java pass then reproduced the refusal against both JDKs installed on this host
 (`impl/java/tools/ext-path-of-repro.txt`, one compiled class, both runs stamped `run_rc=0`), and the same class
 file answers differently depending on which launcher reads it:
 
@@ -248,17 +248,17 @@ executable, and the measurement that should have been in the plan came out of it
 three different field names and three different shapes; typescript 0/87, go 0/203, csharp 0/50 record nothing).
 A promise of "byte-identical output" is only re-runnable on a machine that did not build it if the runtime
 identity travels with the answer, and half the ports don't publish it. Giving that quantity a shared name is a
-contract change and the current sealed round is the eighth, so the question goes up to the owner instead of
+contract change and the current sealed round is the eighth, so the question goes up to the maintainer instead of
 landing in this tree as a decision.
 
 ### 2.15 The headline I published was counting silence as agreement
 
 The morning's report line was `24 cells with no verdict disagreement / 44`, and I repeated it in the README,
-the claim boundary and the owner's one-pager. It was true. It was also the same mistake this project is
+the claim boundary and the maintainer's one-pager. It was true. It was also the same mistake this project is
 supposed to be immune to: a cell where six ports recorded three of ten verdict fields and contradicted on
 none was being scored like a cell where six ports answered everything and matched.
 
-The count surfaced while I was measuring something else - the TypeScript lane's schema conformance. Read
+The count surfaced while I was measuring something else - the TypeScript port's schema conformance. Read
 through the frozen manifest instead of the port's own claim, 25 of its 44 required cells are non-conforming,
 and every one of them is missing exactly the fields that make a verdict comparable (`read_result`,
 `roundtrip_ok`, `enum_to_stat_agrees`). That forced the question "what fraction of the verdict grid did
@@ -355,19 +355,19 @@ Two instrument consequences landed with it:
 The contract change this asks for is not mine to make unilaterally, and it is bigger than naming a field:
 declare which verdict fields apply to which case group, and give a boolean a documented way to say
 `not_applicable` (the closed set already does this for `read_result`, which is why `not_applicable` exists
-there). Cost if the owner says yes: six ports re-emit their faces, and every "0 invalid" in the tree starts
+there). Cost if the maintainer says yes: six ports re-emit their faces, and every "0 invalid" in the tree starts
 carrying a second number.
 
-**And a worker caught this local leaving a broken instrument in the shared tree.** At 12:02 the TypeScript
-session reported that `ci/equality.py` would not parse - `SyntaxError: unmatched ')'` at line 944, 13 format
+**And a worker caught this machine leaving a broken instrument in the shared tree.** At 12:02 the TypeScript
+pass reported that `ci/equality.py` would not parse - `SyntaxError: unmatched ')'` at line 944, 13 format
 arguments against 11 placeholders - and refused to touch `ci/`, re-deriving its own counts from
 `git show HEAD:ci/equality.py` so its report would not depend on the broken file. That was me: I was
 sabotaging arms to prove they bite, and the work tree carried a half-edited gate for several minutes while a
 worker was running against it. Two rules come out of it, and the second one is the one I would otherwise
-skip: a local's tool edits are worker-facing files, so they belong in history before somebody else trips over
+skip: a maintainer's tool edits are worker-facing files, so they belong in history before somebody else trips over
 them; and a sabotage experiment is only honest if the file is shown to compile and its arms to pass **after**
 it, which is now a step in the routine rather than something I remember to do (`python -m py_compile` on the
-five `ci/` files touched today, rc=0, before the 12:27 commit). The lane's own wording, kept because it is
+five `ci/` files touched today, rc=0, before the 12:27 commit). The port's own wording, kept because it is
 the cleanest description of the discipline in this whole build: "It ran cleanly for me minutes earlier, so
 the edit is in flight, not abandoned."
 
@@ -377,7 +377,7 @@ the edit is in flight, not abandoned."
 The equality claim depends on all six ports having answered *the same* specification. I had that in
 `spec/cells-required.json`'s header (`spec_blob_sha256`) and in every cell's `spec_sha256` field, and nothing
 in the pipeline ever compared the two - the fingerprint was decoration until I looked at it because the
-TypeScript lane's conformance fix made me check what the records were stamped with.
+TypeScript port's conformance fix made me check what the records were stamped with.
 
 ```
 python ci/spec_drift.py
@@ -419,7 +419,7 @@ answered "what does a customer actually get". Four times in one afternoon that l
 that was wrong, and all four failures had the same shape: a number that agreed with itself across two machines,
 because nothing in the leg could ask a second party whether its file set was right.
 
-1. It sized whatever was on the disk, so a lane's scratch build output was published as the size of the
+1. It sized whatever was on the disk, so a port's scratch build output was published as the size of the
    deliverable and a cold clone read 3796 bytes where the working copy read 3834. Fixed by measuring
    `git ls-files`.
 2. The fix did not work and looked like it did. The splitter read `split("SEP")` instead of `split(chr(0))`, so
@@ -427,7 +427,7 @@ because nothing in the leg could ask a second party whether its file set was rig
    file - producing exactly the table a clone produced, because the truth happened to be a zero. The clone
    agreement I had written up as the vindication of the fix was the bug's own symptom.
 3. The column that counted dropped files was itself disk-dependent: a file must be present to be ignored, so the
-   local read `untracked_ignored=14` and a clone of the same commit read `12`. Moved out of the published face into
+   the working copy read `untracked_ignored=14` and a clone of the same commit read `12`. Moved out of the published face into
    the run line.
 4. `glob` keeps the separator typed inside the pattern, so its results came back as
    `D:\repo\impl/java/build\CellProbe.class` while the tracked set was pure backslashes. Nothing ever matched:
@@ -486,14 +486,14 @@ leg itself are in `evidence/closing/parity-red-probe-20261011.md`.
 ## 3. What the six windows did that the plan did not expect
 
 Two things the committee's construction order never asked for and the ports delivered anyway: the
-TypeScript session published a port label it could not verify ("no type-checker has ever run against this
-source") and refused to let it be upgraded to "TypeScript verified"; the Go session answered the same name
+TypeScript pass published a port label it could not verify ("no type-checker has ever run against this
+source") and refused to let it be upgraded to "TypeScript verified"; the Go pass answered the same name
 with `legal` where five others said `illegal`, and the answer turned out to be about which path prefix it
 had asked - a fact the contract now records as `verdict_via` instead of scoring as a mistake.
 
 ## 4. What is not done
 
-No macOS or Linux rows exist: they need CI, and pushing to the public repository is the owner's act, not
+No macOS or Linux rows exist: they need CI, and pushing to the public repository is the maintainer's act, not
 mine. The desktop deliverable exists as a script with a launcher and has not been signed, so "double-click
 to run" is not yet an evidenced claim on a machine that did not build it. The license is unset. The
 repeated-run and multi-volume cases (FAT32/exFAT, network shares, mail and download layers, phones) were

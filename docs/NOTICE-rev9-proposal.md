@@ -1,9 +1,9 @@
 # Contract round 9 — a proposal, not an applied change
 
-Status: **proposal. `spec/` is untouched by this file.** Nothing here is sealed, nothing has been dispatched
-against it, and every leg in `ci/` keeps judging the round-8 contract until the owner says otherwise. It is
+Status: **proposal. `spec/` is untouched by this file.** Nothing here is sealed, nothing has been issued
+against it, and every leg in `ci/` keeps judging the round-8 contract until the maintainer says otherwise. It is
 written now because three of this morning's findings are the same decision seen from three sides, and the
-owner should be able to make it with one word rather than by reading six files.
+maintainer should be able to make it with one word rather than by reading six files.
 
 Authority: the sealed round is the eighth (`spec/FROZEN.md`, `freeze_revision: 2` in `spec/cases.yaml`, and the
 manifest pin `spec_blob_sha256=8650a1863578231e…`). Changing `spec/cases.yaml` or `spec/schema.json` re-seals
@@ -33,7 +33,7 @@ every cell's `spec_sha256` becomes stale until each port re-emits - which is pre
 
 The last row is the one that makes the applicability question answerable rather than rhetorical: the field
 `spec_applicable_on_windows` exists in the schema and in the records, **is read by no leg**, and is written by
-one lane as a habit. A convention kept by one port is not a contract - either round 9 gives it a rule (who must
+one port as a habit. A convention kept by one port is not a contract - either round 9 gives it a rule (who must
 write it, on which case groups, and what a `false` licenses to be blank) or the field should be deleted rather
 than left as a private dialect that flatters itself into being evidence.
 
@@ -73,7 +73,7 @@ property for every port. Do **not** add the nine fields to `required` yet.
   than a checked field. Acceptable for a portfolio piece; not acceptable if the claim is "pre-flight checking
   you can trust".
 
-## What the owner actually needs to say
+## What the maintainer actually needs to say
 
 1. `A` / `B` / `C`;
 2. if `A`: whether `runtime_executable` should be *required* (my recommendation: documented now, required next
@@ -82,8 +82,8 @@ property for every port. Do **not** add the nine fields to `required` yet.
 3. **Whether a control cell's stamp has to say where it came from.** Measured at 13:34 by
    `python ci/validate_cells.py`: 30 control cells across six ports carry `control_pass=true` and **zero** carry
    any pointer to the command that produced it, because no contract round asks for one (`control_pass_evidence`
-   is not a field anywhere except in a ticket this local wrote and then retracted - see
-   `docs/tickets/F2-*.md`'s amendment). Either the contract names it and every lane re-stamps with a source,
+   is not a field anywhere except in a ticket this machine wrote and then retracted - see
+   `docs/tickets/F2-*.md`'s amendment). Either the contract names it and every port re-stamps with a source,
    or the calibration marks stay assertions a reader cannot re-check, and the whitepaper should stop implying
    they are measurements.
 4. Nothing else in this file needs a decision: the two re-runs that were owed have both landed
@@ -98,7 +98,7 @@ outward documents keep the pair-of-numbers rule (`cells_fully_recorded_and_ident
 
 ## Added 2026-10-12: a fourth item rides this same seal, and no round opens for it alone
 
-The owner ruled this morning that this repository is **not** rewritten. The measured blast radius of the disclosure
+The maintainer ruled this morning that this repository is **not** rewritten. The measured blast radius of the disclosure
 fix is 11 non-data faces and 17 lines (1 in `spec/schema.json`, 16 across the six ports' emit sites), and nothing
 in the judging apparatus reads the field - `ci/`, `tool/` and the generated `docs/` faces score 0 hits. See
 `docs/tickets/F8-public-interface-process-metadata.md` for the change and
@@ -112,18 +112,18 @@ where one is the honest count.
 What the seal must carry in one act:
 
 1. `worker_id` removed from `spec/schema.json`; `implementation_id` added with value shape
-   `^[a-z][a-z0-9-]{0,15}-port$`, enforced by `ci/validate_cells.py` in both directions - a planted session value
+   `^[a-z][a-z0-9-]{0,15}-port$`, enforced by `ci/validate_cells.py` in both directions - a planted pass value
    refused, `python-port` accepted;
 2. `spec/FROZEN.md`'s seal line re-worded in product-side terms, its digest table re-pinned in the same commit;
 3. the two rulers (`spec/schema.json` and `ci/validate_cells.py`) reading one closed field dictionary, since they
    were once caught disagreeing;
 4. `docs/claim-boundary.md` gaining a row that separates **product provenance** - runtime, toolchain, harness
    version, kept because verdicts demonstrably flip with the executable - from **production metadata**, which
-   lane was staffed by whom, not part of any cell's correctness and not published from here on.
+   port was staffed by whom, not part of any cell's correctness and not published from here on.
 
 What a seal cannot undo, stated rather than implied: the field and its values are already in the published
 history - 1,150 occurrences over 880 result faces and 63 evidence faces - plus the narrative faces. History is not
-rewritten on the owner's rule, so the forward correction is paired with an errata row naming what was public,
+rewritten on the maintainer's rule, so the forward correction is paired with an errata row naming what was public,
 and no face may read as though it always was clean. `python ci/process_leak_scan.py --repo-root .` is the standing
 leg; at the time of writing it reports
 `OUTCOME=RED ... fatal_by_class=HOSTROOT:14,IDENTITY:1134,LOGIN:17,RETIRED:1141` against this tree and

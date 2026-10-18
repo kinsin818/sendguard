@@ -1,6 +1,6 @@
 # F7 - the deliverable carries no version, so "which artifact did you audit" has no answer
 
-Opened 2026-10-11 16:1x +0800 by the local that owns `ci/`, prompted by the owner's question "then you update the
+Opened 2026-10-11 16:1x +0800 by the maintainer that owns `ci/`, prompted by the maintainer's question "then you update the
 version after the audit". Answering it required measuring what "the version" would refer to. It refers to
 nothing that exists.
 
@@ -16,10 +16,10 @@ nothing that exists.
   to state `commit:` in its header. That works for someone who cloned. A buyer handed a zip has no field to fill
   in, and a report that says "the version I ran" cannot be reproduced from anything inside the artifact.
 
-## Owner input required — this is why the ticket is not executed
+## Maintainer input required — this is why the ticket is not executed
 
-1. **The version string itself.** Its shape is product identity, not a technical constant, and this local does
-   not invent identifiers for things the owner sells. One string, and the ticket is executable as written.
+1. **The version string itself.** Its shape is product identity, not a technical constant, and this machine does
+   not invent identifiers for things the maintainer sells. One string, and the ticket is executable as written.
 2. **Whether the contract round moves with it.** Those are two different objects: `spec/` re-sealing cascades
    (manifest regenerated, `spec/FROZEN.md` digests re-pinned, every cell's `spec_sha256` stale until all six
    ports re-emit — see `docs/NOTICE-rev9-proposal.md` for the full cost). Advancing a version must not
@@ -45,7 +45,7 @@ nothing that exists.
 6. Every human-facing face prints the string by generation, not by typing: `README.md`'s run lines,
    `docs/evidence.md` and `docs/delivery-form.md` take it from the file through their generators, and
    `python ci/refresh_all.py` reproduces them byte-for-byte from a clone.
-7. No leg creates a tag, and no leg pushes. Tag-for-public and publish are the owner's acts.
+7. No leg creates a tag, and no leg pushes. Tag-for-public and publish are the maintainer's acts.
 
 ## Do not
 

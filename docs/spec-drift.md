@@ -20,6 +20,6 @@ Every compared record carries the current fingerprint. Nothing to assess.
 
 - It licenses this sentence and no stronger: *the compared records that carry an older fingerprint were asked questions whose spec text is unchanged between that fingerprint and HEAD.* That is a measurement of the delta, not a promise about the port's harness.
 - It does not license comparing a record whose case id the delta touched. Those are named above, and the leg exits 1 for exactly that case, so the refusal is in the pipeline rather than in prose.
-- It does not repair the habit. A port that does not re-run after a re-seal leaves a tree with mixed fingerprints; the fix is a re-stamp of the cells the delta touches, which is cheap and is the port's own work, not this local's.
+- It does not repair the habit. A port that does not re-run after a re-seal leaves a tree with mixed fingerprints; the fix is a re-stamp of the cells the delta touches, which is cheap and is the port's own work, not this machine's.
 - A record with no fingerprint is its own row: absence of a claim is not a claim of agreement, and this leg does not convert one into the other.
 

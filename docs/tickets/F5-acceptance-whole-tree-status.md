@@ -1,7 +1,7 @@
 # F5 - the acceptance sheet must not let `faces_ahead_of_head=0` read as "everything is landed"
 
-Opened 2026-10-11 15:42 +0800 by the local that owns `ci/`. Attempted today and **rolled back unpublished**: the
-version I reached had three self-test arms red, and a red suite does not go into a tree the owner audits tomorrow.
+Opened 2026-10-11 15:42 +0800 by the maintainer that owns `ci/`. Attempted today and **rolled back unpublished**: the
+version I reached had three self-test arms red, and a red suite does not go into a tree the maintainer audits tomorrow.
 The three files came back to their committed blobs byte-for-byte and `git status` is clean afterwards. What the
 attempt found is the reason to finish it.
 
@@ -9,7 +9,7 @@ attempt found is the reason to finish it.
 
 `ci/acceptance.py` reads status per canonical face only (six `results/<port>.windows.x64` directories), so the
 sheet prints `faces_ahead_of_head=0` while the same repository holds `impl/python/sg_restamp_note.txt` untracked -
-another session's work, present all afternoon. A reader who takes that 0 as "nothing here is unlanded" is wrong,
+another pass's work, present all afternoon. A reader who takes that 0 as "nothing here is unlanded" is wrong,
 and this sheet is the thing that taught them the 0.
 
 ## What the attempt measured before the rollback
@@ -40,6 +40,6 @@ have been counted as "elsewhere". Both findings are worth finishing properly, no
 5. a rename counts at its destination and in its own bucket; the table prints the number of status lines read as a
    denominator, and the buckets must sum to it;
 6. the sheet names other windows' untracked faces and acts on none of them, and says so on its face: landing
-   another session's work is not this local's act;
+   another pass's work is not this machine's act;
 7. `--selftest` carries the self-counting arm guard the other legs have, and is wired into
    `ci/refresh_all.py`'s judge list.

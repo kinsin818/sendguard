@@ -1,23 +1,23 @@
-# F6 - `ci/claim_digest.py` must also police the page the owner actually reads first
+# F6 - `ci/claim_digest.py` must also police the page the maintainer actually reads first
 
-Opened 2026-10-11 15:47 +0800 by the local that owns `ci/`.
+Opened 2026-10-11 15:47 +0800 by the maintainer that owns `ci/`.
 
 ## The hole, measured rather than suspected
 
 `ci/claim_digest.py` checks quoted numbers in `README.md`, `docs/claim-boundary.md` and `docs/whitepaper.md`, and
-today it earned its keep. But the document the owner reads first is **not in the repository**: the morning
+today it earned its keep. But the document the maintainer reads first is **not in the repository**: the morning
 one-pager lives at `D:\probe\ops\morning-brief-20261011.md`, outside `REPO`, so the leg never opens it.
 
-Auditing that page at 15:47 by hand found three numbers that had gone stale in it, all written by this local and
+Auditing that page at 15:47 by hand found three numbers that had gone stale in it, all written by this machine and
 all correct when written:
 
 | what the page said | what the tree said at audit | how it went stale |
 |---|---|---|
 | "1171 tracked faces, zero differences three ways" | 1175 tracked faces | two tickets and one new leg landed after the blob comparison |
 | "the parity leg self-tests with 12 arms" | 14 arms | the leg grew arms the same afternoon the sentence was written |
-| "local is 81 commits ahead - your call whether to push" | `ahead=0`, pushed on the owner's word at 15:14 | the decision row outlived the decision |
+| "tree is 81 commits ahead - your call whether to push" | `ahead=0`, pushed on the maintainer's word at 15:14 | the decision row outlived the decision |
 
-The third is the expensive kind: not a wrong number, a **stale status** that would have made the owner think an
+The third is the expensive kind: not a wrong number, a **stale status** that would have made the maintainer think an
 order he gave was not carried out.
 
 ## Acceptance criteria
@@ -38,5 +38,5 @@ order he gave was not carried out.
 ## Do not do
 
 Do not solve this by hand-copying numbers from the page into the repository, and do not move the page into the
-repository to make the check easier - the page is the owner-facing record and the repository is the deliverable,
+repository to make the check easier - the page is the maintainer-facing record and the repository is the deliverable,
 and merging those two faces is a worse trade than a flag.

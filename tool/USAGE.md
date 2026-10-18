@@ -7,7 +7,7 @@ Two questions, one file:
   name per target, without touching a single file.
 
 This file documents the tool. `docs/tool-usage.md` describes the same tool as it stood before contract
-rev6 (folder-only, no verdict/probe split); the owner froze `docs/` tonight, so it is left as he wrote it
+rev6 (folder-only, no verdict/probe split); the maintainer froze `docs/` tonight, so it is left as he wrote it
 and **this file is the current face**. Do not read the two as independent statements.
 
 ## Ask about one name (the morning deliverable)

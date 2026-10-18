@@ -2,7 +2,7 @@
 
 Recorded 2026-10-12 by the local that owns `ci/`. The owner's rule the same day was explicit: **do not restore
 that tree, record the contamination only.** This file is that record. It changes nothing outside this repository,
-and it is not a fix - the fix to the cause is `docs/tickets/F15-go-lane-hardcoded-root.md`, which landed after
+and it is not a fix - the fix to the cause is `docs/tickets/F15-go-port-hardcoded-root.md`, which landed after
 this event.
 
 ## What happened, in one paragraph

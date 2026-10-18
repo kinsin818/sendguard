@@ -1,7 +1,7 @@
-# F1 — Python lane: re-stamp the 27 cells that still carry the previous spec fingerprint
+# F1 — Python port: re-stamp the 27 cells that still carry the previous spec fingerprint
 
 **Race guard first.** Before writing anything, check whether this surface is already owned: does
-`results/python.windows.x64/` contain files with an mtime newer than this ticket's dispatch (13:0x +0800 on
+`results/python.windows.x64/` contain files with an mtime newer than this ticket's issuance (13:0x +0800 on
 2026-10-11), and does `git status --porcelain -uall -- results/python.windows.x64` list anything? If a writer
 is already in there, **stop** and report `BLOCKED | reason=tree_already_owned | <the faces you saw>`. Do not
 re-run over a colleague's half-finished face, and do not "help" by finishing their files.
@@ -30,7 +30,7 @@ audits for.
 ## What to do
 
 Re-emit the same cells under the current committed spec face, so each record's `spec_sha256` equals
-`spec/cells-required.json`'s `spec_blob_sha256`. Write **additively** and never wipe the face: this lane lost
+`spec/cells-required.json`'s `spec_blob_sha256`. Write **additively** and never wipe the face: this port lost
 74 cells at 07:16 today by rebuilding in place, and the recovery was a documented "they do not exist", not a
 restatement. Commit as you go (one commit per group of cells is fine) so nothing sits uncommitted while you
 work on the next batch.
@@ -62,12 +62,12 @@ pass — quote the line the command printed.
 
 Applicability of blank verdict fields, a `runtime_executable` field, tightening `spec/schema.json`'s `required`
 list. Those are contract round 9 and are written up as a proposal in `docs/NOTICE-rev9-proposal.md` waiting on
-the owner's word. A port that "helpfully" edits the spec while re-stamping its cells would turn a
+the maintainer's word. A port that "helpfully" edits the spec while re-stamping its cells would turn a
 bookkeeping fix into an unauthorised contract change.
 
-## Amendment, written after acceptance (`evidence/closing/F1-acceptance.md`) — the dispatcher's defect
+## Amendment, written after acceptance (`evidence/closing/F1-acceptance.md`) — the issuer's defect
 
-The lane completed this ticket at 13:20 (`157efdb`) and all five criteria passed. One thing it reported back is
+The port completed this ticket at 13:20 (`157efdb`) and all five criteria passed. One thing it reported back is
 a fault in the ticket, not in the work: the Allowed-surface list named `results/python.windows.x64/` and
 `evidence/judgement/python-selfcheck.md`, but `spec/cell-identity.md` §3 says instrument dumps belong under
 `evidence/`, and this ticket did not grant that path. The worker chose to put its dumps under `impl/` and

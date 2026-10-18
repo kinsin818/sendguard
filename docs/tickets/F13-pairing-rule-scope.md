@@ -1,6 +1,6 @@
 # F13 - the pairing rule reads 14 faces; 21 more are published prose and nobody has looked at them
 
-Opened 2026-10-12 by the local that owns `ci/`, arising from F11 criterion 3. Not a defect in `claim_digest.py`
+Opened 2026-10-12 by the maintainer that owns `ci/`, arising from F11 criterion 3. Not a defect in `claim_digest.py`
 - the leg now prints its own blind spot on purpose (`pairing| ... unpoliced=21 unpoliced_bare_blocks=1
 unpoliced_faces_with_bare=1`) and its verdict line says `pairing_scope=policed-only(...)`. This ticket is the
 widening.
@@ -52,7 +52,7 @@ and it reads as a correctness claim to anyone who does not know the round it cam
 ## Do not
 
 - Do not touch `evidence/**`: captured runs are their own face class, they are counted and reported, and this
-  local does not re-word someone else's capture.
+  the maintainer does not re-word someone else's capture.
 - Do not re-word `docs/tickets/F11-blank-count-sentence.md` to make the count go to zero. That face quotes
   the bare number **to explain why the bare number is wrong**; it is a ticket, and a ticket about a defect is
   allowed to describe it. If the widening has to reach `docs/tickets/**` at all, the answer is the named
@@ -66,5 +66,5 @@ and the acceptance row in `evidence/closing/`.
 
 ## Clock
 
-24 h from dispatch. Queue position: behind F8's six-lane re-emit and behind the CI-read leg; this ticket
+24 h from issuance. Queue position: behind F8's six-port re-emit and behind the CI-read leg; this ticket
 blocks nothing else.

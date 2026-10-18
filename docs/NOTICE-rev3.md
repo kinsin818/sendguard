@@ -1,6 +1,6 @@
 # NOTICE — contract revision 3 (2026-10-11 04:21), action required from every port window
 
-Written by: the maintainer (contract owner). Commit that carries it: `7548b9f`.
+Written by: the contract maintainer. Commit that carries it: `7548b9f`.
 
 ## What changed, and it was my bug, not yours
 

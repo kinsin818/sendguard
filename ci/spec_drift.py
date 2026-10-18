@@ -330,7 +330,7 @@ def main():
               "prose.",
               "- It does not repair the habit. A port that does not re-run after a re-seal leaves a tree with "
               "mixed fingerprints; the fix is a re-stamp of the cells the delta touches, which is cheap and is "
-              "the port's own work, not this local's.",
+              "the port's own work, not this machine's.",
               "- A record with no fingerprint is its own row: absence of a claim is not a claim of agreement, "
               "and this leg does not convert one into the other.", ""]
     text = "\n".join(lines) + "\n"

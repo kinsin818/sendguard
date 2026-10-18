@@ -37,7 +37,7 @@ python ci/matrix_table.py                             # the (cell x port) grid, 
 python ci/expected_summary.py                         # sealed expectation vs measured, row by row -
                                                       #   including the macOS/Ubuntu rows nobody has run
 python ci/triangle.py                                 # ports vs expectation vs the machine's own tools
-python ci/acceptance.py                               # what each lane claims vs what the tree holds
+python ci/acceptance.py                               # what each port claims vs what the tree holds
 python ci/evidence_table.py                           # regenerates docs/evidence.md from the committed data
 python ci/status_brief.py                             # the one screen of numbers everything else quotes
 python tool/check.py --name "trail."                   # the deliverable: one name, asked on this machine
@@ -77,7 +77,7 @@ limits and the numbers that moved between them:
 delivery form's four defects
 [`evidence/clone-tool/cold-clone-20261011d.md`](evidence/clone-tool/cold-clone-20261011d.md).
 
-That rehearsal is no longer a habit of one session: `python ci/clone_parity.py --scratch-root ../sg-parity` does it
+That rehearsal is no longer a habit of one pass: `python ci/clone_parity.py --scratch-root ../sg-parity` does it
 as a leg - `--no-local` clone, `ci/refresh_all.py` run inside the clone, then every generated face compared with
 the blob the clone checked out. It refuses a scratch root it did not get, refuses a drive root, refuses to nest a
 clone inside the repository, never deletes anything (an existing clone is adopted only if its HEAD equals the
@@ -115,7 +115,7 @@ unsigned-executable launch behaviour, and any agreement between ports that the g
 This is a delivery process, not a vocabulary of six syntaxes. It does not declare success because code was
 generated: a port's committed results were **rejected by the gate** and sit unread in `results/node` (31 of
 their cells carried a self-declared instrument failure and a runtime crash message), the first version of a
-contract file published by this local was withdrawn by name inside the file after it turned out to be derived
+contract file published by this machine was withdrawn by name inside the file after it turned out to be derived
 from a mis-parse, and the equality gate reported 29 of 29 cells as failing until the disagreement was traced
 to how four ports had *written down* one fact - which was this repository's own defect, not the ports', and
 is recorded in `docs/FINDINGS-rev6.md` section M5 rather than smoothed over.
@@ -130,7 +130,7 @@ is recorded in `docs/FINDINGS-rev6.md` section M5 rather than smoothed over.
 | a required-cell list generated from the spec, not hand-typed | [`spec/cells-required.json`](spec/cells-required.json) | three ports answering three different questionnaires and calling it agreement |
 | independent enumerator, not the port's own report of itself | [`harness/audit.go`](harness/audit.go) | a program claiming it wrote a file the disk never received |
 | per-cell child process, external 5 s timeout, no in-process calls | `harness/` | one hung probe eating a whole run |
-| expectation table written by a session that wrote no port and no skeleton | [`spec/expectations.sealed.md`](spec/expectations.sealed.md) | six ports agreeing on a shared misreading |
+| expectation table written by a pass that wrote no port and no skeleton | [`spec/expectations.sealed.md`](spec/expectations.sealed.md) | six ports agreeing on a shared misreading |
 | outside referee: the machine's own tools | [`evidence/freeze/referee-windows.md`](evidence/freeze/referee-windows.md) | our code and our own expectations being each other's only witness |
 | equality gate that refuses to compare unequal sets | [`ci/equality.py`](ci/equality.py) | comparing an intersection and reporting a pass |
 | representations folded before judging; absences never folded into answers | `ci/equality.py`, `spec/cell-identity.md` §9 | four spellings of one fact reported as four disagreements |
@@ -211,10 +211,10 @@ Three honest caveats, because this is the part a README usually omits and a read
   vendored into this repository, so `cargo build` requires registry access the first time; the run quoted above
   succeeded with `--offline` because the host had a warm cache, which is not a stranger's starting condition.
   A stranger without that cache should expect to need network once.
-- **`java-port` has no lane-authored self-check file.** The other five lanes ship a `selfcheck` script that
-  re-parses the contract and judges the lane's own face independently of the shared rulers; the Java lane's
+- **`java-port` has no port-authored self-check file.** The other five ports ship a `selfcheck` script that
+  re-parses the contract and judges the port's own face independently of the shared rulers; the Java port's
   control assertions are its run output plus `ci/validate_cells.py` and `ci/equality.py`, which every face passes.
-  The asymmetry is real, is recorded in `docs/tickets/F16-java-lane-selfcheck.md`, and does not currently
+  The asymmetry is real, is recorded in `docs/tickets/F16-java-port-selfcheck.md`, and does not currently
   weaken any published reading.
 - **This is one host, one Windows edition, one set of toolchain versions.** `docs/host-stamp.md` prints what this
   machine is, the cold-clone leg quarantines it by name rather than comparing it, and the ports' disagreement about

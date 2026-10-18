@@ -5,7 +5,7 @@ Run:  python ci/validate_cells.py            # prints and writes docs/cell-valid
       python ci/validate_cells.py --selftest  # 24 arms: it must refuse, and it must be able to say yes
 
 This leg takes no output path on purpose: it always writes the repository's own face, and any other
-argument is refused (rc=3) rather than ignored. Measured on 2026-10-11 11:46: the local passed
+argument is refused (rc=3) rather than ignored. Measured on 2026-10-11 11:46: the machine passed
 `--out-dir <scratch>` believing it was reading the ruler without writing, and it wrote anyway while
 reporting rc=0 - which is the silent-acceptance shape this project keeps having to relearn.
 
@@ -84,7 +84,7 @@ def check(cell, schema):
 def parse_args(argv):
     """This leg implements one flag. Anything else is reported as unknown, never ignored.
 
-    Measured 2026-10-11 11:46: the local called this leg with `--out-dir <scratch>` intending to read the
+    Measured 2026-10-11 11:46: the machine called this leg with `--out-dir <scratch>` intending to read the
     ruler without writing, and got rc=0 plus a rewritten `docs/cell-validation.md`. A leg that swallows an
     argument it has never implemented describes its own interface as bigger than it is.
     """
@@ -174,7 +174,7 @@ def verdict_field_gap(schema):
     12:06, 9 of the 10 fields `ci/equality.py` calls a verdict are absent from `spec/schema.json`'s
     `required`, and 4 of those are absent from its `properties` too. That is how a tree can be 0-invalid and
     121-blank in the same minute, both numbers correct. Naming the gap is this ruler's job; closing it is a
-    contract change and the owner's word.
+    contract change and the maintainer's word.
     """
     sys.path.insert(0, HERE)
     import equality  # the same list the gate judges with - not a second copy of it
@@ -304,13 +304,13 @@ def selftest():
         "selftest A25 green: the frozen schema must carry the producer pattern, got %r" % (pat_spec.get("pattern"),))
     chk("worker_id" not in live.get("properties", {}),
         "selftest A26 red: the retired producer key must not come back into the schema")
-    p_bad = check({"case_id": "T01", "implementation_id": "session-token-rust"},
+    p_bad = check({"case_id": "T01", "implementation_id": "pass-token-rust"},
                   {"required": [], "properties": {"implementation_id": pat_spec}})
     chk(any("does not match the frozen pattern" in x for x in p_bad),
-        "selftest A27 red: a session-shaped producer value must be refused, got %r" % (p_bad,))
+        "selftest A27 red: a pass-shaped producer value must be refused, got %r" % (p_bad,))
     p_ok = check({"case_id": "T01", "implementation_id": "rust-port"},
                  {"required": [], "properties": {"implementation_id": pat_spec}})
-    chk(p_ok == [], "selftest A28 green: a lane-shaped producer value must pass, got %r" % (p_ok,))
+    chk(p_ok == [], "selftest A28 green: a port-shaped producer value must pass, got %r" % (p_ok,))
     p_old = check({"case_id": "T01", "worker_id": "port-go"},
                   {"required": [], "properties": {"implementation_id": pat_spec}})
     chk(p_old == [], "selftest A29 green: the rename must not invalidate an old record - additionalProperties is "
@@ -429,7 +429,7 @@ def main():
     lines += ["", "**ports that ever declare applicability: %s** (of %d)"
               % (", ".join("`%s`" % p for p in declared) or "none", len(PORTS)),
               "A convention kept by one port is not a contract. Either the field gains a rule (who must write "
-              "it, on which case groups) or it should be dropped rather than left as one lane's habit.", ""]
+              "it, on which case groups) or it should be dropped rather than left as one port's habit.", ""]
     if gap_documented:
         lines.append("Verdict fields the gate compares that `spec/schema.json` does not even document: %s. "
                      "They are legal extras today and unverifiable requirements tomorrow."

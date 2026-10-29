@@ -3,6 +3,10 @@
 Point it at a folder and it tells you which file names will break on the recipient's machine, before you
 hit send.
 
+**Ask about one name right now:** `python tool/check.py --name "trail."` — standard library only, nothing to install. [How the answer is built](tool/USAGE.md).
+
+![sendguard verdict block for the name "trail."](assets/verdict.png)
+
 **Stack.** One frozen spec, six independent implementations - **Go · TypeScript · Rust · Java · C# · Python**. Around them:
 a Python CI harness (`ci/`), a Go out-of-band enumerator (`harness/`), and a single-file deliverable (`tool/check.py`).
 GitHub's language bar reads "Python" because the harness and the per-port runners live there - not because this is a
